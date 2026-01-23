@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Box, Paper, TextInput, Text, Group, Button, Stack, ActionIcon } from '@mantine/core';
+import { Box, Paper, TextInput, Text, Group, Button, Stack, ActionIcon, Badge } from '@mantine/core';
 import { WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -7,6 +7,7 @@ import { FlightDisplayMode } from '@/utility/enums';
 import { addWaypoint, removeWaypoint, updateWaypointName } from '@/redux/slices/flightPlanningSlice';
 import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { FiX } from 'react-icons/fi';
+import { FaPlane, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 interface WaypointInfoPopupProps {
   selectedWaypoint: WaypointDto;
@@ -17,7 +18,14 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
   const { draftFlightPlan, displayMode } = useSelector((s: RootState) => s.flightPlanning);
   const selectedContext = useSelector((s: RootState) => s.selectedEntity.context);
   const isExisting = selectedContext?.mode === 'existing';
-  const canEdit = displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING;
+  const isCalculatedPoint = selectedContext?.isCalculatedPoint || selectedWaypoint.waypointType === WaypointType.CalculatedPoint;
+  const isPreviewMode = displayMode === FlightDisplayMode.PREVIEW;
+  const canEdit = (displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING) && !isCalculatedPoint;
+
+  // Determine if this is a TOC or TOD point
+  const waypointName = selectedWaypoint.name?.toLowerCase() || '';
+  const isToc = waypointName.includes('toc') || waypointName.includes('top of climb');
+  const isTod = waypointName.includes('tod') || waypointName.includes('top of descent');
   const initialName = isExisting
     ? selectedWaypoint.name || ''
     : 'New waypoint';
@@ -144,11 +152,28 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
         }}
       >
         <Group justify="space-between">
-          <Text fw={600}>Waypoint</Text>
+          <Group gap="xs">
+            {isToc && <FaArrowUp size={14} color="#22c55e" />}
+            {isTod && <FaArrowDown size={14} color="#f97316" />}
+            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color="#06b6d4" />}
+            <Text fw={600}>
+              {isToc ? 'Top of Climb' : isTod ? 'Top of Descent' : 'Waypoint'}
+            </Text>
+          </Group>
           <ActionIcon variant="subtle" color="gray" onClick={cancel}>
             <FiX size={18} />
           </ActionIcon>
         </Group>
+        {isCalculatedPoint && (
+          <Badge
+            size="xs"
+            variant="light"
+            color={isToc ? 'green' : isTod ? 'orange' : 'cyan'}
+            mt="xs"
+          >
+            Calculated Point
+          </Badge>
+        )}
       </Box>
 
       {/* Content */}
@@ -191,6 +216,18 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
             </Text>
           </Box>
         </Group>
+
+        {/* Show altitude in PREVIEW mode or for calculated points */}
+        {(isPreviewMode || isCalculatedPoint) && selectedWaypoint.altitude !== undefined && (
+          <Box>
+            <Text size="xs" c="dimmed">
+              Altitude
+            </Text>
+            <Text size="sm" fw={500} c={isToc ? 'green.4' : isTod ? 'orange.4' : undefined}>
+              {Math.round(selectedWaypoint.altitude).toLocaleString()} ft MSL
+            </Text>
+          </Box>
+        )}
 
         {canEdit && (
           isExisting ? (

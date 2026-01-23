@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from '@tanstack/react-router';
 import {
   Box,
   Button,
@@ -7,8 +8,9 @@ import {
   Stack,
   Stepper,
   Text,
-  Paper,
+  Loader,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import {
   FiMapPin,
   FiClock,
@@ -16,6 +18,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiRefreshCw,
+  FiSave,
 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { BottomDrawer } from '@/components/Common/BottomDrawer';
@@ -26,9 +29,28 @@ import {
   resetToPlanning,
   clearDraftWaypoints,
   addWaypoint,
+  updateNavlogPreview,
+  updateReturnNavlogPreview,
+  clearNavlogPreviews,
+  setDisplayMode,
 } from '@/redux/slices/flightPlanningSlice';
 import { FlightDisplayMode } from '@/utility/enums';
-import { WaypointDto } from '@/redux/api/vfr3d/dtos';
+import {
+  WaypointDto,
+  NavlogRequestDto,
+  CreateFlightRequestDto,
+  CreateRoundTripFlightRequestDto,
+} from '@/redux/api/vfr3d/dtos';
+import { useAuth } from '@/components/Auth';
+import { useCalculateNavLogMutation } from '@/redux/api/vfr3d/navlog.api';
+import {
+  useCreateFlightMutation,
+  useCreateRoundTripFlightMutation,
+} from '@/redux/api/vfr3d/flights.api';
+import { DrawerAircraftPerformanceProfiles } from './PerformanceProfiles';
+import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
+import { NavLogTable } from './NavLogTable';
+import { FlightPlanCalculationLoading } from './FlightPlanCalculationLoading';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -40,16 +62,38 @@ enum FlightPlannerStep {
 
 export const FlightPlanningDrawer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const userId = user?.sub || '';
+
   const [isOpen, setIsOpen] = useState(false);
 
   const {
     displayMode,
-    draftFlightPlan: {
-      waypoints: flightPlanRoute,
-      currentStep,
-      canCalculateNavlog,
-    },
+    draftFlightPlan,
+    navlogPreview,
+    navlogPreviewReturn,
   } = useSelector((state: RootState) => state.flightPlanning);
+
+  const {
+    waypoints: flightPlanRoute,
+    currentStep,
+    selectedPerformanceProfileId,
+    plannedCruisingAltitude,
+    departureTimeUtc,
+    roundTrip,
+    returnPlannedCruisingAltitude,
+    returnDepartureTimeUtc,
+    name: flightName,
+  } = draftFlightPlan;
+
+  // API Mutations
+  const [calculateNavLog, { isLoading: isCalculating }] = useCalculateNavLogMutation();
+  const [createFlight, { isLoading: isCreatingFlight }] = useCreateFlightMutation();
+  const [createRoundTripFlight, { isLoading: isCreatingRoundTrip }] =
+    useCreateRoundTripFlightMutation();
+
+  const isSaving = isCreatingFlight || isCreatingRoundTrip;
 
   // Update canCalculateNavlog based on route
   useEffect(() => {
@@ -77,7 +121,13 @@ export const FlightPlanningDrawer: React.FC = () => {
 
   const handlePreviousStep = () => {
     if (currentStep > 0) {
-      dispatch(updateDraftPlanSettings({ currentStep: currentStep - 1 }));
+      const newStep = currentStep - 1;
+      dispatch(updateDraftPlanSettings({ currentStep: newStep }));
+
+      // If leaving NAVLOG_PREVIEW step, switch back to PLANNING mode
+      if (currentStep === FlightPlannerStep.NAVLOG_PREVIEW) {
+        dispatch(setDisplayMode(FlightDisplayMode.PLANNING));
+      }
     }
   };
 
@@ -90,6 +140,133 @@ export const FlightPlanningDrawer: React.FC = () => {
 
   const handleResetPlanning = () => {
     dispatch(resetToPlanning());
+    dispatch(clearNavlogPreviews());
+    dispatch(setDisplayMode(FlightDisplayMode.PLANNING));
+  };
+
+  // Calculate Route Handler
+  const handleCalculateRoute = async () => {
+    if (!selectedPerformanceProfileId) {
+      notifications.show({
+        title: 'Missing Profile',
+        message: 'Please select an aircraft performance profile first.',
+        color: 'red',
+      });
+      return;
+    }
+
+    try {
+      // Calculate outbound navlog
+      const outboundRequest: NavlogRequestDto = {
+        waypoints: flightPlanRoute,
+        aircraftPerformanceProfileId: selectedPerformanceProfileId,
+        plannedCruisingAltitude,
+        timeOfDeparture: new Date(departureTimeUtc),
+      };
+
+      const outboundResult = await calculateNavLog(outboundRequest).unwrap();
+      dispatch(updateNavlogPreview(outboundResult));
+
+      // Calculate return navlog if round trip
+      if (roundTrip) {
+        const returnWaypoints = [...flightPlanRoute].reverse();
+        const returnRequest: NavlogRequestDto = {
+          waypoints: returnWaypoints,
+          aircraftPerformanceProfileId: selectedPerformanceProfileId,
+          plannedCruisingAltitude: returnPlannedCruisingAltitude,
+          timeOfDeparture: new Date(returnDepartureTimeUtc),
+        };
+
+        const returnResult = await calculateNavLog(returnRequest).unwrap();
+        dispatch(updateReturnNavlogPreview(returnResult));
+      }
+
+      // Advance to nav log preview step and switch to PREVIEW mode
+      dispatch(updateDraftPlanSettings({ currentStep: FlightPlannerStep.NAVLOG_PREVIEW }));
+      dispatch(setDisplayMode(FlightDisplayMode.PREVIEW));
+
+      notifications.show({
+        title: 'Route Calculated',
+        message: 'Your navigation log has been calculated successfully.',
+        color: 'green',
+      });
+    } catch (error) {
+      notifications.show({
+        title: 'Calculation Failed',
+        message: 'Unable to calculate navigation log. Please try again.',
+        color: 'red',
+      });
+    }
+  };
+
+  // Save Flight Handler
+  const handleSaveFlight = async () => {
+    if (!userId) {
+      notifications.show({
+        title: 'Not Authenticated',
+        message: 'Please log in to save your flight.',
+        color: 'red',
+      });
+      return;
+    }
+
+    try {
+      if (roundTrip) {
+        // Create round trip flight
+        const request: CreateRoundTripFlightRequestDto = {
+          outboundName: flightName,
+          returnName: `Return: ${flightName}`,
+          departureTime: new Date(departureTimeUtc),
+          returnDepartureTime: new Date(returnDepartureTimeUtc),
+          plannedCruisingAltitude,
+          waypoints: flightPlanRoute,
+          aircraftPerformanceProfileId: selectedPerformanceProfileId || undefined,
+        };
+
+        const result = await createRoundTripFlight({ userId, request }).unwrap();
+
+        notifications.show({
+          title: 'Round Trip Saved',
+          message: 'Your outbound and return flights have been saved.',
+          color: 'green',
+        });
+
+        // Navigate to the outbound flight details
+        if (result.outbound?.id) {
+          dispatch(resetToPlanning());
+          navigate({ to: '/flights/$flightId', params: { flightId: result.outbound.id } });
+        }
+      } else {
+        // Create single flight
+        const request: CreateFlightRequestDto = {
+          name: flightName,
+          departureTime: new Date(departureTimeUtc),
+          plannedCruisingAltitude,
+          waypoints: flightPlanRoute,
+          aircraftPerformanceProfileId: selectedPerformanceProfileId || undefined,
+        };
+
+        const result = await createFlight({ userId, flight: request }).unwrap();
+
+        notifications.show({
+          title: 'Flight Saved',
+          message: 'Your flight has been saved successfully.',
+          color: 'green',
+        });
+
+        // Navigate to flight details
+        if (result.id) {
+          dispatch(resetToPlanning());
+          navigate({ to: '/flights/$flightId', params: { flightId: result.id } });
+        }
+      }
+    } catch (error) {
+      notifications.show({
+        title: 'Save Failed',
+        message: 'Unable to save flight. Please try again.',
+        color: 'red',
+      });
+    }
   };
 
   const isEditable =
@@ -104,6 +281,11 @@ export const FlightPlanningDrawer: React.FC = () => {
     { label: 'Nav Log', icon: <FiTable size={16} /> },
   ];
 
+  // Validation for step progression
+  const canProceedToAircraft = flightPlanRoute.length >= 2;
+  const canProceedToAltitude = canProceedToAircraft && !!selectedPerformanceProfileId;
+  const canCalculate = canProceedToAltitude && plannedCruisingAltitude > 0;
+
   const renderStepContent = () => {
     switch (currentStep) {
       case FlightPlannerStep.ROUTE_BUILDING:
@@ -115,40 +297,32 @@ export const FlightPlanningDrawer: React.FC = () => {
           />
         );
       case FlightPlannerStep.AIRCRAFT:
-        return (
-          <Paper p="xl" ta="center" withBorder>
-            <FaPlane size={48} style={{ opacity: 0.3 }} />
-            <Text size="lg" fw={500} mt="md">
-              Aircraft Selection
-            </Text>
-            <Text size="sm" c="dimmed" mt="xs">
-              Aircraft performance profiles coming soon...
-            </Text>
-          </Paper>
-        );
+        return <DrawerAircraftPerformanceProfiles disabled={!isEditable} />;
       case FlightPlannerStep.DATE_AND_ALTITUDE:
-        return (
-          <Paper p="xl" ta="center" withBorder>
-            <FiClock size={48} style={{ opacity: 0.3 }} />
-            <Text size="lg" fw={500} mt="md">
-              Departure Time & Altitude
-            </Text>
-            <Text size="sm" c="dimmed" mt="xs">
-              Set your departure time and cruising altitude...
-            </Text>
-          </Paper>
-        );
+        return <AltitudeAndDepartureControls disabled={!isEditable} />;
       case FlightPlannerStep.NAVLOG_PREVIEW:
+        if (isCalculating) {
+          return <FlightPlanCalculationLoading />;
+        }
+        if (!navlogPreview) {
+          return (
+            <Box ta="center" py="xl">
+              <FiTable size={48} style={{ opacity: 0.3 }} />
+              <Text size="lg" fw={500} mt="md" c="white">
+                No Navigation Log
+              </Text>
+              <Text size="sm" c="dimmed" mt="xs">
+                Go back and calculate your route to see the navigation log.
+              </Text>
+            </Box>
+          );
+        }
         return (
-          <Paper p="xl" ta="center" withBorder>
-            <FiTable size={48} style={{ opacity: 0.3 }} />
-            <Text size="lg" fw={500} mt="md">
-              Navigation Log
-            </Text>
-            <Text size="sm" c="dimmed" mt="xs">
-              Your calculated navigation log will appear here...
-            </Text>
-          </Paper>
+          <NavLogTable
+            navlog={navlogPreview}
+            returnNavlog={navlogPreviewReturn || undefined}
+            isRoundTrip={roundTrip}
+          />
         );
       default:
         return null;
@@ -212,7 +386,7 @@ export const FlightPlanningDrawer: React.FC = () => {
             variant="subtle"
             leftSection={<FiChevronLeft size={16} />}
             onClick={handlePreviousStep}
-            disabled={currentStep === 0}
+            disabled={currentStep === 0 || isCalculating || isSaving}
             style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
           >
             Back
@@ -226,22 +400,35 @@ export const FlightPlanningDrawer: React.FC = () => {
                   color="gray"
                   leftSection={<FiRefreshCw size={16} />}
                   onClick={handleResetPlanning}
+                  disabled={isSaving}
                 >
                   New Flight
                 </Button>
-                <Button disabled>
-                  Save Flight
+                <Button
+                  leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
+                  onClick={handleSaveFlight}
+                  disabled={!navlogPreview || isSaving || !userId}
+                >
+                  {isSaving ? 'Saving...' : 'Save Flight'}
                 </Button>
               </>
             ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
-              <Button disabled={!canCalculateNavlog}>
-                Calculate Route
+              <Button
+                onClick={handleCalculateRoute}
+                disabled={!canCalculate || isCalculating}
+                leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
+              >
+                {isCalculating ? 'Calculating...' : 'Calculate Route'}
               </Button>
             ) : (
               <Button
                 rightSection={<FiChevronRight size={16} />}
                 onClick={handleNextStep}
-                disabled={currentStep === 3}
+                disabled={
+                  (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
+                  (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
+                  currentStep === 3
+                }
               >
                 Next
               </Button>

@@ -12,6 +12,7 @@ interface SelectedEntityState {
     originalName?: string;
     originalLat?: number;
     originalLon?: number;
+    isCalculatedPoint?: boolean;
   };
 }
 

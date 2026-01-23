@@ -26,6 +26,46 @@ import { NavigationLegDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/d
 import { useDebounce } from '@uidotdev/usehooks';
 import { setSelectedEntity, updateSelectedWaypointPosition } from '@/redux/slices/selectedEntitySlice';
 
+// Helper to identify TOC/TOD calculated points by name pattern
+const isTocTodPoint = (waypoint: WaypointDto): boolean => {
+  const name = waypoint.name?.toLowerCase() || '';
+  return (
+    waypoint.waypointType === WaypointType.CalculatedPoint &&
+    (name.includes('toc') || name.includes('tod') || name.includes('top of climb') || name.includes('top of descent'))
+  );
+};
+
+// Helper to get point color based on waypoint type and position
+const getWaypointColor = (
+  waypoint: WaypointDto,
+  index: number,
+  totalPoints: number,
+  defaultColor: string
+): Color => {
+  // TOC points - green (climbing)
+  if (waypoint.name?.toLowerCase().includes('toc') || waypoint.name?.toLowerCase().includes('top of climb')) {
+    return Color.fromCssColorString('#22c55e');
+  }
+  // TOD points - orange (descending)
+  if (waypoint.name?.toLowerCase().includes('tod') || waypoint.name?.toLowerCase().includes('top of descent')) {
+    return Color.fromCssColorString('#f97316');
+  }
+  // First point (departure) - green
+  if (index === 0) {
+    return Color.fromCssColorString('#22c55e');
+  }
+  // Last point (arrival) - red
+  if (index === totalPoints - 1) {
+    return Color.fromCssColorString('#ef4444');
+  }
+  // Calculated points - cyan
+  if (waypoint.waypointType === WaypointType.CalculatedPoint) {
+    return Color.fromCssColorString('#06b6d4');
+  }
+  // Default color
+  return Color.fromCssColorString(defaultColor);
+};
+
 const RouteComponent: React.FC = () => {
   const dispatch = useDispatch();
   const { viewer, camera, scene } = useCesium();
@@ -216,15 +256,36 @@ const RouteComponent: React.FC = () => {
       ? mapWaypointToCartesian3Flat
       : mapWaypointToCartesian3;
 
+  // In PREVIEW mode, determine if we should show waypoint points
+  // In PLANNING/EDITING mode, only show Custom and CalculatedPoint types
+  const shouldShowWaypointPoint = (point: WaypointDto): boolean => {
+    if (displayMode === FlightDisplayMode.PREVIEW) {
+      // In preview mode, show all waypoints including airports and calculated points
+      return true;
+    }
+    // In planning/editing mode, only show custom waypoints and calculated points
+    // Airports are rendered by the Airports component
+    return (
+      point.waypointType === WaypointType.Custom ||
+      point.waypointType === WaypointType.CalculatedPoint
+    );
+  };
+
+  // Generate label text with altitude for PREVIEW mode
+  const getWaypointLabel = (point: WaypointDto): string => {
+    const name = point.name || 'Waypoint';
+    if (displayMode === FlightDisplayMode.PREVIEW && point.altitude) {
+      return `${name}\n${Math.round(point.altitude).toLocaleString()} ft`;
+    }
+    return name;
+  };
+
   return (
     <>
       {renderPoints?.map((point: WaypointDto, index: number) => {
         const position = mapWaypointToPosition(point);
-        const waypointShouldDisplay =
-          point.waypointType === WaypointType.Custom ||
-          point.waypointType === WaypointType.CalculatedPoint;
 
-        if (!position || !waypointShouldDisplay) return null;
+        if (!position || !shouldShowWaypointPoint(point)) return null;
 
         // Use the draggedPosition for the visual position if this point is being dragged
         const displayPosition =
@@ -237,12 +298,22 @@ const RouteComponent: React.FC = () => {
 
         const pointId = isViewingFlight ? `navlog-leg${legIndex} + ${point.id}` : point.id;
 
+        // Get color based on waypoint type and position
+        const pointColor = getWaypointColor(point, index, renderPoints.length, endPointColor);
+
+        // Determine if this point is a calculated TOC/TOD point
+        const isCalculatedPoint = point.waypointType === WaypointType.CalculatedPoint;
+        const isTocTod = isTocTodPoint(point);
+
+        // In PREVIEW mode, disable editing for calculated points
+        const canEdit = isEditable && !isCalculatedPoint;
+
         return (
           <PointEntity
             key={entityKey}
-            pixelSize={15}
+            pixelSize={isTocTod ? 12 : 15}
             position={displayPosition}
-            color={Color.fromCssColorString(endPointColor)}
+            color={pointColor}
             id={pointId ?? ''}
             onLeftClick={() => {
               // Open popup for existing waypoint (edit/delete)
@@ -258,15 +329,16 @@ const RouteComponent: React.FC = () => {
                     originalName: target.name ?? '',
                     originalLat: target.latitude,
                     originalLon: target.longitude,
+                    isCalculatedPoint,
                   },
                 })
               );
             }}
-            draggable={true}
-            onDrag={handleWaypointDrag}
-            onDragEnd={handleWaypointDragEnd}
-            labelText={point.name}
-            labelBackgroundColor={Color.fromCssColorString(endPointColor)}
+            draggable={canEdit}
+            onDrag={canEdit ? handleWaypointDrag : undefined}
+            onDragEnd={canEdit ? handleWaypointDragEnd : undefined}
+            labelText={getWaypointLabel(point)}
+            labelBackgroundColor={pointColor}
             labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
             labelPixelOffset={new Cartesian2(0, -20)}
           />
@@ -318,14 +390,35 @@ const RouteComponent: React.FC = () => {
 
         const polylineId = `route-polyline-${prevPoint.id}-${point.id}`;
 
+        // Determine segment color based on altitude change (for PREVIEW mode)
+        let segmentColor = Color.fromCssColorString(lineColor);
+        if (displayMode === FlightDisplayMode.PREVIEW) {
+          const prevAlt = prevPoint.altitude ?? 0;
+          const currAlt = point.altitude ?? 0;
+          const altDiff = currAlt - prevAlt;
+
+          // Climbing segment (green)
+          if (altDiff > 100) {
+            segmentColor = Color.fromCssColorString('#22c55e').withAlpha(0.9);
+          }
+          // Descending segment (orange)
+          else if (altDiff < -100) {
+            segmentColor = Color.fromCssColorString('#f97316').withAlpha(0.9);
+          }
+          // Cruise segment (use default line color)
+          else {
+            segmentColor = Color.fromCssColorString(lineColor);
+          }
+        }
+
         return (
           <PolylineEntity
             key={polylineId}
             positions={[prevPosition, currPosition]}
-            color={Color.fromCssColorString(lineColor)}
+            color={segmentColor}
             id={polylineId}
             width={5}
-            onLeftClick={handleRouteLeftClick}
+            onLeftClick={isEditable ? handleRouteLeftClick : undefined}
           />
         );
       })}
