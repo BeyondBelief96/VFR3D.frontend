@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { TextInput, Paper, Stack, Text, Group, Badge, Box, Loader, UnstyledButton, Portal } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { FiSearch, FiMapPin } from 'react-icons/fi';
-import { useGetAirportsByPrefixQuery } from '@/redux/api/vfr3d/airports.api';
+import { useSearchAirportsQuery } from '@/redux/api/vfr3d/airports.api';
 import { useAppDispatch } from '@/hooks/reduxHooks';
 import { setSearchAirportQuery, triggerSearch } from '@/redux/slices/searchSlice';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -37,7 +37,8 @@ export function AirportSearch({
   // Default: set as selected entity if no custom handler is provided
   const shouldSetAsSelectedEntity = setAsSelectedEntity ?? !onAirportSelect;
 
-  const { data: airports, isLoading, isFetching } = useGetAirportsByPrefixQuery(debouncedQuery, {
+  // Search airports by ICAO, FAA ID, name, or city
+  const { data: airports, isLoading, isFetching } = useSearchAirportsQuery(debouncedQuery, {
     skip: debouncedQuery.length < 2,
   });
 

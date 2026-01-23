@@ -34,6 +34,11 @@ export const airportsApi = baseApi.injectEndpoints({
       query: (icaoCodeOrIdent) => `/Airport/prefix/${icaoCodeOrIdent}`,
       keepUnusedDataFor: 300,
     }),
+    // Search airports by query (searches ICAO, FAA ID, name, and city)
+    searchAirports: builder.query<AirportDto[], string>({
+      query: (searchQuery) => `/Airport/search?query=${encodeURIComponent(searchQuery)}`,
+      keepUnusedDataFor: 300,
+    }),
     getRunwaysByAirportCode: builder.query<RunwayDto[], string>({
       query: (icaoCodeOrIdent) => `/Airport/${icaoCodeOrIdent}/runways`,
       keepUnusedDataFor: 300,
@@ -49,5 +54,6 @@ export const {
   useGetAirportsByIcaoCodesOrIdentsQuery,
   useLazyGetAirportByIcaoCodeOrIdentQuery,
   useGetAirportsByPrefixQuery,
+  useSearchAirportsQuery,
   useGetRunwaysByAirportCodeQuery,
 } = airportsApi;

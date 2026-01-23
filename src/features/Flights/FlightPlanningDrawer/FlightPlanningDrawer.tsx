@@ -67,6 +67,7 @@ export const FlightPlanningDrawer: React.FC = () => {
   const userId = user?.sub || '';
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const {
     displayMode,
@@ -297,7 +298,12 @@ export const FlightPlanningDrawer: React.FC = () => {
           />
         );
       case FlightPlannerStep.AIRCRAFT:
-        return <DrawerAircraftPerformanceProfiles disabled={!isEditable} />;
+        return (
+          <DrawerAircraftPerformanceProfiles
+            disabled={!isEditable}
+            onEditingStateChange={setIsEditingProfile}
+          />
+        );
       case FlightPlannerStep.DATE_AND_ALTITUDE:
         return <AltitudeAndDepartureControls disabled={!isEditable} />;
       case FlightPlannerStep.NAVLOG_PREVIEW:
@@ -341,6 +347,8 @@ export const FlightPlanningDrawer: React.FC = () => {
           <Stepper
             active={currentStep}
             onStepClick={(step) => {
+              // Don't allow step navigation when editing a profile
+              if (isEditingProfile) return;
               if (step <= currentStep) {
                 dispatch(updateDraftPlanSettings({ currentStep: step }));
               }
@@ -386,7 +394,7 @@ export const FlightPlanningDrawer: React.FC = () => {
             variant="subtle"
             leftSection={<FiChevronLeft size={16} />}
             onClick={handlePreviousStep}
-            disabled={currentStep === 0 || isCalculating || isSaving}
+            disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
             style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
           >
             Back
@@ -425,6 +433,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                 rightSection={<FiChevronRight size={16} />}
                 onClick={handleNextStep}
                 disabled={
+                  isEditingProfile ||
                   (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
                   (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
                   currentStep === 3

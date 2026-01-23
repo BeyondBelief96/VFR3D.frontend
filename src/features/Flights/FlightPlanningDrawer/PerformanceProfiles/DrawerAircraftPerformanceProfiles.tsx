@@ -18,10 +18,13 @@ type ViewMode = 'selection' | 'create' | 'edit';
 
 interface DrawerAircraftPerformanceProfilesProps {
   disabled?: boolean;
+  /** Callback when the editing/creating state changes */
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
 export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerformanceProfilesProps> = ({
   disabled = false,
+  onEditingStateChange,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
@@ -44,6 +47,12 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
   });
 
   const [deleteProfile, { isLoading: isDeleting }] = useDeleteAircraftPerformanceProfileMutation();
+
+  // Notify parent when editing state changes
+  useEffect(() => {
+    const isEditing = viewMode === 'create' || viewMode === 'edit';
+    onEditingStateChange?.(isEditing);
+  }, [viewMode, onEditingStateChange]);
 
   // Auto-select first profile if none selected
   useEffect(() => {
