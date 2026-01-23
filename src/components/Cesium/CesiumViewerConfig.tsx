@@ -18,6 +18,19 @@ import { getPointCallbacks, setSharedScreenHandler } from './pointEventRegistry'
 const HOVER_OVERLAY_NAME = '__hover_overlay__';
 
 /**
+ * Check if the viewer is valid and not destroyed
+ */
+function isViewerValid(viewer: ReturnType<typeof useCesium>['viewer']): boolean {
+  if (!viewer) return false;
+  try {
+    // Try to access a property - if viewer is destroyed, this will fail
+    return !viewer.isDestroyed();
+  } catch {
+    return false;
+  }
+}
+
+/**
  * CesiumViewerConfig component handles viewer-level configuration including:
  * - Disabling double-click zoom
  * - Polygon hover highlighting
@@ -28,7 +41,7 @@ export function CesiumViewerConfig() {
   const { viewer } = useCesium();
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || viewer.isDestroyed()) return;
 
     const canvas = viewer.scene.canvas;
     const handler = new ScreenSpaceEventHandler(canvas);
@@ -51,6 +64,9 @@ export function CesiumViewerConfig() {
 
     // Mouse move handler - handles both hover highlighting and drag
     handler.setInputAction((movement: ScreenSpaceEventHandler.MotionEvent) => {
+      // Safety check - exit early if viewer is destroyed
+      if (!isViewerValid(viewer)) return;
+
       const getEntityFromPick = (pick: unknown): Entity | null => {
         if (isEntity(pick)) return pick;
         if (hasId(pick)) {
@@ -61,6 +77,7 @@ export function CesiumViewerConfig() {
       };
 
       const drillForNonOverlay = (position: Cartesian2): Entity | null => {
+        if (!isViewerValid(viewer)) return null;
         const picks = viewer.scene.drillPick(position) as unknown[];
         for (const p of picks) {
           const ent = getEntityFromPick(p);
@@ -89,13 +106,15 @@ export function CesiumViewerConfig() {
 
       // Clear previous highlight if hovering different entity
       if (lastHighlighted && lastHighlighted !== entity) {
-        highlightOverlays.forEach((e) => viewer.entities.remove(e));
+        if (isViewerValid(viewer)) {
+          highlightOverlays.forEach((e) => viewer.entities.remove(e));
+        }
         highlightOverlays = [];
         lastHighlighted = null;
       }
 
       // Apply highlight to current polygon
-      if (polygon && entity) {
+      if (polygon && entity && isViewerValid(viewer)) {
         if (lastHighlighted !== entity) {
           lastHighlighted = entity;
 
@@ -157,7 +176,7 @@ export function CesiumViewerConfig() {
             // Handle holes in the polygon
             if (hierarchy.holes && hierarchy.holes.length > 0) {
               hierarchy.holes.forEach((hole) => {
-                if (hole.positions && hole.positions.length >= 2) {
+                if (hole.positions && hole.positions.length >= 2 && isViewerValid(viewer)) {
                   const holeOverlay = viewer.entities.add({
                     name: HOVER_OVERLAY_NAME,
                     corridor: new CorridorGraphics({
@@ -188,13 +207,15 @@ export function CesiumViewerConfig() {
         }
       } else if (!polygon && highlightOverlays.length > 0) {
         // Clear overlays when not hovering a polygon
-        highlightOverlays.forEach((e) => viewer.entities.remove(e));
+        if (isViewerValid(viewer)) {
+          highlightOverlays.forEach((e) => viewer.entities.remove(e));
+        }
         highlightOverlays = [];
         lastHighlighted = null;
       }
 
       // Handle point dragging
-      if (!isMouseDown || !activePointId) return;
+      if (!isMouseDown || !activePointId || !isViewerValid(viewer)) return;
       const dx = movement.endPosition.x - (downPos?.x ?? movement.endPosition.x);
       const dy = movement.endPosition.y - (downPos?.y ?? movement.endPosition.y);
       if (Math.sqrt(dx * dx + dy * dy) > dragThresholdPx) {
@@ -218,6 +239,9 @@ export function CesiumViewerConfig() {
 
     // Mouse down handler
     handler.setInputAction((movement: ScreenSpaceEventHandler.PositionedEvent) => {
+      // Safety check - exit early if viewer is destroyed
+      if (!isViewerValid(viewer)) return;
+
       const pickedUnknown: unknown = viewer.scene.pick(movement.position);
       const id =
         hasId(pickedUnknown) && isEntity((pickedUnknown as { id: unknown }).id)
@@ -237,6 +261,9 @@ export function CesiumViewerConfig() {
 
     // Mouse up handler
     handler.setInputAction((event: ScreenSpaceEventHandler.PositionedEvent) => {
+      // Safety check - exit early if viewer is destroyed
+      if (!isViewerValid(viewer)) return;
+
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableTranslate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
@@ -265,6 +292,9 @@ export function CesiumViewerConfig() {
 
     // Right click handler
     handler.setInputAction((event: ScreenSpaceEventHandler.PositionedEvent) => {
+      // Safety check - exit early if viewer is destroyed
+      if (!isViewerValid(viewer)) return;
+
       const pickedUnknown: unknown = viewer.scene.pick(event.position);
       const id =
         hasId(pickedUnknown) && isEntity((pickedUnknown as { id: unknown }).id)
@@ -277,9 +307,11 @@ export function CesiumViewerConfig() {
     }, ScreenSpaceEventType.RIGHT_CLICK);
 
     return () => {
-      handler.destroy();
+      if (!handler.isDestroyed()) {
+        handler.destroy();
+      }
       canvas.style.cursor = 'default';
-      if (highlightOverlays.length > 0) {
+      if (highlightOverlays.length > 0 && isViewerValid(viewer)) {
         highlightOverlays.forEach((e) => viewer.entities.remove(e));
       }
     };

@@ -10,7 +10,10 @@ export function useDisableDoubleClickZoom() {
   const { viewer } = useCesium();
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || viewer.isDestroyed()) return;
+
+    // Safety check for cesiumWidget
+    if (!viewer.cesiumWidget || viewer.cesiumWidget.isDestroyed()) return;
 
     // Disable double-click zoom
     viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
@@ -24,7 +27,9 @@ export function useDisableDoubleClickZoom() {
     }, ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
     return () => {
-      handler.destroy();
+      if (!handler.isDestroyed()) {
+        handler.destroy();
+      }
     };
   }, [viewer]);
 }
