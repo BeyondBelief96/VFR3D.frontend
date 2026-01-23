@@ -29,6 +29,7 @@ import { Airports, FlyTo } from '@/features/Airports';
 import { AirspaceComponent } from '@/features/Airspace';
 import { Pireps } from '@/features/Pireps';
 import { AirsigmetComponent } from '@/features/Airsigmets';
+import { RouteComponent, FlightPlanningDrawer } from '@/features/Flights';
 import { EntitySelectionManager } from '@/components/Popup';
 
 // Set the default access token for ArcGIS services
@@ -180,13 +181,15 @@ function ViewerContent() {
         <AirsigmetComponent />
         <FlyTo />
         
-        {/* Future phases will add:
-          - <RouteComponent />
-        */}
+        {/* Flight Planning */}
+        <RouteComponent />
       </ResiumViewer>
       
       {/* Entity Info Popups */}
       <EntitySelectionManager />
+      
+      {/* Flight Planning Drawer */}
+      <FlightPlanningDrawer />
     </Box>
   );
 }

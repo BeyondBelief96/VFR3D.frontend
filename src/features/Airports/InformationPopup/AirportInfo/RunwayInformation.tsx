@@ -112,7 +112,7 @@ const RunwayEndDetails: React.FC<{
           </Text>
         </Box>
       )}
-      {runwayEnd.elevation !== undefined && (
+      {runwayEnd.elevation !== undefined && runwayEnd.elevation !== null && (
         <Box ta="center">
           <Text size="xs" c="dimmed">
             Elev

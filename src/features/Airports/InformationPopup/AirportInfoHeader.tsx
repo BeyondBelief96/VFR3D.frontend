@@ -61,13 +61,13 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
   const hasAirportDiagram = airportDiagramUrl?.pdfUrl && !airportDiagramError;
   const hasDocuments = hasChartSupplement || hasAirportDiagram;
 
-  // Determine if density altitude is concerning
+  // Determine if density altitude is concerning - use bright colors for visibility on dark background
   const getDensityAltitudeColor = () => {
-    if (!densityAltitude?.densityAltitudeFt || !airport.elev) return 'dimmed';
+    if (!densityAltitude?.densityAltitudeFt || !airport.elev) return 'blue.1'; // Light blue for normal
     const difference = densityAltitude.densityAltitudeFt - airport.elev;
-    if (difference > 2000) return 'red';
-    if (difference > 1000) return 'yellow';
-    return 'dimmed';
+    if (difference > 2000) return 'red.4'; // Bright red for warning
+    if (difference > 1000) return 'yellow.4'; // Bright yellow for caution
+    return 'blue.1'; // Light blue for normal
   };
 
   return (
@@ -105,26 +105,26 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
             {airport.elev !== undefined && airport.elev !== null && (
               <>
                 <Text size="sm" c="blue.1">
-                  <Text span c="blue.3">Elev:</Text>{' '}
+                  <Text span c="blue.2">Elev:</Text>{' '}
                   <Text span fw={500}>{airport.elev.toLocaleString()} ft</Text>
                 </Text>
-                <Text size="sm" c="blue.3">•</Text>
+                <Text size="sm" c="blue.2">•</Text>
                 <Text size="sm" c="blue.1">
-                  <Text span c="blue.3">TPA:</Text>{' '}
+                  <Text span c="blue.2">TPA:</Text>{' '}
                   <Text span fw={500}>{calculatePatternAltitude(airport.elev)?.toLocaleString()} ft</Text>
                 </Text>
               </>
             )}
             {isDensityAltitudeLoading ? (
               <Group gap={4}>
-                <Loader size="xs" color="blue.2" />
-                <Text size="sm" c="blue.3">Loading DA...</Text>
+                <Loader size="xs" color="white" />
+                <Text size="sm" c="blue.1">Loading DA...</Text>
               </Group>
             ) : densityAltitude?.densityAltitudeFt && (
               <>
-                <Text size="sm" c="blue.3">•</Text>
+                <Text size="sm" c="blue.2">•</Text>
                 <Text size="sm" c={getDensityAltitudeColor()}>
-                  <Text span c="blue.3">DA:</Text>{' '}
+                  <Text span c="blue.2">DA:</Text>{' '}
                   <Text span fw={500}>{densityAltitude.densityAltitudeFt.toLocaleString()} ft</Text>
                 </Text>
               </>
@@ -158,15 +158,15 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
 
       {/* Document buttons */}
       {hasDocuments && (
-        <Group gap="xs" mt="md" pt="md" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <Group gap="xs" mt="md" pt="md" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
           {hasChartSupplement && (
             <Button
               component="a"
               href={chartSupplementUrl.pdfUrl}
               target="_blank"
               size="xs"
-              variant="light"
-              color="blue"
+              variant="white"
+              color="dark"
               leftSection={<FiExternalLink size={14} />}
             >
               Chart Supplement
@@ -178,8 +178,8 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
               href={airportDiagramUrl.pdfUrl}
               target="_blank"
               size="xs"
-              variant="light"
-              color="blue"
+              variant="white"
+              color="dark"
               leftSection={<FiExternalLink size={14} />}
             >
               Airport Diagram

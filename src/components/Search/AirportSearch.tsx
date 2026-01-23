@@ -5,16 +5,24 @@ import { FiSearch, FiMapPin } from 'react-icons/fi';
 import { useGetAirportsByPrefixQuery } from '@/redux/api/vfr3d/airports.api';
 import { useAppDispatch } from '@/hooks/reduxHooks';
 import { setSearchAirportQuery, triggerSearch } from '@/redux/slices/searchSlice';
+import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
+import { setSearchedAirportState } from '@/redux/slices/airportsSlice';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 
 interface AirportSearchProps {
   onAirportSelect?: (airport: AirportDto) => void;
   placeholder?: string;
+  /** If true, clears the input after selecting an airport (default: false for normal search, true for route building) */
+  clearOnSelect?: boolean;
+  /** If true, will set the selected entity and trigger fly-to (default: true when no onAirportSelect provided) */
+  setAsSelectedEntity?: boolean;
 }
 
 export function AirportSearch({
   onAirportSelect,
   placeholder = 'Search airports (ICAO, name, city)...',
+  clearOnSelect = false,
+  setAsSelectedEntity,
 }: AirportSearchProps) {
   const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
@@ -24,10 +32,19 @@ export function AirportSearch({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+
+  // Default: set as selected entity if no custom handler is provided
+  const shouldSetAsSelectedEntity = setAsSelectedEntity ?? !onAirportSelect;
 
   const { data: airports, isLoading, isFetching } = useGetAirportsByPrefixQuery(debouncedQuery, {
     skip: debouncedQuery.length < 2,
   });
+
+  // Reset highlighted index when results change
+  useEffect(() => {
+    setHighlightedIndex(0);
+  }, [airports]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -63,22 +80,71 @@ export function AirportSearch({
     setShowDropdown(true);
   };
 
-  const handleAirportClick = (airport: AirportDto) => {
+  const selectAirport = (airport: AirportDto) => {
     const identifier = airport.icaoId || airport.arptId || '';
-    setQuery(identifier);
+    
+    // Clear or set query based on clearOnSelect
+    if (clearOnSelect) {
+      setQuery('');
+    } else {
+      setQuery(identifier);
+    }
+    
     setShowDropdown(false);
     dispatch(setSearchAirportQuery(identifier));
     dispatch(triggerSearch());
+    
+    // Set the searched airport's state to show all airports in that state
+    if (shouldSetAsSelectedEntity && airport.stateCode) {
+      dispatch(setSearchedAirportState(airport.stateCode));
+    }
+    
+    // Set as selected entity if configured (for fly-to functionality)
+    if (shouldSetAsSelectedEntity) {
+      dispatch(setSelectedEntity({ entity: airport, type: 'Airport' }));
+    }
+    
+    // Call custom handler if provided
     onAirportSelect?.(airport);
   };
 
+  const handleAirportClick = (airport: AirportDto) => {
+    selectAirport(airport);
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    const displayedAirports = airports?.slice(0, 8) || [];
+    
     if (event.key === 'Escape') {
       setShowDropdown(false);
+      return;
     }
-    if (event.key === 'Enter' && query.length >= 2) {
-      dispatch(triggerSearch());
-      setShowDropdown(false);
+    
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setHighlightedIndex((prev) => 
+        Math.min(prev + 1, displayedAirports.length - 1)
+      );
+      return;
+    }
+    
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+      return;
+    }
+    
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (displayedAirports.length > 0) {
+        // Select the highlighted airport
+        selectAirport(displayedAirports[highlightedIndex]);
+      } else if (query.length >= 2) {
+        // No results but query exists - just trigger search
+        dispatch(triggerSearch());
+        setShowDropdown(false);
+      }
+      return;
     }
   };
 
@@ -136,19 +202,21 @@ export function AirportSearch({
             </Group>
           ) : displayedAirports.length > 0 ? (
             <Stack gap={0}>
-              {displayedAirports.map((airport) => (
+              {displayedAirports.map((airport, index) => (
                 <UnstyledButton
                   key={airport.siteNo}
                   onClick={() => handleAirportClick(airport)}
+                  onMouseEnter={() => setHighlightedIndex(index)}
                   style={{
                     padding: '10px 12px',
                     borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
                     transition: 'background-color 150ms',
+                    backgroundColor: index === highlightedIndex ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
                   }}
                   styles={{
                     root: {
                       '&:hover': {
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.15)',
                       },
                     },
                   }}

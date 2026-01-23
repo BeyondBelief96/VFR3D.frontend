@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FlightDisplayMode } from '@/utility/enums';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
-import { fetchAirportByCode } from '../thunks/airports';
-import { NavlogResponseDto, WaypointDto, WaypointType } from '../api/vfr3d/dtos';
+import { fetchAirportByCode } from '@/redux/thunks/airports';
+import { NavlogResponseDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 
 // Types
 interface FlightPlan {

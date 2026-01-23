@@ -12,19 +12,13 @@ export function AirportOptions() {
   const { showAirportsForSelectedState, showCloudBases, selectedStateToShowAirports } =
     useAppSelector((state) => state.airport);
 
-  const stateOptions = [
-    { value: '', label: 'All States' },
-    ...states.map((state) => ({ value: state, label: state })),
-  ];
+  const stateOptions = states.map((state) => ({ value: state, label: state }));
 
   const handleStateChange = (value: string | null) => {
     const selectedValue = value || '';
     dispatch(setSelectedState(selectedValue));
-    if (selectedValue === '') {
-      dispatch(setShowSelectedStateAirports(false));
-    } else {
-      dispatch(setShowSelectedStateAirports(true));
-    }
+    // Automatically enable showing airports when a state is selected
+    dispatch(setShowSelectedStateAirports(selectedValue !== ''));
   };
 
   return (
@@ -35,11 +29,11 @@ export function AirportOptions() {
         </Text>
         <Select
           data={stateOptions}
-          value={selectedStateToShowAirports || ''}
+          value={selectedStateToShowAirports || null}
           onChange={handleStateChange}
           searchable
           clearable
-          placeholder="All States"
+          placeholder="Select a state..."
           styles={{
             input: {
               backgroundColor: 'rgba(15, 23, 42, 0.8)',
@@ -81,7 +75,8 @@ export function AirportOptions() {
       </Stack>
 
       <Text size="xs" c="dimmed">
-        Cloud bases are shown when METAR data is available for airports
+        Cloud bases show ceiling info when METAR data is available.
+        Searching for an airport will also show all airports in that state.
       </Text>
     </Stack>
   );

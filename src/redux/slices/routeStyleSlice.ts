@@ -6,7 +6,7 @@ interface RouteStylesState {
 }
 
 const initialState: RouteStylesState = {
-  lineColor: 'rgba(0, 255, 255, 1)', // Aqua
+  lineColor: 'rgba(0, 255, 255, 1)', // Aqua/Cyan
   pointColor: 'rgba(255, 0, 255, 1)', // Magenta
 };
 

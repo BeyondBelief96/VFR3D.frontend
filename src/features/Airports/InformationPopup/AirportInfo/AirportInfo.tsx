@@ -23,9 +23,37 @@ const InfoItem: React.FC<{ label: string; value: string | number | null | undefi
   );
 };
 
+const accordionStyles = {
+  item: {
+    backgroundColor: 'rgba(45, 50, 60, 0.8)',
+    border: '1px solid rgba(148, 163, 184, 0.25)',
+    borderRadius: '8px',
+    marginBottom: '8px',
+    '&[data-active]': {
+      backgroundColor: 'rgba(45, 50, 60, 0.9)',
+    },
+  },
+  control: {
+    backgroundColor: 'rgba(55, 60, 72, 0.6)',
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: 'rgba(65, 70, 85, 0.7)',
+    },
+    '&[data-active]': {
+      borderRadius: '8px 8px 0 0',
+    },
+  },
+  chevron: {
+    color: 'rgba(148, 163, 184, 0.8)',
+  },
+  panel: {
+    backgroundColor: 'transparent',
+  },
+};
+
 const AirportInfo: React.FC<AirportInfoProps> = ({ airport }) => {
   return (
-    <Accordion defaultValue={['general', 'location']} multiple variant="separated">
+    <Accordion defaultValue={['general', 'location']} multiple variant="separated" styles={accordionStyles}>
       {/* General Information */}
       <Accordion.Item value="general">
         <Accordion.Control>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AirportInfoPopup } from '@/features/Airports/InformationPopup';
-import { AirportDto, AirsigmetDto, AirspaceDto, PirepDto, SpecialUseAirspaceDto } from '@/redux/api/vfr3d/dtos';
+import { WaypointInfoPopup } from '@/features/Flights';
+import { AirportDto, AirsigmetDto, AirspaceDto, PirepDto, SpecialUseAirspaceDto, WaypointDto } from '@/redux/api/vfr3d/dtos';
 import type { RootState } from '@/redux/store';
 import { Paper, Stack, Text, Badge, Group, ActionIcon, Box, Code, ScrollArea } from '@mantine/core';
 import { FiX } from 'react-icons/fi';
@@ -317,6 +318,8 @@ const EntitySelectionManager: React.FC = () => {
       return <PirepInfoPopup pirep={selectedEntity as PirepDto} />;
     case 'Airsigmet':
       return <AirsigmetInfoPopup airsigmet={selectedEntity as AirsigmetDto} />;
+    case 'Waypoint':
+      return <WaypointInfoPopup selectedWaypoint={selectedEntity as WaypointDto} />;
     default:
       return null;
   }
