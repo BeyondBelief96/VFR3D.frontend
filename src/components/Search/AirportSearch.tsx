@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { TextInput, Paper, Stack, Text, Group, Badge, Box, Loader, UnstyledButton } from '@mantine/core';
+import { TextInput, Paper, Stack, Text, Group, Badge, Box, Loader, UnstyledButton, Portal } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { FiSearch, FiMapPin } from 'react-icons/fi';
 import { useGetAirportsByPrefixQuery } from '@/redux/api/vfr3d/airports.api';
@@ -22,6 +22,8 @@ export function AirportSearch({
   const [showDropdown, setShowDropdown] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
 
   const { data: airports, isLoading, isFetching } = useGetAirportsByPrefixQuery(debouncedQuery, {
     skip: debouncedQuery.length < 2,
@@ -42,6 +44,18 @@ export function AirportSearch({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Update dropdown position when showing
+  useEffect(() => {
+    if (showDropdown && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+  }, [showDropdown, query]);
 
   const handleInputChange = (value: string) => {
     setQuery(value);
@@ -71,7 +85,7 @@ export function AirportSearch({
   const displayedAirports = airports?.slice(0, 8) || [];
 
   return (
-    <Box style={{ position: 'relative' }}>
+    <Box ref={containerRef} style={{ position: 'relative' }}>
       <TextInput
         ref={inputRef}
         value={query}
@@ -97,22 +111,22 @@ export function AirportSearch({
       />
 
       {showDropdown && debouncedQuery.length >= 2 && (
-        <Paper
-          ref={dropdownRef}
-          shadow="lg"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            marginTop: 4,
-            backgroundColor: 'var(--vfr3d-surface)',
-            border: '1px solid rgba(148, 163, 184, 0.2)',
-            maxHeight: 400,
-            overflow: 'auto',
-          }}
-        >
+        <Portal>
+          <Paper
+            ref={dropdownRef}
+            shadow="lg"
+            style={{
+              position: 'fixed',
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
+              width: dropdownPosition.width,
+              zIndex: 10000,
+              backgroundColor: 'var(--vfr3d-surface)',
+              border: '1px solid rgba(148, 163, 184, 0.2)',
+              maxHeight: 400,
+              overflow: 'auto',
+            }}
+          >
           {isLoading ? (
             <Group justify="center" p="md">
               <Loader size="sm" />
@@ -175,7 +189,8 @@ export function AirportSearch({
               No airports found for "{debouncedQuery}"
             </Text>
           )}
-        </Paper>
+          </Paper>
+        </Portal>
       )}
     </Box>
   );

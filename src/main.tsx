@@ -75,26 +75,26 @@ const theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-      useRefreshTokens={true}
-      cacheLocation="localstorage"
-      authorizationParams={{
-        redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
-        audience: import.meta.env.VITE_AUTH0_VFR3D_API_AUDIENCE,
-      }}
-    >
-      <Provider store={store}>
-        <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-          <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider theme={theme} defaultColorScheme="dark">
+      <Auth0Provider
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
+        authorizationParams={{
+          redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
+          audience: import.meta.env.VITE_AUTH0_VFR3D_API_AUDIENCE,
+        }}
+      >
+        <Provider store={store}>
+          <PersistGate loading={<LoadingScreen />} persistor={persistor}>
             <Notifications position="top-right" />
             <AuthProvider>
               <RouterProvider router={router} />
             </AuthProvider>
-          </MantineProvider>
-        </PersistGate>
-      </Provider>
-    </Auth0Provider>
+          </PersistGate>
+        </Provider>
+      </Auth0Provider>
+    </MantineProvider>
   </React.StrictMode>
 );
