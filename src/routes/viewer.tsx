@@ -1,37 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Box, Center, Loader, Text } from '@mantine/core';
-import { useAuth0 } from '@auth0/auth0-react';
+import { Box, Center, Text } from '@mantine/core';
+import { ProtectedRoute } from '@/components/Auth';
 
 export const Route = createFileRoute('/viewer')({
   component: ViewerPage,
 });
 
 function ViewerPage() {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  return (
+    <ProtectedRoute>
+      <ViewerContent />
+    </ProtectedRoute>
+  );
+}
 
-  if (isLoading) {
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Loader size="xl" color="blue" />
-      </Center>
-    );
-  }
-
-  if (!isAuthenticated) {
-    loginWithRedirect();
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Text c="white">Redirecting to login...</Text>
-      </Center>
-    );
-  }
-
+function ViewerContent() {
   return (
     <Box
       style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
+        height: 'calc(100vh - 60px)',
         overflow: 'hidden',
         backgroundColor: 'var(--vfr3d-background)',
       }}

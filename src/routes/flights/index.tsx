@@ -1,43 +1,35 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Container, Title, Text, Center, Loader, Stack, Card, Group, Button } from '@mantine/core';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useGetFlightsQuery } from '@/redux/api/vfr3d/flights.api';
+import { Container, Title, Text, Stack, Card, Group, Button, Center, Loader } from '@mantine/core';
 import { FiPlus } from 'react-icons/fi';
+import { ProtectedRoute } from '@/components/Auth';
+import { useAuth } from '@/components/Auth';
+import { useGetFlightsQuery } from '@/redux/api/vfr3d/flights.api';
 
 export const Route = createFileRoute('/flights/')({
   component: FlightsPage,
 });
 
 function FlightsPage() {
-  const { user, isAuthenticated, isLoading: authLoading, loginWithRedirect } = useAuth0();
+  return (
+    <ProtectedRoute>
+      <FlightsContent />
+    </ProtectedRoute>
+  );
+}
+
+function FlightsContent() {
+  const { user } = useAuth();
   const userId = user?.sub || '';
 
   const { data: flights, isLoading, isError } = useGetFlightsQuery(userId, {
     skip: !userId,
   });
 
-  if (authLoading) {
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Loader size="xl" color="blue" />
-      </Center>
-    );
-  }
-
-  if (!isAuthenticated) {
-    loginWithRedirect();
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Text c="white">Redirecting to login...</Text>
-      </Center>
-    );
-  }
-
   return (
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: '100vh', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">

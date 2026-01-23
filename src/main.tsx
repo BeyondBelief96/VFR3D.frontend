@@ -10,6 +10,8 @@ import { Ion } from 'cesium';
 
 import { store, persistor } from './redux/store';
 import { routeTree } from './routeTree.gen';
+import { AuthProvider } from './components/Auth';
+import { LoadingScreen } from './components/Common';
 import './index.css';
 
 // Set Cesium Ion access token
@@ -71,40 +73,6 @@ const theme = createTheme({
   },
 });
 
-// Loading component for PersistGate
-const LoadingView = () => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      backgroundColor: '#0f172a',
-      color: '#f1f5f9',
-    }}
-  >
-    <div style={{ textAlign: 'center' }}>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          border: '4px solid #3b82f6',
-          borderTopColor: 'transparent',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          margin: '0 auto 16px',
-        }}
-      />
-      <p>Loading VFR3D...</p>
-    </div>
-    <style>{`
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    `}</style>
-  </div>
-);
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Auth0Provider
@@ -118,10 +86,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       }}
     >
       <Provider store={store}>
-        <PersistGate loading={<LoadingView />} persistor={persistor}>
+        <PersistGate loading={<LoadingScreen />} persistor={persistor}>
           <MantineProvider theme={theme} defaultColorScheme="dark">
             <Notifications position="top-right" />
-            <RouterProvider router={router} />
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
           </MantineProvider>
         </PersistGate>
       </Provider>

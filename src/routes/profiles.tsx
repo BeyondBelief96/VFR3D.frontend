@@ -11,44 +11,36 @@ import {
   Button,
   Badge,
 } from '@mantine/core';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useGetAircraftPerformanceProfilesQuery } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { FiPlus } from 'react-icons/fi';
+import { ProtectedRoute } from '@/components/Auth';
+import { useAuth } from '@/components/Auth';
+import { useGetAircraftPerformanceProfilesQuery } from '@/redux/api/vfr3d/performanceProfiles.api';
 
 export const Route = createFileRoute('/profiles')({
   component: AircraftProfilesPage,
 });
 
 function AircraftProfilesPage() {
-  const { user, isAuthenticated, isLoading: authLoading, loginWithRedirect } = useAuth0();
+  return (
+    <ProtectedRoute>
+      <ProfilesContent />
+    </ProtectedRoute>
+  );
+}
+
+function ProfilesContent() {
+  const { user } = useAuth();
   const userId = user?.sub || '';
 
   const { data: profiles, isLoading, isError } = useGetAircraftPerformanceProfilesQuery(userId, {
     skip: !userId,
   });
 
-  if (authLoading) {
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Loader size="xl" color="blue" />
-      </Center>
-    );
-  }
-
-  if (!isAuthenticated) {
-    loginWithRedirect();
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Text c="white">Redirecting to login...</Text>
-      </Center>
-    );
-  }
-
   return (
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: '100vh', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">

@@ -11,17 +11,26 @@ import {
   Button,
   Tabs,
 } from '@mantine/core';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { FiArrowLeft, FiMap } from 'react-icons/fi';
+import { ProtectedRoute } from '@/components/Auth';
+import { useAuth } from '@/components/Auth';
+import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 
 export const Route = createFileRoute('/flights/$flightId')({
   component: FlightDetailsPage,
 });
 
 function FlightDetailsPage() {
+  return (
+    <ProtectedRoute>
+      <FlightDetailsContent />
+    </ProtectedRoute>
+  );
+}
+
+function FlightDetailsContent() {
   const { flightId } = Route.useParams();
-  const { user, isAuthenticated, isLoading: authLoading, loginWithRedirect } = useAuth0();
+  const { user } = useAuth();
   const userId = user?.sub || '';
 
   const {
@@ -35,26 +44,9 @@ function FlightDetailsPage() {
     }
   );
 
-  if (authLoading) {
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Loader size="xl" color="blue" />
-      </Center>
-    );
-  }
-
-  if (!isAuthenticated) {
-    loginWithRedirect();
-    return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
-        <Text c="white">Redirecting to login...</Text>
-      </Center>
-    );
-  }
-
   if (isLoading) {
     return (
-      <Center h="100vh" bg="var(--vfr3d-background)">
+      <Center h="calc(100vh - 60px)" bg="var(--vfr3d-background)">
         <Loader size="xl" color="blue" />
       </Center>
     );
@@ -65,7 +57,7 @@ function FlightDetailsPage() {
       <Container
         size="lg"
         py="xl"
-        style={{ minHeight: '100vh', backgroundColor: 'var(--vfr3d-background)' }}
+        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
       >
         <Card bg="red.9" p="md">
           <Text c="white">Error loading flight. Please try again.</Text>
@@ -78,7 +70,7 @@ function FlightDetailsPage() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: '100vh', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">
