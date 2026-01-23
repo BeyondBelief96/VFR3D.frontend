@@ -1,20 +1,29 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { AppShell, Box } from '@mantine/core';
+import { AppLayout } from '@/components/Layout/AppLayout';
+import { ErrorBoundary } from '@/components/Layout/ErrorBoundary';
 
 export const Route = createRootRoute({
   component: RootLayout,
+  errorComponent: RouteErrorComponent,
 });
 
 function RootLayout() {
   return (
-    <>
-      <AppShell>
-        <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Outlet />
-        </Box>
-      </AppShell>
-      {import.meta.env.DEV && <TanStackRouterDevtools />}
-    </>
+    <ErrorBoundary>
+      <AppLayout />
+      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
+    </ErrorBoundary>
+  );
+}
+
+function RouteErrorComponent({ error }: { error: Error }) {
+  return (
+    <ErrorBoundary>
+      <div style={{ padding: 20 }}>
+        <h1>Route Error</h1>
+        <pre>{error.message}</pre>
+      </div>
+    </ErrorBoundary>
   );
 }
