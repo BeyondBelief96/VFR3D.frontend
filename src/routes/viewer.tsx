@@ -29,6 +29,7 @@ import { Airports, FlyTo } from '@/features/Airports';
 import { AirspaceComponent } from '@/features/Airspace';
 import { Pireps } from '@/features/Pireps';
 import { AirsigmetComponent } from '@/features/Airsigmets';
+import { EntitySelectionManager } from '@/components/Popup';
 
 // Set the default access token for ArcGIS services
 ArcGisMapService.defaultAccessToken = import.meta.env.VITE_ARCGIS_API_KEY;
@@ -183,6 +184,9 @@ function ViewerContent() {
           - <RouteComponent />
         */}
       </ResiumViewer>
+      
+      {/* Entity Info Popups */}
+      <EntitySelectionManager />
     </Box>
   );
 }
