@@ -38,14 +38,6 @@ export function MapOptions() {
               backgroundColor: 'var(--vfr3d-surface)',
               borderColor: 'rgba(148, 163, 184, 0.2)',
             },
-            option: {
-              '&[data-selected]': {
-                backgroundColor: 'var(--vfr3d-primary)',
-              },
-              '&:hover': {
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-              },
-            },
           }}
         />
       </Box>

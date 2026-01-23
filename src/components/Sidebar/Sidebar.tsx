@@ -32,14 +32,9 @@ export function Sidebar() {
             item: {
               backgroundColor: 'rgba(30, 41, 59, 0.5)',
               border: '1px solid rgba(148, 163, 184, 0.1)',
-              '&[data-active]': {
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              },
             },
             control: {
-              '&:hover': {
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              },
+              backgroundColor: 'transparent',
             },
             label: {
               color: 'white',
