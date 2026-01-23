@@ -8,7 +8,7 @@ import {
   SpecialUseAirspaceTypeCode,
 } from '@/redux/slices/airspacesSlice';
 
-const airspaceClasses: AirspaceClass[] = ['B', 'C', 'D', 'E'];
+const airspaceClasses: AirspaceClass[] = ['B', 'C', 'D'];
 
 const specialUseAirspaceTypeCodes: { code: SpecialUseAirspaceTypeCode; label: string }[] = [
   { code: 'MOA', label: 'MOA' },

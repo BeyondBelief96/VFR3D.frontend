@@ -24,6 +24,12 @@ import {
   ARCIS_OPEN_STREET_MAPS_VIEWMODEL_IMAGE_URL,
 } from '@/utility/constants';
 
+// Import map features
+import { Airports, FlyTo } from '@/features/Airports';
+import { AirspaceComponent } from '@/features/Airspace';
+import { Pireps } from '@/features/Pireps';
+import { AirsigmetComponent } from '@/features/Airsigmets';
+
 // Set the default access token for ArcGIS services
 ArcGisMapService.defaultAccessToken = import.meta.env.VITE_ARCGIS_API_KEY;
 
@@ -165,13 +171,16 @@ function ViewerContent() {
         <Globe maximumScreenSpaceError={screenSpaceError} />
         <ImageryLayers />
         <CameraControls />
+        
+        {/* Map Features */}
+        <Airports />
+        <AirspaceComponent />
+        <Pireps />
+        <AirsigmetComponent />
+        <FlyTo />
+        
         {/* Future phases will add:
-          - <Airports />
-          - <Pireps />
           - <RouteComponent />
-          - <AirspaceComponent />
-          - <AirsigmetComponent />
-          - <FlyTo />
         */}
       </ResiumViewer>
     </Box>
