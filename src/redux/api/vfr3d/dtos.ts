@@ -444,6 +444,7 @@ export interface FlightDto {
   stateCodesAlongRoute?: string[];
   airspaceGlobalIds?: string[];
   specialUseAirspaceGlobalIds?: string[];
+  obstacleOasNumbers?: string[];
   aircraftPerformanceProfile?: AircraftPerformanceProfileDto | undefined;
   relatedFlightId?: string | undefined;
 }
@@ -559,6 +560,7 @@ export interface NavlogResponseDto {
   legs?: NavigationLegDto[];
   airspaceGlobalIds?: string[];
   specialUseAirspaceGlobalIds?: string[];
+  obstacleOasNumbers?: string[];
 }
 
 export interface NavlogRequestDto {

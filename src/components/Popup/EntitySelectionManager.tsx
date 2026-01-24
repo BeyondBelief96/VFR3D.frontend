@@ -2,9 +2,19 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AirportInfoPopup } from '@/features/Airports/InformationPopup';
 import { WaypointInfoPopup } from '@/features/Flights';
-import { AirportDto, AirsigmetDto, AirspaceDto, PirepDto, SpecialUseAirspaceDto, WaypointDto } from '@/redux/api/vfr3d/dtos';
+import {
+  AirportDto,
+  AirsigmetDto,
+  AirspaceDto,
+  ObstacleDto,
+  ObstacleLighting,
+  ObstacleMarking,
+  PirepDto,
+  SpecialUseAirspaceDto,
+  WaypointDto,
+} from '@/redux/api/vfr3d/dtos';
 import type { RootState } from '@/redux/store';
-import { Paper, Stack, Text, Badge, Group, ActionIcon, Box, Code, ScrollArea } from '@mantine/core';
+import { Paper, Stack, Text, Badge, Group, ActionIcon, Box, Code, ScrollArea, Divider } from '@mantine/core';
 import { FiX } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -212,6 +222,183 @@ const PirepInfoPopup: React.FC<{ pirep: PirepDto }> = ({ pirep }) => {
   );
 };
 
+// Helper functions for obstacle display
+const formatLighting = (lighting?: ObstacleLighting): string => {
+  if (!lighting || lighting === ObstacleLighting.Unknown) return 'Unknown';
+  switch (lighting) {
+    case ObstacleLighting.Red:
+      return 'Red';
+    case ObstacleLighting.DualMediumWhiteStrobeRed:
+      return 'Dual Medium White/Red Strobe';
+    case ObstacleLighting.HighIntensityWhiteStrobeRed:
+      return 'High Intensity White/Red Strobe';
+    case ObstacleLighting.MediumIntensityWhiteStrobe:
+      return 'Medium Intensity White Strobe';
+    case ObstacleLighting.HighIntensityWhiteStrobe:
+      return 'High Intensity White Strobe';
+    case ObstacleLighting.Flood:
+      return 'Flood';
+    case ObstacleLighting.DualMediumCatenary:
+      return 'Dual Medium Catenary';
+    case ObstacleLighting.SynchronizedRedLighting:
+      return 'Synchronized Red';
+    case ObstacleLighting.Lighted:
+      return 'Lighted';
+    case ObstacleLighting.None:
+      return 'None';
+    default:
+      return String(lighting);
+  }
+};
+
+const formatMarking = (marking?: ObstacleMarking): string => {
+  if (!marking || marking === ObstacleMarking.Unknown) return 'Unknown';
+  switch (marking) {
+    case ObstacleMarking.OrangeOrOrangeWhitePaint:
+      return 'Orange/White Paint';
+    case ObstacleMarking.WhitePaintOnly:
+      return 'White Paint';
+    case ObstacleMarking.Marked:
+      return 'Marked';
+    case ObstacleMarking.FlagMarker:
+      return 'Flag Marker';
+    case ObstacleMarking.SphericalMarker:
+      return 'Spherical Marker';
+    case ObstacleMarking.None:
+      return 'None';
+    default:
+      return String(marking);
+  }
+};
+
+// Simple popup for Obstacle
+const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) => {
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    dispatch(setSelectedEntity({ entity: null, type: null }));
+  };
+
+  const isLit =
+    obstacle.lighting !== undefined &&
+    obstacle.lighting !== ObstacleLighting.None &&
+    obstacle.lighting !== ObstacleLighting.Unknown;
+
+  return (
+    <Paper
+      shadow="xl"
+      radius="md"
+      p="md"
+      style={{
+        position: 'fixed',
+        top: 70,
+        right: 16,
+        width: 380,
+        maxWidth: 'calc(100vw - 32px)',
+        maxHeight: 'calc(100vh - 100px)',
+        backgroundColor: 'rgba(37, 38, 43, 0.95)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        pointerEvents: 'auto',
+        zIndex: 1000,
+      }}
+    >
+      <Group justify="space-between" mb="md">
+        <Group gap="xs">
+          <Badge color="red">Obstacle</Badge>
+          {isLit && (
+            <Badge color="yellow" variant="outline">
+              Lit
+            </Badge>
+          )}
+        </Group>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose}>
+          <FiX size={18} />
+        </ActionIcon>
+      </Group>
+
+      <ScrollArea mah={400}>
+        <Stack gap="xs">
+          {/* Type and Location */}
+          {obstacle.obstacleType && (
+            <Text size="sm">
+              <Text span c="dimmed">Type: </Text>
+              <Text span fw={500}>{obstacle.obstacleType}</Text>
+            </Text>
+          )}
+
+          {obstacle.cityName && (
+            <Text size="sm">
+              <Text span c="dimmed">Location: </Text>
+              {obstacle.cityName}, {obstacle.stateId}
+            </Text>
+          )}
+
+          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+
+          {/* Height Information */}
+          <Text size="sm" fw={500} c="white">Height</Text>
+
+          {obstacle.heightAgl !== undefined && (
+            <Text size="sm">
+              <Text span c="dimmed">AGL: </Text>
+              <Text span fw={500} c="orange">{obstacle.heightAgl.toLocaleString()} ft</Text>
+            </Text>
+          )}
+
+          {obstacle.heightAmsl !== undefined && (
+            <Text size="sm">
+              <Text span c="dimmed">MSL: </Text>
+              {obstacle.heightAmsl.toLocaleString()} ft
+            </Text>
+          )}
+
+          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+
+          {/* Lighting and Marking */}
+          <Text size="sm" fw={500} c="white">Markings & Lighting</Text>
+
+          <Text size="sm">
+            <Text span c="dimmed">Lighting: </Text>
+            {formatLighting(obstacle.lighting)}
+          </Text>
+
+          <Text size="sm">
+            <Text span c="dimmed">Marking: </Text>
+            {formatMarking(obstacle.marking)}
+          </Text>
+
+          {obstacle.quantity && obstacle.quantity > 1 && (
+            <Text size="sm">
+              <Text span c="dimmed">Quantity: </Text>
+              {obstacle.quantity}
+            </Text>
+          )}
+
+          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+
+          {/* Coordinates */}
+          <Text size="sm" fw={500} c="white">Position</Text>
+
+          {obstacle.latitude !== undefined && obstacle.longitude !== undefined && (
+            <Text size="sm">
+              <Text span c="dimmed">Coordinates: </Text>
+              {obstacle.latitude.toFixed(5)}, {obstacle.longitude.toFixed(5)}
+            </Text>
+          )}
+
+          {/* OAS Number */}
+          {obstacle.oasNumber && (
+            <Text size="xs" c="dimmed" mt="xs">
+              OAS Number: {obstacle.oasNumber}
+            </Text>
+          )}
+        </Stack>
+      </ScrollArea>
+    </Paper>
+  );
+};
+
 // Simple popup for AIRMET/SIGMET
 const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }) => {
   const dispatch = useDispatch();
@@ -320,6 +507,8 @@ const EntitySelectionManager: React.FC = () => {
       return <AirsigmetInfoPopup airsigmet={selectedEntity as AirsigmetDto} />;
     case 'Waypoint':
       return <WaypointInfoPopup selectedWaypoint={selectedEntity as WaypointDto} />;
+    case 'Obstacle':
+      return <ObstacleInfoPopup obstacle={selectedEntity as ObstacleDto} />;
     default:
       return null;
   }

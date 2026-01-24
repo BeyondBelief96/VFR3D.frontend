@@ -2,12 +2,14 @@ import { Stack, ScrollArea, Text, Box } from '@mantine/core';
 import { Accordion } from '@mantine/core';
 import { FiMap, FiNavigation, FiCloud, FiLayers, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlaneArrival } from 'react-icons/fa';
+import { GiRadioTower } from 'react-icons/gi';
 import MapOptions from './MapOptions';
 import RouteOptions from './RouteOptions';
 import AirportOptions from './AirportOptions';
 import AirspaceOptions from './AirspaceOptions';
 import PirepOptions from './PirepOptions';
 import AirsigmetOptions from './AirsigmetOptions';
+import ObstacleOptions from './ObstacleOptions';
 
 export function Sidebar() {
   return (
@@ -99,6 +101,15 @@ export function Sidebar() {
             </Accordion.Control>
             <Accordion.Panel>
               <AirsigmetOptions />
+            </Accordion.Panel>
+          </Accordion.Item>
+
+          <Accordion.Item value="obstacles">
+            <Accordion.Control icon={<GiRadioTower size={18} color="#ef4444" />}>
+              Obstacles
+            </Accordion.Control>
+            <Accordion.Panel>
+              <ObstacleOptions />
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>

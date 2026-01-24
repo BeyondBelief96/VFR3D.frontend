@@ -3,6 +3,7 @@ import simplify from 'simplify-js';
 import {
   AirportDto,
   AirspaceDto,
+  ObstacleDto,
   PirepDto,
   SpecialUseAirspaceDto,
   WaypointDto,
@@ -194,4 +195,27 @@ export const simplifyPolygon = (coordinates: number[][], tolerance: number): num
   const points = coordinates.map(([x, y]) => ({ x, y }));
   const simplified = simplify(points, tolerance, false);
   return simplified.map(({ x, y }) => [x, y]);
+};
+
+/**
+ * Maps an obstacle to a Cartesian3 positioned at ground level.
+ * The cylinder will extend upward from this position.
+ * @param obstacle Obstacle to map.
+ * @returns Cartesian3 or null.
+ */
+export const mapObstacleToCartesian3 = (obstacle: ObstacleDto): Cartesian3 | null => {
+  if (!obstacle.latitude || !obstacle.longitude) return null;
+  // Position at ground level - the cylinder extends upward from here
+  return Cartesian3.fromDegrees(obstacle.longitude, obstacle.latitude);
+};
+
+/**
+ * Gets the height of an obstacle in meters.
+ * @param obstacle The obstacle DTO.
+ * @param useAgl Whether to use AGL (true) or MSL (false) height.
+ * @returns Height in meters.
+ */
+export const getObstacleHeightMeters = (obstacle: ObstacleDto, useAgl: boolean = true): number => {
+  const heightFeet = useAgl ? (obstacle.heightAgl ?? 0) : (obstacle.heightAmsl ?? 0);
+  return heightFeet * FEET_TO_METERS;
 };

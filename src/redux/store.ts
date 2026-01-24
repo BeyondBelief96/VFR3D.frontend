@@ -23,6 +23,7 @@ import searchReducer from './slices/searchSlice';
 import pirepsReducer from './slices/pirepsSlice';
 import airsigmetsReducer from './slices/airsigmetsSlice';
 import flightPlanningReducer from './slices/flightPlanningSlice';
+import obstaclesReducer from './slices/obstaclesSlice';
 
 // Combine all reducers
 const rootReducer = combineReducers({
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   pireps: pirepsReducer,
   airsigmet: airsigmetsReducer,
   flightPlanning: flightPlanningReducer,
+  obstacles: obstaclesReducer,
 });
 
 // Persist configuration

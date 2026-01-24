@@ -2,6 +2,7 @@ import {
   AirportDto,
   AirsigmetDto,
   AirspaceDto,
+  ObstacleDto,
   PirepDto,
   SpecialUseAirspaceDto,
   WaypointDto,
@@ -14,6 +15,7 @@ export type SelectedEntityType =
   | AirspaceDto
   | SpecialUseAirspaceDto
   | WaypointDto
+  | ObstacleDto
   | null;
 
 export type SelectableEntities =
@@ -23,6 +25,7 @@ export type SelectableEntities =
   | 'Airspace'
   | 'SpecialUseAirspace'
   | 'Waypoint'
+  | 'Obstacle'
   | null;
 
 export interface ImageryProduct {
