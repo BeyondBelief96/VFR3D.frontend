@@ -78,8 +78,8 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
-      <Group justify="space-between" align="flex-start">
-        <Stack gap={4} style={{ flex: 1 }}>
+      <Group justify="space-between" align="flex-start" wrap="nowrap">
+        <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
           <Group gap="xs">
             <Text size="xs" c="blue.2" tt="uppercase" fw={500}>
               Airport
@@ -150,7 +150,7 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
           variant="subtle"
           color="gray"
           onClick={handleClose}
-          style={{ color: 'white' }}
+          style={{ color: 'white', flexShrink: 0 }}
         >
           <FiX size={20} />
         </ActionIcon>

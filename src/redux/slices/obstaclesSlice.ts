@@ -4,12 +4,18 @@ interface ObstaclesState {
   showObstacles: boolean;
   selectedState: string;
   minHeightFilter: number;
+  showRouteObstacles: boolean;
+  heightExaggeration: number;
+  showObstacleLabels: boolean;
 }
 
 const initialState: ObstaclesState = {
   showObstacles: false,
   selectedState: '',
   minHeightFilter: 200, // Default to 200ft AGL minimum
+  showRouteObstacles: true,
+  heightExaggeration: 3, // Default 3x height exaggeration
+  showObstacleLabels: true,
 };
 
 const obstaclesSlice = createSlice({
@@ -25,8 +31,24 @@ const obstaclesSlice = createSlice({
     setMinHeightFilter: (state, action: PayloadAction<number>) => {
       state.minHeightFilter = action.payload;
     },
+    toggleShowRouteObstacles: (state, action: PayloadAction<boolean>) => {
+      state.showRouteObstacles = action.payload;
+    },
+    setHeightExaggeration: (state, action: PayloadAction<number>) => {
+      state.heightExaggeration = action.payload;
+    },
+    toggleShowObstacleLabels: (state, action: PayloadAction<boolean>) => {
+      state.showObstacleLabels = action.payload;
+    },
   },
 });
 
-export const { toggleShowObstacles, setObstacleState, setMinHeightFilter } = obstaclesSlice.actions;
+export const {
+  toggleShowObstacles,
+  setObstacleState,
+  setMinHeightFilter,
+  toggleShowRouteObstacles,
+  setHeightExaggeration,
+  toggleShowObstacleLabels,
+} = obstaclesSlice.actions;
 export default obstaclesSlice.reducer;

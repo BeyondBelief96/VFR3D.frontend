@@ -1,17 +1,25 @@
-import { Stack, Select, Switch, Text, Group, NumberInput } from '@mantine/core';
+import { Stack, Select, Switch, Text, Group, NumberInput, Slider, Divider, Badge } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   toggleShowObstacles,
   setObstacleState,
   setMinHeightFilter,
+  toggleShowRouteObstacles,
+  setHeightExaggeration,
+  toggleShowObstacleLabels,
 } from '@/redux/slices/obstaclesSlice';
 import { states } from '@/utility/states';
 
 export function ObstacleOptions() {
   const dispatch = useAppDispatch();
-  const { showObstacles, selectedState, minHeightFilter } = useAppSelector(
-    (state) => state.obstacles
-  );
+  const {
+    showObstacles,
+    selectedState,
+    minHeightFilter,
+    showRouteObstacles,
+    heightExaggeration,
+    showObstacleLabels,
+  } = useAppSelector((state) => state.obstacles);
 
   const stateOptions = states.map((state) => ({ value: state, label: state }));
 
@@ -25,6 +33,81 @@ export function ObstacleOptions() {
 
   return (
     <Stack gap="md">
+      {/* Route Obstacles Section */}
+      <div>
+        <Group justify="space-between" mb={4}>
+          <Text size="sm" fw={500}>Route Obstacles</Text>
+          <Badge color="orange" variant="light" size="sm">Along Route</Badge>
+        </Group>
+        <Text size="xs" c="dimmed" mb={8}>
+          Obstacles along your planned flight route (orange).
+        </Text>
+        <Group justify="space-between">
+          <Text size="sm" c="dimmed">
+            Show Route Obstacles
+          </Text>
+          <Switch
+            checked={showRouteObstacles}
+            onChange={() => dispatch(toggleShowRouteObstacles(!showRouteObstacles))}
+            color="orange"
+            size="md"
+          />
+        </Group>
+      </div>
+
+      <Divider />
+
+      {/* Display Settings */}
+      <div>
+        <Text size="sm" fw={500} mb={8}>Display Settings</Text>
+
+        <Group justify="space-between" mb={12}>
+          <Text size="sm" c="dimmed">
+            Show Labels
+          </Text>
+          <Switch
+            checked={showObstacleLabels}
+            onChange={() => dispatch(toggleShowObstacleLabels(!showObstacleLabels))}
+            color="blue"
+            size="md"
+          />
+        </Group>
+
+        <Text size="sm" c="dimmed" mb={4}>
+          Height Exaggeration ({heightExaggeration}x)
+        </Text>
+        <Slider
+          value={heightExaggeration}
+          onChange={(val) => dispatch(setHeightExaggeration(val))}
+          min={1}
+          max={10}
+          step={1}
+          mb={10}
+          marks={[
+            { value: 1, label: '1x' },
+            { value: 5, label: '5x' },
+            { value: 10, label: '10x' },
+          ]}
+          color="orange"
+          styles={{
+            markLabel: { color: 'var(--mantine-color-dimmed)' },
+          }}
+        />
+      </div>
+
+      <Divider />
+
+      {/* State-based Obstacles Section */}
+      <div>
+        <Group justify="space-between" mb={4}>
+          <Text size="sm" fw={500}>State Obstacles</Text>
+          <Badge color="red" variant="light" size="sm">By State</Badge>
+        </Group>
+        <Text size="xs" c="dimmed" mb={8}>
+          All obstacles in a selected state (red).
+        </Text>
+      </div>
+
       <div>
         <Text size="sm" c="dimmed" mb={4}>
           Select State
@@ -72,20 +155,19 @@ export function ObstacleOptions() {
 
       <Group justify="space-between">
         <Text size="sm" c="dimmed">
-          Show Obstacles
+          Show State Obstacles
         </Text>
         <Switch
           checked={showObstacles}
           onChange={() => dispatch(toggleShowObstacles(!showObstacles))}
-          color="orange"
+          color="red"
           size="md"
           disabled={!selectedState}
         />
       </Group>
 
       <Text size="xs" c="dimmed">
-        Obstacles are displayed as 3D cylinders extending from ground to obstacle height.
-        Red/white striped obstacles are lit, solid red are unlit.
+        Red = state obstacles. Orange = route obstacles.
       </Text>
     </Stack>
   );

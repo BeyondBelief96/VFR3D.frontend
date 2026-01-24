@@ -62,6 +62,13 @@ export const obstaclesApi = baseApi.injectEndpoints({
         return `/Obstacle/bbox?${params.toString()}`;
       },
     }),
+    getObstaclesByOasNumbers: builder.query<ObstacleDto[], string[]>({
+      query: (oasNumbers) => ({
+        url: `/Obstacle/by-oas-numbers`,
+        method: 'POST',
+        body: oasNumbers,
+      }),
+    }),
   }),
 });
 
@@ -70,4 +77,5 @@ export const {
   useGetObstaclesByStateQuery,
   useGetObstacleByOasNumberQuery,
   useGetObstaclesByBoundingBoxQuery,
+  useGetObstaclesByOasNumbersQuery,
 } = obstaclesApi;

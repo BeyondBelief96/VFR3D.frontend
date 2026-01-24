@@ -47,14 +47,14 @@ const AirspaceInfoPopup: React.FC<{ airspace: AirspaceDto | SpecialUseAirspaceDt
         zIndex: 1000,
       }}
     >
-      <Group justify="space-between" mb="md">
-        <Group gap="xs">
-          <Badge color={isSpecialUse ? 'orange' : 'blue'}>
+      <Group justify="space-between" wrap="nowrap" mb="md">
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <Badge color={isSpecialUse ? 'orange' : 'blue'} mb={4}>
             {isSpecialUse ? 'Special Use Airspace' : 'Airspace'}
           </Badge>
-          <Text fw={600}>{airspace.name}</Text>
-        </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose}>
+          <Text fw={600} lineClamp={2}>{airspace.name}</Text>
+        </Box>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -124,9 +124,9 @@ const PirepInfoPopup: React.FC<{ pirep: PirepDto }> = ({ pirep }) => {
         zIndex: 1000,
       }}
     >
-      <Group justify="space-between" mb="md">
+      <Group justify="space-between" wrap="nowrap" mb="md">
         <Badge color="violet">PIREP</Badge>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -303,8 +303,8 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
         zIndex: 1000,
       }}
     >
-      <Group justify="space-between" mb="md">
-        <Group gap="xs">
+      <Group justify="space-between" wrap="nowrap" mb="md">
+        <Group gap="xs" style={{ flex: 1, minWidth: 0 }}>
           <Badge color="red">Obstacle</Badge>
           {isLit && (
             <Badge color="yellow" variant="outline">
@@ -312,7 +312,7 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
             </Badge>
           )}
         </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -426,8 +426,8 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
         zIndex: 1000,
       }}
     >
-      <Group justify="space-between" mb="md">
-        <Group gap="xs">
+      <Group justify="space-between" wrap="nowrap" mb="md">
+        <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
           <Badge color={airsigmet.airsigmetType === 'SIGMET' ? 'red' : 'orange'}>
             {airsigmet.airsigmetType}
           </Badge>
@@ -435,7 +435,7 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
             <Badge variant="outline">{airsigmet.hazard.type}</Badge>
           )}
         </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
           <FiX size={18} />
         </ActionIcon>
       </Group>

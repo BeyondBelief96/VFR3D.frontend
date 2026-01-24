@@ -29,7 +29,7 @@ import { Airports, FlyTo } from '@/features/Airports';
 import { AirspaceComponent } from '@/features/Airspace';
 import { Pireps } from '@/features/Pireps';
 import { AirsigmetComponent } from '@/features/Airsigmets';
-import { Obstacles } from '@/features/Obstacles';
+import { Obstacles, RouteObstacles } from '@/features/Obstacles';
 import { RouteComponent, FlightPlanningDrawer } from '@/features/Flights';
 import { EntitySelectionManager } from '@/components/Popup';
 
@@ -181,6 +181,7 @@ function ViewerContent() {
         <Pireps />
         <AirsigmetComponent />
         <Obstacles />
+        <RouteObstacles />
         <FlyTo />
         
         {/* Flight Planning */}

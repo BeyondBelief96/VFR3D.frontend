@@ -62,6 +62,7 @@ import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
 import { NavLogTable } from './NavLogTable';
 import { FlightPlanCalculationLoading } from './FlightPlanCalculationLoading';
 import { FlightViewerContent } from './FlightViewerContent';
+import { QuickLayerSettings } from './QuickLayerSettings';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -413,11 +414,14 @@ export const FlightPlanningDrawer: React.FC = () => {
           );
         }
         return (
-          <NavLogTable
-            navlog={navlogPreview}
-            returnNavlog={navlogPreviewReturn || undefined}
-            isRoundTrip={roundTrip}
-          />
+          <>
+            <QuickLayerSettings />
+            <NavLogTable
+              navlog={navlogPreview}
+              returnNavlog={navlogPreviewReturn || undefined}
+              isRoundTrip={roundTrip}
+            />
+          </>
         );
       default:
         return null;
@@ -436,6 +440,7 @@ export const FlightPlanningDrawer: React.FC = () => {
     <Stack h="100%" gap={0}>
       {/* Content area */}
       <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+        <QuickLayerSettings />
         <FlightViewerContent
           flight={activeFlightData}
           isLoading={isLoadingFlight}
@@ -536,6 +541,11 @@ export const FlightPlanningDrawer: React.FC = () => {
             if (isEditingProfile) return;
             if (step <= currentStep) {
               dispatch(updateDraftPlanSettings({ currentStep: step }));
+
+              // If leaving NAVLOG_PREVIEW step, switch back to PLANNING mode
+              if (currentStep === FlightPlannerStep.NAVLOG_PREVIEW && step < currentStep) {
+                dispatch(setDisplayMode(FlightDisplayMode.PLANNING));
+              }
             }
           }}
           size="sm"

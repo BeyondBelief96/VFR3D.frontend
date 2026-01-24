@@ -3,69 +3,64 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch, useSelector } from 'react-redux';
 import ObstacleEntity from './ObstacleEntity';
-import { useGetObstaclesByStateQuery } from '@/redux/api/vfr3d/obstacles.api';
+import { useGetObstaclesByOasNumbersQuery } from '@/redux/api/vfr3d/obstacles.api';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
-import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { getObstacleEntityId } from '@/utility/entityIdUtils';
 import { FlightDisplayMode } from '@/utility/enums';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { RootState } from '@/redux/store';
 
-export const Obstacles: React.FC = () => {
-  const { showObstacles, selectedState, minHeightFilter, heightExaggeration, showObstacleLabels, showRouteObstacles } = useAppSelector(
-    (state) => state.obstacles
-  );
-
+export const RouteObstacles: React.FC = () => {
+  const dispatch = useDispatch();
+  const { viewer } = useCesium();
   const { user } = useAuth0();
+  const handlerRef = useRef<ScreenSpaceEventHandler | null>(null);
+
+  const { showRouteObstacles, heightExaggeration, showObstacleLabels } = useSelector(
+    (state: RootState) => state.obstacles
+  );
   const { navlogPreview, displayMode, activeFlightId } = useSelector(
     (state: RootState) => state.flightPlanning
   );
 
-  // Fetch loaded flight for VIEWING mode to get route obstacle IDs
+  // Fetch loaded flight for VIEWING mode
   const { data: loadedFlight } = useGetFlightQuery(
     { userId: user?.sub || '', flightId: activeFlightId || '' },
     { skip: !user || !user.sub || !activeFlightId }
   );
 
-  // Get route obstacle OAS numbers to exclude from state-based rendering
-  const routeObstacleOasNumbers = useMemo(() => {
-    if (!showRouteObstacles) return new Set<string>();
-
+  // Get obstacle OAS numbers from navlog preview or loaded flight
+  const routeObstacleIds: string[] = useMemo(() => {
     if (navlogPreview?.obstacleOasNumbers && displayMode === FlightDisplayMode.PREVIEW) {
-      return new Set(navlogPreview.obstacleOasNumbers);
+      return Array.from(new Set(navlogPreview.obstacleOasNumbers));
     }
     if (displayMode === FlightDisplayMode.VIEWING && loadedFlight?.obstacleOasNumbers) {
-      return new Set(loadedFlight.obstacleOasNumbers);
+      return Array.from(new Set(loadedFlight.obstacleOasNumbers));
     }
-    return new Set<string>();
-  }, [navlogPreview, displayMode, loadedFlight, showRouteObstacles]);
+    return [];
+  }, [navlogPreview, displayMode, loadedFlight]);
 
-  const { data: obstacles, isSuccess } = useGetObstaclesByStateQuery(
-    { stateCode: selectedState, minHeightAgl: minHeightFilter, limit: 2000 },
-    {
-      skip: !showObstacles || !selectedState,
-    }
-  );
+  // Determine if we should show route obstacles
+  const shouldShowRouteObstacles =
+    showRouteObstacles &&
+    (displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING) &&
+    routeObstacleIds.length > 0;
 
-  const { viewer } = useCesium();
-  const dispatch = useDispatch();
-  const handlerRef = useRef<ScreenSpaceEventHandler | null>(null);
-
-  // Filter out route obstacles to prevent duplicates
-  const filteredObstacles = useMemo(() => {
-    if (!obstacles) return [];
-    return obstacles.filter((obs) => !routeObstacleOasNumbers.has(obs.oasNumber || ''));
-  }, [obstacles, routeObstacleOasNumbers]);
+  // Fetch obstacles by OAS numbers
+  const { data: routeObstacles, isSuccess } = useGetObstaclesByOasNumbersQuery(routeObstacleIds, {
+    skip: !shouldShowRouteObstacles || routeObstacleIds.length === 0,
+  });
 
   // Create a map for quick obstacle lookup by entity ID
   const obstacleMap = useMemo(() => {
-    if (!filteredObstacles) return new Map();
-    return new Map(filteredObstacles.map((obs) => [getObstacleEntityId(obs), obs]));
-  }, [filteredObstacles]);
+    if (!routeObstacles) return new Map();
+    return new Map(routeObstacles.map((obs) => [getObstacleEntityId(obs), obs]));
+  }, [routeObstacles]);
 
+  // Click handler for route obstacles
   useEffect(() => {
-    if (!viewer || viewer.isDestroyed()) return;
+    if (!viewer || viewer.isDestroyed() || !routeObstacles?.length) return;
 
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
     handlerRef.current = handler;
@@ -94,16 +89,17 @@ export const Obstacles: React.FC = () => {
         handler.destroy();
       }
     };
-  }, [viewer, obstacleMap, dispatch]);
+  }, [viewer, obstacleMap, dispatch, routeObstacles]);
 
-  if (!isSuccess || !showObstacles || !filteredObstacles.length) return null;
+  if (!isSuccess || !shouldShowRouteObstacles || !routeObstacles) return null;
 
   return (
     <>
-      {filteredObstacles.map((obstacle) => (
+      {routeObstacles.map((obstacle) => (
         <ObstacleEntity
-          key={obstacle.oasNumber}
+          key={`route-${obstacle.oasNumber}`}
           obstacle={obstacle}
+          isRouteObstacle={true}
           heightExaggeration={heightExaggeration}
           showLabel={showObstacleLabels}
         />
@@ -112,4 +108,4 @@ export const Obstacles: React.FC = () => {
   );
 };
 
-export default Obstacles;
+export default RouteObstacles;

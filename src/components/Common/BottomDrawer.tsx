@@ -38,7 +38,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 100,
+        zIndex: 200,
         pointerEvents: 'none',
       }}
     >

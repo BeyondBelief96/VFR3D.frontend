@@ -10,8 +10,16 @@ import {
   ColorMaterialProperty,
   StripeMaterialProperty,
   StripeOrientation,
+  LabelGraphics,
+  Cartesian2,
+  VerticalOrigin,
+  HorizontalOrigin,
+  LabelStyle,
+  NearFarScalar,
+  Cartographic,
+  Ellipsoid,
 } from 'cesium';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium } from 'resium';
 
 interface CylinderEntityProps {
@@ -27,7 +35,16 @@ interface CylinderEntityProps {
   outline?: boolean | Property;
   fill?: boolean | Property;
   striped?: boolean; // If true, use red/white striped material
+  stripedEvenColor?: Color; // Color for even stripes (default: RED)
+  stripedOddColor?: Color; // Color for odd stripes (default: WHITE)
   id: string;
+  // Label properties
+  labelText?: string;
+  labelBackgroundColor?: Color;
+  labelFillColor?: Color;
+  labelOutlineColor?: Color;
+  labelFont?: string;
+  showLabel?: boolean;
 }
 
 export const CylinderEntity: React.FC<CylinderEntityProps> = ({
@@ -43,19 +60,40 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
   outline = true,
   fill = true,
   striped = false,
+  stripedEvenColor = Color.RED.withAlpha(0.9),
+  stripedOddColor = Color.WHITE.withAlpha(0.9),
   id,
+  labelText,
+  labelBackgroundColor,
+  labelFillColor,
+  labelOutlineColor,
+  labelFont = 'bold 14px monospace',
+  showLabel = true,
 }) => {
   const { viewer } = useCesium();
-  const entityRef = useRef<Entity | null>(null);
+  const cylinderEntityRef = useRef<Entity | null>(null);
+  const labelEntityRef = useRef<Entity | null>(null);
 
+  // Calculate the label position at the top of the cylinder
+  const labelPosition = useMemo(() => {
+    const cartographic = Cartographic.fromCartesian(position, Ellipsoid.WGS84);
+    // Add the cylinder length to the height to position label at top
+    return Cartesian3.fromRadians(
+      cartographic.longitude,
+      cartographic.latitude,
+      cartographic.height + length
+    );
+  }, [position, length]);
+
+  // Create cylinder entity
   useEffect(() => {
     if (!viewer) return;
 
     // Create material - either striped or solid color
     const material = striped
       ? new StripeMaterialProperty({
-          evenColor: Color.RED.withAlpha(0.9),
-          oddColor: Color.WHITE.withAlpha(0.9),
+          evenColor: stripedEvenColor,
+          oddColor: stripedOddColor,
           repeat: Math.max(2, Math.floor(length / 30)), // More stripes for taller obstacles
           orientation: StripeOrientation.HORIZONTAL,
         })
@@ -80,30 +118,71 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
       id,
     });
 
-    entityRef.current = entity;
+    cylinderEntityRef.current = entity;
 
     return () => {
       if (viewer && entity) {
         viewer.entities.remove(entity);
-        entityRef.current = null;
+        cylinderEntityRef.current = null;
       }
     };
   }, [viewer, id]);
 
-  // Update dynamic properties without recreating entity
+  // Create separate label entity at the top of the cylinder
   useEffect(() => {
-    if (!viewer || !entityRef.current) return;
-    entityRef.current.position = new ConstantPositionProperty(position);
-    if (entityRef.current.cylinder) {
-      entityRef.current.cylinder.show = new ConstantProperty(show);
-      entityRef.current.cylinder.length = new ConstantProperty(length);
-      entityRef.current.cylinder.topRadius = new ConstantProperty(topRadius);
-      entityRef.current.cylinder.bottomRadius = new ConstantProperty(bottomRadius);
-      entityRef.current.cylinder.heightReference = new ConstantProperty(heightReference);
-      entityRef.current.cylinder.outline = new ConstantProperty(outline);
-      entityRef.current.cylinder.outlineColor = new ConstantProperty(outlineColor as Color);
-      entityRef.current.cylinder.outlineWidth = new ConstantProperty(outlineWidth as number);
-      entityRef.current.cylinder.fill = new ConstantProperty(fill);
+    if (!viewer || !labelText || !showLabel) return;
+
+    const defaultBgColor = Color.fromCssColorString('rgba(20, 20, 20, 0.95)');
+    const defaultFillColor = Color.fromCssColorString('#FFFF00');
+    const defaultOutlineColor = Color.BLACK;
+
+    const labelGraphics = new LabelGraphics({
+      text: new ConstantProperty(labelText),
+      font: new ConstantProperty(labelFont),
+      fillColor: new ConstantProperty(labelFillColor || defaultFillColor),
+      outlineColor: new ConstantProperty(labelOutlineColor || defaultOutlineColor),
+      outlineWidth: new ConstantProperty(3),
+      style: new ConstantProperty(LabelStyle.FILL_AND_OUTLINE),
+      verticalOrigin: new ConstantProperty(VerticalOrigin.BOTTOM),
+      horizontalOrigin: new ConstantProperty(HorizontalOrigin.CENTER),
+      pixelOffset: new ConstantProperty(new Cartesian2(0, -10)),
+      showBackground: new ConstantProperty(true),
+      backgroundColor: new ConstantProperty(labelBackgroundColor || defaultBgColor),
+      backgroundPadding: new ConstantProperty(new Cartesian2(8, 6)),
+      scaleByDistance: new ConstantProperty(new NearFarScalar(500, 0.7, 30000, 0.8)),
+      disableDepthTestDistance: new ConstantProperty(Number.POSITIVE_INFINITY),
+    });
+
+    const labelEntity = viewer.entities.add({
+      position: labelPosition,
+      label: labelGraphics,
+      id: `${id}-label`,
+    });
+
+    labelEntityRef.current = labelEntity;
+
+    return () => {
+      if (viewer && labelEntity) {
+        viewer.entities.remove(labelEntity);
+        labelEntityRef.current = null;
+      }
+    };
+  }, [viewer, id, labelText, showLabel, labelPosition, labelBackgroundColor, labelFillColor, labelOutlineColor, labelFont]);
+
+  // Update cylinder dynamic properties
+  useEffect(() => {
+    if (!viewer || !cylinderEntityRef.current) return;
+    cylinderEntityRef.current.position = new ConstantPositionProperty(position);
+    if (cylinderEntityRef.current.cylinder) {
+      cylinderEntityRef.current.cylinder.show = new ConstantProperty(show);
+      cylinderEntityRef.current.cylinder.length = new ConstantProperty(length);
+      cylinderEntityRef.current.cylinder.topRadius = new ConstantProperty(topRadius);
+      cylinderEntityRef.current.cylinder.bottomRadius = new ConstantProperty(bottomRadius);
+      cylinderEntityRef.current.cylinder.heightReference = new ConstantProperty(heightReference);
+      cylinderEntityRef.current.cylinder.outline = new ConstantProperty(outline);
+      cylinderEntityRef.current.cylinder.outlineColor = new ConstantProperty(outlineColor as Color);
+      cylinderEntityRef.current.cylinder.outlineWidth = new ConstantProperty(outlineWidth as number);
+      cylinderEntityRef.current.cylinder.fill = new ConstantProperty(fill);
     }
   }, [
     viewer,
@@ -118,6 +197,12 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
     outlineWidth,
     fill,
   ]);
+
+  // Update label position when length changes
+  useEffect(() => {
+    if (!viewer || !labelEntityRef.current) return;
+    labelEntityRef.current.position = new ConstantPositionProperty(labelPosition);
+  }, [viewer, labelPosition]);
 
   return null;
 };
