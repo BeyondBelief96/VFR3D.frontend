@@ -25,6 +25,8 @@ import { updateWaypointPosition } from '@/redux/slices/flightPlanningSlice';
 import { NavigationLegDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { useDebounce } from '@uidotdev/usehooks';
 import { setSelectedEntity, updateSelectedWaypointPosition } from '@/redux/slices/selectedEntitySlice';
+import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
+import { useAuth } from '@/components/Auth';
 
 // Helper to identify TOC/TOD calculated points by name pattern
 const isTocTodPoint = (waypoint: WaypointDto): boolean => {
@@ -69,13 +71,23 @@ const getWaypointColor = (
 const RouteComponent: React.FC = () => {
   const dispatch = useDispatch();
   const { viewer, camera, scene } = useCesium();
+  const { user } = useAuth();
+  const userId = user?.sub || '';
 
   const { lineColor, pointColor: endPointColor } = useSelector(
     (state: RootState) => state.routeStyle
   );
 
-  const { displayMode, navlogPreview, draftFlightPlan, editingFlightPlan } =
+  const { displayMode, navlogPreview, draftFlightPlan, editingFlightPlan, activeFlightId } =
     useSelector((state: RootState) => state.flightPlanning);
+
+  // Fetch the active flight when viewing a saved flight
+  const { data: activeFlightData } = useGetFlightQuery(
+    { userId, flightId: activeFlightId || '' },
+    {
+      skip: !userId || !activeFlightId || displayMode !== FlightDisplayMode.VIEWING,
+    }
+  );
 
   const isEditable =
     displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING;
@@ -89,6 +101,14 @@ const RouteComponent: React.FC = () => {
   const selectedContext = useSelector((state: RootState) => state.selectedEntity.context);
 
   const renderPoints: WaypointDto[] = useMemo(() => {
+    // Case: Viewing a saved flight - extract waypoints from legs
+    if (displayMode === FlightDisplayMode.VIEWING && activeFlightData?.legs) {
+      return activeFlightData.legs
+        .flatMap((leg: NavigationLegDto) => [leg.legStartPoint, leg.legEndPoint])
+        .filter((point): point is WaypointDto => point !== null && point !== undefined)
+        .filter((point, index, self) => self.findIndex((p) => p.id === point.id) === index);
+    }
+
     if (displayMode === FlightDisplayMode.PREVIEW && navlogPreview?.legs) {
       // Case: Previewing a draft flight's calculated navlog
       return navlogPreview.legs
@@ -104,7 +124,9 @@ const RouteComponent: React.FC = () => {
 
     // Case: Editing - show copy of current flight plan points
     return editingFlightPlan?.waypoints?.map(mapWaypointsFlat) ?? [];
-  }, [displayMode, navlogPreview, draftFlightPlan, editingFlightPlan]);
+  }, [displayMode, navlogPreview, draftFlightPlan, editingFlightPlan, activeFlightData]);
+
+  console.log('displayMode', displayMode);
 
   // State to track the waypoint being dragged
   const [draggedWaypointId, setDraggedWaypointId] = useState<string | null>(null);
