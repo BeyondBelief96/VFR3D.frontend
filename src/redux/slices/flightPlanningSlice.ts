@@ -272,6 +272,15 @@ const flightPlanningSlice = createSlice({
       state.draftFlightPlan.waypoints = [];
     },
 
+    clearWaypoints: (state) => {
+      if (state.displayMode === FlightDisplayMode.PLANNING) {
+        state.draftFlightPlan.waypoints = [];
+      } else if (state.displayMode === FlightDisplayMode.EDITING && state.editingFlightPlan) {
+        state.editingFlightPlan.waypoints = [];
+        state.editingFlightPlan.hasUnsavedChanges = true;
+      }
+    },
+
     // Editing Flight Plan Operations
     startEditingFlight: (state, action: PayloadAction<StartEditingFlightPayload>) => {
       state.displayMode = FlightDisplayMode.EDITING;
@@ -358,6 +367,7 @@ export const {
   // Draft Plan Operations
   updateDraftPlanSettings,
   clearDraftWaypoints,
+  clearWaypoints,
 
   // Editing Operations
   startEditingFlight,

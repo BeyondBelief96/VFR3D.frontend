@@ -19,6 +19,9 @@ import {
   FiChevronRight,
   FiRefreshCw,
   FiSave,
+  FiEdit2,
+  FiPlus,
+  FiX,
 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { BottomDrawer } from '@/components/Common/BottomDrawer';
@@ -28,11 +31,15 @@ import {
   updateDraftPlanSettings,
   resetToPlanning,
   clearDraftWaypoints,
+  clearWaypoints,
   addWaypoint,
   updateNavlogPreview,
   updateReturnNavlogPreview,
   clearNavlogPreviews,
   setDisplayMode,
+  startEditingFlight,
+  finishEditingFlight,
+  startNewFlight,
 } from '@/redux/slices/flightPlanningSlice';
 import { FlightDisplayMode } from '@/utility/enums';
 import {
@@ -40,17 +47,21 @@ import {
   NavlogRequestDto,
   CreateFlightRequestDto,
   CreateRoundTripFlightRequestDto,
+  UpdateFlightRequestDto,
 } from '@/redux/api/vfr3d/dtos';
 import { useAuth } from '@/components/Auth';
 import { useCalculateNavLogMutation } from '@/redux/api/vfr3d/navlog.api';
 import {
   useCreateFlightMutation,
   useCreateRoundTripFlightMutation,
+  useGetFlightQuery,
+  useUpdateFlightMutation,
 } from '@/redux/api/vfr3d/flights.api';
 import { DrawerAircraftPerformanceProfiles } from './PerformanceProfiles';
 import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
 import { NavLogTable } from './NavLogTable';
 import { FlightPlanCalculationLoading } from './FlightPlanCalculationLoading';
+import { FlightViewerContent } from './FlightViewerContent';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -72,9 +83,30 @@ export const FlightPlanningDrawer: React.FC = () => {
   const {
     displayMode,
     draftFlightPlan,
+    editingFlightPlan,
     navlogPreview,
     navlogPreviewReturn,
+    activeFlightId,
   } = useSelector((state: RootState) => state.flightPlanning);
+
+  // Fetch flight data when viewing a saved flight
+  const {
+    data: activeFlightData,
+    isLoading: isLoadingFlight,
+    isError: isFlightError,
+  } = useGetFlightQuery(
+    { userId, flightId: activeFlightId || '' },
+    {
+      skip: !userId || !activeFlightId || displayMode === FlightDisplayMode.PLANNING,
+    }
+  );
+
+  // Auto-open drawer when viewing a flight
+  useEffect(() => {
+    if (displayMode === FlightDisplayMode.VIEWING && activeFlightId) {
+      setIsOpen(true);
+    }
+  }, [displayMode, activeFlightId]);
 
   const {
     waypoints: flightPlanRoute,
@@ -93,8 +125,13 @@ export const FlightPlanningDrawer: React.FC = () => {
   const [createFlight, { isLoading: isCreatingFlight }] = useCreateFlightMutation();
   const [createRoundTripFlight, { isLoading: isCreatingRoundTrip }] =
     useCreateRoundTripFlightMutation();
+  const [updateFlight, { isLoading: isUpdatingFlight }] = useUpdateFlightMutation();
 
-  const isSaving = isCreatingFlight || isCreatingRoundTrip;
+  const isSaving = isCreatingFlight || isCreatingRoundTrip || isUpdatingFlight;
+
+  // Determine if we're in viewing or editing mode for a saved flight
+  const isViewingMode = displayMode === FlightDisplayMode.VIEWING;
+  const isEditingMode = displayMode === FlightDisplayMode.EDITING;
 
   // Update canCalculateNavlog based on route
   useEffect(() => {
@@ -270,6 +307,58 @@ export const FlightPlanningDrawer: React.FC = () => {
     }
   };
 
+  // Start editing a saved flight
+  const handleStartEditing = () => {
+    if (!activeFlightData) return;
+
+    dispatch(
+      startEditingFlight({
+        waypoints: activeFlightData.waypoints || [],
+        plannedCruisingAltitude: activeFlightData.plannedCruisingAltitude || 4500,
+        departureTimeUtc: activeFlightData.departureTime || new Date().toISOString(),
+      })
+    );
+  };
+
+  // Cancel editing and return to viewing
+  const handleCancelEditing = () => {
+    dispatch(finishEditingFlight());
+  };
+
+  // Save edited flight
+  const handleSaveEditedFlight = async () => {
+    if (!userId || !activeFlightId || !editingFlightPlan) return;
+
+    try {
+      const request: UpdateFlightRequestDto = {
+        waypoints: editingFlightPlan.waypoints,
+        plannedCruisingAltitude: editingFlightPlan.plannedCruisingAltitude,
+        departureTime: new Date(editingFlightPlan.departureTimeUtc),
+      };
+
+      await updateFlight({ userId, flightId: activeFlightId, flight: request }).unwrap();
+
+      notifications.show({
+        title: 'Flight Updated',
+        message: 'Your flight has been updated successfully.',
+        color: 'green',
+      });
+
+      dispatch(finishEditingFlight());
+    } catch (error) {
+      notifications.show({
+        title: 'Update Failed',
+        message: 'Unable to update flight. Please try again.',
+        color: 'red',
+      });
+    }
+  };
+
+  // Start a new flight from viewing mode
+  const handleStartNewFlight = () => {
+    dispatch(startNewFlight());
+  };
+
   const isEditable =
     displayMode === FlightDisplayMode.PLANNING ||
     displayMode === FlightDisplayMode.EDITING;
@@ -335,55 +424,75 @@ export const FlightPlanningDrawer: React.FC = () => {
     }
   };
 
-  return (
-    <BottomDrawer
-      isOpen={isOpen}
-      toggleOpen={toggleDrawer}
-      title="Flight Planner"
-    >
+  // Get drawer title based on mode
+  const getDrawerTitle = () => {
+    if (isViewingMode) return 'Flight Details';
+    if (isEditingMode) return 'Edit Flight';
+    return 'Flight Planner';
+  };
+
+  // Render viewing mode content
+  const renderViewingContent = () => (
+    <Stack h="100%" gap={0}>
+      {/* Content area */}
+      <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+        <FlightViewerContent
+          flight={activeFlightData}
+          isLoading={isLoadingFlight}
+          isError={isFlightError}
+        />
+      </Box>
+
+      {/* Actions */}
+      <Group
+        justify="space-between"
+        px="md"
+        py="sm"
+        style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
+      >
+        <Button
+          variant="light"
+          color="gray"
+          leftSection={<FiPlus size={16} />}
+          onClick={handleStartNewFlight}
+        >
+          New Flight
+        </Button>
+
+        <Button
+          leftSection={<FiEdit2 size={16} />}
+          onClick={handleStartEditing}
+          disabled={isLoadingFlight || isFlightError || !activeFlightData}
+        >
+          Edit Flight
+        </Button>
+      </Group>
+    </Stack>
+  );
+
+  // Render editing mode content (similar to planning but for saved flights)
+  const renderEditingContent = () => {
+    if (!editingFlightPlan) return null;
+
+    return (
       <Stack h="100%" gap={0}>
-        {/* Stepper */}
-        <Box px="md" py="sm" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <Stepper
-            active={currentStep}
-            onStepClick={(step) => {
-              // Don't allow step navigation when editing a profile
-              if (isEditingProfile) return;
-              if (step <= currentStep) {
-                dispatch(updateDraftPlanSettings({ currentStep: step }));
-              }
-            }}
-            size="sm"
-            styles={{
-              step: {
-                padding: 0,
-              },
-              stepIcon: {
-                borderWidth: 2,
-              },
-              separator: {
-                marginLeft: 4,
-                marginRight: 4,
-              },
-            }}
-          >
-            {steps.map((step, index) => (
-              <Stepper.Step
-                key={index}
-                icon={step.icon}
-                label={step.label}
-                allowStepSelect={index <= currentStep}
-              />
-            ))}
-          </Stepper>
-        </Box>
-
-        {/* Content area */}
+        {/* Content - show route builder for editing waypoints */}
         <Box flex={1} p="md" style={{ overflow: 'auto' }}>
-          {renderStepContent()}
+          <FlightRouteBuilder
+            routePoints={editingFlightPlan.waypoints}
+            onRoutePointsChange={(points) => {
+              // For editing, we need to update the editing flight plan
+              // clearWaypoints respects displayMode, so it clears editingFlightPlan.waypoints
+              dispatch(clearWaypoints());
+              points.forEach((point, index) => {
+                dispatch(addWaypoint({ waypoint: point, index }));
+              });
+            }}
+            disabled={false}
+          />
         </Box>
 
-        {/* Navigation */}
+        {/* Actions */}
         <Group
           justify="space-between"
           px="md"
@@ -392,59 +501,146 @@ export const FlightPlanningDrawer: React.FC = () => {
         >
           <Button
             variant="subtle"
-            leftSection={<FiChevronLeft size={16} />}
-            onClick={handlePreviousStep}
-            disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
-            style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
+            leftSection={<FiX size={16} />}
+            onClick={handleCancelEditing}
+            disabled={isSaving}
           >
-            Back
+            Cancel
           </Button>
 
-          <Group gap="sm">
-            {currentStep === FlightPlannerStep.NAVLOG_PREVIEW ? (
-              <>
-                <Button
-                  variant="light"
-                  color="gray"
-                  leftSection={<FiRefreshCw size={16} />}
-                  onClick={handleResetPlanning}
-                  disabled={isSaving}
-                >
-                  New Flight
-                </Button>
-                <Button
-                  leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
-                  onClick={handleSaveFlight}
-                  disabled={!navlogPreview || isSaving || !userId}
-                >
-                  {isSaving ? 'Saving...' : 'Save Flight'}
-                </Button>
-              </>
-            ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
-              <Button
-                onClick={handleCalculateRoute}
-                disabled={!canCalculate || isCalculating}
-                leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
-              >
-                {isCalculating ? 'Calculating...' : 'Calculate Route'}
-              </Button>
-            ) : (
-              <Button
-                rightSection={<FiChevronRight size={16} />}
-                onClick={handleNextStep}
-                disabled={
-                  isEditingProfile ||
-                  (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
-                  (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
-                  currentStep === 3
-                }
-              >
-                Next
-              </Button>
-            )}
-          </Group>
+          <Button
+            leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
+            onClick={handleSaveEditedFlight}
+            disabled={
+              isSaving ||
+              !editingFlightPlan.hasUnsavedChanges ||
+              editingFlightPlan.waypoints.length < 2
+            }
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </Button>
         </Group>
       </Stack>
+    );
+  };
+
+  // Render planning/preview mode content (existing stepper flow)
+  const renderPlanningContent = () => (
+    <Stack h="100%" gap={0}>
+      {/* Stepper */}
+      <Box px="md" py="sm" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <Stepper
+          active={currentStep}
+          onStepClick={(step) => {
+            // Don't allow step navigation when editing a profile
+            if (isEditingProfile) return;
+            if (step <= currentStep) {
+              dispatch(updateDraftPlanSettings({ currentStep: step }));
+            }
+          }}
+          size="sm"
+          styles={{
+            step: {
+              padding: 0,
+            },
+            stepIcon: {
+              borderWidth: 2,
+            },
+            separator: {
+              marginLeft: 4,
+              marginRight: 4,
+            },
+          }}
+        >
+          {steps.map((step, index) => (
+            <Stepper.Step
+              key={index}
+              icon={step.icon}
+              label={step.label}
+              allowStepSelect={index <= currentStep}
+            />
+          ))}
+        </Stepper>
+      </Box>
+
+      {/* Content area */}
+      <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+        {renderStepContent()}
+      </Box>
+
+      {/* Navigation */}
+      <Group
+        justify="space-between"
+        px="md"
+        py="sm"
+        style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
+      >
+        <Button
+          variant="subtle"
+          leftSection={<FiChevronLeft size={16} />}
+          onClick={handlePreviousStep}
+          disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
+          style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
+        >
+          Back
+        </Button>
+
+        <Group gap="sm">
+          {currentStep === FlightPlannerStep.NAVLOG_PREVIEW ? (
+            <>
+              <Button
+                variant="light"
+                color="gray"
+                leftSection={<FiRefreshCw size={16} />}
+                onClick={handleResetPlanning}
+                disabled={isSaving}
+              >
+                New Flight
+              </Button>
+              <Button
+                leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
+                onClick={handleSaveFlight}
+                disabled={!navlogPreview || isSaving || !userId}
+              >
+                {isSaving ? 'Saving...' : 'Save Flight'}
+              </Button>
+            </>
+          ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
+            <Button
+              onClick={handleCalculateRoute}
+              disabled={!canCalculate || isCalculating}
+              leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
+            >
+              {isCalculating ? 'Calculating...' : 'Calculate Route'}
+            </Button>
+          ) : (
+            <Button
+              rightSection={<FiChevronRight size={16} />}
+              onClick={handleNextStep}
+              disabled={
+                isEditingProfile ||
+                (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
+                (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
+                currentStep === 3
+              }
+            >
+              Next
+            </Button>
+          )}
+        </Group>
+      </Group>
+    </Stack>
+  );
+
+  return (
+    <BottomDrawer
+      isOpen={isOpen}
+      toggleOpen={toggleDrawer}
+      title={getDrawerTitle()}
+    >
+      {isViewingMode && renderViewingContent()}
+      {isEditingMode && renderEditingContent()}
+      {!isViewingMode && !isEditingMode && renderPlanningContent()}
     </BottomDrawer>
   );
 };
