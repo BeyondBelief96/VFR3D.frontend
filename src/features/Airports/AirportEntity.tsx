@@ -39,7 +39,7 @@ const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) =>
     if (!showCloudBases || !metar?.skyCondition?.[0].cloudBaseFtAgl) return {};
 
     return {
-      labelText: metar.skyCondition[0].cloudBaseFtAgl.toString(),
+      labelText: `Cloud Base: ${metar.skyCondition[0].cloudBaseFtAgl.toLocaleString()} ft AGL`,
       labelBackgroundColor: color,
       labelPixelOffset: new Cartesian2(0, -20),
       labelScaleByDistance: new NearFarScalar(100000, 0.5, 500000, 0.3),

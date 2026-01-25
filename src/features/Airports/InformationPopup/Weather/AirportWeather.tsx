@@ -5,6 +5,7 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { MetarDto, TafDto } from '@/redux/api/vfr3d/dtos';
 import { FiAlertCircle, FiCloud, FiWind, FiEye, FiThermometer } from 'react-icons/fi';
 import { WeatherFlightCategories } from '@/utility/enums';
+import { getWeatherErrorMessage } from '@/features/Weather';
 
 const getFlightCategoryColor = (category?: string): string => {
   switch (category) {
@@ -267,7 +268,7 @@ const AirportWeather: React.FC<AirportWeatherProps> = ({
             color="red"
             variant="light"
           >
-            Weather data could not be loaded for this airport.
+            {getWeatherErrorMessage(metarError)}
           </Alert>
         )}
         {metar && !metarError && <MetarSection metar={metar} />}
@@ -288,7 +289,7 @@ const AirportWeather: React.FC<AirportWeatherProps> = ({
             color="orange"
             variant="light"
           >
-            Forecast data could not be loaded for this airport.
+            {getWeatherErrorMessage(tafError)}
           </Alert>
         )}
         {taf && !tafError && <TafSection taf={taf} />}

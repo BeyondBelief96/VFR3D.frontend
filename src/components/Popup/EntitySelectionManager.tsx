@@ -6,6 +6,8 @@ import {
   AirportDto,
   AirsigmetDto,
   AirspaceDto,
+  GAirmetDto,
+  GAirmetHazardType,
   ObstacleDto,
   ObstacleLighting,
   ObstacleMarking,
@@ -15,7 +17,7 @@ import {
 } from '@/redux/api/vfr3d/dtos';
 import type { RootState } from '@/redux/store';
 import { Paper, Stack, Text, Badge, Group, ActionIcon, Box, Code, ScrollArea, Divider } from '@mantine/core';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiInfo } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 
@@ -399,13 +401,38 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
   );
 };
 
-// Simple popup for AIRMET/SIGMET
+// Helper to get hazard description for SIGMETs
+const getHazardDescription = (hazardType?: string): string => {
+  switch (hazardType) {
+    case 'CONVECTIVE':
+      return 'Thunderstorms with potential for severe turbulence, icing, hail, and low-level wind shear. Avoid areas of convective activity.';
+    case 'ICE':
+      return 'Moderate to severe icing conditions. Ice accumulation can affect aircraft performance and control.';
+    case 'TURB':
+      return 'Moderate to severe turbulence. May cause significant changes in altitude and/or attitude.';
+    case 'IFR':
+      return 'Instrument Flight Rules conditions with visibility below 3 SM and/or ceilings below 1000 ft AGL.';
+    case 'MTN OBSCN':
+    case 'MTN_OBSCN':
+      return 'Mountains obscured by clouds, fog, or precipitation. Terrain may not be visible.';
+    default:
+      return 'Weather hazard affecting flight safety.';
+  }
+};
+
+// Enhanced popup for AIRMET/SIGMET with educational content
 const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }) => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
     dispatch(setSelectedEntity({ entity: null, type: null }));
   };
+
+  const hazardTypeStr = airsigmet.hazard?.type !== undefined
+    ? String(airsigmet.hazard.type)
+    : undefined;
+
+  const isSigmet = airsigmet.airsigmetType === 'SIGMET';
 
   return (
     <Paper
@@ -416,7 +443,7 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
         position: 'fixed',
         top: 70,
         right: 16,
-        width: 380,
+        width: 400,
         maxWidth: 'calc(100vw - 32px)',
         maxHeight: 'calc(100vh - 100px)',
         backgroundColor: 'rgba(37, 38, 43, 0.95)',
@@ -428,11 +455,21 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
     >
       <Group justify="space-between" wrap="nowrap" mb="md">
         <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
-          <Badge color={airsigmet.airsigmetType === 'SIGMET' ? 'red' : 'orange'}>
+          <Badge color={isSigmet ? 'red' : 'orange'}>
             {airsigmet.airsigmetType}
           </Badge>
-          {airsigmet.hazard?.type && (
-            <Badge variant="outline">{airsigmet.hazard.type}</Badge>
+          {hazardTypeStr && (
+            <Badge variant="outline" color={isSigmet ? 'red' : 'orange'}>
+              {hazardTypeStr}
+            </Badge>
+          )}
+          {airsigmet.hazard?.severity && (
+            <Badge
+              size="xs"
+              color={airsigmet.hazard.severity === 'SEV' ? 'red' : 'yellow'}
+            >
+              {airsigmet.hazard.severity}
+            </Badge>
           )}
         </Group>
         <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
@@ -447,31 +484,39 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
         </Code>
       )}
 
-      <ScrollArea mah={300}>
+      <ScrollArea mah={350}>
         <Stack gap="xs">
+          {/* Hazard Details */}
           {airsigmet.hazard && (
             <>
-              {airsigmet.hazard.type && (
+              {hazardTypeStr && (
                 <Text size="sm">
                   <Text span c="dimmed">Hazard: </Text>
-                  {airsigmet.hazard.type}
+                  {hazardTypeStr}
                   {airsigmet.hazard.severity && ` (${airsigmet.hazard.severity})`}
                 </Text>
               )}
             </>
           )}
+
+          {/* Altitude */}
           {airsigmet.altitude && (
             <Text size="sm">
               <Text span c="dimmed">Altitude: </Text>
-              {airsigmet.altitude.minFtMsl?.toLocaleString()} - {airsigmet.altitude.maxFtMsl?.toLocaleString()} ft MSL
+              {airsigmet.altitude.minFtMsl?.toLocaleString() || 'SFC'} - {airsigmet.altitude.maxFtMsl?.toLocaleString() || 'UNL'} ft MSL
             </Text>
           )}
-          {(airsigmet.movementDirDegrees || airsigmet.movementSpeedKt) && (
+
+          {/* Movement */}
+          {(airsigmet.movementDirDegrees !== undefined || airsigmet.movementSpeedKt !== undefined) && (
             <Text size="sm">
               <Text span c="dimmed">Movement: </Text>
-              {airsigmet.movementDirDegrees}° @ {airsigmet.movementSpeedKt}kt
+              {airsigmet.movementDirDegrees !== undefined && `${airsigmet.movementDirDegrees}°`}
+              {airsigmet.movementSpeedKt !== undefined && ` @ ${airsigmet.movementSpeedKt}kt`}
             </Text>
           )}
+
+          {/* Valid Time */}
           {(airsigmet.validTimeFrom || airsigmet.validTimeTo) && (
             <Text size="sm">
               <Text span c="dimmed">Valid: </Text>
@@ -479,6 +524,325 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
               {airsigmet.validTimeTo && ` - ${new Date(airsigmet.validTimeTo).toLocaleString()}`}
             </Text>
           )}
+
+          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+
+          {/* Educational Section */}
+          <Box
+            p="xs"
+            style={{
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              borderRadius: 'var(--mantine-radius-sm)',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+            }}
+          >
+            <Group gap={4} mb={4}>
+              <FiInfo size={12} color="var(--mantine-color-blue-5)" />
+              <Text size="xs" fw={500} c="blue.4">
+                What is this?
+              </Text>
+            </Group>
+            <Text size="xs" c="dimmed">
+              {isSigmet
+                ? 'A SIGMET (Significant Meteorological Information) warns of weather potentially hazardous to ALL aircraft. SIGMETs are valid for 4 hours (6 hours for hurricanes).'
+                : 'An AIRMET (Airmen\'s Meteorological Information) advises of weather potentially hazardous to light aircraft and VFR pilots. AIRMETs are valid for 6 hours.'}
+            </Text>
+            {hazardTypeStr && (
+              <Text size="xs" c="dimmed" mt={4}>
+                {getHazardDescription(hazardTypeStr)}
+              </Text>
+            )}
+          </Box>
+        </Stack>
+      </ScrollArea>
+    </Paper>
+  );
+};
+
+// Helper to get G-AIRMET hazard description
+const getGAirmetHazardDescription = (hazard?: GAirmetHazardType): { name: string; description: string; category: string } => {
+  switch (hazard) {
+    case GAirmetHazardType.MT_OBSC:
+      return {
+        name: 'Mountain Obscuration',
+        description: 'Mountains hidden by clouds, precipitation, or widespread haze.',
+        category: 'SIERRA',
+      };
+    case GAirmetHazardType.IFR:
+      return {
+        name: 'IFR Conditions',
+        description: 'Ceilings below 1000 ft AGL and/or visibility below 3 statute miles.',
+        category: 'SIERRA',
+      };
+    case GAirmetHazardType.TURB_LO:
+      return {
+        name: 'Low-Level Turbulence',
+        description: 'Moderate turbulence below FL180 (18,000 ft).',
+        category: 'TANGO',
+      };
+    case GAirmetHazardType.TURB_HI:
+      return {
+        name: 'High-Level Turbulence',
+        description: 'Moderate turbulence at or above FL180 (18,000 ft).',
+        category: 'TANGO',
+      };
+    case GAirmetHazardType.LLWS:
+      return {
+        name: 'Low-Level Wind Shear',
+        description: 'Non-convective low-level wind shear below 2000 ft AGL.',
+        category: 'TANGO',
+      };
+    case GAirmetHazardType.SFC_WIND:
+      return {
+        name: 'Strong Surface Winds',
+        description: 'Sustained surface winds of 30 knots or greater.',
+        category: 'TANGO',
+      };
+    case GAirmetHazardType.ICE:
+      return {
+        name: 'Icing',
+        description: 'Moderate icing conditions in clouds or precipitation.',
+        category: 'ZULU',
+      };
+    case GAirmetHazardType.FZLVL:
+      return {
+        name: 'Freezing Level',
+        description: 'Height of the 0°C isotherm (freezing level).',
+        category: 'ZULU',
+      };
+    case GAirmetHazardType.M_FZLVL:
+      return {
+        name: 'Multiple Freezing Levels',
+        description: 'Multiple freezing levels due to temperature inversions.',
+        category: 'ZULU',
+      };
+    default:
+      return {
+        name: 'Unknown',
+        description: 'G-AIRMET weather advisory.',
+        category: 'Unknown',
+      };
+  }
+};
+
+// Get color for G-AIRMET hazard badge
+const getGAirmetHazardColor = (hazard?: GAirmetHazardType): string => {
+  switch (hazard) {
+    // SIERRA hazards
+    case GAirmetHazardType.MT_OBSC:
+      return 'gray';
+    case GAirmetHazardType.IFR:
+      return 'green';
+    // TANGO hazards
+    case GAirmetHazardType.TURB_LO:
+      return 'orange';
+    case GAirmetHazardType.TURB_HI:
+      return 'red';
+    case GAirmetHazardType.LLWS:
+      return 'yellow';
+    case GAirmetHazardType.SFC_WIND:
+      return 'violet';
+    // ZULU hazards
+    case GAirmetHazardType.ICE:
+      return 'cyan';
+    case GAirmetHazardType.FZLVL:
+      return 'blue';
+    case GAirmetHazardType.M_FZLVL:
+      return 'indigo';
+    default:
+      return 'blue';
+  }
+};
+
+// G-AIRMET Info Popup with educational content
+const GAirmetInfoPopup: React.FC<{ gairmet: GAirmetDto }> = ({ gairmet }) => {
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    dispatch(setSelectedEntity({ entity: null, type: null }));
+  };
+
+  const hazardInfo = getGAirmetHazardDescription(gairmet.hazard);
+  const hazardColor = getGAirmetHazardColor(gairmet.hazard);
+
+  return (
+    <Paper
+      shadow="xl"
+      radius="md"
+      p="md"
+      style={{
+        position: 'fixed',
+        top: 70,
+        right: 16,
+        width: 400,
+        maxWidth: 'calc(100vw - 32px)',
+        maxHeight: 'calc(100vh - 100px)',
+        backgroundColor: 'rgba(37, 38, 43, 0.95)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        pointerEvents: 'auto',
+        zIndex: 1000,
+      }}
+    >
+      <Group justify="space-between" wrap="nowrap" mb="md">
+        <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+          <Badge color={hazardColor}>G-AIRMET</Badge>
+          <Badge variant="outline" color={hazardColor}>
+            {hazardInfo.name}
+          </Badge>
+          {gairmet.hazardSeverity && (
+            <Badge size="xs" color={gairmet.hazardSeverity === 'MOD' ? 'yellow' : 'orange'}>
+              {gairmet.hazardSeverity}
+            </Badge>
+          )}
+        </Group>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+          <FiX size={18} />
+        </ActionIcon>
+      </Group>
+
+      <ScrollArea mah={400}>
+        <Stack gap="xs">
+          {/* Hazard Type */}
+          {gairmet.hazard !== undefined && (
+            <Text size="sm">
+              <Text span c="dimmed">Hazard: </Text>
+              <Text span fw={500}>{hazardInfo.name}</Text>
+              {gairmet.hazardSeverity && ` (${gairmet.hazardSeverity})`}
+            </Text>
+          )}
+
+          {/* Category */}
+          <Text size="sm">
+            <Text span c="dimmed">Category: </Text>
+            {hazardInfo.category}
+          </Text>
+
+          {/* Due To */}
+          {gairmet.dueTo && (
+            <Text size="sm">
+              <Text span c="dimmed">Due To: </Text>
+              {gairmet.dueTo}
+            </Text>
+          )}
+
+          {/* Altitude Information */}
+          {gairmet.altitudes && gairmet.altitudes.length > 0 && (
+            <Box>
+              <Text size="sm" c="dimmed" mb={2}>Altitude:</Text>
+              {gairmet.altitudes.map((alt, idx) => {
+                // Helper to format altitude value for display
+                const formatAltitude = (value: string | undefined, isFzl: boolean = false): string => {
+                  if (!value) return isFzl ? 'Unknown' : 'SFC';
+                  const upper = value.toUpperCase();
+                  if (upper.startsWith('SFC')) return 'Surface';
+                  if (upper === 'FZL') return 'Freezing Level';
+                  const num = parseFloat(value);
+                  return isNaN(num) ? value : `${num.toLocaleString()} ft`;
+                };
+
+                // Check if min altitude references freezing level
+                const minIsFzl = alt.minFtMsl?.toUpperCase() === 'FZL';
+                const maxIsFzl = alt.maxFtMsl?.toUpperCase() === 'FZL';
+
+                return (
+                  <Box key={idx} pl="sm">
+                    {/* Single level altitude (e.g., FZLVL hazard) */}
+                    {alt.levelFtMsl && !alt.minFtMsl && !alt.maxFtMsl && (
+                      <Text size="sm">
+                        {formatAltitude(alt.levelFtMsl)} MSL
+                      </Text>
+                    )}
+                    {/* Min/Max altitude range */}
+                    {(alt.minFtMsl || alt.maxFtMsl) && (
+                      <Text size="sm">
+                        {minIsFzl ? 'Freezing Level' : formatAltitude(alt.minFtMsl)}
+                        {' - '}
+                        {maxIsFzl ? 'Freezing Level' : formatAltitude(alt.maxFtMsl)} MSL
+                      </Text>
+                    )}
+                    {/* Freezing level altitude info (when min/max references FZL) */}
+                    {alt.fzlAltitude && (minIsFzl || maxIsFzl) && (
+                      <Text size="xs" c="cyan.4" pl="sm">
+                        (Freezing level: {formatAltitude(alt.fzlAltitude.minFtMsl, true)}
+                        {alt.fzlAltitude.maxFtMsl && ` - ${formatAltitude(alt.fzlAltitude.maxFtMsl, true)}`} MSL)
+                      </Text>
+                    )}
+                    {/* Standalone freezing level info (not referenced by min/max) */}
+                    {alt.fzlAltitude && !minIsFzl && !maxIsFzl && (
+                      <Text size="sm" c="cyan.4">
+                        <Text span c="dimmed">Freezing Level: </Text>
+                        {formatAltitude(alt.fzlAltitude.minFtMsl, true)}
+                        {alt.fzlAltitude.maxFtMsl && ` - ${formatAltitude(alt.fzlAltitude.maxFtMsl, true)}`} MSL
+                      </Text>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+
+          {/* Forecast Hour */}
+          {gairmet.forecastHour !== undefined && (
+            <Text size="sm">
+              <Text span c="dimmed">Forecast Hour: </Text>
+              +{gairmet.forecastHour}h
+            </Text>
+          )}
+
+          {/* Valid Time */}
+          {gairmet.validTime && (
+            <Text size="sm">
+              <Text span c="dimmed">Valid Time: </Text>
+              {new Date(gairmet.validTime).toLocaleString()}
+            </Text>
+          )}
+
+          {/* Issue/Expire Times */}
+          {gairmet.issueTime && (
+            <Text size="sm">
+              <Text span c="dimmed">Issued: </Text>
+              {new Date(gairmet.issueTime).toLocaleString()}
+            </Text>
+          )}
+          {gairmet.expireTime && (
+            <Text size="sm">
+              <Text span c="dimmed">Expires: </Text>
+              {new Date(gairmet.expireTime).toLocaleString()}
+            </Text>
+          )}
+
+          {/* Tag */}
+          {gairmet.tag && (
+            <Text size="xs" c="dimmed">
+              Tag: {gairmet.tag}
+            </Text>
+          )}
+
+          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+
+          {/* Educational Section */}
+          <Box
+            p="xs"
+            style={{
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              borderRadius: 'var(--mantine-radius-sm)',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+            }}
+          >
+            <Group gap={4} mb={4}>
+              <FiInfo size={12} color="var(--mantine-color-blue-5)" />
+              <Text size="xs" fw={500} c="blue.4">
+                What is this?
+              </Text>
+            </Group>
+            <Text size="xs" c="dimmed">
+              {hazardInfo.description}
+            </Text>
+            <Text size="xs" c="dimmed" mt={4}>
+              G-AIRMETs are graphical weather advisories issued every 6 hours with snapshots valid at 3-hour intervals. The {hazardInfo.category} category covers {hazardInfo.category === 'SIERRA' ? 'IFR and mountain obscuration' : hazardInfo.category === 'TANGO' ? 'turbulence and wind' : 'icing and freezing levels'}.
+            </Text>
+          </Box>
         </Stack>
       </ScrollArea>
     </Paper>
@@ -505,6 +869,8 @@ const EntitySelectionManager: React.FC = () => {
       return <PirepInfoPopup pirep={selectedEntity as PirepDto} />;
     case 'Airsigmet':
       return <AirsigmetInfoPopup airsigmet={selectedEntity as AirsigmetDto} />;
+    case 'GAirmet':
+      return <GAirmetInfoPopup gairmet={selectedEntity as GAirmetDto} />;
     case 'Waypoint':
       return <WaypointInfoPopup selectedWaypoint={selectedEntity as WaypointDto} />;
     case 'Obstacle':

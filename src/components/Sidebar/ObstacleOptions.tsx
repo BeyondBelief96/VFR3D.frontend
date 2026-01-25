@@ -76,6 +76,9 @@ export function ObstacleOptions() {
         <Text size="sm" c="dimmed" mb={4}>
           Height Exaggeration ({heightExaggeration}x)
         </Text>
+        <Text size="sm" c="yellow.5" mb={8}>
+          1x shows true obstacle heights. Higher values exaggerate for visibility only and do not represent actual clearance.
+        </Text>
         <Slider
           value={heightExaggeration}
           onChange={(val) => dispatch(setHeightExaggeration(val))}

@@ -1,6 +1,7 @@
-import { Box, Group, Text, Switch, Accordion, Slider } from '@mantine/core';
-import { FiLayers, FiAlertTriangle } from 'react-icons/fi';
+import { Box, Group, Text, Switch, Accordion, Slider, Tooltip } from '@mantine/core';
+import { FiLayers, FiAlertTriangle, FiCloud } from 'react-icons/fi';
 import { GiRadioTower } from 'react-icons/gi';
+import { TbAlertTriangle } from 'react-icons/tb';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   toggleShowRouteObstacles,
@@ -12,8 +13,43 @@ import {
   toggleAirspaceClass,
   AirspaceClass,
 } from '@/redux/slices/airspacesSlice';
+import { setShowCloudBases } from '@/redux/slices/airportsSlice';
+import {
+  toggleSigmetHazard,
+  toggleGAirmetHazard,
+  SigmetHazardType,
+  GAirmetHazardType,
+} from '@/redux/slices/airsigmetsSlice';
 
 const airspaceClasses: AirspaceClass[] = ['B', 'C', 'D'];
+
+interface SigmetToggle {
+  type: SigmetHazardType;
+  label: string;
+  color: string;
+  tooltip: string;
+}
+
+interface GairmetToggle {
+  hazard: GAirmetHazardType;
+  label: string;
+  color: string;
+  tooltip: string;
+}
+
+const sigmetToggles: SigmetToggle[] = [
+  { type: 'CONVECTIVE', label: 'Convective', color: '#ef4444', tooltip: 'Thunderstorms and convective activity' },
+  { type: 'ICE', label: 'Icing', color: '#22d3ee', tooltip: 'Severe icing conditions' },
+  { type: 'TURB', label: 'Turbulence', color: '#f97316', tooltip: 'Severe/extreme turbulence' },
+];
+
+// Key G-AIRMET hazards for quick access (subset of all available)
+const gairmetToggles: GairmetToggle[] = [
+  { hazard: 'IFR', label: 'IFR', color: '#10b981', tooltip: 'IFR conditions - ceiling <1000ft, vis <3SM' },
+  { hazard: 'TURB_LO', label: 'Turb Lo', color: '#f97316', tooltip: 'Low-level turbulence below FL180' },
+  { hazard: 'ICE', label: 'Icing', color: '#22d3ee', tooltip: 'Moderate icing conditions' },
+  { hazard: 'SFC_WIND', label: 'Sfc Wind', color: '#a855f7', tooltip: 'Surface winds 30+ knots' },
+];
 
 export function QuickLayerSettings() {
   const dispatch = useAppDispatch();
@@ -23,6 +59,10 @@ export function QuickLayerSettings() {
   );
 
   const { showRouteAirspaces, visibleClasses } = useAppSelector((state) => state.airspaces);
+
+  const { showCloudBases } = useAppSelector((state) => state.airport);
+
+  const { sigmetHazards, gairmetHazards } = useAppSelector((state) => state.airsigmet);
 
   return (
     <Box
@@ -67,6 +107,79 @@ export function QuickLayerSettings() {
           },
         }}
       >
+        {/* Weather Advisories Section */}
+        <Accordion.Item value="advisories">
+          <Accordion.Control>
+            <Group gap="xs">
+              <TbAlertTriangle size={14} color="#f59e0b" />
+              <Text size="sm" c="white">
+                Weather Advisories
+              </Text>
+            </Group>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Box pl="md">
+              {/* SIGMETs */}
+              <Text size="xs" c="dimmed" mb={4}>
+                SIGMETs
+              </Text>
+              <Group gap={4} mb="sm">
+                {sigmetToggles.map(({ type, label, color, tooltip }) => (
+                  <Tooltip key={type} label={tooltip} withArrow position="top">
+                    <Box
+                      onClick={() => dispatch(toggleSigmetHazard(type))}
+                      style={{
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        backgroundColor: sigmetHazards[type]
+                          ? color
+                          : 'rgba(148, 163, 184, 0.2)',
+                        border: sigmetHazards[type]
+                          ? 'none'
+                          : '1px solid rgba(148, 163, 184, 0.3)',
+                      }}
+                    >
+                      <Text size="xs" c="white">
+                        {label}
+                      </Text>
+                    </Box>
+                  </Tooltip>
+                ))}
+              </Group>
+
+              {/* G-AIRMETs */}
+              <Text size="xs" c="dimmed" mb={4}>
+                G-AIRMETs
+              </Text>
+              <Group gap={4}>
+                {gairmetToggles.map(({ hazard, label, color, tooltip }) => (
+                  <Tooltip key={hazard} label={tooltip} withArrow position="top">
+                    <Box
+                      onClick={() => dispatch(toggleGAirmetHazard(hazard))}
+                      style={{
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        backgroundColor: gairmetHazards[hazard]
+                          ? color
+                          : 'rgba(148, 163, 184, 0.2)',
+                        border: gairmetHazards[hazard]
+                          ? 'none'
+                          : '1px solid rgba(148, 163, 184, 0.3)',
+                      }}
+                    >
+                      <Text size="xs" c="white">
+                        {label}
+                      </Text>
+                    </Box>
+                  </Tooltip>
+                ))}
+              </Group>
+            </Box>
+          </Accordion.Panel>
+        </Accordion.Item>
+
         {/* Obstacles Section */}
         <Accordion.Item value="obstacles">
           <Accordion.Control>
@@ -103,8 +216,11 @@ export function QuickLayerSettings() {
                 />
               </Group>
 
-              <Text size="xs" c="dimmed" mb={4}>
+              <Text size="xs" c="dimmed" mb={2}>
                 Height Exaggeration ({heightExaggeration}x)
+              </Text>
+              <Text size="xs" c="yellow.5" mb={6}>
+                1x shows true heights. Higher values exaggerate for visibility only.
               </Text>
               <Slider
                 value={heightExaggeration}
@@ -176,6 +292,33 @@ export function QuickLayerSettings() {
                     </Text>
                   </Box>
                 ))}
+              </Group>
+            </Box>
+          </Accordion.Panel>
+        </Accordion.Item>
+
+        {/* Weather Section */}
+        <Accordion.Item value="weather">
+          <Accordion.Control>
+            <Group gap="xs">
+              <FiCloud size={14} color="#3b82f6" />
+              <Text size="sm" c="white">
+                Weather
+              </Text>
+            </Group>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Box pl="md">
+              <Group justify="space-between" mb="xs">
+                <Text size="xs" c="dimmed">
+                  Show Cloud Base Labels
+                </Text>
+                <Switch
+                  checked={showCloudBases}
+                  onChange={() => dispatch(setShowCloudBases(!showCloudBases))}
+                  color="blue"
+                  size="xs"
+                />
               </Group>
             </Box>
           </Accordion.Panel>

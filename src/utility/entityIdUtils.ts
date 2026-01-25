@@ -1,4 +1,12 @@
-import { AirportDto, AirsigmetDto, ObstacleDto, PirepDto, AirspaceDto, SpecialUseAirspaceDto } from '@/redux/api/vfr3d/dtos';
+import {
+  AirportDto,
+  AirsigmetDto,
+  GAirmetDto,
+  ObstacleDto,
+  PirepDto,
+  AirspaceDto,
+  SpecialUseAirspaceDto,
+} from '@/redux/api/vfr3d/dtos';
 
 export const getAirportEntityIdFromAirport = (airport: AirportDto) => {
   return `airport-${airport.siteNo}`;
@@ -6,6 +14,10 @@ export const getAirportEntityIdFromAirport = (airport: AirportDto) => {
 
 export const getAirsigmetEntityId = (airsigmet: AirsigmetDto) => {
   return `airsigmet-${airsigmet.id}`;
+};
+
+export const getGAirmetEntityId = (gairmet: GAirmetDto) => {
+  return `gairmet-${gairmet.id}`;
 };
 
 export const getPirepEntityId = (pirep: PirepDto) => {

@@ -2,6 +2,7 @@ import {
   AirportDto,
   AirsigmetDto,
   AirspaceDto,
+  GAirmetDto,
   ObstacleDto,
   PirepDto,
   SpecialUseAirspaceDto,
@@ -12,6 +13,7 @@ export type SelectedEntityType =
   | AirportDto
   | PirepDto
   | AirsigmetDto
+  | GAirmetDto
   | AirspaceDto
   | SpecialUseAirspaceDto
   | WaypointDto
@@ -22,6 +24,7 @@ export type SelectableEntities =
   | 'Airport'
   | 'Pirep'
   | 'Airsigmet'
+  | 'GAirmet'
   | 'Airspace'
   | 'SpecialUseAirspace'
   | 'Waypoint'

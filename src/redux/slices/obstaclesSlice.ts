@@ -14,7 +14,7 @@ const initialState: ObstaclesState = {
   selectedState: '',
   minHeightFilter: 200, // Default to 200ft AGL minimum
   showRouteObstacles: true,
-  heightExaggeration: 3, // Default 3x height exaggeration
+  heightExaggeration: 1, // Default 1x (true scale) for safety
   showObstacleLabels: true,
 };
 

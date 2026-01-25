@@ -21,6 +21,7 @@ import {
   FiLogOut,
   FiChevronDown,
   FiUser,
+  FiCloud,
 } from 'react-icons/fi';
 import { FaPlane, FaPlaneDeparture } from 'react-icons/fa';
 import AirportSearch from '../Search/AirportSearch';
@@ -66,6 +67,19 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
         justify={mobile ? 'flex-start' : 'center'}
       >
         Features
+      </Button>
+      <Button
+        component={Link}
+        to="/weather-imagery"
+        variant="subtle"
+        color="gray"
+        size={mobile ? 'md' : 'sm'}
+        leftSection={<FiCloud size={16} />}
+        onClick={onNavigate}
+        fullWidth={mobile}
+        justify={mobile ? 'flex-start' : 'center'}
+      >
+        Weather
       </Button>
       <Button
         component={Link}
@@ -194,6 +208,16 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
             leftSection={<FiHome size={16} />}
           >
             Home
+          </Button>
+          <Button
+            component={Link}
+            to="/weather-imagery"
+            variant="subtle"
+            color="gray"
+            size="sm"
+            leftSection={<FiCloud size={16} />}
+          >
+            Weather
           </Button>
           <Button
             component={Link}

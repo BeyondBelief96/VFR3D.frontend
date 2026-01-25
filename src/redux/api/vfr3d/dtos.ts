@@ -306,7 +306,7 @@ export interface AirsigmetDto {
   altitude?: AirsigmetAltitude | undefined;
   movementDirDegrees?: number | undefined;
   movementSpeedKt?: number | undefined;
-  hazard?: AirsigmetHazard | undefined;
+  hazard?: AirsigmetHazardDto | undefined;
   airsigmetType?: string | undefined;
   areas?: AirsigmetArea[] | undefined;
 }
@@ -316,9 +316,17 @@ export interface AirsigmetAltitude {
   maxFtMsl?: number | undefined;
 }
 
-export interface AirsigmetHazard {
-  type?: string | undefined;
+export interface AirsigmetHazardDto {
+  type?: AirsigmetHazardType | undefined;
   severity?: string | undefined;
+}
+
+export enum AirsigmetHazardType {
+  CONVECTIVE = 0,
+  ICE = 1,
+  TURB = 2,
+  IFR = 3,
+  MTN_OBSCN = 4,
 }
 
 export interface AirsigmetArea {
@@ -514,6 +522,63 @@ export interface UpdateFlightRequestDto {
   plannedCruisingAltitude?: number | undefined;
   waypoints?: WaypointDto[] | undefined;
   aircraftPerformanceProfileId?: string | undefined;
+}
+
+export interface GAirmetDto {
+  id?: number;
+  receiptTime?: Date;
+  issueTime?: Date;
+  expireTime?: Date;
+  validTime?: Date;
+  product?: GAirmetProduct;
+  tag?: string | undefined;
+  forecastHour?: number;
+  hazard?: GAirmetHazardType | undefined;
+  hazardSeverity?: string | undefined;
+  geometryType?: string | undefined;
+  dueTo?: string | undefined;
+  altitudes?: GAirmetAltitude[] | undefined;
+  area?: GAirmetArea | undefined;
+}
+
+export enum GAirmetProduct {
+  SIERRA = 0,
+  TANGO = 1,
+  ZULU = 2,
+}
+
+export enum GAirmetHazardType {
+  MT_OBSC = 0,
+  IFR = 1,
+  TURB_LO = 2,
+  TURB_HI = 3,
+  LLWS = 4,
+  SFC_WIND = 5,
+  ICE = 6,
+  FZLVL = 7,
+  M_FZLVL = 8,
+}
+
+export interface GAirmetAltitude {
+  minFtMsl?: string | undefined;
+  maxFtMsl?: string | undefined;
+  levelFtMsl?: string | undefined;
+  fzlAltitude?: GAirmetFzlAltitude | undefined;
+}
+
+export interface GAirmetFzlAltitude {
+  minFtMsl?: string | undefined;
+  maxFtMsl?: string | undefined;
+}
+
+export interface GAirmetArea {
+  numPoints?: number;
+  points?: GAirmetPoint[];
+}
+
+export interface GAirmetPoint {
+  longitude?: number;
+  latitude?: number;
 }
 
 export interface MetarDto {
