@@ -9,6 +9,11 @@ import {
   Stepper,
   Text,
   Loader,
+  Paper,
+  ThemeIcon,
+  Image,
+  Badge,
+  Divider,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
@@ -22,6 +27,9 @@ import {
   FiEdit2,
   FiPlus,
   FiX,
+  FiCheck,
+  FiExternalLink,
+  FiMap,
 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { BottomDrawer } from '@/components/Common/BottomDrawer';
@@ -40,6 +48,7 @@ import {
   startEditingFlight,
   finishEditingFlight,
   startNewFlight,
+  setActiveFlightId,
 } from '@/redux/slices/flightPlanningSlice';
 import { FlightDisplayMode } from '@/utility/enums';
 import {
@@ -59,10 +68,12 @@ import {
 } from '@/redux/api/vfr3d/flights.api';
 import { DrawerAircraftPerformanceProfiles } from './PerformanceProfiles';
 import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
-import { NavLogTable } from './NavLogTable';
+import { NavLogTable, analyzeFuelStatus } from './NavLogTable';
 import { FlightPlanCalculationLoading } from './FlightPlanCalculationLoading';
 import { FlightViewerContent } from './FlightViewerContent';
 import { QuickLayerSettings } from './QuickLayerSettings';
+import { FiAlertTriangle } from 'react-icons/fi';
+import logo from '@/assets/images/logo_2.png';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -80,6 +91,11 @@ export const FlightPlanningDrawer: React.FC = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [savedFlightInfo, setSavedFlightInfo] = useState<{
+    id: string;
+    name: string;
+    isRoundTrip: boolean;
+  } | null>(null);
 
   const {
     displayMode,
@@ -130,6 +146,12 @@ export const FlightPlanningDrawer: React.FC = () => {
 
   const isSaving = isCreatingFlight || isCreatingRoundTrip || isUpdatingFlight;
 
+  // Analyze fuel status for warnings
+  const outboundFuelStatus = navlogPreview ? analyzeFuelStatus(navlogPreview.legs) : null;
+  const returnFuelStatus = navlogPreviewReturn ? analyzeFuelStatus(navlogPreviewReturn.legs) : null;
+  const hasCriticalFuelIssue =
+    outboundFuelStatus?.hasCriticalFuel || returnFuelStatus?.hasCriticalFuel;
+
   // Determine if we're in viewing or editing mode for a saved flight
   const isViewingMode = displayMode === FlightDisplayMode.VIEWING;
   const isEditingMode = displayMode === FlightDisplayMode.EDITING;
@@ -163,9 +185,10 @@ export const FlightPlanningDrawer: React.FC = () => {
       const newStep = currentStep - 1;
       dispatch(updateDraftPlanSettings({ currentStep: newStep }));
 
-      // If leaving NAVLOG_PREVIEW step, switch back to PLANNING mode
+      // If leaving NAVLOG_PREVIEW step, switch back to PLANNING mode and clear saved state
       if (currentStep === FlightPlannerStep.NAVLOG_PREVIEW) {
         dispatch(setDisplayMode(FlightDisplayMode.PLANNING));
+        setSavedFlightInfo(null);
       }
     }
   };
@@ -270,10 +293,13 @@ export const FlightPlanningDrawer: React.FC = () => {
           color: 'green',
         });
 
-        // Navigate to the outbound flight details
+        // Store saved flight info for post-save options
         if (result.outbound?.id) {
-          dispatch(resetToPlanning());
-          navigate({ to: '/flights/$flightId', params: { flightId: result.outbound.id } });
+          setSavedFlightInfo({
+            id: result.outbound.id,
+            name: flightName,
+            isRoundTrip: true,
+          });
         }
       } else {
         // Create single flight
@@ -293,10 +319,13 @@ export const FlightPlanningDrawer: React.FC = () => {
           color: 'green',
         });
 
-        // Navigate to flight details
+        // Store saved flight info for post-save options
         if (result.id) {
-          dispatch(resetToPlanning());
-          navigate({ to: '/flights/$flightId', params: { flightId: result.id } });
+          setSavedFlightInfo({
+            id: result.id,
+            name: flightName,
+            isRoundTrip: false,
+          });
         }
       }
     } catch (error) {
@@ -358,6 +387,29 @@ export const FlightPlanningDrawer: React.FC = () => {
   // Start a new flight from viewing mode
   const handleStartNewFlight = () => {
     dispatch(startNewFlight());
+    setSavedFlightInfo(null);
+  };
+
+  // View saved flight in the viewer (stay on map)
+  const handleViewSavedFlight = () => {
+    if (!savedFlightInfo) return;
+    dispatch(setActiveFlightId(savedFlightInfo.id));
+    dispatch(setDisplayMode(FlightDisplayMode.VIEWING));
+    setSavedFlightInfo(null);
+  };
+
+  // Navigate to flights page
+  const handleGoToFlightsPage = () => {
+    if (!savedFlightInfo) return;
+    dispatch(resetToPlanning());
+    setSavedFlightInfo(null);
+    navigate({ to: '/flights/$flightId', params: { flightId: savedFlightInfo.id } });
+  };
+
+  // Start planning a new flight after saving
+  const handlePlanNewFlight = () => {
+    dispatch(resetToPlanning());
+    setSavedFlightInfo(null);
   };
 
   const isEditable =
@@ -399,6 +451,123 @@ export const FlightPlanningDrawer: React.FC = () => {
       case FlightPlannerStep.NAVLOG_PREVIEW:
         if (isCalculating) {
           return <FlightPlanCalculationLoading />;
+        }
+        // Show saved flight confirmation
+        if (savedFlightInfo) {
+          return (
+            <Box
+              py="xl"
+              px="md"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100%',
+              }}
+            >
+              <Paper
+                p="xl"
+                radius="lg"
+                style={{
+                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                  border: '1px solid rgba(148, 163, 184, 0.15)',
+                  width: '100%',
+                  maxWidth: 420,
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                <Stack align="center" gap="lg">
+                  {/* Logo */}
+                  <Image src={logo} alt="VFR3D" h={48} w="auto" />
+
+                  {/* Success indicator */}
+                  <Box ta="center">
+                    <Group gap="xs" justify="center" mb="xs">
+                      <ThemeIcon size={28} radius="xl" color="green" variant="filled">
+                        <FiCheck size={16} />
+                      </ThemeIcon>
+                      <Text size="lg" fw={600} c="white">
+                        Flight Plan Saved
+                      </Text>
+                    </Group>
+                  </Box>
+
+                  {/* Flight details card */}
+                  <Paper
+                    p="md"
+                    radius="md"
+                    w="100%"
+                    style={{
+                      backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                      border: '1px solid rgba(148, 163, 184, 0.1)',
+                    }}
+                  >
+                    <Group justify="space-between" align="center">
+                      <Box>
+                        <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
+                          Flight
+                        </Text>
+                        <Text size="md" fw={600} c="white">
+                          {savedFlightInfo.name}
+                        </Text>
+                      </Box>
+                      {savedFlightInfo.isRoundTrip && (
+                        <Badge variant="light" color="blue" size="sm">
+                          Round Trip
+                        </Badge>
+                      )}
+                    </Group>
+                  </Paper>
+
+                  <Divider
+                    w="100%"
+                    color="rgba(148, 163, 184, 0.15)"
+                    label={
+                      <Text size="xs" c="dimmed">
+                        Continue with
+                      </Text>
+                    }
+                    labelPosition="center"
+                  />
+
+                  {/* Action buttons */}
+                  <Stack gap="xs" w="100%">
+                    <Button
+                      fullWidth
+                      size="md"
+                      leftSection={<FiMap size={18} />}
+                      onClick={handleViewSavedFlight}
+                      variant="gradient"
+                      gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    >
+                      View on Map
+                    </Button>
+                    <Button
+                      fullWidth
+                      size="md"
+                      leftSection={<FiExternalLink size={18} />}
+                      onClick={handleGoToFlightsPage}
+                      variant="light"
+                      color="gray"
+                    >
+                      Flight Details Page
+                    </Button>
+                    <Button
+                      fullWidth
+                      size="md"
+                      leftSection={<FiPlus size={18} />}
+                      onClick={handlePlanNewFlight}
+                      variant="subtle"
+                      color="dimmed"
+                    >
+                      Plan New Flight
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Paper>
+            </Box>
+          );
         }
         if (!navlogPreview) {
           return (
@@ -537,14 +706,15 @@ export const FlightPlanningDrawer: React.FC = () => {
         <Stepper
           active={currentStep}
           onStepClick={(step) => {
-            // Don't allow step navigation when editing a profile
-            if (isEditingProfile) return;
+            // Don't allow step navigation when editing a profile or after saving
+            if (isEditingProfile || savedFlightInfo) return;
             if (step <= currentStep) {
               dispatch(updateDraftPlanSettings({ currentStep: step }));
 
               // If leaving NAVLOG_PREVIEW step, switch back to PLANNING mode
               if (currentStep === FlightPlannerStep.NAVLOG_PREVIEW && step < currentStep) {
                 dispatch(setDisplayMode(FlightDisplayMode.PLANNING));
+                setSavedFlightInfo(null);
               }
             }
           }}
@@ -578,26 +748,36 @@ export const FlightPlanningDrawer: React.FC = () => {
         {renderStepContent()}
       </Box>
 
-      {/* Navigation */}
-      <Group
-        justify="space-between"
-        px="md"
-        py="sm"
-        style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
-      >
-        <Button
-          variant="subtle"
-          leftSection={<FiChevronLeft size={16} />}
-          onClick={handlePreviousStep}
-          disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
-          style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
+      {/* Navigation - hide when showing saved confirmation */}
+      {!savedFlightInfo && (
+        <Group
+          justify="space-between"
+          px="md"
+          py="sm"
+          style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
         >
-          Back
-        </Button>
+          <Button
+            variant="subtle"
+            leftSection={<FiChevronLeft size={16} />}
+            onClick={handlePreviousStep}
+            disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
+            style={{ visibility: currentStep === 0 ? 'hidden' : 'visible' }}
+          >
+            Back
+          </Button>
 
-        <Group gap="sm">
-          {currentStep === FlightPlannerStep.NAVLOG_PREVIEW ? (
+          <Group gap="sm">
+            {currentStep === FlightPlannerStep.NAVLOG_PREVIEW ? (
             <>
+              {/* Fuel Warning Badge */}
+              {hasCriticalFuelIssue && (
+                <Group gap={4} style={{ color: '#ef4444' }}>
+                  <FiAlertTriangle size={16} />
+                  <Text size="xs" fw={600} c="red.4">
+                    FUEL ISSUE
+                  </Text>
+                </Group>
+              )}
               <Button
                 variant="light"
                 color="gray"
@@ -611,8 +791,10 @@ export const FlightPlanningDrawer: React.FC = () => {
                 leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
                 onClick={handleSaveFlight}
                 disabled={!navlogPreview || isSaving || !userId}
+                color={hasCriticalFuelIssue ? 'red' : undefined}
+                variant={hasCriticalFuelIssue ? 'outline' : 'filled'}
               >
-                {isSaving ? 'Saving...' : 'Save Flight'}
+                {isSaving ? 'Saving...' : hasCriticalFuelIssue ? 'Save Anyway' : 'Save Flight'}
               </Button>
             </>
           ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
@@ -638,7 +820,8 @@ export const FlightPlanningDrawer: React.FC = () => {
             </Button>
           )}
         </Group>
-      </Group>
+        </Group>
+      )}
     </Stack>
   );
 

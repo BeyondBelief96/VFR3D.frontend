@@ -28,6 +28,9 @@ import { setSelectedEntity, updateSelectedWaypointPosition } from '@/redux/slice
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAuth } from '@/components/Auth';
 
+// Fuel warning threshold (gallons)
+const FUEL_CRITICAL_THRESHOLD = 0;
+
 // Helper to identify TOC/TOD calculated points by name pattern
 const isTocTodPoint = (waypoint: WaypointDto): boolean => {
   const name = waypoint.name?.toLowerCase() || '';
@@ -412,24 +415,42 @@ const RouteComponent: React.FC = () => {
 
         const polylineId = `route-polyline-${prevPoint.id}-${point.id}`;
 
-        // Determine segment color based on altitude change (for PREVIEW mode)
-        let segmentColor = Color.fromCssColorString(lineColor);
-        if (displayMode === FlightDisplayMode.PREVIEW) {
-          const prevAlt = prevPoint.altitude ?? 0;
-          const currAlt = point.altitude ?? 0;
-          const altDiff = currAlt - prevAlt;
+        // Check for fuel issues in PREVIEW mode
+        // Find the leg that matches this segment (start point -> end point)
+        const matchingLeg = navlogPreview?.legs?.find(
+          (leg) =>
+            leg.legStartPoint?.id === prevPoint.id && leg.legEndPoint?.id === point.id
+        );
+        const hasInsufficientFuel =
+          matchingLeg?.remainingFuelGals !== undefined &&
+          matchingLeg.remainingFuelGals < FUEL_CRITICAL_THRESHOLD;
 
-          // Climbing segment (green)
-          if (altDiff > 100) {
-            segmentColor = Color.fromCssColorString('#22c55e').withAlpha(0.9);
-          }
-          // Descending segment (orange)
-          else if (altDiff < -100) {
-            segmentColor = Color.fromCssColorString('#f97316').withAlpha(0.9);
-          }
-          // Cruise segment (use default line color)
-          else {
-            segmentColor = Color.fromCssColorString(lineColor);
+        // Determine segment color based on fuel status first, then altitude change
+        let segmentColor = Color.fromCssColorString(lineColor);
+        let segmentWidth = 5;
+
+        if (displayMode === FlightDisplayMode.PREVIEW) {
+          // Fuel issue takes priority - show red dashed for insufficient fuel
+          if (hasInsufficientFuel) {
+            segmentColor = Color.fromCssColorString('#ef4444').withAlpha(1.0); // Bright red
+            segmentWidth = 6; // Slightly thicker for visibility
+          } else {
+            const prevAlt = prevPoint.altitude ?? 0;
+            const currAlt = point.altitude ?? 0;
+            const altDiff = currAlt - prevAlt;
+
+            // Climbing segment (green)
+            if (altDiff > 100) {
+              segmentColor = Color.fromCssColorString('#22c55e').withAlpha(0.9);
+            }
+            // Descending segment (orange)
+            else if (altDiff < -100) {
+              segmentColor = Color.fromCssColorString('#f97316').withAlpha(0.9);
+            }
+            // Cruise segment (use default line color)
+            else {
+              segmentColor = Color.fromCssColorString(lineColor);
+            }
           }
         }
 
@@ -439,7 +460,7 @@ const RouteComponent: React.FC = () => {
             positions={[prevPosition, currPosition]}
             color={segmentColor}
             id={polylineId}
-            width={5}
+            width={segmentWidth}
             onLeftClick={isEditable ? handleRouteLeftClick : undefined}
           />
         );
