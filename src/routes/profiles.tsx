@@ -356,8 +356,30 @@ function ProfilesContent() {
         centered
         size="lg"
         styles={{
-          header: { backgroundColor: 'var(--vfr3d-surface)' },
-          body: { backgroundColor: 'var(--vfr3d-surface)', padding: 0 },
+          header: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            padding: '16px 20px',
+          },
+          title: {
+            fontWeight: 600,
+            color: 'white',
+          },
+          body: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            padding: '20px',
+            maxHeight: 'calc(100vh - 200px)',
+            overflowY: 'auto',
+          },
+          content: {
+            backgroundColor: 'var(--vfr3d-surface)',
+          },
+          close: {
+            color: 'var(--mantine-color-gray-4)',
+            '&:hover': {
+              backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            },
+          },
         }}
       >
         <PerformanceProfileDrawerForm
@@ -365,6 +387,7 @@ function ProfilesContent() {
           existingProfile={editingProfile}
           onCancel={handleFormCancel}
           onSuccess={handleFormSuccess}
+          isModal
         />
       </Modal>
 
@@ -375,11 +398,31 @@ function ProfilesContent() {
         title="Delete Profile"
         centered
         styles={{
-          header: { backgroundColor: 'var(--vfr3d-surface)' },
-          body: { backgroundColor: 'var(--vfr3d-surface)' },
+          header: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            padding: '16px 20px',
+          },
+          title: {
+            fontWeight: 600,
+            color: 'white',
+          },
+          body: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            padding: '20px',
+          },
+          content: {
+            backgroundColor: 'var(--vfr3d-surface)',
+          },
+          close: {
+            color: 'var(--mantine-color-gray-4)',
+            '&:hover': {
+              backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            },
+          },
         }}
       >
-        <Stack gap="md">
+        <Stack gap="lg">
           <Text c="dimmed">
             Are you sure you want to delete this aircraft profile? This action cannot be undone.
           </Text>

@@ -44,6 +44,7 @@ interface PerformanceProfileDrawerFormProps {
   existingProfile?: AircraftPerformanceProfileDto | null;
   onCancel: () => void;
   onSuccess: () => void;
+  isModal?: boolean; // When true, hides the back button header (modal has its own)
 }
 
 interface FormData {
@@ -79,6 +80,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
   existingProfile,
   onCancel,
   onSuccess,
+  isModal = false,
 }) => {
   const { user } = useAuth();
   const userId = user?.sub || '';
@@ -173,21 +175,23 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
-        {/* Header */}
-        <Group gap="xs">
-          <Button
-            variant="subtle"
-            size="compact-sm"
-            leftSection={<FiArrowLeft size={14} />}
-            onClick={onCancel}
-            disabled={isLoading}
-          >
-            Back
-          </Button>
-          <Text fw={600} c="white">
-            {mode === 'create' ? 'New Aircraft Profile' : 'Edit Profile'}
-          </Text>
-        </Group>
+        {/* Header - only shown in drawer context, not modal */}
+        {!isModal && (
+          <Group gap="xs">
+            <Button
+              variant="subtle"
+              size="compact-sm"
+              leftSection={<FiArrowLeft size={14} />}
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              Back
+            </Button>
+            <Text fw={600} c="white">
+              {mode === 'create' ? 'New Aircraft Profile' : 'Edit Profile'}
+            </Text>
+          </Group>
+        )}
 
         {/* Error Alert */}
         {hasError && (
@@ -449,16 +453,43 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
           </Group>
         </Paper>
 
-        {/* Submit Button */}
-        <Button type="submit" disabled={!isValid || isLoading} fullWidth>
-          {isLoading ? (
-            <Loader size="xs" color="white" />
-          ) : mode === 'create' ? (
-            'Create Profile'
-          ) : (
-            'Save Changes'
-          )}
-        </Button>
+        {/* Action Buttons */}
+        {isModal ? (
+          <Group justify="flex-end" gap="sm" mt="md">
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={!isValid || isLoading}
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            >
+              {isLoading ? (
+                <Loader size="xs" color="white" />
+              ) : mode === 'create' ? (
+                'Create Profile'
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          </Group>
+        ) : (
+          <Button type="submit" disabled={!isValid || isLoading} fullWidth>
+            {isLoading ? (
+              <Loader size="xs" color="white" />
+            ) : mode === 'create' ? (
+              'Create Profile'
+            ) : (
+              'Save Changes'
+            )}
+          </Button>
+        )}
       </Stack>
     </form>
   );
