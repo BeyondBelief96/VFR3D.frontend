@@ -9,6 +9,7 @@ import {
   Drawer,
   Stack,
   Divider,
+  Image,
   Box,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -25,6 +26,7 @@ import {
 } from 'react-icons/fi';
 import { FaPlane, FaPlaneDeparture } from 'react-icons/fa';
 import AirportSearch from '../Search/AirportSearch';
+import logo from '@/assets/images/logo_2.png';
 
 interface HeaderProps {
   isViewerPage: boolean;
@@ -55,18 +57,6 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
         justify={mobile ? 'flex-start' : 'center'}
       >
         Home
-      </Button>
-      <Button
-        component={Link}
-        to="/features"
-        variant="subtle"
-        color="gray"
-        size={mobile ? 'md' : 'sm'}
-        onClick={onNavigate}
-        fullWidth={mobile}
-        justify={mobile ? 'flex-start' : 'center'}
-      >
-        Features
       </Button>
       <Button
         component={Link}
@@ -252,29 +242,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
       <Group h="100%" px="md" justify="space-between">
         {/* Logo */}
         <Link to="/" style={{ textDecoration: 'none' }}>
-          <Group gap="xs">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 8,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <FaPlane size={20} color="white" style={{ transform: 'rotate(-45deg)' }} />
-            </Box>
-            <Text
-              size="xl"
-              fw={700}
-              variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-            >
-              VFR3D
-            </Text>
-          </Group>
+          <Image src={logo} alt="VFR3D" h={40} w="auto" />
         </Link>
 
         {/* Desktop Navigation */}
