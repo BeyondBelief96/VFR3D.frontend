@@ -1,4 +1,4 @@
-import { aircraftPerformanceProfileTag, flightsTag } from '../rtkQuery.tags';
+import { aircraftTag, aircraftPerformanceProfileTag, flightsTag } from '../rtkQuery.tags';
 import {
   AircraftPerformanceProfileDto,
   SaveAircraftPerformanceProfileRequestDto,
@@ -17,7 +17,7 @@ export const performanceProfilesApi = baseApi.injectEndpoints({
         method: 'POST',
         body: aircraftPerformanceDTO,
       }),
-      invalidatesTags: [aircraftPerformanceProfileTag, flightsTag],
+      invalidatesTags: [aircraftTag, aircraftPerformanceProfileTag, flightsTag],
     }),
     getAircraftPerformanceProfiles: builder.query<AircraftPerformanceProfileDto[], string>({
       query: (userId) => ({
@@ -35,7 +35,7 @@ export const performanceProfilesApi = baseApi.injectEndpoints({
         method: 'PUT',
         body: request,
       }),
-      invalidatesTags: [aircraftPerformanceProfileTag, flightsTag],
+      invalidatesTags: [aircraftTag, aircraftPerformanceProfileTag, flightsTag],
     }),
     deleteAircraftPerformanceProfile: builder.mutation<
       void,
@@ -45,7 +45,7 @@ export const performanceProfilesApi = baseApi.injectEndpoints({
         url: `/AircraftPerformanceProfile/${userId}/${profileId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [aircraftPerformanceProfileTag, flightsTag],
+      invalidatesTags: [aircraftTag, aircraftPerformanceProfileTag, flightsTag],
     }),
   }),
 });

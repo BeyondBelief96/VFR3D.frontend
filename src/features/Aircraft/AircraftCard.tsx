@@ -1,0 +1,434 @@
+import React, { useState } from 'react';
+import {
+  Card,
+  Stack,
+  Group,
+  Text,
+  Box,
+  Badge,
+  ActionIcon,
+  Collapse,
+  Button,
+  Paper,
+  SimpleGrid,
+  Modal,
+  Alert,
+} from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle } from 'react-icons/fi';
+import { FaPlane } from 'react-icons/fa';
+import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto } from '@/redux/api/vfr3d/dtos';
+import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
+import { useAuth } from '@/components/Auth';
+import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
+
+interface AircraftCardProps {
+  aircraft: AircraftDto;
+  onEdit: (aircraft: AircraftDto) => void;
+  onDelete: (aircraftId: string) => void;
+  isDeleting: boolean;
+}
+
+const getCategoryLabel = (category?: AircraftCategory): string => {
+  switch (category) {
+    case AircraftCategory.SingleEngine:
+      return 'Single Engine';
+    case AircraftCategory.MultiEngine:
+      return 'Multi Engine';
+    case AircraftCategory.Helicopter:
+      return 'Helicopter';
+    case AircraftCategory.Glider:
+      return 'Glider';
+    case AircraftCategory.Balloon:
+      return 'Balloon';
+    case AircraftCategory.Ultralight:
+      return 'Ultralight';
+    case AircraftCategory.LightSport:
+      return 'Light Sport';
+    case AircraftCategory.Gyroplane:
+      return 'Gyroplane';
+    default:
+      return 'Unknown';
+  }
+};
+
+export const AircraftCard: React.FC<AircraftCardProps> = ({
+  aircraft,
+  onEdit,
+  onDelete,
+  isDeleting,
+}) => {
+  const { user } = useAuth();
+  const userId = user?.sub || '';
+
+  const [expanded, setExpanded] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [editingProfile, setEditingProfile] = useState<AircraftPerformanceProfileDto | null>(null);
+  const [profileFormMode, setProfileFormMode] = useState<'create' | 'edit'>('create');
+  const [deleteProfileModalOpen, setDeleteProfileModalOpen] = useState(false);
+  const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
+
+  const [deleteProfile, { isLoading: isDeletingProfile }] = useDeleteAircraftPerformanceProfileMutation();
+
+  const profiles = aircraft.performanceProfiles || [];
+  const profileCount = profiles.length;
+
+  const handleAddProfile = () => {
+    setEditingProfile(null);
+    setProfileFormMode('create');
+    setProfileModalOpen(true);
+  };
+
+  const handleEditProfile = (profile: AircraftPerformanceProfileDto) => {
+    setEditingProfile(profile);
+    setProfileFormMode('edit');
+    setProfileModalOpen(true);
+  };
+
+  const handleDeleteProfileClick = (profileId: string) => {
+    setProfileToDelete(profileId);
+    setDeleteProfileModalOpen(true);
+  };
+
+  // Get the profile being deleted for display
+  const profileBeingDeleted = profileToDelete
+    ? profiles.find((p) => p.id === profileToDelete)
+    : null;
+
+  const handleDeleteProfileConfirm = async () => {
+    if (!profileToDelete || !userId) return;
+
+    try {
+      await deleteProfile({ userId, aircraftPerformanceProfileId: profileToDelete }).unwrap();
+      notifications.show({
+        title: 'Profile Deleted',
+        message: 'The performance profile has been deleted.',
+        color: 'green',
+      });
+    } catch (error: any) {
+      const status = error?.status;
+      const errorMessage = error?.data || error?.message || '';
+
+      if (status === 409 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('flight'))) {
+        notifications.show({
+          title: 'Cannot Delete Profile',
+          message: 'This profile is being used by one or more flights. Update those flights to use a different profile first.',
+          color: 'orange',
+          autoClose: 8000,
+        });
+      } else {
+        notifications.show({
+          title: 'Delete Failed',
+          message: 'Unable to delete the profile. Please try again.',
+          color: 'red',
+        });
+      }
+    } finally {
+      setDeleteProfileModalOpen(false);
+      setProfileToDelete(null);
+    }
+  };
+
+  const handleProfileFormSuccess = () => {
+    setProfileModalOpen(false);
+    setEditingProfile(null);
+    notifications.show({
+      title: profileFormMode === 'create' ? 'Profile Created' : 'Profile Updated',
+      message:
+        profileFormMode === 'create'
+          ? 'Your new performance profile has been created.'
+          : 'Your performance profile has been updated.',
+      color: 'green',
+    });
+  };
+
+  return (
+    <>
+      <Card
+        padding="lg"
+        radius="md"
+        style={{
+          backgroundColor: 'rgba(30, 41, 59, 0.8)',
+          border: '1px solid rgba(148, 163, 184, 0.15)',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <Stack gap="md">
+          {/* Header */}
+          <Group justify="space-between" wrap="nowrap">
+            <Group gap="sm" wrap="nowrap">
+              <Box
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FaPlane size={20} color="var(--vfr3d-primary)" />
+              </Box>
+              <Box>
+                <Text c="white" fw={600} size="lg" lineClamp={1}>
+                  {aircraft.aircraftType || 'Unnamed Aircraft'}
+                </Text>
+                {aircraft.tailNumber && (
+                  <Text c="dimmed" size="sm">
+                    {aircraft.tailNumber}
+                  </Text>
+                )}
+              </Box>
+            </Group>
+            <Group gap={4}>
+              <ActionIcon
+                variant="subtle"
+                color="blue"
+                size="lg"
+                onClick={() => onEdit(aircraft)}
+              >
+                <FiEdit2 size={18} />
+              </ActionIcon>
+              <ActionIcon
+                variant="subtle"
+                color="red"
+                size="lg"
+                onClick={() => aircraft.id && onDelete(aircraft.id)}
+                loading={isDeleting}
+              >
+                <FiTrash2 size={18} />
+              </ActionIcon>
+            </Group>
+          </Group>
+
+          {/* Category Badge */}
+          {aircraft.category && (
+            <Badge size="sm" variant="light" color="blue">
+              {getCategoryLabel(aircraft.category)}
+            </Badge>
+          )}
+
+          {/* Profiles Expandable Section */}
+          <Box>
+            <Button
+              variant="subtle"
+              color="gray"
+              size="sm"
+              fullWidth
+              justify="space-between"
+              rightSection={expanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+              onClick={() => setExpanded(!expanded)}
+              styles={{
+                root: {
+                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                  },
+                },
+              }}
+            >
+              <Text size="sm" c="white">
+                Performance Profiles ({profileCount})
+              </Text>
+            </Button>
+
+            <Collapse in={expanded}>
+              <Stack gap="sm" mt="sm">
+                {profiles.length === 0 ? (
+                  <Text size="sm" c="dimmed" ta="center" py="md">
+                    No performance profiles configured
+                  </Text>
+                ) : (
+                  <SimpleGrid cols={1} spacing="xs">
+                    {profiles.map((profile) => (
+                      <Paper
+                        key={profile.id}
+                        p="sm"
+                        style={{
+                          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                          borderRadius: 'var(--mantine-radius-md)',
+                        }}
+                      >
+                        <Group justify="space-between" wrap="nowrap">
+                          <Box>
+                            <Text size="sm" fw={500} c="white" lineClamp={1}>
+                              {profile.profileName}
+                            </Text>
+                            <Group gap="xs" mt={4}>
+                              <Text size="xs" c="dimmed">
+                                {profile.cruiseTrueAirspeed} kts
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {profile.cruiseFuelBurn} gph
+                              </Text>
+                            </Group>
+                          </Box>
+                          <Group gap={4}>
+                            <ActionIcon
+                              size="sm"
+                              variant="subtle"
+                              color="blue"
+                              onClick={() => handleEditProfile(profile)}
+                            >
+                              <FiEdit2 size={14} />
+                            </ActionIcon>
+                            <ActionIcon
+                              size="sm"
+                              variant="subtle"
+                              color="red"
+                              onClick={() => profile.id && handleDeleteProfileClick(profile.id)}
+                              loading={isDeletingProfile && profileToDelete === profile.id}
+                            >
+                              <FiTrash2 size={14} />
+                            </ActionIcon>
+                          </Group>
+                        </Group>
+                      </Paper>
+                    ))}
+                  </SimpleGrid>
+                )}
+
+                <Button
+                  variant="light"
+                  size="xs"
+                  leftSection={<FiPlus size={14} />}
+                  onClick={handleAddProfile}
+                >
+                  Add Profile
+                </Button>
+              </Stack>
+            </Collapse>
+          </Box>
+        </Stack>
+      </Card>
+
+      {/* Profile Create/Edit Modal */}
+      <Modal
+        opened={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        title={profileFormMode === 'create' ? 'Create Performance Profile' : 'Edit Performance Profile'}
+        centered
+        size="lg"
+        styles={{
+          header: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            padding: '16px 20px',
+          },
+          title: {
+            fontWeight: 600,
+            color: 'white',
+          },
+          body: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            padding: '20px',
+            maxHeight: 'calc(100vh - 200px)',
+            overflowY: 'auto',
+          },
+          content: {
+            backgroundColor: 'var(--vfr3d-surface)',
+          },
+          close: {
+            color: 'var(--mantine-color-gray-4)',
+            '&:hover': {
+              backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            },
+          },
+        }}
+      >
+        <PerformanceProfileDrawerForm
+          mode={profileFormMode}
+          existingProfile={editingProfile}
+          aircraftId={aircraft.id}
+          onCancel={() => setProfileModalOpen(false)}
+          onSuccess={handleProfileFormSuccess}
+          isModal
+        />
+      </Modal>
+
+      {/* Delete Profile Confirmation Modal */}
+      <Modal
+        opened={deleteProfileModalOpen}
+        onClose={() => setDeleteProfileModalOpen(false)}
+        title="Delete Performance Profile"
+        centered
+        styles={{
+          header: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            padding: '16px 20px',
+          },
+          title: {
+            fontWeight: 600,
+            color: 'white',
+          },
+          body: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            padding: '20px',
+          },
+          content: {
+            backgroundColor: 'var(--vfr3d-surface)',
+          },
+          close: {
+            color: 'var(--mantine-color-gray-4)',
+            '&:hover': {
+              backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            },
+          },
+        }}
+      >
+        <Stack gap="md">
+          {profileBeingDeleted && (
+            <Box
+              p="md"
+              style={{
+                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                borderRadius: 'var(--mantine-radius-md)',
+                border: '1px solid rgba(148, 163, 184, 0.1)',
+              }}
+            >
+              <Text c="white" fw={600}>
+                {profileBeingDeleted.profileName || 'Unnamed Profile'}
+              </Text>
+              <Group gap="xs" mt={4}>
+                <Badge size="xs" variant="light" color="blue">
+                  {profileBeingDeleted.cruiseTrueAirspeed} kts
+                </Badge>
+                <Badge size="xs" variant="light" color="cyan">
+                  {profileBeingDeleted.cruiseFuelBurn} gph
+                </Badge>
+              </Group>
+            </Box>
+          )}
+
+          <Alert
+            color="orange"
+            variant="light"
+            icon={<FiAlertTriangle size={16} />}
+          >
+            <Text size="sm">
+              Flights using this profile will no longer have performance data associated with them.
+              You may need to assign a new profile to those flights.
+            </Text>
+          </Alert>
+
+          <Text c="dimmed" size="sm">
+            This action cannot be undone.
+          </Text>
+
+          <Group justify="flex-end" gap="sm">
+            <Button variant="subtle" color="gray" onClick={() => setDeleteProfileModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={handleDeleteProfileConfirm} loading={isDeletingProfile}>
+              Delete Profile
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </>
+  );
+};
+
+export default AircraftCard;

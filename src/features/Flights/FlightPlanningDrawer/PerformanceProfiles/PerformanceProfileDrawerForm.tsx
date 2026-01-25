@@ -42,6 +42,7 @@ const inputStyles = {
 interface PerformanceProfileDrawerFormProps {
   mode: 'create' | 'edit';
   existingProfile?: AircraftPerformanceProfileDto | null;
+  aircraftId?: string; // Optional aircraft ID to associate profile with
   onCancel: () => void;
   onSuccess: () => void;
   isModal?: boolean; // When true, hides the back button header (modal has its own)
@@ -78,6 +79,7 @@ const defaultFormData: FormData = {
 export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerFormProps> = ({
   mode,
   existingProfile,
+  aircraftId,
   onCancel,
   onSuccess,
   isModal = false,
@@ -134,6 +136,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
       if (mode === 'create') {
         const request: SaveAircraftPerformanceProfileRequestDto = {
           userId,
+          aircraftId: aircraftId || undefined,
           profileName: formData.profileName,
           cruiseTrueAirspeed: formData.cruiseTrueAirspeed || undefined,
           cruiseFuelBurn: formData.cruiseFuelBurn || undefined,
@@ -150,6 +153,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
       } else if (mode === 'edit' && existingProfile?.id) {
         const request: UpdateAircraftPerformanceProfileRequestDto = {
           userId,
+          aircraftId: aircraftId || existingProfile.aircraftId || undefined,
           profileName: formData.profileName,
           cruiseTrueAirspeed: formData.cruiseTrueAirspeed || undefined,
           cruiseFuelBurn: formData.cruiseFuelBurn || undefined,

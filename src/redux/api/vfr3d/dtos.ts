@@ -9,9 +9,54 @@
 
 
 
+export interface AircraftDto {
+  id?: string;
+  userId?: string;
+  tailNumber?: string;
+  aircraftType?: string;
+  callSign?: string | undefined;
+  serialNumber?: string | undefined;
+  primaryColor?: string | undefined;
+  color2?: string | undefined;
+  color3?: string | undefined;
+  color4?: string | undefined;
+  category?: AircraftCategory;
+  aircraftHome?: string | undefined;
+  airspeedUnits?: AirspeedUnits;
+  lengthUnits?: LengthUnits;
+  defaultCruiseAltitude?: number | undefined;
+  maxCeiling?: number | undefined;
+  glideSpeed?: number | undefined;
+  glideRatio?: number | undefined;
+  performanceProfiles?: AircraftPerformanceProfileDto[];
+}
+
+export enum AircraftCategory {
+  SingleEngine = "SingleEngine",
+  MultiEngine = "MultiEngine",
+  Helicopter = "Helicopter",
+  Glider = "Glider",
+  Balloon = "Balloon",
+  Ultralight = "Ultralight",
+  LightSport = "LightSport",
+  Gyroplane = "Gyroplane",
+}
+
+export enum AirspeedUnits {
+  Knots = "Knots",
+  MPH = "MPH",
+  KPH = "KPH",
+}
+
+export enum LengthUnits {
+  Feet = "Feet",
+  Meters = "Meters",
+}
+
 export interface AircraftPerformanceProfileDto {
   id?: string;
   userId?: string;
+  aircraftId?: string | undefined;
   profileName?: string;
   climbTrueAirspeed?: number;
   cruiseTrueAirspeed?: number;
@@ -35,8 +80,47 @@ export interface ProblemDetails {
   [key: string]: any;
 }
 
+export interface CreateAircraftRequestDto {
+  tailNumber?: string;
+  aircraftType?: string;
+  callSign?: string | undefined;
+  serialNumber?: string | undefined;
+  primaryColor?: string | undefined;
+  color2?: string | undefined;
+  color3?: string | undefined;
+  color4?: string | undefined;
+  category?: AircraftCategory;
+  aircraftHome?: string | undefined;
+  airspeedUnits?: AirspeedUnits;
+  lengthUnits?: LengthUnits;
+  defaultCruiseAltitude?: number | undefined;
+  maxCeiling?: number | undefined;
+  glideSpeed?: number | undefined;
+  glideRatio?: number | undefined;
+}
+
+export interface UpdateAircraftRequestDto {
+  tailNumber?: string;
+  aircraftType?: string;
+  callSign?: string | undefined;
+  serialNumber?: string | undefined;
+  primaryColor?: string | undefined;
+  color2?: string | undefined;
+  color3?: string | undefined;
+  color4?: string | undefined;
+  category?: AircraftCategory;
+  aircraftHome?: string | undefined;
+  airspeedUnits?: AirspeedUnits;
+  lengthUnits?: LengthUnits;
+  defaultCruiseAltitude?: number | undefined;
+  maxCeiling?: number | undefined;
+  glideSpeed?: number | undefined;
+  glideRatio?: number | undefined;
+}
+
 export interface SaveAircraftPerformanceProfileRequestDto {
   userId?: string;
+  aircraftId?: string | undefined;
   profileName?: string;
   climbTrueAirspeed?: number;
   cruiseTrueAirspeed?: number;
@@ -52,6 +136,7 @@ export interface SaveAircraftPerformanceProfileRequestDto {
 
 export interface UpdateAircraftPerformanceProfileRequestDto {
   userId?: string;
+  aircraftId?: string | undefined;
   profileName?: string;
   climbTrueAirspeed?: number;
   cruiseTrueAirspeed?: number;
@@ -444,6 +529,7 @@ export interface FlightDto {
   plannedCruisingAltitude?: number;
   waypoints?: WaypointDto[];
   aircraftPerformanceId?: string;
+  aircraftId?: string | undefined;
   totalRouteDistance?: number;
   totalRouteTimeHours?: number;
   totalFuelUsed?: number;
@@ -501,6 +587,7 @@ export interface CreateFlightRequestDto {
   plannedCruisingAltitude?: number;
   waypoints?: WaypointDto[];
   aircraftPerformanceProfileId?: string;
+  aircraftId?: string | undefined;
 }
 
 export interface ValueTupleOfFlightDtoAndFlightDto {

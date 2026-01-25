@@ -193,6 +193,11 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
 
         {/* Footer badges */}
         <Group gap="xs">
+          {flight.aircraftPerformanceProfile?.profileName && (
+            <Badge size="sm" variant="light" color="grape">
+              {flight.aircraftPerformanceProfile.profileName}
+            </Badge>
+          )}
           <Badge size="sm" variant="light" color="blue">
             {flight.waypoints?.length || 0} waypoints
           </Badge>

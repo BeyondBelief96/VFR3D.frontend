@@ -4,6 +4,7 @@ import type { RootState } from '../../store';
 // Tag types for cache invalidation
 export const tagTypes = [
   'flights',
+  'aircraft',
   'aircraftPerformanceProfile',
   'airports',
   'airspaces',

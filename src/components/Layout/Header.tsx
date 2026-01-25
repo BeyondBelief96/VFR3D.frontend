@@ -100,7 +100,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
           </Button>
           <Button
             component={Link}
-            to="/profiles"
+            to="/aircraft"
             variant="subtle"
             color="gray"
             size={mobile ? 'md' : 'sm'}
@@ -109,7 +109,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
             fullWidth={mobile}
             justify={mobile ? 'flex-start' : 'center'}
           >
-            Profiles
+            Aircraft
           </Button>
           <Button
             component={Link}
@@ -221,13 +221,13 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
           </Button>
           <Button
             component={Link}
-            to="/profiles"
+            to="/aircraft"
             variant="subtle"
             color="gray"
             size="sm"
             leftSection={<FaPlaneDeparture size={14} />}
           >
-            Profiles
+            Aircraft
           </Button>
         </Group>
 

@@ -46,7 +46,7 @@ import {
   useUpdateFlightMutation,
   useRegenerateNavlogMutation,
 } from '@/redux/api/vfr3d/flights.api';
-import { useGetAircraftPerformanceProfilesQuery } from '@/redux/api/vfr3d/performanceProfiles.api';
+import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import {
   useGetAirportsByIcaoCodesOrIdentsQuery,
   useGetRunwaysByAirportCodeQuery,
@@ -853,14 +853,43 @@ function FlightSettings({
   const [profileId, setProfileId] = useState<string | null>(
     flight.aircraftPerformanceProfile?.id || null
   );
+  const [aircraftId, setAircraftId] = useState<string | null>(
+    flight.aircraftPerformanceProfile?.aircraftId || flight.aircraftId || null
+  );
   const [hasChanges, setHasChanges] = useState(false);
 
-  const { data: profiles } = useGetAircraftPerformanceProfilesQuery(userId, {
+  const { data: aircraftList, isLoading: isLoadingAircraft } = useGetAircraftQuery(userId, {
     skip: !userId,
   });
 
   const [updateFlight, { isLoading: isUpdating }] = useUpdateFlightMutation();
   const [regenerateNavlog, { isLoading: isRegenerating }] = useRegenerateNavlogMutation();
+
+  // Get the selected aircraft and its profiles
+  const selectedAircraft = useMemo(() => {
+    return aircraftList?.find((a) => a.id === aircraftId);
+  }, [aircraftList, aircraftId]);
+
+  const profiles = selectedAircraft?.performanceProfiles || [];
+
+  // Auto-select aircraft based on current profile when data loads
+  useMemo(() => {
+    if (aircraftList && profileId && !aircraftId) {
+      const aircraftWithProfile = aircraftList.find((a) =>
+        a.performanceProfiles?.some((p) => p.id === profileId)
+      );
+      if (aircraftWithProfile?.id) {
+        setAircraftId(aircraftWithProfile.id);
+      }
+    }
+  }, [aircraftList, profileId, aircraftId]);
+
+  const handleAircraftChange = (newAircraftId: string | null) => {
+    setAircraftId(newAircraftId);
+    // Clear profile selection when aircraft changes
+    setProfileId(null);
+    setHasChanges(true);
+  };
 
   const handleSave = async () => {
     if (!flight.id) return;
@@ -909,14 +938,92 @@ function FlightSettings({
     }
   };
 
-  const profileOptions =
-    profiles?.map((p) => ({
+  const aircraftOptions = useMemo(() => {
+    return (
+      aircraftList?.map((a) => ({
+        value: a.id!,
+        label: a.tailNumber ? `${a.aircraftType} (${a.tailNumber})` : a.aircraftType || 'Unnamed Aircraft',
+      })) || []
+    );
+  }, [aircraftList]);
+
+  const profileOptions = useMemo(() => {
+    return profiles.map((p) => ({
       value: p.id!,
       label: p.profileName || 'Unnamed Profile',
-    })) || [];
+      description: p.cruiseTrueAirspeed && p.cruiseFuelBurn
+        ? `${p.cruiseTrueAirspeed} kts / ${p.cruiseFuelBurn} gph`
+        : undefined,
+    }));
+  }, [profiles]);
+
+  const inputStyles = {
+    input: {
+      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+      borderColor: 'rgba(148, 163, 184, 0.2)',
+      color: 'white',
+    },
+  };
 
   return (
     <Stack gap="lg">
+      {/* Aircraft & Profile Selection */}
+      <Paper
+        p="lg"
+        style={{
+          backgroundColor: 'rgba(30, 41, 59, 0.8)',
+          border: '1px solid rgba(148, 163, 184, 0.1)',
+        }}
+      >
+        <Group gap="sm" mb="md">
+          <FaPlane size={18} color="var(--vfr3d-primary)" />
+          <Text fw={600} c="white">
+            Aircraft & Performance
+          </Text>
+        </Group>
+
+        <Stack gap="md">
+          <Select
+            label="Aircraft"
+            placeholder={isLoadingAircraft ? 'Loading aircraft...' : 'Select an aircraft'}
+            data={aircraftOptions}
+            value={aircraftId}
+            onChange={handleAircraftChange}
+            disabled={isLoadingAircraft}
+            styles={inputStyles}
+            rightSection={isLoadingAircraft ? <Loader size="xs" /> : undefined}
+          />
+
+          {aircraftId && (
+            <Select
+              label="Performance Profile"
+              placeholder={profiles.length === 0 ? 'No profiles available' : 'Select a profile'}
+              data={profileOptions}
+              value={profileId}
+              onChange={(val) => {
+                setProfileId(val);
+                setHasChanges(true);
+              }}
+              disabled={profiles.length === 0}
+              styles={inputStyles}
+            />
+          )}
+
+          {aircraftId && profiles.length === 0 && (
+            <Text size="sm" c="yellow">
+              This aircraft has no performance profiles. Add profiles on the Aircraft page.
+            </Text>
+          )}
+
+          {!aircraftId && aircraftList && aircraftList.length === 0 && (
+            <Text size="sm" c="dimmed">
+              No aircraft configured. Visit the Aircraft page to add your aircraft.
+            </Text>
+          )}
+        </Stack>
+      </Paper>
+
+      {/* Flight Parameters */}
       <Paper
         p="lg"
         style={{
@@ -937,13 +1044,7 @@ function FlightSettings({
               setDepartureTime(date);
               setHasChanges(true);
             }}
-            styles={{
-              input: {
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                borderColor: 'rgba(148, 163, 184, 0.2)',
-                color: 'white',
-              },
-            }}
+            styles={inputStyles}
           />
 
           <NumberInput
@@ -956,31 +1057,7 @@ function FlightSettings({
             min={500}
             max={45000}
             step={500}
-            styles={{
-              input: {
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                borderColor: 'rgba(148, 163, 184, 0.2)',
-                color: 'white',
-              },
-            }}
-          />
-
-          <Select
-            label="Aircraft Performance Profile"
-            placeholder="Select a profile"
-            data={profileOptions}
-            value={profileId}
-            onChange={(val) => {
-              setProfileId(val);
-              setHasChanges(true);
-            }}
-            styles={{
-              input: {
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                borderColor: 'rgba(148, 163, 184, 0.2)',
-                color: 'white',
-              },
-            }}
+            styles={inputStyles}
           />
 
           <Group justify="flex-end" mt="md">
