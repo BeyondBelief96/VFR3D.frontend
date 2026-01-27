@@ -23,8 +23,6 @@ import {
   ARCGIS_WORLD_IMAGERY_ICON_URL,
   ARCIS_OPEN_STREET_MAPS_VIEWMODEL_IMAGE_URL,
 } from '@/utility/constants';
-
-// Import map features
 import { Airports, FlyTo } from '@/features/Airports';
 import { AirspaceComponent } from '@/features/Airspace';
 import { Pireps } from '@/features/Pireps';

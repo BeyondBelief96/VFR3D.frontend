@@ -27,8 +27,8 @@ export function Footer() {
                 VFR3D
               </Text>
               <Text size="sm" c="dimmed" maw={300}>
-                3D flight planning for VFR pilots. Visualize your route, check weather, and plan
-                with confidence.
+                Plan, Fly, Repeat. 3D VFR flight planning to visualize your route, check weather,
+                and fly with confidence.
               </Text>
             </Stack>
 

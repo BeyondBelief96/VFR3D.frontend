@@ -241,7 +241,7 @@ function WeatherSupportImageryPage() {
                 overflow: 'hidden',
               }}
             >
-              <Box pos="relative">
+              <Box pos="relative" style={{ minHeight: isLoading ? 300 : undefined }}>
                 {isLoading && (
                   <Box
                     pos="absolute"
@@ -253,7 +253,7 @@ function WeatherSupportImageryPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: 'rgba(15, 23, 42, 0.7)',
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
                       zIndex: 10,
                     }}
                   >

@@ -10,7 +10,7 @@ interface LoadingScreenProps {
 
 export function LoadingScreen({
   title = 'Loading VFR3D',
-  message = 'Preparing your flight planning experience...',
+  message = 'Get ready to Plan, Fly, Repeat...',
   fullScreen = true,
 }: LoadingScreenProps) {
   return (

@@ -96,7 +96,7 @@ function HomePage() {
               gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
               style={{ textTransform: 'none', fontSize: rem(14) }}
             >
-              Simplify Your Flight Planning
+              Plan, Fly, Repeat
             </Badge>
 
             {/* Main Headline */}
@@ -575,7 +575,7 @@ function HomePage() {
             <Stack align="center" gap="xl">
               <TbPlane size={60} color="#3b82f6" />
               <Title order={2} c="white" style={{ fontSize: rem(32) }}>
-                Ready to Simplify Your Flight Planning?
+                Ready to Plan, Fly, Repeat?
               </Title>
               <Text size="lg" c="dimmed" maw={500}>
                 Join pilots who are already using VFR3D to plan safer, more efficient VFR flights.
@@ -620,7 +620,7 @@ function HomePage() {
             <Group gap="md">
               <Image src={logo} alt="VFR3D" h={30} fit="contain" />
               <Text size="sm" c="dimmed">
-                Simplify Your Flight Planning
+                Plan, Fly, Repeat
               </Text>
             </Group>
             <Text size="sm" c="dimmed">
