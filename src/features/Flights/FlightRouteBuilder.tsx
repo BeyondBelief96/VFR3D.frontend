@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AppDispatch } from '@/redux/store';
 import { useCalcBearingAndDistanceMutation } from '@/redux/api/vfr3d/navlog.api';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
-import { setShowSelectedStateAirports } from '@/redux/slices/airportsSlice';
+import { setShowSelectedStateAirports, setSearchedAirportState } from '@/redux/slices/airportsSlice';
 import AirportSearch from '@/components/Search/AirportSearch';
 import { AirportDto, BearingAndDistanceResponseDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { setWaypointRefuel } from '@/redux/slices/flightPlanningSlice';
@@ -87,6 +87,8 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
       const newRoutePoint = mapAirportDTOToWaypoint(airport);
       onRoutePointsChange([...waypoints, newRoutePoint]);
       dispatch(setShowSelectedStateAirports(true));
+      // Clear the header search state so only route-based airports show
+      dispatch(setSearchedAirportState(''));
     }
   };
 

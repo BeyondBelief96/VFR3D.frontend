@@ -18,7 +18,13 @@ import './index.css';
 Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_API_KEY;
 
 // Create the router instance
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultPendingComponent: () => (
+    <LoadingScreen title="Loading" message="Get ready to Plan, Fly, Repeat..." />
+  ),
+  defaultPendingMs: 200,
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

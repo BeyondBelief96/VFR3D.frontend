@@ -36,6 +36,7 @@ ArcGisMapService.defaultAccessToken = import.meta.env.VITE_ARCGIS_API_KEY;
 
 export const Route = createFileRoute('/viewer')({
   component: ViewerPage,
+  loader: () => Promise.resolve(),
 });
 
 function ViewerPage() {

@@ -98,11 +98,11 @@ const Airports: React.FC = () => {
   ]);
 
   const { data: allFetchedAirports = [] } = useGetAirportsByStatesQuery(statesToQuery, {
-    skip: !statesToQuery,
+    skip: statesToQuery.length === 0,
   });
 
   const { data: metarData = [] } = useGetMetarsByStatesQuery(statesToQuery, {
-    skip: !showAirportsForSelectedState && !statesToQuery,
+    skip: statesToQuery.length === 0,
     pollingInterval: 300000,
   });
 
@@ -136,9 +136,18 @@ const Airports: React.FC = () => {
     // Add route airports (these should always be visible)
     if (routeAirports?.length) {
       airports = [...airports, ...routeAirports];
+
+      // Also add all airports from the route airports' states (for planning/editing mode)
+      const routeStates = new Set(
+        routeAirports.map((a) => a.stateCode).filter((s): s is string => !!s)
+      );
+      const routeStateAirports = allFetchedAirports.filter(
+        (airport) => airport.stateCode && routeStates.has(airport.stateCode)
+      );
+      airports = [...airports, ...routeStateAirports];
     }
 
-    // Add flight plan airports if toggled on
+    // Add flight plan airports if toggled on (for viewing saved flights)
     if (showFlightPlanAirports && activeFlight?.stateCodesAlongRoute) {
       const flightPlanStateAirports = allFetchedAirports.filter(
         (airport) =>
