@@ -23,14 +23,15 @@ import { ProtectedRoute, useAuth } from '@/components/Auth';
 import {
   useGetWeightBalanceProfilesQuery,
   useDeleteWeightBalanceProfileMutation,
+  useGetLatestStandaloneStateQuery,
 } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { WeightBalanceProfileDto, AircraftDto } from '@/redux/api/vfr3d/dtos';
 import {
-  WeightBalanceProfileForm,
   WeightBalanceProfileCard,
   WeightBalanceCalculator,
 } from '@/features/WeightBalance';
+import { WeightBalanceWizard } from '@/features/WeightBalance/components/wizard/WeightBalanceWizard';
 
 export const Route = createFileRoute('/weight-balance')({
   component: WeightBalancePage,
@@ -61,6 +62,11 @@ function WeightBalanceContent() {
   );
 
   const { data: aircraft = [] } = useGetAircraftQuery(userId, {
+    skip: !userId,
+  });
+
+  // Fetch the latest standalone calculation state for form repopulation
+  const { data: standaloneState } = useGetLatestStandaloneStateQuery(userId, {
     skip: !userId,
   });
 
@@ -150,7 +156,7 @@ function WeightBalanceContent() {
     setSelectedAircraftForCalc(undefined);
   };
 
-  // Render form view (create or edit)
+  // Render wizard view (create or edit)
   if (viewMode === 'create' || viewMode === 'edit') {
     return (
       <Container
@@ -175,21 +181,12 @@ function WeightBalanceContent() {
             </Group>
           </Group>
 
-          <Card
-            padding="xl"
-            radius="md"
-            style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
-            }}
-          >
-            <WeightBalanceProfileForm
-              mode={viewMode === 'create' ? 'create' : 'edit'}
-              existingProfile={editingProfile}
-              onCancel={handleCancel}
-              onSuccess={handleFormSuccess}
-            />
-          </Card>
+          <WeightBalanceWizard
+            mode={viewMode === 'create' ? 'create' : 'edit'}
+            existingProfile={editingProfile}
+            onCancel={handleCancel}
+            onSuccess={handleFormSuccess}
+          />
         </Stack>
       </Container>
     );
@@ -226,6 +223,8 @@ function WeightBalanceContent() {
             <WeightBalanceCalculator
               preselectedProfileId={selectedProfileForCalc}
               preselectedAircraftId={selectedAircraftForCalc}
+              standaloneState={standaloneState}
+              persistCalculations
             />
           </Card>
         </Stack>

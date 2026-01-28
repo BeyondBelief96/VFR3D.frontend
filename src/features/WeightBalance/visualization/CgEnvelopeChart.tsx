@@ -44,76 +44,95 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
   const isMomentFormat = envelopeFormat === CgEnvelopeFormat.MomentDividedBy1000;
   const xAxisName = isMomentFormat ? `Moment÷1000 (${weightLabel}-${armLabel})` : `CG (${armLabel})`;
 
+  // Helper to get X value based on format
+  const getXValue = (point: CgEnvelopePointDto): number => {
+    if (isMomentFormat) {
+      return point.momentDividedBy1000 ?? 0;
+    }
+    return point.arm ?? 0;
+  };
+
+  const getTakeoffX = (result: WeightBalanceCgResultDto): number => {
+    if (isMomentFormat) {
+      return (result.totalMoment ?? 0) / 1000;
+    }
+    return result.cgArm ?? 0;
+  };
+
   // Calculate chart bounds
   const bounds = useMemo(() => {
-    const allPoints: { arm: number; weight: number }[] = [
-      ...envelopePoints.map(p => ({ arm: p.arm || 0, weight: p.weight || 0 })),
+    const allPoints: { x: number; weight: number }[] = [
+      ...envelopePoints.map(p => ({ x: getXValue(p), weight: p.weight || 0 })),
     ];
 
     if (takeoffResult) {
-      allPoints.push({ arm: takeoffResult.cgArm || 0, weight: takeoffResult.totalWeight || 0 });
+      allPoints.push({ x: getTakeoffX(takeoffResult), weight: takeoffResult.totalWeight || 0 });
     }
     if (landingResult) {
-      allPoints.push({ arm: landingResult.cgArm || 0, weight: landingResult.totalWeight || 0 });
+      allPoints.push({ x: getTakeoffX(landingResult), weight: landingResult.totalWeight || 0 });
     }
 
     if (allPoints.length === 0) {
-      return { minArm: 0, maxArm: 100, minWeight: 0, maxWeight: 3000 };
+      return { minX: 0, maxX: 100, minWeight: 0, maxWeight: 3000 };
     }
 
-    const arms = allPoints.map(p => p.arm);
+    const xValues = allPoints.map(p => p.x);
     const weights = allPoints.map(p => p.weight);
 
-    const minArm = Math.min(...arms);
-    const maxArm = Math.max(...arms);
+    const minX = Math.min(...xValues);
+    const maxX = Math.max(...xValues);
     const minWeight = Math.min(...weights);
     const maxWeight = Math.max(...weights);
 
-    const armPadding = (maxArm - minArm) * 0.1 || 5;
+    const xPadding = (maxX - minX) * 0.1 || 5;
     const weightPadding = (maxWeight - minWeight) * 0.1 || 100;
 
     return {
-      minArm: minArm - armPadding,
-      maxArm: maxArm + armPadding,
+      minX: minX - xPadding,
+      maxX: maxX + xPadding,
       minWeight: Math.max(0, minWeight - weightPadding),
       maxWeight: maxWeight + weightPadding,
     };
-  }, [envelopePoints, takeoffResult, landingResult]);
+  }, [envelopePoints, takeoffResult, landingResult, isMomentFormat]);
 
   // Prepare data points for takeoff and landing markers
   const takeoffData = useMemo(() => {
     if (!takeoffResult) return [];
     return [{
-      arm: takeoffResult.cgArm,
+      x: getTakeoffX(takeoffResult),
       weight: takeoffResult.totalWeight,
       name: 'Takeoff',
       isWithin: takeoffResult.isWithinEnvelope,
     }];
-  }, [takeoffResult]);
+  }, [takeoffResult, isMomentFormat]);
 
   const landingData = useMemo(() => {
     if (!landingResult) return [];
     return [{
-      arm: landingResult.cgArm,
+      x: getTakeoffX(landingResult),
       weight: landingResult.totalWeight,
       name: 'Landing',
       isWithin: landingResult.isWithinEnvelope,
     }];
-  }, [landingResult]);
+  }, [landingResult, isMomentFormat]);
 
   // Convert envelope points to format for custom rendering
   const sortedEnvelopePoints = useMemo(() => {
     if (envelopePoints.length === 0) return [];
-    return envelopePoints.map(p => ({
-      arm: p.arm || 0,
+    return envelopePoints.map((p, index) => ({
+      x: getXValue(p),
       weight: p.weight || 0,
+      name: `Point ${index + 1}`,
+      isEnvelopePoint: true,
     }));
-  }, [envelopePoints]);
+  }, [envelopePoints, isMomentFormat]);
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length > 0) {
       const data = payload[0].payload;
+      const isEnvelopePoint = data.isEnvelopePoint;
+
       return (
         <Box
           p="xs"
@@ -124,10 +143,12 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
           }}
         >
           {data.name && (
-            <Text size="xs" c="white" fw={500}>{data.name}</Text>
+            <Text size="xs" c="white" fw={500}>
+              {isEnvelopePoint ? `Envelope ${data.name}` : data.name}
+            </Text>
           )}
           <Text size="xs" c="dimmed">
-            {isMomentFormat ? 'Moment÷1000' : 'CG'}: {data.arm?.toFixed(isMomentFormat ? 1 : 2)} {isMomentFormat ? '' : armLabel}
+            {isMomentFormat ? 'Moment÷1000' : 'CG'}: {data.x?.toFixed(isMomentFormat ? 1 : 2)}{isMomentFormat ? '' : ` ${armLabel}`}
           </Text>
           <Text size="xs" c="dimmed">
             Weight: {data.weight?.toLocaleString()} {weightLabel}
@@ -169,23 +190,23 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       )}
       <ResponsiveContainer width="100%" height={height}>
         <ScatterChart
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{ top: 10, right: 30, bottom: 45, left: 60 }}
         >
           <XAxis
             type="number"
-            dataKey="arm"
+            dataKey="x"
             name={xAxisName}
-            domain={[bounds.minArm, bounds.maxArm]}
+            domain={[bounds.minX, bounds.maxX]}
             tickFormatter={(value) => value.toFixed(isMomentFormat ? 0 : 1)}
-            tick={{ fill: '#94a3b8', fontSize: 12 }}
+            tick={{ fill: '#94a3b8', fontSize: 11 }}
             axisLine={{ stroke: '#475569' }}
             tickLine={{ stroke: '#475569' }}
             label={{
               value: xAxisName,
-              position: 'bottom',
-              offset: 0,
+              position: 'insideBottom',
+              offset: -5,
               fill: '#94a3b8',
-              fontSize: 12,
+              fontSize: 11,
             }}
           />
           <YAxis
@@ -194,20 +215,27 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
             name={`Weight (${weightLabel})`}
             domain={[bounds.minWeight, bounds.maxWeight]}
             tickFormatter={(value) => value.toLocaleString()}
-            tick={{ fill: '#94a3b8', fontSize: 12 }}
+            tick={{ fill: '#94a3b8', fontSize: 11 }}
             axisLine={{ stroke: '#475569' }}
             tickLine={{ stroke: '#475569' }}
             label={{
               value: `Weight (${weightLabel})`,
               angle: -90,
               position: 'insideLeft',
+              offset: 10,
               fill: '#94a3b8',
-              fontSize: 12,
+              fontSize: 11,
             }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            wrapperStyle={{ color: '#94a3b8', fontSize: 12 }}
+            verticalAlign="top"
+            align="right"
+            wrapperStyle={{
+              color: '#94a3b8',
+              fontSize: 11,
+              paddingBottom: 10,
+            }}
           />
 
           {/* Envelope boundary as scatter line */}
@@ -215,8 +243,8 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
             name="Envelope"
             data={[...sortedEnvelopePoints, sortedEnvelopePoints[0]]}
             line={{ stroke: 'rgba(59, 130, 246, 0.6)', strokeWidth: 2 }}
-            fill="rgba(59, 130, 246, 0.15)"
-            shape={() => null}
+            fill="rgba(59, 130, 246, 0.8)"
+            shape="circle"
             legendType="rect"
           />
 
@@ -236,7 +264,7 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
             <Scatter
               name="Landing"
               data={landingData}
-              fill={landingData[0].isWithin ? '#3b82f6' : '#ef4444'}
+              fill={landingData[0].isWithin ? '#22c55e' : '#ef4444'}
               shape="diamond"
               legendType="diamond"
             />

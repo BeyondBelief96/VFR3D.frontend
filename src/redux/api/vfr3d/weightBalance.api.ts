@@ -4,9 +4,12 @@ import {
   UpdateWeightBalanceProfileRequestDto,
   WeightBalanceCalculationRequestDto,
   WeightBalanceCalculationResultDto,
+  WeightBalanceCalculationDto,
+  SaveWeightBalanceCalculationRequestDto,
+  StandaloneCalculationStateDto,
 } from './dtos';
 import { baseApi } from './vfr3dSlice';
-import { weightBalanceTag } from '../rtkQuery.tags';
+import { weightBalanceTag, weightBalanceCalculationTag } from '../rtkQuery.tags';
 import { aircraftTag } from './aircraft.api';
 
 export const weightBalanceApi = baseApi.injectEndpoints({
@@ -71,6 +74,57 @@ export const weightBalanceApi = baseApi.injectEndpoints({
         body: request,
       }),
     }),
+
+    // Calculation persistence endpoints
+    calculateAndSave: builder.mutation<
+      WeightBalanceCalculationDto,
+      { userId: string; request: SaveWeightBalanceCalculationRequestDto }
+    >({
+      query: ({ userId, request }) => ({
+        url: `/WeightBalance/${userId}/calculate-and-save`,
+        method: 'POST',
+        body: request,
+      }),
+      invalidatesTags: [weightBalanceCalculationTag],
+    }),
+
+    deleteCalculation: builder.mutation<void, { userId: string; calculationId: string }>({
+      query: ({ userId, calculationId }) => ({
+        url: `/WeightBalance/${userId}/calculations/${calculationId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [weightBalanceCalculationTag],
+    }),
+
+    getCalculation: builder.query<
+      WeightBalanceCalculationDto,
+      { userId: string; calculationId: string }
+    >({
+      query: ({ userId, calculationId }) => ({
+        url: `/WeightBalance/${userId}/calculations/${calculationId}`,
+        method: 'GET',
+      }),
+      providesTags: [weightBalanceCalculationTag],
+    }),
+
+    getCalculationForFlight: builder.query<
+      WeightBalanceCalculationDto,
+      { userId: string; flightId: string }
+    >({
+      query: ({ userId, flightId }) => ({
+        url: `/WeightBalance/${userId}/flights/${flightId}/calculation`,
+        method: 'GET',
+      }),
+      providesTags: [weightBalanceCalculationTag],
+    }),
+
+    getLatestStandaloneState: builder.query<StandaloneCalculationStateDto, string>({
+      query: (userId) => ({
+        url: `/WeightBalance/${userId}/standalone-state`,
+        method: 'GET',
+      }),
+      providesTags: [weightBalanceCalculationTag],
+    }),
   }),
 });
 
@@ -82,4 +136,9 @@ export const {
   useUpdateWeightBalanceProfileMutation,
   useDeleteWeightBalanceProfileMutation,
   useCalculateWeightBalanceMutation,
+  useCalculateAndSaveMutation,
+  useDeleteCalculationMutation,
+  useGetCalculationQuery,
+  useGetCalculationForFlightQuery,
+  useGetLatestStandaloneStateQuery,
 } = weightBalanceApi;

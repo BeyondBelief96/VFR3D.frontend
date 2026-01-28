@@ -39,7 +39,7 @@ import {
   FiSave,
   FiDownload,
 } from 'react-icons/fi';
-import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
+import { FaPlane, FaGasPump, FaRoute, FaBalanceScale } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import {
   useGetFlightQuery,
@@ -61,6 +61,7 @@ import {
 import { NavLogTable } from '@/features/Flights/FlightPlanningDrawer/NavLogTable';
 import { FlightLogPdf } from '@/features/Flights';
 import { mapFlightToNavlogData } from '@/utility/utils';
+import { FlightWeightBalancePanel } from '@/features/WeightBalance';
 import {
   FlightDto,
   AirportDto,
@@ -1210,6 +1211,9 @@ function FlightDetailsContent() {
             <Tabs.List mb="md">
               <Tabs.Tab value="overview">Overview</Tabs.Tab>
               <Tabs.Tab value="navlog">Nav Log</Tabs.Tab>
+              <Tabs.Tab value="weight-balance" leftSection={<FaBalanceScale size={14} />}>
+                Weight & Balance
+              </Tabs.Tab>
               <Tabs.Tab value="airports">Airports</Tabs.Tab>
               <Tabs.Tab value="weather">Weather</Tabs.Tab>
               <Tabs.Tab value="settings">Settings</Tabs.Tab>
@@ -1232,6 +1236,10 @@ function FlightDetailsContent() {
                   </Stack>
                 </Center>
               )}
+            </Tabs.Panel>
+
+            <Tabs.Panel value="weight-balance">
+              <FlightWeightBalancePanel flight={flight} userId={userId} />
             </Tabs.Panel>
 
             <Tabs.Panel value="airports">

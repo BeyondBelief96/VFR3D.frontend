@@ -12,6 +12,7 @@ export const tagTypes = [
   'pireps',
   'airsigmets',
   'weightBalance',
+  'weightBalanceCalculation',
 ] as const;
 
 // Base API configuration

@@ -67,7 +67,7 @@ interface SortablePointRowProps {
   xAxisLabel: string;
   format: CgEnvelopeFormat;
   onWeightChange: (value: number) => void;
-  onArmChange: (value: number) => void;
+  onXAxisChange: (value: number) => void;
   onRemove: () => void;
 }
 
@@ -79,7 +79,7 @@ function SortablePointRow({
   xAxisLabel,
   format,
   onWeightChange,
-  onArmChange,
+  onXAxisChange,
   onRemove,
 }: SortablePointRowProps) {
   const {
@@ -98,6 +98,11 @@ function SortablePointRow({
   };
 
   const isMomentFormat = format === CgEnvelopeFormat.MomentDividedBy1000;
+
+  // Get the X-axis value based on format
+  const xAxisValue = isMomentFormat
+    ? point.momentDividedBy1000 ?? ''
+    : point.arm ?? '';
 
   return (
     <Table.Tr ref={setNodeRef} style={style}>
@@ -130,8 +135,8 @@ function SortablePointRow({
       <Table.Td>
         <NumberInput
           placeholder={isMomentFormat ? "0.0" : "0.0"}
-          value={point.arm ?? ''}
-          onChange={(value) => onArmChange(Number(value) || 0)}
+          value={xAxisValue}
+          onChange={(value) => onXAxisChange(Number(value) || 0)}
           decimalScale={isMomentFormat ? 1 : 2}
           styles={inputStyles}
           size="xs"
@@ -178,7 +183,28 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
 
   const handleFormatChange = (index: number, format: CgEnvelopeFormat) => {
     const newEnvelopes = [...envelopes];
-    newEnvelopes[index] = { ...newEnvelopes[index], format };
+    const envelope = { ...newEnvelopes[index] };
+    const oldFormat = envelope.format;
+    envelope.format = format;
+
+    // Migrate existing points to use the correct field for the new format
+    if (oldFormat !== format && envelope.limits && envelope.limits.length > 0) {
+      const isMomentFormat = format === CgEnvelopeFormat.MomentDividedBy1000;
+      envelope.limits = envelope.limits.map(point => {
+        // Get the current X value from whichever field has it
+        const currentXValue = point.arm ?? point.momentDividedBy1000 ?? 0;
+
+        if (isMomentFormat) {
+          // Switching to Moment format - move value to momentDividedBy1000
+          return { ...point, momentDividedBy1000: currentXValue, arm: undefined };
+        } else {
+          // Switching to Arm format - move value to arm
+          return { ...point, arm: currentXValue, momentDividedBy1000: undefined };
+        }
+      });
+    }
+
+    newEnvelopes[index] = envelope;
     onChange(newEnvelopes);
   };
 
@@ -192,11 +218,37 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
     onChange(newEnvelopes);
   };
 
+  // Handler for X-axis value changes that stores in correct field based on format
+  const handleXAxisChange = (envelopeIndex: number, pointIndex: number, value: number) => {
+    const envelope = envelopes[envelopeIndex];
+    const isMomentFormat = envelope.format === CgEnvelopeFormat.MomentDividedBy1000;
+    const newEnvelopes = [...envelopes];
+    const newEnvelope = { ...newEnvelopes[envelopeIndex] };
+    const points = [...(newEnvelope.limits || [])];
+
+    if (isMomentFormat) {
+      points[pointIndex] = { ...points[pointIndex], momentDividedBy1000: value, arm: undefined };
+    } else {
+      points[pointIndex] = { ...points[pointIndex], arm: value, momentDividedBy1000: undefined };
+    }
+
+    newEnvelope.limits = points;
+    newEnvelopes[envelopeIndex] = newEnvelope;
+    onChange(newEnvelopes);
+  };
+
   const handleAddPoint = (envelopeIndex: number) => {
     const newEnvelopes = [...envelopes];
     const envelope = { ...newEnvelopes[envelopeIndex] };
     const points = [...(envelope.limits || [])];
-    points.push({ weight: 0, arm: 0 });
+    const isMomentFormat = envelope.format === CgEnvelopeFormat.MomentDividedBy1000;
+
+    if (isMomentFormat) {
+      points.push({ weight: 0, arm: undefined, momentDividedBy1000: 0 });
+    } else {
+      points.push({ weight: 0, arm: 0, momentDividedBy1000: undefined });
+    }
+
     envelope.limits = points;
     newEnvelopes[envelopeIndex] = envelope;
     onChange(newEnvelopes);
@@ -250,23 +302,29 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
     }
   };
 
-  // Sort points clockwise starting from top-left (highest weight, lowest arm)
+  // Sort points clockwise starting from top-left (highest weight, lowest x-axis value)
   const handleSortPoints = (envelopeIndex: number) => {
     const envelope = envelopes[envelopeIndex];
     const points = [...(envelope.limits || [])];
 
     if (points.length < 3) return;
 
+    const isMomentFormat = envelope.format === CgEnvelopeFormat.MomentDividedBy1000;
+
+    // Helper to get X value based on format
+    const getX = (p: CgEnvelopePointDto) =>
+      isMomentFormat ? (p.momentDividedBy1000 || 0) : (p.arm || 0);
+
     // Find centroid
     const centroid = {
       weight: points.reduce((sum, p) => sum + (p.weight || 0), 0) / points.length,
-      arm: points.reduce((sum, p) => sum + (p.arm || 0), 0) / points.length,
+      x: points.reduce((sum, p) => sum + getX(p), 0) / points.length,
     };
 
     // Sort by angle from centroid (clockwise from top)
     points.sort((a, b) => {
-      const angleA = Math.atan2((a.arm || 0) - centroid.arm, (a.weight || 0) - centroid.weight);
-      const angleB = Math.atan2((b.arm || 0) - centroid.arm, (b.weight || 0) - centroid.weight);
+      const angleA = Math.atan2(getX(a) - centroid.x, (a.weight || 0) - centroid.weight);
+      const angleB = Math.atan2(getX(b) - centroid.x, (b.weight || 0) - centroid.weight);
       return angleB - angleA;
     });
 
@@ -492,7 +550,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                                       xAxisLabel={xAxisLabel}
                                       format={envelope.format || CgEnvelopeFormat.Arm}
                                       onWeightChange={(value) => handlePointChange(envelopeIndex, pointIndex, 'weight', value)}
-                                      onArmChange={(value) => handlePointChange(envelopeIndex, pointIndex, 'arm', value)}
+                                      onXAxisChange={(value) => handleXAxisChange(envelopeIndex, pointIndex, value)}
                                       onRemove={() => handleRemovePoint(envelopeIndex, pointIndex)}
                                     />
                                   ))}

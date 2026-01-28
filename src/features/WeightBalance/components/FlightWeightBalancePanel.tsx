@@ -18,33 +18,44 @@ import {
   Tooltip,
   ActionIcon,
   Progress,
+  Center,
+  Loader,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { FiAlertTriangle, FiActivity, FiRefreshCw, FiUsers, FiInfo, FiDroplet, FiBox, FiClock, FiSave } from 'react-icons/fi';
-import { FaGasPump, FaOilCan, FaPlane } from 'react-icons/fa';
+import { Link } from '@tanstack/react-router';
 import {
+  FiAlertTriangle,
+  FiActivity,
+  FiRefreshCw,
+  FiUsers,
+  FiInfo,
+  FiDroplet,
+  FiBox,
+  FiSave,
+  FiPlus,
+  FiClock,
+} from 'react-icons/fi';
+import { FaGasPump, FaOilCan, FaBalanceScale } from 'react-icons/fa';
+import {
+  FlightDto,
   WeightBalanceProfileDto,
   AircraftDto,
   LoadingStationType,
   CgEnvelopeFormat,
-  StandaloneCalculationStateDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useAuth } from '@/components/Auth';
-import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
+import {
+  useGetWeightBalanceProfilesForAircraftQuery,
+  useGetCalculationForFlightQuery,
+} from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { useWeightBalanceCalculation } from '../hooks/useWeightBalanceCalculation';
 import { CgEnvelopeChart } from '../visualization/CgEnvelopeChart';
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
 
-interface WeightBalanceCalculatorProps {
-  preselectedProfileId?: string;
-  preselectedAircraftId?: string;
-  compact?: boolean;
-  /** Standalone state to restore from previous session */
-  standaloneState?: StandaloneCalculationStateDto | null;
-  /** Whether to persist calculations to the backend */
-  persistCalculations?: boolean;
+interface FlightWeightBalancePanelProps {
+  flight: FlightDto;
+  userId: string;
 }
 
 const inputStyles = {
@@ -80,58 +91,86 @@ const selectStyles = {
   },
 };
 
-export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = ({
-  preselectedProfileId,
-  preselectedAircraftId,
-  compact = false,
-  standaloneState,
-  persistCalculations = false,
+export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> = ({
+  flight,
+  userId,
 }) => {
-  const { user } = useAuth();
-  const userId = user?.sub || '';
-
-  const { data: profiles = [], isLoading: profilesLoading } = useGetWeightBalanceProfilesQuery(
-    userId,
-    { skip: !userId }
-  );
-
-  const { data: aircraft = [] } = useGetAircraftQuery(userId, {
+  // Fetch aircraft info - needed for display and as fallback
+  const { data: aircraft = [], isLoading: aircraftLoading } = useGetAircraftQuery(userId, {
     skip: !userId,
   });
 
-  // Determine initial profile selection: from standalone state, preselected, or null
-  const initialProfileId = standaloneState?.profileId || preselectedProfileId || null;
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(initialProfileId);
-  const [selectedAircraftId, setSelectedAircraftId] = useState<string | null>(preselectedAircraftId || null);
-
-  // Auto-select aircraft from standalone state or preselected profile
-  useEffect(() => {
-    const profileIdToUse = standaloneState?.profileId || preselectedProfileId;
-    if (profileIdToUse && !selectedAircraftId) {
-      const profile = profiles.find((p: WeightBalanceProfileDto) => p.id === profileIdToUse);
-      if (profile?.aircraftId) {
-        setSelectedAircraftId(profile.aircraftId);
-      }
+  // Get aircraftId from multiple sources (in order of preference):
+  // 1. Directly from flight.aircraftId
+  // 2. From the expanded aircraft object
+  // 3. From the expanded aircraftPerformanceProfile
+  // 4. By finding which aircraft owns the performance profile
+  const aircraftId = useMemo(() => {
+    if (flight.aircraftId) {
+      return flight.aircraftId;
     }
-  }, [standaloneState, preselectedProfileId, selectedAircraftId, profiles]);
-
-  // Update selected profile when standalone state changes
-  useEffect(() => {
-    if (standaloneState?.profileId && !selectedProfileId) {
-      setSelectedProfileId(standaloneState.profileId);
+    if (flight.aircraft?.id) {
+      return flight.aircraft.id;
     }
-  }, [standaloneState, selectedProfileId]);
+    if (flight.aircraftPerformanceProfile?.aircraftId) {
+      return flight.aircraftPerformanceProfile.aircraftId;
+    }
+    // Find the aircraft that owns this performance profile
+    if (flight.aircraftPerformanceId && aircraft.length > 0) {
+      const owningAircraft = aircraft.find((a: AircraftDto) =>
+        a.performanceProfiles?.some((p) => p.id === flight.aircraftPerformanceId)
+      );
+      return owningAircraft?.id;
+    }
+    return undefined;
+  }, [flight.aircraftId, flight.aircraft?.id, flight.aircraftPerformanceProfile?.aircraftId, flight.aircraftPerformanceId, aircraft]);
 
-  const selectedProfile = profiles.find((p: WeightBalanceProfileDto) => p.id === selectedProfileId) || null;
-  const selectedAircraft = aircraft.find((a: AircraftDto) => a.id === selectedAircraftId) || null;
+  // Fetch W&B profiles for the flight's aircraft
+  const {
+    data: profiles = [],
+    isLoading: profilesLoading,
+  } = useGetWeightBalanceProfilesForAircraftQuery(
+    { userId, aircraftId: aircraftId || '' },
+    { skip: !userId || !aircraftId }
+  );
 
+  // Fetch existing calculation for this flight
+  const {
+    data: existingCalculation,
+    isLoading: calculationLoading,
+  } = useGetCalculationForFlightQuery(
+    { userId, flightId: flight.id || '' },
+    { skip: !userId || !flight.id }
+  );
+
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+
+  // Set the profile from existing calculation or default to first available
+  useEffect(() => {
+    if (existingCalculation?.profileId) {
+      setSelectedProfileId(existingCalculation.profileId);
+    } else if (profiles.length > 0 && !selectedProfileId) {
+      setSelectedProfileId(profiles[0].id || null);
+    }
+  }, [existingCalculation, profiles, selectedProfileId]);
+
+  const selectedProfile = profiles.find(
+    (p: WeightBalanceProfileDto) => p.id === selectedProfileId
+  ) || null;
+
+  // Use the embedded aircraft from flight if available, otherwise find from the list
+  const selectedAircraft = flight.aircraft || aircraft.find(
+    (a: AircraftDto) => a.id === aircraftId
+  ) || null;
+
+  // Use the enhanced hook with persistence and auto-populated fuel burn
   const {
     stationInputs,
     fuelBurnGallons,
     selectedEnvelopeId,
     result,
     error,
-    isLoading: calculationLoading,
+    isLoading: calculationInProgress,
     availableEnvelopes,
     lastCalculatedAt,
     initializeFromProfile,
@@ -141,63 +180,78 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
     calculateWeightBalance,
     clearInputs,
   } = useWeightBalanceCalculation(userId, selectedProfile, {
-    initialState: standaloneState,
-    persistCalculations,
+    initialState: existingCalculation ? {
+      calculationId: existingCalculation.id,
+      profileId: existingCalculation.profileId,
+      envelopeId: existingCalculation.envelopeId,
+      fuelBurnGallons: existingCalculation.fuelBurnGallons,
+      loadedStations: existingCalculation.loadedStations,
+      calculatedAt: existingCalculation.calculatedAt,
+    } : null,
+    autoFuelBurn: flight.totalFuelUsed,
+    flightId: flight.id,
+    persistCalculations: true,
   });
 
-  // Initialize when profile changes
+  // Track which calculation/profile we've initialized from to avoid unnecessary reinitializations
+  const [initializedFromId, setInitializedFromId] = useState<string | null>(null);
+
+  // Initialize when profile changes - but don't reinitialize after we've calculated
   useEffect(() => {
-    if (selectedProfile && standaloneState && standaloneState.profileId === selectedProfile.id) {
-      // Initialize with saved state
-      initializeFromProfile(selectedProfile, standaloneState);
-    } else if (selectedProfile) {
-      // Initialize without saved state
-      initializeFromProfile(selectedProfile);
+    // Don't reinitialize if we already have a result from calculating in this session
+    if (result) {
+      return;
     }
-  }, [selectedProfile, standaloneState, initializeFromProfile]);
 
-  // Filter profiles by selected aircraft (required)
-  const filteredProfiles = selectedAircraftId
-    ? profiles.filter((p: WeightBalanceProfileDto) => p.aircraftId === selectedAircraftId)
-    : [];
+    const existingCalcId = existingCalculation?.id || null;
+    const profileId = selectedProfile?.id || null;
+    const initKey = existingCalcId || profileId;
 
-  const profileOptions = filteredProfiles.map((p: WeightBalanceProfileDto) => ({
+    // Skip if we've already initialized from this calculation/profile
+    if (initKey && initKey === initializedFromId) {
+      return;
+    }
+
+    if (selectedProfile && !existingCalculation) {
+      initializeFromProfile(selectedProfile);
+      setInitializedFromId(profileId);
+    } else if (selectedProfile && existingCalculation && existingCalculation.profileId === selectedProfile.id) {
+      initializeFromProfile(selectedProfile, existingCalculation);
+      setInitializedFromId(existingCalcId);
+    }
+  }, [selectedProfile, existingCalculation, initializeFromProfile, initializedFromId, result]);
+
+  const profileOptions = profiles.map((p: WeightBalanceProfileDto) => ({
     value: p.id || '',
     label: p.profileName || 'Unnamed Profile',
   }));
 
-  const aircraftOptions = aircraft.map((a: AircraftDto) => ({
-    value: a.id || '',
-    label: `${a.tailNumber || 'N/A'} - ${a.aircraftType || 'Unknown'}`,
-  }));
-
-  const weightLabel = selectedProfile?.weightUnits ? WEIGHT_UNIT_LABELS[selectedProfile.weightUnits] : 'lbs';
-  const armLabel = selectedProfile?.armUnits ? ARM_UNIT_LABELS[selectedProfile.armUnits] : 'in';
+  const weightLabel = selectedProfile?.weightUnits
+    ? WEIGHT_UNIT_LABELS[selectedProfile.weightUnits]
+    : 'lbs';
+  const armLabel = selectedProfile?.armUnits
+    ? ARM_UNIT_LABELS[selectedProfile.armUnits]
+    : 'in';
 
   // Find selected envelope format
-  const selectedEnvelope = selectedProfile?.cgEnvelopes?.find(e => e.id === selectedEnvelopeId);
+  const selectedEnvelope = selectedProfile?.cgEnvelopes?.find(
+    (e) => e.id === selectedEnvelopeId
+  );
   const envelopeFormat = selectedEnvelope?.format || CgEnvelopeFormat.Arm;
 
   // Categorize station inputs
   const { payloadStations, fuelStations, oilStations } = useMemo(() => {
-    const payload = stationInputs.filter(s => s.stationType === LoadingStationType.Standard);
-    const fuel = stationInputs.filter(s => s.stationType === LoadingStationType.Fuel);
-    const oil = stationInputs.filter(s => s.stationType === LoadingStationType.Oil);
+    const payload = stationInputs.filter(
+      (s) => s.stationType === LoadingStationType.Standard
+    );
+    const fuel = stationInputs.filter(
+      (s) => s.stationType === LoadingStationType.Fuel
+    );
+    const oil = stationInputs.filter(
+      (s) => s.stationType === LoadingStationType.Oil
+    );
     return { payloadStations: payload, fuelStations: fuel, oilStations: oil };
   }, [stationInputs]);
-
-  // Handle aircraft selection change
-  const handleAircraftChange = (value: string | null) => {
-    setSelectedAircraftId(value);
-    // Clear profile selection when aircraft changes
-    setSelectedProfileId(null);
-    clearInputs();
-  };
-
-  // Handle profile selection change
-  const handleProfileChange = (value: string | null) => {
-    setSelectedProfileId(value);
-  };
 
   // Fill fuel tank to full
   const handleFillTank = (stationId: string, capacity: number | undefined) => {
@@ -207,54 +261,142 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   };
 
   // Calculate fuel weight for display
-  const calculateFuelWeight = (gallons: number | string, weightPerGallon: number | undefined) => {
+  const calculateFuelWeight = (
+    gallons: number | string,
+    weightPerGallon: number | undefined
+  ) => {
     const gal = typeof gallons === 'string' ? parseFloat(gallons) || 0 : gallons;
     const wpg = weightPerGallon || DEFAULT_FUEL_WEIGHT.AVGAS_100LL;
     return gal * wpg;
   };
 
-  // Check if there are any fuel stations with fuel burn configured
   const hasFuelStations = fuelStations.length > 0;
   const totalFuelGallons = fuelStations.reduce((sum, s) => {
-    const gal = typeof s.fuelGallons === 'string' ? parseFloat(s.fuelGallons) || 0 : s.fuelGallons || 0;
+    const gal =
+      typeof s.fuelGallons === 'string'
+        ? parseFloat(s.fuelGallons) || 0
+        : s.fuelGallons || 0;
     return sum + gal;
   }, 0);
 
   // Calculate button disabled state
-  const canCalculate = selectedProfile && stationInputs.some((input) => {
-    switch (input.stationType) {
-      case LoadingStationType.Fuel:
-        return input.fuelGallons !== '' && Number(input.fuelGallons) > 0;
-      case LoadingStationType.Oil:
-        return input.oilQuarts !== '' && Number(input.oilQuarts) > 0;
-      default:
-        return input.weight !== '' && Number(input.weight) > 0;
-    }
-  });
+  const canCalculate =
+    selectedProfile &&
+    stationInputs.some((input) => {
+      switch (input.stationType) {
+        case LoadingStationType.Fuel:
+          return input.fuelGallons !== '' && Number(input.fuelGallons) > 0;
+        case LoadingStationType.Oil:
+          return input.oilQuarts !== '' && Number(input.oilQuarts) > 0;
+        default:
+          return input.weight !== '' && Number(input.weight) > 0;
+      }
+    });
 
-  // Handle calculate with optional persistence notification
-  const handleCalculate = async () => {
-    const calcResult = await calculateWeightBalance();
-    if (persistCalculations && calcResult) {
+  // Handle save/calculate
+  const handleCalculateAndSave = async () => {
+    const savedResult = await calculateWeightBalance();
+    if (savedResult) {
       notifications.show({
         title: 'Calculation Saved',
-        message: 'Your weight & balance calculation has been saved.',
+        message: 'Weight & balance calculation saved to this flight.',
         color: 'green',
       });
     }
   };
 
+  // Loading state
+  if (aircraftLoading || profilesLoading || calculationLoading) {
+    return (
+      <Center py="xl">
+        <Loader size="lg" color="blue" />
+      </Center>
+    );
+  }
+
+  // No aircraft assigned to flight
+  if (!aircraftId) {
+    return (
+      <Alert
+        color="yellow"
+        variant="light"
+        icon={<FiAlertTriangle size={20} />}
+        title="No Aircraft Assigned"
+      >
+        <Stack gap="sm">
+          <Text size="sm">
+            This flight doesn't have an aircraft assigned. Please select an
+            aircraft in the Settings tab to use the Weight & Balance calculator.
+          </Text>
+        </Stack>
+      </Alert>
+    );
+  }
+
+  // No W&B profiles for the aircraft
+  if (profiles.length === 0) {
+    return (
+      <Paper
+        p="xl"
+        style={{
+          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+          border: '1px solid rgba(234, 179, 8, 0.3)',
+          borderRadius: 'var(--mantine-radius-md)',
+        }}
+      >
+        <Stack align="center" gap="lg">
+          <ThemeIcon
+            size={60}
+            radius="xl"
+            variant="light"
+            color="yellow"
+          >
+            <FaBalanceScale size={28} />
+          </ThemeIcon>
+          <Box ta="center">
+            <Title order={4} c="white" mb="xs">
+              No Weight & Balance Profile
+            </Title>
+            <Text c="dimmed" size="sm" maw={400}>
+              {selectedAircraft
+                ? `No weight & balance profile exists for ${selectedAircraft.tailNumber || selectedAircraft.aircraftType}. Create one to calculate W&B for this flight.`
+                : 'No weight & balance profile exists for this aircraft. Create one to calculate W&B for this flight.'}
+            </Text>
+          </Box>
+          <Button
+            component={Link}
+            to="/weight-balance"
+            leftSection={<FiPlus size={16} />}
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+          >
+            Create W&B Profile
+          </Button>
+        </Stack>
+      </Paper>
+    );
+  }
+
   return (
     <Stack gap="lg">
-      {/* Header */}
+      {/* Header with last calculated info */}
       <Group justify="space-between" align="flex-start">
         <Group gap="sm">
-          <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+          <ThemeIcon
+            size="lg"
+            radius="md"
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+          >
             <FiActivity size={18} />
           </ThemeIcon>
           <Box>
-            <Title order={4} c="white">Weight & Balance Calculator</Title>
-            <Text size="xs" c="dimmed">Calculate takeoff and landing CG for your flight</Text>
+            <Title order={4} c="white">
+              Weight & Balance
+            </Title>
+            <Text size="xs" c="dimmed">
+              Calculate for {flight.name || 'this flight'}
+            </Text>
           </Box>
         </Group>
         {lastCalculatedAt && (
@@ -268,93 +410,65 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
         )}
       </Group>
 
-      {/* Step 1: Aircraft Selection */}
+      {/* Auto-populated fuel burn notice */}
+      {flight.totalFuelUsed && flight.totalFuelUsed > 0 && (
+        <Alert
+          color="cyan"
+          variant="light"
+          icon={<FiInfo size={16} />}
+          title="Fuel Burn Auto-Populated"
+        >
+          <Text size="sm">
+            Expected fuel burn has been set to {flight.totalFuelUsed.toFixed(1)}{' '}
+            gallons from your nav log. You can adjust this value if needed.
+          </Text>
+        </Alert>
+      )}
+
+      {/* Profile Selection */}
       <Paper
         p="md"
         style={{
           backgroundColor: 'rgba(15, 23, 42, 0.5)',
-          border: selectedAircraftId ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
+          border: selectedProfileId
+            ? '1px solid rgba(34, 197, 94, 0.3)'
+            : '1px solid rgba(148, 163, 184, 0.2)',
           borderRadius: 'var(--mantine-radius-md)',
         }}
       >
         <Stack gap="sm">
           <Group gap="xs">
-            <ThemeIcon size="sm" variant="light" color={selectedAircraftId ? 'green' : 'blue'}>
-              <FaPlane size={12} />
+            <ThemeIcon
+              size="sm"
+              variant="light"
+              color={selectedProfileId ? 'green' : 'blue'}
+            >
+              <FiBox size={12} />
             </ThemeIcon>
             <Text size="sm" c="white" fw={500}>
-              Step 1: Select Aircraft
+              W&B Profile
             </Text>
-            {selectedAircraftId && (
-              <Badge size="xs" color="green" variant="light">Selected</Badge>
+            {selectedProfileId && (
+              <Badge size="xs" color="green" variant="light">
+                Selected
+              </Badge>
             )}
           </Group>
 
           <Select
-            placeholder="Choose your aircraft..."
-            data={aircraftOptions}
-            value={selectedAircraftId}
-            onChange={handleAircraftChange}
+            placeholder="Choose a W&B profile..."
+            data={profileOptions}
+            value={selectedProfileId}
+            onChange={setSelectedProfileId}
             searchable
             styles={selectStyles}
             size="md"
-            leftSection={<FaPlane size={14} />}
+            leftSection={<FiBox size={14} />}
           />
         </Stack>
       </Paper>
 
-      {/* Step 2: Profile Selection (only shown after aircraft selected) */}
-      {selectedAircraftId && (
-        <Paper
-          p="md"
-          style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
-            border: selectedProfileId ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
-            borderRadius: 'var(--mantine-radius-md)',
-          }}
-        >
-          <Stack gap="sm">
-            <Group gap="xs">
-              <ThemeIcon size="sm" variant="light" color={selectedProfileId ? 'green' : 'blue'}>
-                <FiBox size={12} />
-              </ThemeIcon>
-              <Text size="sm" c="white" fw={500}>
-                Step 2: Select W&B Profile
-              </Text>
-              {selectedProfileId && (
-                <Badge size="xs" color="green" variant="light">Selected</Badge>
-              )}
-            </Group>
-
-            {profileOptions.length === 0 ? (
-              <Alert color="yellow" variant="light">
-                No Weight & Balance profiles found for this aircraft. Create one first.
-              </Alert>
-            ) : (
-              <Select
-                placeholder="Choose a W&B profile..."
-                data={profileOptions}
-                value={selectedProfileId}
-                onChange={handleProfileChange}
-                searchable
-                disabled={profilesLoading}
-                styles={selectStyles}
-                size="md"
-                leftSection={<FiBox size={14} />}
-              />
-            )}
-          </Stack>
-        </Paper>
-      )}
-
-      {/* Show message if no aircraft selected */}
-      {!selectedAircraftId && (
-        <Alert color="blue" variant="light" icon={<FiInfo size={16} />}>
-          Select an aircraft to begin your weight and balance calculation.
-        </Alert>
-      )}
-
-      {/* Calculator Form (only shown after profile selected) */}
+      {/* Calculator Form */}
       {selectedProfile && (
         <>
           {/* Aircraft Info Banner */}
@@ -369,28 +483,36 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
             <Group justify="space-between" wrap="wrap">
               <Group gap="md">
                 <Box>
-                  <Text size="xs" c="dimmed">Aircraft</Text>
+                  <Text size="xs" c="dimmed">
+                    Aircraft
+                  </Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedAircraft?.tailNumber} - {selectedAircraft?.aircraftType}
                   </Text>
                 </Box>
                 <Divider orientation="vertical" color="dark.4" />
                 <Box>
-                  <Text size="xs" c="dimmed">Empty Weight</Text>
+                  <Text size="xs" c="dimmed">
+                    Empty Weight
+                  </Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.emptyWeight?.toLocaleString()} {weightLabel}
                   </Text>
                 </Box>
                 <Divider orientation="vertical" color="dark.4" />
                 <Box>
-                  <Text size="xs" c="dimmed">Empty CG</Text>
+                  <Text size="xs" c="dimmed">
+                    Empty CG
+                  </Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.emptyWeightArm?.toFixed(2)} {armLabel}
                   </Text>
                 </Box>
                 <Divider orientation="vertical" color="dark.4" />
                 <Box>
-                  <Text size="xs" c="dimmed">Max Takeoff</Text>
+                  <Text size="xs" c="dimmed">
+                    Max Takeoff
+                  </Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.maxTakeoffWeight?.toLocaleString()} {weightLabel}
                   </Text>
@@ -426,11 +548,12 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     Passengers & Cargo
                   </Text>
                   <Text size="xs" c="dimmed">
-                    ({payloadStations.length} station{payloadStations.length !== 1 ? 's' : ''})
+                    ({payloadStations.length} station
+                    {payloadStations.length !== 1 ? 's' : ''})
                   </Text>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                   {payloadStations.map((input) => (
                     <Paper
                       key={input.stationId}
@@ -443,30 +566,37 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     >
                       <Stack gap="xs">
                         <Group justify="space-between">
-                          <Text size="sm" c="white" fw={500}>{input.name}</Text>
-                          {input.maxWeight > 0 && <Text size="xs" c="dimmed">Max: {input.maxWeight} {weightLabel}</Text>}
+                          <Text size="sm" c="white" fw={500}>
+                            {input.name}
+                          </Text>
+                          {input.maxWeight > 0 && (
+                            <Text size="xs" c="dimmed">
+                              Max: {input.maxWeight} {weightLabel}
+                            </Text>
+                          )}
                         </Group>
                         <Group gap="xs" align="flex-end">
                           <NumberInput
                             placeholder="Enter weight"
                             value={input.weight}
                             onChange={(value) =>
-                              updateStationInput(input.stationId, 'weight', value === '' ? '' : Number(value))
+                              updateStationInput(
+                                input.stationId,
+                                'weight',
+                                value === '' ? '' : Number(value)
+                              )
                             }
                             min={0}
                             max={input.maxWeight > 0 ? input.maxWeight : undefined}
                             styles={inputStyles}
                             size="sm"
                             style={{ flex: 1 }}
-                            rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-                          />
-                          {input.maxWeight > 0 && (
-                            <Tooltip label={`Max: ${input.maxWeight} ${weightLabel}`}>
-                              <Text size="xs" c="dimmed" pb={8}>
-                                / {input.maxWeight}
+                            rightSection={
+                              <Text size="xs" c="dimmed">
+                                {weightLabel}
                               </Text>
-                            </Tooltip>
-                          )}
+                            }
+                          />
                         </Group>
                       </Stack>
                     </Paper>
@@ -496,7 +626,8 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                       Fuel
                     </Text>
                     <Text size="xs" c="dimmed">
-                      ({fuelStations.length} tank{fuelStations.length !== 1 ? 's' : ''})
+                      ({fuelStations.length} tank
+                      {fuelStations.length !== 1 ? 's' : ''})
                     </Text>
                   </Group>
                   <Button
@@ -504,9 +635,13 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     color="cyan"
                     size="xs"
                     onClick={() => {
-                      fuelStations.forEach(s => {
+                      fuelStations.forEach((s) => {
                         if (s.fuelCapacityGallons) {
-                          updateStationInput(s.stationId, 'fuelGallons', s.fuelCapacityGallons);
+                          updateStationInput(
+                            s.stationId,
+                            'fuelGallons',
+                            s.fuelCapacityGallons
+                          );
                         }
                       });
                     }}
@@ -515,11 +650,16 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   </Button>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                   {fuelStations.map((input) => {
-                    const fuelWeight = calculateFuelWeight(input.fuelGallons || 0, input.fuelWeightPerGallon);
+                    const fuelWeight = calculateFuelWeight(
+                      input.fuelGallons || 0,
+                      input.fuelWeightPerGallon
+                    );
                     const fillPercent = input.fuelCapacityGallons
-                      ? (Number(input.fuelGallons || 0) / input.fuelCapacityGallons) * 100
+                      ? (Number(input.fuelGallons || 0) /
+                          input.fuelCapacityGallons) *
+                        100
                       : 0;
 
                     return (
@@ -534,8 +674,9 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                       >
                         <Stack gap="xs">
                           <Group justify="space-between">
-                            <Text size="sm" c="white" fw={500}>{input.name}</Text>
-                            {input.maxWeight > 0 && <Text size="xs" c="dimmed">Max: {input.maxWeight} {weightLabel}</Text>}
+                            <Text size="sm" c="white" fw={500}>
+                              {input.name}
+                            </Text>
                           </Group>
 
                           <Group gap="xs" align="flex-end">
@@ -543,7 +684,11 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                               placeholder="Gallons"
                               value={input.fuelGallons}
                               onChange={(value) =>
-                                updateStationInput(input.stationId, 'fuelGallons', value === '' ? '' : Number(value))
+                                updateStationInput(
+                                  input.stationId,
+                                  'fuelGallons',
+                                  value === '' ? '' : Number(value)
+                                )
                               }
                               min={0}
                               max={input.fuelCapacityGallons}
@@ -551,26 +696,34 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                               styles={inputStyles}
                               size="sm"
                               style={{ flex: 1 }}
-                              rightSection={<Text size="xs" c="dimmed">gal</Text>}
+                              rightSection={
+                                <Text size="xs" c="dimmed">
+                                  gal
+                                </Text>
+                              }
                             />
                             <Button
                               variant="light"
                               color="cyan"
                               size="sm"
-                              onClick={() => handleFillTank(input.stationId, input.fuelCapacityGallons)}
+                              onClick={() =>
+                                handleFillTank(input.stationId, input.fuelCapacityGallons)
+                              }
                             >
                               Full
                             </Button>
                           </Group>
 
-                          {/* Fuel info display */}
                           <Group justify="space-between" gap="xs">
                             <Group gap="xs">
                               <Text size="xs" c="cyan">
                                 = {fuelWeight.toFixed(1)} {weightLabel}
                               </Text>
                               <Text size="xs" c="dimmed">
-                                ({input.fuelWeightPerGallon || DEFAULT_FUEL_WEIGHT.AVGAS_100LL} {weightLabel}/gal)
+                                (
+                                {input.fuelWeightPerGallon ||
+                                  DEFAULT_FUEL_WEIGHT.AVGAS_100LL}{' '}
+                                {weightLabel}/gal)
                               </Text>
                             </Group>
                             {input.fuelCapacityGallons && (
@@ -597,7 +750,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
             </Paper>
           )}
 
-          {/* Oil Section (only show if profile has oil stations) */}
+          {/* Oil Section */}
           {oilStations.length > 0 && (
             <Paper
               p="md"
@@ -615,16 +768,12 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   <Text size="sm" c="white" fw={500}>
                     Oil
                   </Text>
-                  <Tooltip label="Only shown because this profile has oil stations configured separately from empty weight">
-                    <ActionIcon variant="subtle" size="xs">
-                      <FiInfo size={12} />
-                    </ActionIcon>
-                  </Tooltip>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                   {oilStations.map((input) => {
-                    const oilWeight = (Number(input.oilQuarts || 0)) * (input.oilWeightPerQuart || 1.875);
+                    const oilWeight =
+                      Number(input.oilQuarts || 0) * (input.oilWeightPerQuart || 1.875);
 
                     return (
                       <Paper
@@ -637,17 +786,19 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                         }}
                       >
                         <Stack gap="xs">
-                          <Group justify="space-between">
-                            <Text size="sm" c="white" fw={500}>{input.name}</Text>
-                            {input.maxWeight > 0 && <Text size="xs" c="dimmed">Max: {input.maxWeight} {weightLabel}</Text>}
-                          </Group>
-
+                          <Text size="sm" c="white" fw={500}>
+                            {input.name}
+                          </Text>
                           <Group gap="xs" align="flex-end">
                             <NumberInput
                               placeholder="Quarts"
                               value={input.oilQuarts}
                               onChange={(value) =>
-                                updateStationInput(input.stationId, 'oilQuarts', value === '' ? '' : Number(value))
+                                updateStationInput(
+                                  input.stationId,
+                                  'oilQuarts',
+                                  value === '' ? '' : Number(value)
+                                )
                               }
                               min={0}
                               max={input.oilCapacityQuarts}
@@ -655,20 +806,29 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                               styles={inputStyles}
                               size="sm"
                               style={{ flex: 1 }}
-                              rightSection={<Text size="xs" c="dimmed">qt</Text>}
+                              rightSection={
+                                <Text size="xs" c="dimmed">
+                                  qt
+                                </Text>
+                              }
                             />
                             {input.oilCapacityQuarts && (
                               <Button
                                 variant="light"
                                 color="yellow"
                                 size="sm"
-                                onClick={() => updateStationInput(input.stationId, 'oilQuarts', input.oilCapacityQuarts!)}
+                                onClick={() =>
+                                  updateStationInput(
+                                    input.stationId,
+                                    'oilQuarts',
+                                    input.oilCapacityQuarts!
+                                  )
+                                }
                               >
                                 Full
                               </Button>
                             )}
                           </Group>
-
                           <Text size="xs" c="yellow">
                             = {oilWeight.toFixed(1)} {weightLabel}
                           </Text>
@@ -700,13 +860,15 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                 </Text>
               </Group>
 
-              <SimpleGrid cols={compact ? 1 : 2} spacing="md">
+              <SimpleGrid cols={2} spacing="md">
                 {hasFuelStations && (
                   <Box>
                     <Group gap="xs" mb={4}>
-                      <Text size="xs" c="gray.4">Expected Fuel Burn</Text>
+                      <Text size="xs" c="gray.4">
+                        Expected Fuel Burn
+                      </Text>
                       <Tooltip
-                        label="Enter the total fuel you expect to burn during your flight. This is used to calculate your landing weight and CG to ensure you'll still be within limits when you land."
+                        label="From your nav log: the total fuel you'll burn. Used to calculate landing weight/CG."
                         multiline
                         w={280}
                       >
@@ -718,24 +880,34 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     <NumberInput
                       placeholder="0"
                       value={fuelBurnGallons}
-                      onChange={(value) => setFuelBurnGallons(value === '' ? '' : Number(value))}
+                      onChange={(value) =>
+                        setFuelBurnGallons(value === '' ? '' : Number(value))
+                      }
                       min={0}
                       max={totalFuelGallons}
                       decimalScale={1}
                       styles={inputStyles}
                       size="sm"
-                      rightSection={<Text size="xs" c="dimmed">gal</Text>}
+                      rightSection={
+                        <Text size="xs" c="dimmed">
+                          gal
+                        </Text>
+                      }
                     />
                     {fuelBurnGallons && Number(fuelBurnGallons) > 0 && (
                       <Text size="xs" c="dimmed" mt={4}>
-                        Landing fuel: {(totalFuelGallons - Number(fuelBurnGallons)).toFixed(1)} gal remaining
+                        Landing fuel:{' '}
+                        {(totalFuelGallons - Number(fuelBurnGallons)).toFixed(1)} gal
+                        remaining
                       </Text>
                     )}
                   </Box>
                 )}
 
                 <Box>
-                  <Text size="xs" c="gray.4" mb={4}>CG Envelope</Text>
+                  <Text size="xs" c="gray.4" mb={4}>
+                    CG Envelope
+                  </Text>
                   <Select
                     data={availableEnvelopes}
                     value={selectedEnvelopeId}
@@ -750,20 +922,24 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                 variant="gradient"
                 gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                 size="md"
-                leftSection={persistCalculations ? <FiSave size={18} /> : <FiActivity size={18} />}
-                onClick={handleCalculate}
-                loading={calculationLoading}
+                leftSection={<FiSave size={18} />}
+                onClick={handleCalculateAndSave}
+                loading={calculationInProgress}
                 disabled={!canCalculate}
                 fullWidth
               >
-                {persistCalculations ? 'Calculate & Save' : 'Calculate Weight & Balance'}
+                Calculate & Save to Flight
               </Button>
             </Stack>
           </Paper>
 
           {/* Error display */}
           {error && (
-            <Alert color="red" variant="light" icon={<FiAlertTriangle size={16} />}>
+            <Alert
+              color="red"
+              variant="light"
+              icon={<FiAlertTriangle size={16} />}
+            >
               {error}
             </Alert>
           )}
@@ -778,15 +954,18 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                 borderRadius: 'var(--mantine-radius-md)',
               }}
             >
-              <Tabs defaultValue="chart" styles={{
-                tab: {
-                  color: 'var(--mantine-color-gray-4)',
-                  '&[data-active]': {
-                    color: 'white',
-                    borderColor: 'var(--vfr3d-primary)',
+              <Tabs
+                defaultValue="chart"
+                styles={{
+                  tab: {
+                    color: 'var(--mantine-color-gray-4)',
+                    '&[data-active]': {
+                      color: 'white',
+                      borderColor: 'var(--vfr3d-primary)',
+                    },
                   },
-                },
-              }}>
+                }}
+              >
                 <Tabs.List>
                   <Tabs.Tab value="chart">CG Envelope</Tabs.Tab>
                   <Tabs.Tab value="breakdown">Weight Breakdown</Tabs.Tab>
@@ -795,10 +974,17 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                 <Tabs.Panel value="chart" pt="md">
                   {/* Warnings */}
                   {result.warnings && result.warnings.length > 0 && (
-                    <Alert color="orange" variant="light" icon={<FiAlertTriangle size={16} />} mb="md">
+                    <Alert
+                      color="orange"
+                      variant="light"
+                      icon={<FiAlertTriangle size={16} />}
+                      mb="md"
+                    >
                       <Stack gap={4}>
                         {result.warnings.map((warning, i) => (
-                          <Text key={i} size="sm">{warning}</Text>
+                          <Text key={i} size="sm">
+                            {warning}
+                          </Text>
                         ))}
                       </Stack>
                     </Alert>
@@ -813,29 +999,42 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                           backgroundColor: result.takeoff.isWithinEnvelope
                             ? 'rgba(34, 197, 94, 0.1)'
                             : 'rgba(239, 68, 68, 0.1)',
-                          border: `2px solid ${result.takeoff.isWithinEnvelope ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`,
+                          border: `2px solid ${
+                            result.takeoff.isWithinEnvelope
+                              ? 'rgba(34, 197, 94, 0.5)'
+                              : 'rgba(239, 68, 68, 0.5)'
+                          }`,
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
                         <Group justify="space-between" mb="xs">
-                          <Text size="sm" c="dimmed" fw={500}>TAKEOFF</Text>
+                          <Text size="sm" c="dimmed" fw={500}>
+                            TAKEOFF
+                          </Text>
                           <Badge
                             size="sm"
                             color={result.takeoff.isWithinEnvelope ? 'green' : 'red'}
                             variant="filled"
                           >
-                            {result.takeoff.isWithinEnvelope ? '✓ WITHIN LIMITS' : '✗ OUTSIDE LIMITS'}
+                            {result.takeoff.isWithinEnvelope
+                              ? '✓ WITHIN LIMITS'
+                              : '✗ OUTSIDE LIMITS'}
                           </Badge>
                         </Group>
                         <Group gap="lg">
                           <Box>
-                            <Text size="xs" c="dimmed">Gross Weight</Text>
+                            <Text size="xs" c="dimmed">
+                              Gross Weight
+                            </Text>
                             <Text size="lg" c="white" fw={600}>
-                              {result.takeoff.totalWeight?.toLocaleString()} {weightLabel}
+                              {result.takeoff.totalWeight?.toLocaleString()}{' '}
+                              {weightLabel}
                             </Text>
                           </Box>
                           <Box>
-                            <Text size="xs" c="dimmed">CG Location</Text>
+                            <Text size="xs" c="dimmed">
+                              CG Location
+                            </Text>
                             <Text size="lg" c="white" fw={600}>
                               {result.takeoff.cgArm?.toFixed(2)} {armLabel}
                             </Text>
@@ -851,29 +1050,42 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                           backgroundColor: result.landing.isWithinEnvelope
                             ? 'rgba(59, 130, 246, 0.1)'
                             : 'rgba(239, 68, 68, 0.1)',
-                          border: `2px solid ${result.landing.isWithinEnvelope ? 'rgba(59, 130, 246, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`,
+                          border: `2px solid ${
+                            result.landing.isWithinEnvelope
+                              ? 'rgba(59, 130, 246, 0.5)'
+                              : 'rgba(239, 68, 68, 0.5)'
+                          }`,
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
                         <Group justify="space-between" mb="xs">
-                          <Text size="sm" c="dimmed" fw={500}>LANDING</Text>
+                          <Text size="sm" c="dimmed" fw={500}>
+                            LANDING
+                          </Text>
                           <Badge
                             size="sm"
                             color={result.landing.isWithinEnvelope ? 'blue' : 'red'}
                             variant="filled"
                           >
-                            {result.landing.isWithinEnvelope ? '✓ WITHIN LIMITS' : '✗ OUTSIDE LIMITS'}
+                            {result.landing.isWithinEnvelope
+                              ? '✓ WITHIN LIMITS'
+                              : '✗ OUTSIDE LIMITS'}
                           </Badge>
                         </Group>
                         <Group gap="lg">
                           <Box>
-                            <Text size="xs" c="dimmed">Gross Weight</Text>
+                            <Text size="xs" c="dimmed">
+                              Gross Weight
+                            </Text>
                             <Text size="lg" c="white" fw={600}>
-                              {result.landing.totalWeight?.toLocaleString()} {weightLabel}
+                              {result.landing.totalWeight?.toLocaleString()}{' '}
+                              {weightLabel}
                             </Text>
                           </Box>
                           <Box>
-                            <Text size="xs" c="dimmed">CG Location</Text>
+                            <Text size="xs" c="dimmed">
+                              CG Location
+                            </Text>
                             <Text size="lg" c="white" fw={600}>
                               {result.landing.cgArm?.toFixed(2)} {armLabel}
                             </Text>
@@ -892,7 +1104,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     landingResult={result.landing}
                     armUnits={selectedProfile?.armUnits}
                     weightUnits={selectedProfile?.weightUnits}
-                    height={compact ? 250 : 350}
+                    height={350}
                   />
                 </Tabs.Panel>
 
@@ -919,4 +1131,4 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   );
 };
 
-export default WeightBalanceCalculator;
+export default FlightWeightBalancePanel;

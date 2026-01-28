@@ -540,6 +540,7 @@ export interface FlightDto {
   specialUseAirspaceGlobalIds?: string[];
   obstacleOasNumbers?: string[];
   aircraftPerformanceProfile?: AircraftPerformanceProfileDto | undefined;
+  aircraft?: AircraftDto | undefined;
   relatedFlightId?: string | undefined;
 }
 
@@ -609,6 +610,7 @@ export interface UpdateFlightRequestDto {
   plannedCruisingAltitude?: number | undefined;
   waypoints?: WaypointDto[] | undefined;
   aircraftPerformanceProfileId?: string | undefined;
+  aircraftId?: string | undefined;
 }
 
 export interface GAirmetDto {
@@ -1189,4 +1191,38 @@ export interface StationLoadDto {
   weight?: number | undefined;
   fuelGallons?: number | undefined;
   oilQuarts?: number | undefined;
+}
+
+export interface WeightBalanceCalculationDto {
+  id?: string;
+  profileId?: string;
+  flightId?: string | undefined;
+  envelopeId?: string | undefined;
+  fuelBurnGallons?: number | undefined;
+  loadedStations?: StationLoadDto[];
+  takeoff?: WeightBalanceCgResultDto;
+  landing?: WeightBalanceCgResultDto | undefined;
+  stationBreakdown?: StationBreakdownDto[];
+  envelopeName?: string;
+  envelopeLimits?: CgEnvelopePointDto[];
+  warnings?: string[];
+  calculatedAt?: Date;
+  isStandalone?: boolean;
+}
+
+export interface SaveWeightBalanceCalculationRequestDto {
+  profileId?: string;
+  flightId?: string | undefined;
+  envelopeId?: string | undefined;
+  fuelBurnGallons?: number | undefined;
+  loadedStations?: StationLoadDto[];
+}
+
+export interface StandaloneCalculationStateDto {
+  calculationId?: string;
+  profileId?: string;
+  envelopeId?: string | undefined;
+  fuelBurnGallons?: number | undefined;
+  loadedStations?: StationLoadDto[];
+  calculatedAt?: Date;
 }
