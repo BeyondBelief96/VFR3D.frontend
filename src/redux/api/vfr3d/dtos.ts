@@ -1043,3 +1043,150 @@ export interface TafTemperature {
   maxTempC?: string | undefined;
   minTempC?: string | undefined;
 }
+
+export interface WeightBalanceProfileDto {
+  id?: string;
+  userId?: string;
+  aircraftId?: string | undefined;
+  profileName?: string;
+  datumDescription?: string | undefined;
+  emptyWeight?: number;
+  emptyWeightArm?: number;
+  maxRampWeight?: number | undefined;
+  maxTakeoffWeight?: number;
+  maxLandingWeight?: number | undefined;
+  maxZeroFuelWeight?: number | undefined;
+  weightUnits?: WeightUnits;
+  armUnits?: ArmUnits;
+  loadingGraphFormat?: LoadingGraphFormat;
+  loadingStations?: LoadingStationDto[];
+  cgEnvelopes?: CgEnvelopeDto[];
+}
+
+export enum WeightUnits {
+  Pounds = "Pounds",
+  Kilograms = "Kilograms",
+}
+
+export enum ArmUnits {
+  Inches = "Inches",
+  Centimeters = "Centimeters",
+}
+
+export enum LoadingGraphFormat {
+  Arm = "Arm",
+  MomentDividedBy1000 = "MomentDividedBy1000",
+}
+
+export interface LoadingStationDto {
+  id?: string;
+  name?: string;
+  maxWeight?: number;
+  point1?: LoadingGraphPointDto;
+  point2?: LoadingGraphPointDto;
+  stationType?: LoadingStationType;
+  fuelCapacityGallons?: number | undefined;
+  fuelWeightPerGallon?: number | undefined;
+  oilCapacityQuarts?: number | undefined;
+  oilWeightPerQuart?: number | undefined;
+}
+
+export interface LoadingGraphPointDto {
+  weight?: number;
+  value?: number;
+}
+
+export enum LoadingStationType {
+  Standard = "Standard",
+  Fuel = "Fuel",
+  Oil = "Oil",
+}
+
+export interface CgEnvelopeDto {
+  id?: string;
+  name?: string;
+  format?: CgEnvelopeFormat;
+  limits?: CgEnvelopePointDto[];
+}
+
+export enum CgEnvelopeFormat {
+  Arm = "Arm",
+  MomentDividedBy1000 = "MomentDividedBy1000",
+}
+
+export interface CgEnvelopePointDto {
+  weight?: number;
+  arm?: number | undefined;
+  momentDividedBy1000?: number | undefined;
+}
+
+export interface CreateWeightBalanceProfileRequestDto {
+  aircraftId?: string | undefined;
+  profileName?: string;
+  datumDescription?: string | undefined;
+  emptyWeight?: number;
+  emptyWeightArm?: number;
+  maxRampWeight?: number | undefined;
+  maxTakeoffWeight?: number;
+  maxLandingWeight?: number | undefined;
+  maxZeroFuelWeight?: number | undefined;
+  weightUnits?: WeightUnits;
+  armUnits?: ArmUnits;
+  loadingGraphFormat?: LoadingGraphFormat;
+  loadingStations?: LoadingStationDto[];
+  cgEnvelopes?: CgEnvelopeDto[];
+}
+
+export interface UpdateWeightBalanceProfileRequestDto {
+  aircraftId?: string | undefined;
+  profileName?: string;
+  datumDescription?: string | undefined;
+  emptyWeight?: number;
+  emptyWeightArm?: number;
+  maxRampWeight?: number | undefined;
+  maxTakeoffWeight?: number;
+  maxLandingWeight?: number | undefined;
+  maxZeroFuelWeight?: number | undefined;
+  weightUnits?: WeightUnits;
+  armUnits?: ArmUnits;
+  loadingGraphFormat?: LoadingGraphFormat;
+  loadingStations?: LoadingStationDto[];
+  cgEnvelopes?: CgEnvelopeDto[];
+}
+
+export interface WeightBalanceCalculationResultDto {
+  takeoff?: WeightBalanceCgResultDto;
+  landing?: WeightBalanceCgResultDto | undefined;
+  stationBreakdown?: StationBreakdownDto[];
+  envelopeName?: string;
+  envelopeLimits?: CgEnvelopePointDto[];
+  warnings?: string[];
+}
+
+export interface WeightBalanceCgResultDto {
+  totalWeight?: number;
+  totalMoment?: number;
+  cgArm?: number;
+  isWithinEnvelope?: boolean;
+}
+
+export interface StationBreakdownDto {
+  stationId?: string;
+  name?: string;
+  weight?: number;
+  arm?: number;
+  moment?: number;
+}
+
+export interface WeightBalanceCalculationRequestDto {
+  loadedStations?: StationLoadDto[];
+  envelopeId?: string | undefined;
+  fuelBurnGallons?: number | undefined;
+}
+
+export interface StationLoadDto {
+  stationId?: string;
+  weight?: number | undefined;
+  fuelGallons?: number | undefined;
+  oilQuarts?: number | undefined;
+}

@@ -11,6 +11,7 @@ export const tagTypes = [
   'weather',
   'pireps',
   'airsigmets',
+  'weightBalance',
 ] as const;
 
 // Base API configuration

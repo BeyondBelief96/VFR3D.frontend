@@ -15,10 +15,12 @@ import {
   Alert,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle } from 'react-icons/fi';
-import { FaPlane } from 'react-icons/fa';
-import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto } from '@/redux/api/vfr3d/dtos';
+import { Link } from '@tanstack/react-router';
+import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle, FiExternalLink } from 'react-icons/fi';
+import { FaPlane, FaBalanceScale } from 'react-icons/fa';
+import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
+import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useAuth } from '@/components/Auth';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
 
@@ -62,6 +64,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   const userId = user?.sub || '';
 
   const [expanded, setExpanded] = useState(false);
+  const [wbExpanded, setWbExpanded] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<AircraftPerformanceProfileDto | null>(null);
   const [profileFormMode, setProfileFormMode] = useState<'create' | 'edit'>('create');
@@ -69,6 +72,12 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
 
   const [deleteProfile, { isLoading: isDeletingProfile }] = useDeleteAircraftPerformanceProfileMutation();
+
+  // Fetch W&B profiles for this aircraft
+  const { data: wbProfiles = [] } = useGetWeightBalanceProfilesForAircraftQuery(
+    { userId, aircraftId: aircraft.id || '' },
+    { skip: !userId || !aircraft.id }
+  );
 
   const profiles = aircraft.performanceProfiles || [];
   const profileCount = profiles.length;
@@ -296,6 +305,83 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                   onClick={handleAddProfile}
                 >
                   Add Profile
+                </Button>
+              </Stack>
+            </Collapse>
+          </Box>
+
+          {/* Weight & Balance Section */}
+          <Box>
+            <Button
+              variant="subtle"
+              color="gray"
+              size="sm"
+              fullWidth
+              justify="space-between"
+              rightSection={wbExpanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+              onClick={() => setWbExpanded(!wbExpanded)}
+              styles={{
+                root: {
+                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                  },
+                },
+              }}
+            >
+              <Group gap="xs">
+                <FaBalanceScale size={14} />
+                <Text size="sm" c="white">
+                  Weight & Balance ({wbProfiles.length})
+                </Text>
+              </Group>
+            </Button>
+
+            <Collapse in={wbExpanded}>
+              <Stack gap="sm" mt="sm">
+                {wbProfiles.length === 0 ? (
+                  <Text size="sm" c="dimmed" ta="center" py="md">
+                    No weight & balance profiles configured
+                  </Text>
+                ) : (
+                  <SimpleGrid cols={1} spacing="xs">
+                    {wbProfiles.map((profile: WeightBalanceProfileDto) => (
+                      <Paper
+                        key={profile.id}
+                        p="sm"
+                        style={{
+                          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                          borderRadius: 'var(--mantine-radius-md)',
+                        }}
+                      >
+                        <Group justify="space-between" wrap="nowrap">
+                          <Box>
+                            <Text size="sm" fw={500} c="white" lineClamp={1}>
+                              {profile.profileName || 'Unnamed Profile'}
+                            </Text>
+                            <Group gap="xs" mt={4}>
+                              <Text size="xs" c="dimmed">
+                                {profile.emptyWeight?.toLocaleString()} lbs empty
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {profile.maxTakeoffWeight?.toLocaleString()} lbs MTOW
+                              </Text>
+                            </Group>
+                          </Box>
+                        </Group>
+                      </Paper>
+                    ))}
+                  </SimpleGrid>
+                )}
+
+                <Button
+                  component={Link}
+                  to="/weight-balance"
+                  variant="light"
+                  size="xs"
+                  leftSection={<FiExternalLink size={14} />}
+                >
+                  Manage W&B Profiles
                 </Button>
               </Stack>
             </Collapse>

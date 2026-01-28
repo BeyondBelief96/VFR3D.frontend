@@ -24,7 +24,7 @@ import {
   FiUser,
   FiCloud,
 } from 'react-icons/fi';
-import { FaPlane, FaPlaneDeparture } from 'react-icons/fa';
+import { FaPlane, FaPlaneDeparture, FaBalanceScale } from 'react-icons/fa';
 import AirportSearch from '../Search/AirportSearch';
 import logo from '@/assets/images/logo_2.png';
 
@@ -110,6 +110,19 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
             justify={mobile ? 'flex-start' : 'center'}
           >
             Aircraft
+          </Button>
+          <Button
+            component={Link}
+            to="/weight-balance"
+            variant="subtle"
+            color="gray"
+            size={mobile ? 'md' : 'sm'}
+            leftSection={<FaBalanceScale size={14} />}
+            onClick={onNavigate}
+            fullWidth={mobile}
+            justify={mobile ? 'flex-start' : 'center'}
+          >
+            W&B
           </Button>
           <Button
             component={Link}
@@ -228,6 +241,16 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
             leftSection={<FaPlaneDeparture size={14} />}
           >
             Aircraft
+          </Button>
+          <Button
+            component={Link}
+            to="/weight-balance"
+            variant="subtle"
+            color="gray"
+            size="sm"
+            leftSection={<FaBalanceScale size={14} />}
+          >
+            W&B
           </Button>
         </Group>
 

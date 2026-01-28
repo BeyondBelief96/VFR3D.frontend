@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, ScrollArea, Text, Box, ActionIcon, Group, Paper } from '@mantine/core';
 import { Accordion } from '@mantine/core';
 import { FiMap, FiNavigation, FiCloud, FiLayers, FiAlertTriangle, FiX } from 'react-icons/fi';
