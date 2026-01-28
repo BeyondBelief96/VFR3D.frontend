@@ -62,6 +62,7 @@ import { NavLogTable } from '@/features/Flights/FlightPlanningDrawer/NavLogTable
 import { FlightLogPdf } from '@/features/Flights';
 import { mapFlightToNavlogData } from '@/utility/utils';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
+import { METRIC_COLORS, FLIGHT_POINT_COLORS, getFlightCategoryColor, getIconBgColor } from '@/constants/colors';
 import {
   FlightDto,
   AirportDto,
@@ -91,9 +92,10 @@ interface StatCardProps {
   label: string;
   value: string | number;
   subtext?: string;
+  bgColor?: string;
 }
 
-function StatCard({ icon, label, value, subtext }: StatCardProps) {
+function StatCard({ icon, label, value, subtext, bgColor = 'blue' }: StatCardProps) {
   return (
     <Paper
       p="md"
@@ -108,7 +110,7 @@ function StatCard({ icon, label, value, subtext }: StatCardProps) {
             width: 48,
             height: 48,
             borderRadius: '50%',
-            backgroundColor: `rgba(59, 130, 246, 0.15)`,
+            backgroundColor: getIconBgColor(bgColor),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -167,24 +169,28 @@ function FlightOverview({ flight }: { flight: FlightDto }) {
       {/* Stats Grid */}
       <SimpleGrid cols={{ base: 2, md: 4 }} spacing="md">
         <StatCard
-          icon={<FaRoute size={20} color="var(--mantine-color-blue-4)" />}
+          icon={<FaRoute size={20} color={METRIC_COLORS.DISTANCE} />}
           label="Total Distance"
           value={`${flight.totalRouteDistance?.toFixed(1) || '--'} NM`}
+          bgColor="blue"
         />
         <StatCard
-          icon={<FiClock size={20} color="var(--mantine-color-cyan-4)" />}
+          icon={<FiClock size={20} color={METRIC_COLORS.TIME} />}
           label="Flight Time"
           value={formatDuration(flight.totalRouteTimeHours)}
+          bgColor="cyan"
         />
         <StatCard
-          icon={<FaGasPump size={20} color="var(--mantine-color-teal-4)" />}
+          icon={<FaGasPump size={20} color={METRIC_COLORS.FUEL} />}
           label="Fuel Required"
           value={`${flight.totalFuelUsed?.toFixed(1) || '--'} gal`}
+          bgColor="teal"
         />
         <StatCard
-          icon={<FiWind size={20} color="var(--mantine-color-grape-4)" />}
+          icon={<FiWind size={20} color={METRIC_COLORS.WIND} />}
           label="Avg Wind Component"
           value={formatWindComponent(flight.averageWindComponent)}
+          bgColor="grape"
         />
       </SimpleGrid>
 
@@ -228,7 +234,7 @@ function FlightOverview({ flight }: { flight: FlightDto }) {
             }}
           >
             <Group gap="sm" mb="sm">
-              <FaPlane size={16} color="var(--mantine-color-green-4)" />
+              <FaPlane size={16} color={FLIGHT_POINT_COLORS.DEPARTURE} />
               <Text size="sm" c="dimmed">
                 Departure
               </Text>
@@ -252,7 +258,7 @@ function FlightOverview({ flight }: { flight: FlightDto }) {
             }}
           >
             <Group gap="sm" mb="sm">
-              <FiNavigation size={16} color="var(--mantine-color-red-4)" />
+              <FiNavigation size={16} color={FLIGHT_POINT_COLORS.DESTINATION} />
               <Text size="sm" c="dimmed">
                 Destination
               </Text>
@@ -286,21 +292,6 @@ function FlightOverview({ flight }: { flight: FlightDto }) {
   );
 }
 
-// Flight category color helper
-const getFlightCategoryColor = (category?: string): string => {
-  switch (category) {
-    case 'VFR':
-      return 'green';
-    case 'MVFR':
-      return 'blue';
-    case 'IFR':
-      return 'red';
-    case 'LIFR':
-      return 'grape';
-    default:
-      return 'gray';
-  }
-};
 
 // Weather Card Component
 function WeatherCard({ icaoId }: { icaoId: string }) {

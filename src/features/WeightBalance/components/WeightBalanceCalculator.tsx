@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import {
   Stack,
   Group,
@@ -145,8 +145,22 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
     persistCalculations,
   });
 
-  // Initialize when profile changes
+  // Track what we've initialized from to prevent reinitialization after save
+  const initializedFromRef = useRef<string | null>(null);
+
+  // Initialize when profile changes, but not when standaloneState updates after a save
   useEffect(() => {
+    const currentProfileId = selectedProfile?.id || null;
+
+    // Skip if we've already initialized from this profile and we have a result
+    // This prevents reinitialization when standaloneState updates after a save
+    if (initializedFromRef.current === currentProfileId && result !== null) {
+      return;
+    }
+
+    // Track what we're initializing from
+    initializedFromRef.current = currentProfileId;
+
     if (selectedProfile && standaloneState && standaloneState.profileId === selectedProfile.id) {
       // Initialize with saved state
       initializeFromProfile(selectedProfile, standaloneState);
@@ -154,7 +168,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
       // Initialize without saved state
       initializeFromProfile(selectedProfile);
     }
-  }, [selectedProfile, standaloneState, initializeFromProfile]);
+  }, [selectedProfile, standaloneState, initializeFromProfile, result]);
 
   // Filter profiles by selected aircraft (required)
   const filteredProfiles = selectedAircraftId

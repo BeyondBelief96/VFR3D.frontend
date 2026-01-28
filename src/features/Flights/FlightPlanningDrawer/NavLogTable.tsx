@@ -25,6 +25,7 @@ import {
 } from 'react-icons/fi';
 import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
 import { NavlogResponseDto, NavigationLegDto } from '@/redux/api/vfr3d/dtos';
+import { METRIC_COLORS, getIconBgColor } from '@/constants/colors';
 
 interface NavLogTableProps {
   navlog: NavlogResponseDto;
@@ -198,13 +199,13 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
                 width: 36,
                 height: 36,
                 borderRadius: '50%',
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                backgroundColor: getIconBgColor('blue'),
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FaRoute size={16} color="var(--vfr3d-primary)" />
+              <FaRoute size={16} color={METRIC_COLORS.DISTANCE} />
             </Box>
             <Box>
               <Text size="xs" c="dimmed">
@@ -224,13 +225,13 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
                 width: 36,
                 height: 36,
                 borderRadius: '50%',
-                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                backgroundColor: getIconBgColor('cyan'),
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FiClock size={16} color="#22c55e" />
+              <FiClock size={16} color={METRIC_COLORS.TIME} />
             </Box>
             <Box>
               <Text size="xs" c="dimmed">
@@ -250,13 +251,13 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
                 width: 36,
                 height: 36,
                 borderRadius: '50%',
-                backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                backgroundColor: getIconBgColor('teal'),
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FaGasPump size={14} color="#a855f7" />
+              <FaGasPump size={14} color={METRIC_COLORS.FUEL} />
             </Box>
             <Box>
               <Text size="xs" c="dimmed">
@@ -276,15 +277,13 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
                 width: 36,
                 height: 36,
                 borderRadius: '50%',
-                backgroundColor: headwindInfo.isHeadwind
-                  ? 'rgba(239, 68, 68, 0.2)'
-                  : 'rgba(34, 197, 94, 0.2)',
+                backgroundColor: getIconBgColor('grape'),
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FiWind size={16} color={headwindInfo.isHeadwind ? '#ef4444' : '#22c55e'} />
+              <FiWind size={16} color={METRIC_COLORS.WIND} />
             </Box>
             <Box>
               <Text size="xs" c="dimmed">
