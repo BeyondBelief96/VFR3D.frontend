@@ -146,20 +146,38 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   });
 
   // Track what we've initialized from to prevent reinitialization after save
-  const initializedFromRef = useRef<string | null>(null);
+  const initializedFromRef = useRef<{ profileId: string | null; hasCalculated: boolean }>({
+    profileId: null,
+    hasCalculated: false,
+  });
+
+  // Track when we've successfully calculated
+  useEffect(() => {
+    if (result !== null) {
+      initializedFromRef.current.hasCalculated = true;
+    }
+  }, [result]);
 
   // Initialize when profile changes, but not when standaloneState updates after a save
   useEffect(() => {
     const currentProfileId = selectedProfile?.id || null;
 
-    // Skip if we've already initialized from this profile and we have a result
-    // This prevents reinitialization when standaloneState updates after a save
-    if (initializedFromRef.current === currentProfileId && result !== null) {
+    // If the profile hasn't changed and we've already calculated, don't reinitialize
+    // This prevents the chart from disappearing when standaloneState updates after save
+    if (
+      initializedFromRef.current.profileId === currentProfileId &&
+      initializedFromRef.current.hasCalculated
+    ) {
       return;
     }
 
+    // If profile changed, reset the hasCalculated flag
+    if (initializedFromRef.current.profileId !== currentProfileId) {
+      initializedFromRef.current.hasCalculated = false;
+    }
+
     // Track what we're initializing from
-    initializedFromRef.current = currentProfileId;
+    initializedFromRef.current.profileId = currentProfileId;
 
     if (selectedProfile && standaloneState && standaloneState.profileId === selectedProfile.id) {
       // Initialize with saved state
@@ -168,7 +186,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
       // Initialize without saved state
       initializeFromProfile(selectedProfile);
     }
-  }, [selectedProfile, standaloneState, initializeFromProfile, result]);
+  }, [selectedProfile, standaloneState, initializeFromProfile]);
 
   // Filter profiles by selected aircraft (required)
   const filteredProfiles = selectedAircraftId

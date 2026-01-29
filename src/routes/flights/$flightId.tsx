@@ -60,6 +60,7 @@ import {
 } from '@/redux/api/vfr3d/weather.api';
 import { NavLogTable } from '@/features/Flights/FlightPlanningDrawer/NavLogTable';
 import { FlightLogPdf } from '@/features/Flights';
+import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { mapFlightToNavlogData } from '@/utility/utils';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
 import { METRIC_COLORS, FLIGHT_POINT_COLORS, getFlightCategoryColor, getIconBgColor } from '@/constants/colors';
@@ -1106,6 +1107,9 @@ function FlightDetailsContent() {
     skip: airportIdents.length === 0,
   });
 
+  // Get all PDF data (weather, runways, frequencies, crosswind, weight balance)
+  const pdfData = useFlightPdfData(flight, userId);
+
   if (isLoading) {
     return (
       <Center h="calc(100vh - 60px)" bg="var(--vfr3d-background)">
@@ -1170,7 +1174,18 @@ function FlightDetailsContent() {
               {flight.waypoints?.length || 0} waypoints
             </Badge>
             <PDFDownloadLink
-              document={<FlightLogPdf flightData={flight} airports={airports} />}
+              document={
+                <FlightLogPdf
+                  flightData={flight}
+                  airports={pdfData.airports}
+                  metars={pdfData.metars}
+                  tafs={pdfData.tafs}
+                  runways={pdfData.runways}
+                  frequencies={pdfData.frequencies}
+                  crosswindData={pdfData.crosswindData}
+                  weightBalance={pdfData.weightBalance}
+                />
+              }
               fileName={`${flight.name || 'flight'}-navlog.pdf`}
               style={{ textDecoration: 'none' }}
             >
@@ -1179,10 +1194,10 @@ function FlightDetailsContent() {
                 <Button
                   variant="light"
                   color="blue"
-                  leftSection={loading ? <Loader size="xs" /> : <FiDownload size={16} />}
-                  disabled={loading}
+                  leftSection={loading || pdfData.isLoading ? <Loader size="xs" /> : <FiDownload size={16} />}
+                  disabled={loading || pdfData.isLoading}
                 >
-                  {loading ? 'Preparing...' : 'Download PDF'}
+                  {loading || pdfData.isLoading ? 'Preparing...' : 'Download PDF'}
                 </Button>
               )}
             </PDFDownloadLink>

@@ -18,6 +18,9 @@ import {
   RunwayDto,
   CommunicationFrequencyDto,
   AirportCrosswindResponseDto,
+  WeightBalanceCalculationDto,
+  WeightBalanceCgResultDto,
+  StationBreakdownDto,
 } from '@/redux/api/vfr3d/dtos';
 
 // Register Roboto fonts
@@ -167,6 +170,12 @@ const styles = StyleSheet.create({
   freqCol1: { width: '20%' },
   freqCol2: { width: '25%' },
   freqCol3: { width: '55%' },
+  // Weight & Balance table columns
+  wbCol1: { width: '30%' },
+  wbCol2: { width: '17.5%' },
+  wbCol3: { width: '17.5%' },
+  wbCol4: { width: '17.5%' },
+  wbCol5: { width: '17.5%' },
   pageNumber: {
     position: 'absolute',
     fontSize: 9,
@@ -408,7 +417,76 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'right',
   },
+  // Weight & Balance styles
+  wbResultCard: {
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 10,
+    borderWidth: 2,
+  },
+  wbResultHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  wbResultTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#1e3a5f',
+  },
+  wbStatusBadge: {
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+  wbWithinLimits: {
+    backgroundColor: '#22c55e',
+    color: '#ffffff',
+  },
+  wbOutsideLimits: {
+    backgroundColor: '#ef4444',
+    color: '#ffffff',
+  },
+  wbResultGrid: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  wbResultItem: {
+    marginRight: 20,
+  },
+  wbWarningBox: {
+    backgroundColor: '#fef3c7',
+    borderColor: '#f59e0b',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 10,
+  },
+  wbWarningText: {
+    fontSize: 9,
+    color: '#92400e',
+  },
+  // Route arrow styling
+  routeContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  routeWaypoint: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1e3a5f',
+  },
+  routeArrow: {
+    fontSize: 12,
+    color: '#64748b',
+    marginHorizontal: 4,
+  },
 });
+
 
 // Helper functions
 const formatDuration = (hours?: number): string => {
@@ -529,6 +607,18 @@ const getChangeIndicatorText = (indicator?: string): string => {
   }
 };
 
+// Route display component with proper arrows
+const RouteDisplay: React.FC<{ waypoints: { name?: string }[] }> = ({ waypoints }) => (
+  <View style={styles.routeContainer}>
+    {waypoints.map((wp, idx) => (
+      <React.Fragment key={idx}>
+        <Text style={styles.routeWaypoint}>{wp.name || '--'}</Text>
+        {idx < waypoints.length - 1 && <Text style={styles.routeArrow}> → </Text>}
+      </React.Fragment>
+    ))}
+  </View>
+);
+
 export interface FlightLogPdfProps {
   flightData: FlightDto;
   airports?: AirportDto[];
@@ -537,7 +627,87 @@ export interface FlightLogPdfProps {
   runways?: { [key: string]: RunwayDto[] };
   frequencies?: { [key: string]: CommunicationFrequencyDto[] };
   crosswindData?: { [key: string]: AirportCrosswindResponseDto };
+  weightBalance?: WeightBalanceCalculationDto | null;
 }
+
+// Weight & Balance Result Card Component
+const WBResultCard: React.FC<{
+  title: string;
+  result: WeightBalanceCgResultDto;
+  color: string;
+}> = ({ title, result, color }) => (
+  <View
+    style={[
+      styles.wbResultCard,
+      {
+        backgroundColor: result.isWithinEnvelope ? `${color}10` : '#fef2f210',
+        borderColor: result.isWithinEnvelope ? color : '#ef4444',
+      },
+    ]}
+  >
+    <View style={styles.wbResultHeader}>
+      <Text style={styles.wbResultTitle}>{title}</Text>
+      <View
+        style={[
+          styles.wbStatusBadge,
+          result.isWithinEnvelope ? styles.wbWithinLimits : styles.wbOutsideLimits,
+        ]}
+      >
+        <Text style={{ color: '#ffffff', fontSize: 8, fontWeight: 'bold' }}>
+          {result.isWithinEnvelope ? 'WITHIN LIMITS' : 'OUTSIDE LIMITS'}
+        </Text>
+      </View>
+    </View>
+    <View style={styles.wbResultGrid}>
+      <View style={styles.wbResultItem}>
+        <Text style={styles.infoLabel}>Gross Weight</Text>
+        <Text style={[styles.infoValue, { fontWeight: 'bold', fontSize: 12 }]}>
+          {result.totalWeight?.toLocaleString() || '--'} lbs
+        </Text>
+      </View>
+      <View style={styles.wbResultItem}>
+        <Text style={styles.infoLabel}>CG Location</Text>
+        <Text style={[styles.infoValue, { fontWeight: 'bold', fontSize: 12 }]}>
+          {result.cgArm?.toFixed(2) || '--'} in
+        </Text>
+      </View>
+      <View style={styles.wbResultItem}>
+        <Text style={styles.infoLabel}>Total Moment</Text>
+        <Text style={styles.infoValue}>{result.totalMoment?.toLocaleString() || '--'}</Text>
+      </View>
+    </View>
+  </View>
+);
+
+// Weight Breakdown Table Component
+const WeightBreakdownTable: React.FC<{ breakdown: StationBreakdownDto[] }> = ({ breakdown }) => {
+  // Calculate total weight for percentage display
+  const totalWeight = breakdown.reduce((sum, station) => sum + (station.weight || 0), 0);
+
+  return (
+    <View style={styles.table}>
+      <View style={styles.tableHeader}>
+        <Text style={styles.wbCol1}>Station</Text>
+        <Text style={styles.wbCol2}>Weight (lbs)</Text>
+        <Text style={styles.wbCol3}>Arm (in)</Text>
+        <Text style={styles.wbCol4}>Moment</Text>
+        <Text style={styles.wbCol5}>% of Total</Text>
+      </View>
+      {breakdown.map((station, idx) => {
+        const percentOfTotal = totalWeight > 0 ? ((station.weight || 0) / totalWeight) * 100 : 0;
+        return (
+          <View key={idx} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+            <Text style={styles.wbCol1}>{station.name || '--'}</Text>
+            <Text style={styles.wbCol2}>{station.weight?.toFixed(1) || '--'}</Text>
+            <Text style={styles.wbCol3}>{station.arm?.toFixed(2) || '--'}</Text>
+            <Text style={styles.wbCol4}>{station.moment?.toFixed(0) || '--'}</Text>
+            <Text style={styles.wbCol5}>{percentOfTotal.toFixed(1)}%</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
 export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
   flightData,
@@ -547,6 +717,7 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
   runways = {},
   frequencies = {},
   crosswindData = {},
+  weightBalance,
 }) => {
   if (!flightData || !flightData.legs || flightData.legs.length === 0) {
     return (
@@ -561,9 +732,6 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
     );
   }
 
-  const routeString =
-    flightData.waypoints?.map((wp) => wp.name).join(' → ') || 'No waypoints';
-
   let pageNumber = 1;
 
   return (
@@ -571,7 +739,7 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
       {/* Page 1: Flight Overview and Nav Log */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.header}>VFR3D Navigation Log</Text>
-        <Text style={styles.subheader}>{routeString}</Text>
+        {flightData.waypoints && <RouteDisplay waypoints={flightData.waypoints} />}
 
         {/* Disclaimer */}
         <View style={styles.warningBox}>
@@ -607,6 +775,14 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
             {flightData.plannedCruisingAltitude?.toLocaleString() || '--'} ft MSL
           </Text>
         </View>
+        {flightData.aircraft && (
+          <View style={styles.row}>
+            <Text style={styles.label}>Aircraft:</Text>
+            <Text style={styles.value}>
+              {flightData.aircraft.tailNumber || 'N/A'} - {flightData.aircraft.aircraftType || 'Unknown'}
+            </Text>
+          </View>
+        )}
 
         {/* Flight Statistics */}
         <Text style={styles.sectionTitle}>Flight Statistics</Text>
@@ -680,11 +856,73 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
         <Text style={styles.pageNumber}>Page {pageNumber++}</Text>
       </Page>
 
-      {/* Page 2: Airport Information */}
+      {/* Page 2: Weight & Balance (if available) */}
+      {weightBalance && (weightBalance.takeoff || weightBalance.landing) && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.header}>Weight & Balance</Text>
+          {flightData.waypoints && <RouteDisplay waypoints={flightData.waypoints} />}
+
+          {/* Warnings */}
+          {weightBalance.warnings && weightBalance.warnings.length > 0 && (
+            <View style={styles.wbWarningBox}>
+              {weightBalance.warnings.map((warning, idx) => (
+                <Text key={idx} style={styles.wbWarningText}>
+                  {warning}
+                </Text>
+              ))}
+            </View>
+          )}
+
+          {/* Takeoff Result */}
+          {weightBalance.takeoff && (
+            <WBResultCard title="TAKEOFF" result={weightBalance.takeoff} color="#22c55e" />
+          )}
+
+          {/* Landing Result */}
+          {weightBalance.landing && (
+            <WBResultCard title="LANDING" result={weightBalance.landing} color="#3b82f6" />
+          )}
+
+          {/* Calculation Details */}
+          <View style={[styles.infoGrid, { marginTop: 10, marginBottom: 15 }]}>
+            {weightBalance.envelopeName && (
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>CG Envelope</Text>
+                <Text style={styles.infoValue}>{weightBalance.envelopeName}</Text>
+              </View>
+            )}
+            {weightBalance.fuelBurnGallons !== undefined && (
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Fuel Burn</Text>
+                <Text style={styles.infoValue}>{weightBalance.fuelBurnGallons} gal</Text>
+              </View>
+            )}
+            {weightBalance.calculatedAt && (
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Calculated</Text>
+                <Text style={styles.infoValue}>{formatDateTime(weightBalance.calculatedAt)}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Weight Breakdown Table */}
+          {weightBalance.stationBreakdown && weightBalance.stationBreakdown.length > 0 && (
+            <>
+              <Text style={styles.subsectionTitle}>Weight Breakdown</Text>
+              <WeightBreakdownTable breakdown={weightBalance.stationBreakdown} />
+            </>
+          )}
+
+          <Text style={styles.footer}>Generated by VFR3D</Text>
+          <Text style={styles.pageNumber}>Page {pageNumber++}</Text>
+        </Page>
+      )}
+
+      {/* Page 3: Airport Information */}
       {airports.length > 0 && (
         <Page size="A4" style={styles.page}>
           <Text style={styles.header}>Airport Information</Text>
-          <Text style={styles.subheader}>{routeString}</Text>
+          {flightData.waypoints && <RouteDisplay waypoints={flightData.waypoints} />}
 
           {airports.map((airport) => {
             const ident = airport.icaoId || airport.arptId || '';
@@ -852,11 +1090,11 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
         </Page>
       )}
 
-      {/* Page 3: Weather (if available) */}
+      {/* Page 4: Weather (if available) */}
       {Object.keys(metars).length > 0 && (
         <Page size="A4" style={styles.page}>
           <Text style={styles.header}>Weather Information</Text>
-          <Text style={styles.subheader}>{routeString}</Text>
+          {flightData.waypoints && <RouteDisplay waypoints={flightData.waypoints} />}
 
           {Object.entries(metars).map(([ident, metar]) => {
             const taf = tafs[ident];
