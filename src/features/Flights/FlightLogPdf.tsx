@@ -607,13 +607,21 @@ const getChangeIndicatorText = (indicator?: string): string => {
   }
 };
 
+// Helper to sanitize text for PDF (replace Unicode arrows with ASCII)
+const sanitizeForPdf = (text: string): string => {
+  return text
+    .replace(/→/g, '->')
+    .replace(/←/g, '<-')
+    .replace(/↔/g, '<->');
+};
+
 // Route display component with proper arrows
 const RouteDisplay: React.FC<{ waypoints: { name?: string }[] }> = ({ waypoints }) => (
   <View style={styles.routeContainer}>
     {waypoints.map((wp, idx) => (
       <React.Fragment key={idx}>
         <Text style={styles.routeWaypoint}>{wp.name || '--'}</Text>
-        {idx < waypoints.length - 1 && <Text style={styles.routeArrow}> → </Text>}
+        {idx < waypoints.length - 1 && <Text style={styles.routeArrow}>{' -> '}</Text>}
       </React.Fragment>
     ))}
   </View>
@@ -753,7 +761,7 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
         <Text style={styles.sectionTitle}>Flight Overview</Text>
         <View style={styles.row}>
           <Text style={styles.label}>Flight Name:</Text>
-          <Text style={styles.value}>{flightData.name || 'Unnamed Flight'}</Text>
+          <Text style={styles.value}>{sanitizeForPdf(flightData.name || 'Unnamed Flight')}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Departure:</Text>

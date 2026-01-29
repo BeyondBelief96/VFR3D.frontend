@@ -15,9 +15,11 @@ import {
   Accordion,
   ThemeIcon,
   Badge,
+  Modal,
+  Alert,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { FiPlus, FiArrowLeft } from 'react-icons/fi';
+import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import {
@@ -55,6 +57,8 @@ function WeightBalanceContent() {
   const [editingProfile, setEditingProfile] = useState<WeightBalanceProfileDto | null>(null);
   const [selectedProfileForCalc, setSelectedProfileForCalc] = useState<string | undefined>(undefined);
   const [selectedAircraftForCalc, setSelectedAircraftForCalc] = useState<string | undefined>(undefined);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
 
   const { data: profiles = [], isLoading, isError, refetch } = useGetWeightBalanceProfilesQuery(
     userId,
@@ -101,6 +105,18 @@ function WeightBalanceContent() {
       });
   }, [profiles, aircraft]);
 
+  // Get the profile being deleted for display purposes
+  const profileBeingDeleted = useMemo(() => {
+    if (!profileToDelete || !profiles) return null;
+    return profiles.find((p) => p.id === profileToDelete);
+  }, [profileToDelete, profiles]);
+
+  // Get the aircraft for the profile being deleted
+  const aircraftForDeletedProfile = useMemo(() => {
+    if (!profileBeingDeleted?.aircraftId || !aircraft) return null;
+    return aircraft.find((a) => a.id === profileBeingDeleted.aircraftId);
+  }, [profileBeingDeleted, aircraft]);
+
   const handleCreateClick = () => {
     setEditingProfile(null);
     setViewMode('create');
@@ -111,22 +127,31 @@ function WeightBalanceContent() {
     setViewMode('edit');
   };
 
-  const handleDeleteClick = async (profileId: string) => {
-    if (!userId) return;
+  const handleDeleteClick = (profileId: string) => {
+    setProfileToDelete(profileId);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!profileToDelete || !userId) return;
 
     try {
-      await deleteProfile({ userId, profileId }).unwrap();
+      await deleteProfile({ userId, profileId: profileToDelete }).unwrap();
       notifications.show({
         title: 'Profile Deleted',
         message: 'The weight & balance profile has been deleted.',
         color: 'green',
       });
+      setDeleteModalOpen(false);
+      setProfileToDelete(null);
     } catch (error: any) {
       notifications.show({
         title: 'Delete Failed',
         message: 'Unable to delete the profile. Please try again.',
         color: 'red',
       });
+      setDeleteModalOpen(false);
+      setProfileToDelete(null);
     }
   };
 
@@ -406,6 +431,92 @@ function WeightBalanceContent() {
           </Accordion>
         )}
       </Stack>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        opened={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title="Delete Weight & Balance Profile"
+        centered
+        size="md"
+        styles={{
+          header: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            padding: '16px 20px',
+          },
+          title: {
+            fontWeight: 600,
+            color: 'white',
+          },
+          body: {
+            backgroundColor: 'var(--vfr3d-surface)',
+            padding: '20px',
+          },
+          content: {
+            backgroundColor: 'var(--vfr3d-surface)',
+          },
+          close: {
+            color: 'var(--mantine-color-gray-4)',
+            '&:hover': {
+              backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            },
+          },
+        }}
+      >
+        <Stack gap="md">
+          {profileBeingDeleted && (
+            <Box
+              p="md"
+              style={{
+                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                borderRadius: 'var(--mantine-radius-md)',
+                border: '1px solid rgba(148, 163, 184, 0.1)',
+              }}
+            >
+              <Group gap="sm">
+                <ThemeIcon size="lg" radius="xl" color="blue" variant="light">
+                  <FaBalanceScale size={16} />
+                </ThemeIcon>
+                <Box>
+                  <Text c="white" fw={600}>
+                    {profileBeingDeleted.profileName || 'Unnamed Profile'}
+                  </Text>
+                  {aircraftForDeletedProfile && (
+                    <Text c="dimmed" size="sm">
+                      {aircraftForDeletedProfile.tailNumber} - {aircraftForDeletedProfile.aircraftType}
+                    </Text>
+                  )}
+                </Box>
+              </Group>
+            </Box>
+          )}
+
+          <Alert
+            color="orange"
+            variant="light"
+            icon={<FiAlertTriangle size={18} />}
+            title="This action will permanently delete:"
+          >
+            <Text size="sm" c="orange.3">
+              This weight & balance profile and all its configuration data including loading stations and CG envelopes.
+            </Text>
+          </Alert>
+
+          <Text c="dimmed" size="sm">
+            This action cannot be undone.
+          </Text>
+
+          <Group justify="flex-end" gap="sm">
+            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={handleDeleteConfirm} loading={isDeleting}>
+              Delete Profile
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Container>
   );
 }

@@ -23,6 +23,7 @@ import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { useGetAircraftQuery, useDeleteAircraftMutation } from '@/redux/api/vfr3d/aircraft.api';
+import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { AircraftDto } from '@/redux/api/vfr3d/dtos';
 import { AircraftCard } from '@/features/Aircraft/AircraftCard';
 import { AircraftForm } from '@/features/Aircraft/AircraftForm';
@@ -53,6 +54,10 @@ function AircraftContent() {
     skip: !userId,
   });
 
+  const { data: weightBalanceProfiles = [] } = useGetWeightBalanceProfilesQuery(userId, {
+    skip: !userId,
+  });
+
   const [deleteAircraft, { isLoading: isDeleting }] = useDeleteAircraftMutation();
 
   const handleCreateClick = () => {
@@ -78,6 +83,12 @@ function AircraftContent() {
     return aircraft.find((a) => a.id === aircraftToDelete);
   }, [aircraftToDelete, aircraft]);
 
+  // Count weight balance profiles for the aircraft being deleted
+  const weightBalanceProfileCount = useMemo(() => {
+    if (!aircraftToDelete) return 0;
+    return weightBalanceProfiles.filter((p) => p.aircraftId === aircraftToDelete).length;
+  }, [aircraftToDelete, weightBalanceProfiles]);
+
   const handleDeleteConfirm = async () => {
     if (!aircraftToDelete || !userId) return;
 
@@ -85,7 +96,7 @@ function AircraftContent() {
       await deleteAircraft({ userId, aircraftId: aircraftToDelete }).unwrap();
       notifications.show({
         title: 'Aircraft Deleted',
-        message: 'The aircraft and all associated performance profiles have been deleted.',
+        message: 'The aircraft and all associated profiles have been deleted.',
         color: 'green',
       });
       setDeleteModalOpen(false);
@@ -305,6 +316,10 @@ function AircraftContent() {
               <List.Item>
                 {aircraftBeingDeleted?.performanceProfiles?.length || 0} performance profile
                 {(aircraftBeingDeleted?.performanceProfiles?.length || 0) !== 1 ? 's' : ''} associated with this aircraft
+              </List.Item>
+              <List.Item>
+                {weightBalanceProfileCount} weight & balance profile
+                {weightBalanceProfileCount !== 1 ? 's' : ''} associated with this aircraft
               </List.Item>
             </List>
           </Alert>

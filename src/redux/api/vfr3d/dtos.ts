@@ -757,6 +757,96 @@ export interface WindTempDto {
   temperature?: number | undefined;
 }
 
+export interface NotamResponseDto {
+  notams?: NotamDto[];
+  totalCount?: number;
+  retrievedAt?: Date;
+  queryLocation?: string | undefined;
+}
+
+export interface NotamDto {
+  type?: string;
+  id?: string | undefined;
+  geometry?: NotamGeometryDto | undefined;
+  properties?: NotamPropertiesDto | undefined;
+}
+
+export interface NotamGeometryDto {
+  type?: string;
+  coordinates?: any | undefined;
+  geometries?: NotamGeometryDto[] | undefined;
+}
+
+export interface NotamPropertiesDto {
+  coreNOTAMData?: CoreNotamDataDto | undefined;
+}
+
+export interface CoreNotamDataDto {
+  notamEvent?: NotamEventDto | undefined;
+  notam?: NotamDetailDto | undefined;
+  notamTranslation?: NotamTranslationDto[] | undefined;
+}
+
+export interface NotamEventDto {
+  encoding?: string | undefined;
+  scenario?: string | undefined;
+}
+
+export interface NotamDetailDto {
+  id?: string | undefined;
+  number?: string | undefined;
+  series?: string | undefined;
+  year?: string | undefined;
+  type?: string | undefined;
+  issued?: string | undefined;
+  affectedFir?: string | undefined;
+  selectionCode?: string | undefined;
+  traffic?: string | undefined;
+  purpose?: string | undefined;
+  scope?: string | undefined;
+  minimumFl?: string | undefined;
+  maximumFl?: string | undefined;
+  location?: string | undefined;
+  icaoLocation?: string | undefined;
+  effectiveStart?: string | undefined;
+  effectiveEnd?: string | undefined;
+  estimated?: string | undefined;
+  text?: string | undefined;
+  classification?: string | undefined;
+  cancelationDate?: string | undefined;
+  accountId?: string | undefined;
+  lastUpdated?: string | undefined;
+  schedule?: string | undefined;
+  lowerLimit?: string | undefined;
+  upperLimit?: string | undefined;
+  coordinates?: string | undefined;
+  radius?: string | undefined;
+}
+
+export interface NotamTranslationDto {
+  type?: string | undefined;
+  simpleText?: string | undefined;
+  domestic_message?: string | undefined;
+  icao_message?: string | undefined;
+  formattedText?: string | undefined;
+}
+
+export interface NotamQueryByRouteRequest {
+  airportIdentifiers?: string[];
+  routePoints?: RoutePointDto[];
+  corridorRadiusNm?: number | undefined;
+  includeCorridorNotams?: boolean;
+}
+
+export interface RoutePointDto {
+  airportIdentifier?: string | undefined;
+  name?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
+  radiusNm?: number | undefined;
+  isAirport?: boolean;
+}
+
 export interface ObstacleDto {
   oasNumber?: string;
   stateId?: string | undefined;
