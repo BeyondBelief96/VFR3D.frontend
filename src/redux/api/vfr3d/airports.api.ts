@@ -42,6 +42,10 @@ export const airportsApi = baseApi.injectEndpoints({
     getRunwaysByAirportCode: builder.query<RunwayDto[], string>({
       query: (icaoCodeOrIdent) => `/Airport/${icaoCodeOrIdent}/runways`,
       keepUnusedDataFor: 300,
+      providesTags: (_result, _error, icaoCodeOrIdent) => [
+        { type: 'runways', id: icaoCodeOrIdent },
+        { type: 'runways', id: 'LIST' },
+      ],
     }),
   }),
 });

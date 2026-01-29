@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   Container,
@@ -9,7 +9,9 @@ import {
   Text,
   Tabs,
 } from '@mantine/core';
-import { FaBalanceScale } from 'react-icons/fa';
+import { FaBalanceScale, FaRoute, FaPlane } from 'react-icons/fa';
+import { FiFileText, FiClipboard, FiCloud, FiSettings } from 'react-icons/fi';
+import { useDispatch } from 'react-redux';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
@@ -17,6 +19,7 @@ import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/vfr3d/airpor
 import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
 import { WaypointType } from '@/redux/api/vfr3d/dtos';
+import { baseApi } from '@/redux/api/vfr3d/vfr3dSlice';
 import {
   FlightHeader,
   FlightOverview,
@@ -24,6 +27,7 @@ import {
   FlightSettings,
   WeatherCard,
   AirportDetailCard,
+  NotamsPanel,
 } from '@/features/FlightDetails';
 
 export const Route = createFileRoute('/flights/$flightId')({
@@ -42,6 +46,8 @@ function FlightDetailsContent() {
   const { flightId } = Route.useParams();
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const dispatch = useDispatch();
+  const [isRefreshingAll, setIsRefreshingAll] = useState(false);
 
   const {
     data: flight,
@@ -55,6 +61,33 @@ function FlightDetailsContent() {
       skip: !userId || !flightId,
     }
   );
+
+  // Refresh all flight data by invalidating relevant cache tags
+  const handleRefreshAll = useCallback(async () => {
+    setIsRefreshingAll(true);
+    try {
+      // Invalidate all relevant cache tags to trigger refetch
+      dispatch(
+        baseApi.util.invalidateTags([
+          'flights',
+          'weather',
+          'airports',
+          'aircraft',
+          'notams',
+          'weightBalance',
+          'weightBalanceCalculation',
+          'performance',
+          'frequencies',
+          'runways',
+        ])
+      );
+      // Also refetch the main flight data
+      await refetch();
+    } finally {
+      // Give a slight delay to show the loading state
+      setTimeout(() => setIsRefreshingAll(false), 500);
+    }
+  }, [dispatch, refetch]);
 
   // Extract airport identifiers from waypoints
   const airportIdents = useMemo(() => {
@@ -100,7 +133,12 @@ function FlightDetailsContent() {
     >
       <Stack gap="lg">
         {/* Header */}
-        <FlightHeader flight={flight} pdfData={pdfData} />
+        <FlightHeader
+          flight={flight}
+          pdfData={pdfData}
+          onRefreshAll={handleRefreshAll}
+          isRefreshing={isRefreshingAll || isFetching}
+        />
 
         {/* Tabs */}
         <Card
@@ -113,14 +151,27 @@ function FlightDetailsContent() {
         >
           <Tabs defaultValue="overview" color="blue">
             <Tabs.List mb="md">
-              <Tabs.Tab value="overview">Overview</Tabs.Tab>
-              <Tabs.Tab value="navlog">Nav Log</Tabs.Tab>
+              <Tabs.Tab value="overview" leftSection={<FiClipboard size={14} />}>
+                Overview
+              </Tabs.Tab>
+              <Tabs.Tab value="navlog" leftSection={<FaRoute size={14} />}>
+                Nav Log
+              </Tabs.Tab>
               <Tabs.Tab value="weight-balance" leftSection={<FaBalanceScale size={14} />}>
                 Weight & Balance
               </Tabs.Tab>
-              <Tabs.Tab value="airports">Airports</Tabs.Tab>
-              <Tabs.Tab value="weather">Weather</Tabs.Tab>
-              <Tabs.Tab value="settings">Settings</Tabs.Tab>
+              <Tabs.Tab value="airports" leftSection={<FaPlane size={14} />}>
+                Airports
+              </Tabs.Tab>
+              <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
+                Weather
+              </Tabs.Tab>
+              <Tabs.Tab value="notams" leftSection={<FiFileText size={14} />}>
+                NOTAMs
+              </Tabs.Tab>
+              <Tabs.Tab value="settings" leftSection={<FiSettings size={14} />}>
+                Settings
+              </Tabs.Tab>
             </Tabs.List>
 
             <Tabs.Panel value="overview">
@@ -161,6 +212,10 @@ function FlightDetailsContent() {
                   <Text c="dimmed">No airports in route to show weather for</Text>
                 </Center>
               )}
+            </Tabs.Panel>
+
+            <Tabs.Panel value="notams">
+              <NotamsPanel flight={flight} />
             </Tabs.Panel>
 
             <Tabs.Panel value="settings">

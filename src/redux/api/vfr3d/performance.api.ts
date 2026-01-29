@@ -16,6 +16,10 @@ export const performanceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCrosswindForAirport: builder.query<AirportCrosswindResponseDto, string>({
       query: (icaoCodeOrIdent) => `/Performance/crosswind/${icaoCodeOrIdent}`,
+      providesTags: (_result, _error, icaoCodeOrIdent) => [
+        { type: 'performance', id: `crosswind-${icaoCodeOrIdent}` },
+        { type: 'performance', id: 'LIST' },
+      ],
     }),
     calculateCrosswind: builder.mutation<
       CrosswindCalculationResponseDto,
@@ -42,6 +46,10 @@ export const performanceApi = baseApi.injectEndpoints({
         const queryString = params.toString();
         return `/Performance/density-altitude/${icaoCodeOrIdent}${queryString ? `?${queryString}` : ''}`;
       },
+      providesTags: (_result, _error, { icaoCodeOrIdent }) => [
+        { type: 'performance', id: `density-${icaoCodeOrIdent}` },
+        { type: 'performance', id: 'LIST' },
+      ],
     }),
     calculateDensityAltitude: builder.mutation<DensityAltitudeResponseDto, DensityAltitudeRequestDto>(
       {

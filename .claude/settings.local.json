@@ -9,7 +9,8 @@
       "Bash(npm install:*)",
       "Bash(npx eslint:*)",
       "Bash(find:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "WebFetch(domain:www.faa.gov)"
     ]
   }
 }

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { Group, ActionIcon, Box, Title, Text, Badge, Button, Loader } from '@mantine/core';
+import { Group, ActionIcon, Box, Title, Text, Badge, Button, Loader, Tooltip } from '@mantine/core';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import { FiArrowLeft, FiDownload } from 'react-icons/fi';
+import { FiArrowLeft, FiDownload, FiRefreshCw } from 'react-icons/fi';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { FlightLogPdf } from '@/features/Flights';
 import { FlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
@@ -9,9 +9,11 @@ import { FlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 interface FlightHeaderProps {
   flight: FlightDto;
   pdfData: FlightPdfData;
+  onRefreshAll?: () => void;
+  isRefreshing?: boolean;
 }
 
-export function FlightHeader({ flight, pdfData }: FlightHeaderProps) {
+export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: FlightHeaderProps) {
   return (
     <Group justify="space-between" align="center">
       <Group gap="sm">
@@ -44,6 +46,19 @@ export function FlightHeader({ flight, pdfData }: FlightHeaderProps) {
         <Badge variant="filled" color="blue" size="lg">
           {flight.waypoints?.length || 0} waypoints
         </Badge>
+        {onRefreshAll && (
+          <Tooltip label="Refresh all flight data (weather, NOTAMs, navlog, etc.)">
+            <Button
+              variant="light"
+              color="gray"
+              leftSection={isRefreshing ? <Loader size="xs" /> : <FiRefreshCw size={16} />}
+              onClick={onRefreshAll}
+              disabled={isRefreshing}
+            >
+              {isRefreshing ? 'Refreshing...' : 'Refresh All'}
+            </Button>
+          </Tooltip>
+        )}
         <PDFDownloadLink
           document={
             <FlightLogPdf

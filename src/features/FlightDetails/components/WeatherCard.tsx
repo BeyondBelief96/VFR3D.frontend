@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Paper,
   Group,
@@ -11,8 +11,10 @@ import {
   Loader,
   SimpleGrid,
   Accordion,
+  Tooltip,
+  Overlay,
 } from '@mantine/core';
-import { FiChevronDown, FiChevronUp, FiWind } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiWind, FiRefreshCw } from 'react-icons/fi';
 import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
@@ -26,15 +28,45 @@ interface WeatherCardProps {
 export function WeatherCard({ icaoId }: WeatherCardProps) {
   const [expanded, setExpanded] = useState(true);
 
-  const { data: metar, isLoading: metarLoading } = useGetMetarForAirportQuery(icaoId, {
+  const {
+    data: metar,
+    isLoading: metarLoading,
+    isFetching: metarFetching,
+    refetch: refetchMetar,
+  } = useGetMetarForAirportQuery(icaoId, {
     skip: !icaoId,
   });
 
-  const { data: taf, isLoading: tafLoading } = useGetTafForAirportQuery(icaoId, {
+  const {
+    data: taf,
+    isLoading: tafLoading,
+    isFetching: tafFetching,
+    refetch: refetchTaf,
+  } = useGetTafForAirportQuery(icaoId, {
     skip: !icaoId,
   });
 
   const isVariableWind = metar?.windDirDegrees === 'VRB' || metar?.windDirDegrees === 'Variable';
+  const isRefreshing = metarFetching || tafFetching;
+  const isInitialLoading = metarLoading || tafLoading;
+
+  const handleRefresh = () => {
+    refetchMetar();
+    refetchTaf();
+  };
+
+  // Format last observation time
+  const lastUpdated = useMemo(() => {
+    if (!metar?.observationTime) return null;
+    const date = new Date(metar.observationTime);
+    if (isNaN(date.getTime())) return null;
+    return date.toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }, [metar?.observationTime]);
 
   return (
     <Paper
@@ -42,8 +74,25 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
       style={{
         backgroundColor: 'rgba(30, 41, 59, 0.8)',
         border: '1px solid rgba(148, 163, 184, 0.1)',
+        position: 'relative',
       }}
     >
+      {/* Refreshing overlay */}
+      {isRefreshing && !isInitialLoading && (
+        <Overlay
+          color="rgba(15, 23, 42, 0.7)"
+          backgroundOpacity={0.7}
+          blur={1}
+          center
+          zIndex={10}
+        >
+          <Stack align="center" gap="xs">
+            <Loader size="sm" color="blue" />
+            <Text size="xs" c="dimmed">Refreshing weather...</Text>
+          </Stack>
+        </Overlay>
+      )}
+
       <Group justify="space-between" mb="sm">
         <Group gap="sm">
           <Badge variant="filled" color="blue" size="lg">
@@ -54,10 +103,27 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
               {metar.flightCategory}
             </Badge>
           )}
+          {lastUpdated && (
+            <Text size="xs" c="dimmed">
+              Obs: {lastUpdated}
+            </Text>
+          )}
         </Group>
-        <ActionIcon variant="subtle" onClick={() => setExpanded(!expanded)}>
-          {expanded ? <FiChevronUp /> : <FiChevronDown />}
-        </ActionIcon>
+        <Group gap="xs">
+          <Tooltip label="Refresh weather data">
+            <ActionIcon
+              variant="subtle"
+              color="blue"
+              onClick={handleRefresh}
+              loading={isRefreshing}
+            >
+              <FiRefreshCw size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <ActionIcon variant="subtle" onClick={() => setExpanded(!expanded)}>
+            {expanded ? <FiChevronUp /> : <FiChevronDown />}
+          </ActionIcon>
+        </Group>
       </Group>
 
       <Collapse in={expanded}>
@@ -68,7 +134,10 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
               Current Conditions (METAR)
             </Text>
             {metarLoading ? (
-              <Loader size="sm" />
+              <Stack align="center" py="md">
+                <Loader size="sm" />
+                <Text size="xs" c="dimmed">Loading METAR...</Text>
+              </Stack>
             ) : metar ? (
               <Stack gap="sm">
                 {/* Raw METAR */}
@@ -161,13 +230,6 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                     </Badge>
                   </Box>
                 )}
-
-                {/* Observation Time */}
-                {metar.observationTime && (
-                  <Text size="xs" c="dimmed">
-                    Observed: {new Date(metar.observationTime).toLocaleString()}
-                  </Text>
-                )}
               </Stack>
             ) : (
               <Text size="sm" c="dimmed">
@@ -182,7 +244,10 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
               Forecast (TAF)
             </Text>
             {tafLoading ? (
-              <Loader size="sm" />
+              <Stack align="center" py="md">
+                <Loader size="sm" />
+                <Text size="xs" c="dimmed">Loading TAF...</Text>
+              </Stack>
             ) : taf ? (
               <Stack gap="sm">
                 {/* Raw TAF */}

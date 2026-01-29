@@ -13,6 +13,10 @@ export const tagTypes = [
   'airsigmets',
   'weightBalance',
   'weightBalanceCalculation',
+  'notams',
+  'performance',
+  'frequencies',
+  'runways',
 ] as const;
 
 // Base API configuration

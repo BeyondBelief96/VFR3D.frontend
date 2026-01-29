@@ -62,25 +62,36 @@ export const weatherApi = baseApi.injectEndpoints({
     // METAR endpoints
     getMetarForAirport: builder.query<MetarDto, string>({
       query: (icaoCode) => `/metar/${icaoCode}`,
+      providesTags: (_result, _error, icaoCode) => [
+        { type: 'weather', id: `metar-${icaoCode}` },
+        { type: 'weather', id: 'LIST' },
+      ],
     }),
     getMetarsByState: builder.query<MetarDto[], string>({
       query: (stateCode) => `/Metar/state/${stateCode}`,
+      providesTags: ['weather'],
     }),
     getMetarsByStates: builder.query<MetarDto[], string[]>({
       query: (states) => {
         const stateCodesParam = states.join(',');
         return `/Metar/states/${stateCodesParam}`;
       },
+      providesTags: ['weather'],
     }),
 
     // PIREP endpoints
     getAllPireps: builder.query<PirepDto[], void>({
       query: () => `/Pirep`,
+      providesTags: ['pireps'],
     }),
 
     // TAF endpoints
     getTafForAirport: builder.query<TafDto, string>({
       query: (icaoCode) => `/Taf/${icaoCode}`,
+      providesTags: (_result, _error, icaoCode) => [
+        { type: 'weather', id: `taf-${icaoCode}` },
+        { type: 'weather', id: 'LIST' },
+      ],
     }),
   }),
 });

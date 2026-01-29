@@ -12,7 +12,11 @@ import {
   Stack,
   Table,
   ScrollArea,
+  ActionIcon,
+  Tooltip,
+  Overlay,
 } from '@mantine/core';
+import { FiRefreshCw } from 'react-icons/fi';
 import { AirportDto, CommunicationFrequencyDto } from '@/redux/api/vfr3d/dtos';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
@@ -26,21 +30,41 @@ interface AirportDetailCardProps {
 export function AirportDetailCard({ airport }: AirportDetailCardProps) {
   const ident = airport.icaoId || airport.arptId || '';
 
-  const { data: runways, isLoading: runwaysLoading } = useGetRunwaysByAirportCodeQuery(ident, {
+  const {
+    data: runways,
+    isLoading: runwaysLoading,
+    isFetching: runwaysFetching,
+    refetch: refetchRunways,
+  } = useGetRunwaysByAirportCodeQuery(ident, {
     skip: !ident,
   });
 
-  const { data: frequencies, isLoading: frequenciesLoading } =
-    useGetFrequenciesByServicedFacilityQuery(ident, {
-      skip: !ident,
-    });
+  const {
+    data: frequencies,
+    isLoading: frequenciesLoading,
+    isFetching: frequenciesFetching,
+    refetch: refetchFrequencies,
+  } = useGetFrequenciesByServicedFacilityQuery(ident, {
+    skip: !ident,
+  });
 
-  const { data: crosswindData, isLoading: crosswindLoading } = useGetCrosswindForAirportQuery(
-    ident,
-    {
-      skip: !ident,
-    }
-  );
+  const {
+    data: crosswindData,
+    isLoading: crosswindLoading,
+    isFetching: crosswindFetching,
+    refetch: refetchCrosswind,
+  } = useGetCrosswindForAirportQuery(ident, {
+    skip: !ident,
+  });
+
+  const isRefreshing = runwaysFetching || frequenciesFetching || crosswindFetching;
+  const isInitialLoading = runwaysLoading || frequenciesLoading || crosswindLoading;
+
+  const handleRefresh = () => {
+    refetchRunways();
+    refetchFrequencies();
+    refetchCrosswind();
+  };
 
   const groupedFrequencies = useMemo(() => {
     if (!frequencies) return {};
@@ -61,8 +85,25 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
       style={{
         backgroundColor: 'rgba(30, 41, 59, 0.6)',
         border: '1px solid rgba(148, 163, 184, 0.1)',
+        position: 'relative',
       }}
     >
+      {/* Refreshing overlay */}
+      {isRefreshing && !isInitialLoading && (
+        <Overlay
+          color="rgba(15, 23, 42, 0.7)"
+          backgroundOpacity={0.7}
+          blur={1}
+          center
+          zIndex={10}
+        >
+          <Stack align="center" gap="xs">
+            <Loader size="sm" color="blue" />
+            <Text size="xs" c="dimmed">Refreshing airport data...</Text>
+          </Stack>
+        </Overlay>
+      )}
+
       {/* Airport Header */}
       <Group justify="space-between" mb="md">
         <Group gap="sm">
@@ -78,9 +119,21 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
             </Text>
           </Box>
         </Group>
-        <Badge variant="light" color="cyan">
-          {airport.elev?.toLocaleString() || '--'} ft MSL
-        </Badge>
+        <Group gap="xs">
+          <Badge variant="light" color="cyan">
+            {airport.elev?.toLocaleString() || '--'} ft MSL
+          </Badge>
+          <Tooltip label="Refresh airport data">
+            <ActionIcon
+              variant="subtle"
+              color="blue"
+              onClick={handleRefresh}
+              loading={isRefreshing}
+            >
+              <FiRefreshCw size={16} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
       </Group>
 
       {/* Basic Info */}
