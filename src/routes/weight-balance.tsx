@@ -22,6 +22,7 @@ import { notifications } from '@mantine/notifications';
 import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { PageErrorState } from '@/components/Common';
 import {
   useGetWeightBalanceProfilesQuery,
   useDeleteWeightBalanceProfileMutation,
@@ -60,7 +61,7 @@ function WeightBalanceContent() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
 
-  const { data: profiles = [], isLoading, isError, refetch } = useGetWeightBalanceProfilesQuery(
+  const { data: profiles = [], isLoading, isError, isFetching, refetch } = useGetWeightBalanceProfilesQuery(
     userId,
     { skip: !userId }
   );
@@ -309,12 +310,13 @@ function WeightBalanceContent() {
         )}
 
         {isError && (
-          <Card bg="red.9" p="md">
-            <Text c="white">Error loading profiles. Please try again.</Text>
-            <Button variant="light" color="white" mt="sm" onClick={() => refetch()}>
-              Retry
-            </Button>
-          </Card>
+          <PageErrorState
+            title="Unable to Load Profiles"
+            message="We couldn't load your weight & balance profiles. This might be a temporary issue with our servers."
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+            fullPage={false}
+          />
         )}
 
         {!isLoading && !isError && profiles.length === 0 && (

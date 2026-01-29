@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { FaBalanceScale } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/vfr3d/airports.api';
 import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
@@ -46,6 +47,8 @@ function FlightDetailsContent() {
     data: flight,
     isLoading,
     isError,
+    isFetching,
+    refetch,
   } = useGetFlightQuery(
     { userId, flightId },
     {
@@ -79,15 +82,13 @@ function FlightDetailsContent() {
 
   if (isError || !flight) {
     return (
-      <Container
-        size="lg"
-        py="xl"
-        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
-      >
-        <Card bg="red.9" p="md">
-          <Text c="white">Error loading flight. Please try again.</Text>
-        </Card>
-      </Container>
+      <PageErrorState
+        title="Unable to Load Flight"
+        message="We couldn't load your flight details. The flight may have been deleted or we may be having some technical issues. Sorry for the inconvenience."
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        showGoBack
+      />
     );
   }
 

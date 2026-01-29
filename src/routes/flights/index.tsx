@@ -21,6 +21,7 @@ import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'reac
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute } from '@/components/Auth';
 import { useAuth } from '@/components/Auth';
+import { PageErrorState } from '@/components/Common';
 import { useGetFlightsQuery, useDeleteFlightMutation } from '@/redux/api/vfr3d/flights.api';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 
@@ -217,7 +218,7 @@ function FlightsContent() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [flightToDelete, setFlightToDelete] = useState<string | null>(null);
 
-  const { data: flights, isLoading, isError } = useGetFlightsQuery(userId, {
+  const { data: flights, isLoading, isError, isFetching, refetch } = useGetFlightsQuery(userId, {
     skip: !userId,
   });
 
@@ -279,9 +280,13 @@ function FlightsContent() {
         )}
 
         {isError && (
-          <Card bg="red.9" p="md">
-            <Text c="white">Error loading flights. Please try again.</Text>
-          </Card>
+          <PageErrorState
+            title="Unable to Load Flights"
+            message="We couldn't load your flights. This might be a temporary issue with our servers."
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+            fullPage={false}
+          />
         )}
 
         {flights && flights.length === 0 && (

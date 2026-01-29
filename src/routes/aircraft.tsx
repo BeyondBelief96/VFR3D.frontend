@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo } from 'react';
 import {
   Container,
   Title,
@@ -22,6 +21,7 @@ import { notifications } from '@mantine/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { PageErrorState } from '@/components/Common';
 import { useGetAircraftQuery, useDeleteAircraftMutation } from '@/redux/api/vfr3d/aircraft.api';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { AircraftDto } from '@/redux/api/vfr3d/dtos';
@@ -50,7 +50,7 @@ function AircraftContent() {
   const [aircraftToDelete, setAircraftToDelete] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
 
-  const { data: aircraft, isLoading, isError, refetch } = useGetAircraftQuery(userId, {
+  const { data: aircraft, isLoading, isError, isFetching, refetch } = useGetAircraftQuery(userId, {
     skip: !userId,
   });
 
@@ -171,12 +171,13 @@ function AircraftContent() {
         )}
 
         {isError && (
-          <Card bg="red.9" p="md">
-            <Text c="white">Error loading aircraft. Please try again.</Text>
-            <Button variant="light" color="white" mt="sm" onClick={() => refetch()}>
-              Retry
-            </Button>
-          </Card>
+          <PageErrorState
+            title="Unable to Load Aircraft"
+            message="We couldn't load your aircraft. This might be a temporary issue with our servers."
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+            fullPage={false}
+          />
         )}
 
         {aircraft && aircraft.length === 0 && (
