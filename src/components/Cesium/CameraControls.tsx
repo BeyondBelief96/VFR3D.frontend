@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useCesium } from 'resium';
-import { ActionIcon, Group, Paper, Tooltip } from '@mantine/core';
+import { ActionIcon, Divider, Group, Paper, Tooltip } from '@mantine/core';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import {
   TbArrowRight,
@@ -10,6 +10,9 @@ import {
   TbTarget,
 } from 'react-icons/tb';
 import { Math as CesiumMath, Cartographic } from 'cesium';
+import { useAppSelector } from '@/hooks/reduxHooks';
+import { FlightDisplayMode } from '@/utility/enums';
+import { LayerTogglePopover } from './LayerTogglePopover';
 
 /**
  * CameraControls component provides UI controls for navigating the Cesium viewer.
@@ -21,6 +24,10 @@ export function CameraControls() {
   const [isRotatingRight, setIsRotatingRight] = useState(false);
   const [isRotatingUp, setIsRotatingUp] = useState(false);
   const [isRotatingDown, setIsRotatingDown] = useState(false);
+
+  const displayMode = useAppSelector((state) => state.flightPlanning.displayMode);
+  const showLayerToggle =
+    displayMode === FlightDisplayMode.VIEWING || displayMode === FlightDisplayMode.PREVIEW;
 
   const calculateZoomAmount = useCallback(() => {
     if (camera && scene) {
@@ -257,6 +264,13 @@ export function CameraControls() {
             <TbTarget size={18} />
           </ActionIcon>
         </Tooltip>
+
+        {showLayerToggle && (
+          <>
+            <Divider orientation="vertical" color="rgba(148, 163, 184, 0.3)" />
+            <LayerTogglePopover />
+          </>
+        )}
       </Group>
     </Paper>
   );

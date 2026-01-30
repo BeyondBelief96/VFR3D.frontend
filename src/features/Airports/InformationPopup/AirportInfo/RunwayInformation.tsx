@@ -34,46 +34,43 @@ const getCrosswindColor = (crosswindKt: number): string => {
   return 'green';
 };
 
+const getEquivalentRunways = (crosswindData?: AirportCrosswindResponseDto): string[] => {
+  if (!crosswindData?.runways || !crosswindData.recommendedRunway) return [];
+
+  const recommended = crosswindData.runways.find(
+    (r) => r.runwayEndId === crosswindData.recommendedRunway
+  );
+  if (!recommended) return [];
+
+  const recommendedXw = Math.abs(recommended.crosswindKt ?? 0);
+  const recommendedHw = Math.abs(recommended.headwindKt ?? 0);
+
+  // Find all runways with equivalent crosswind (within 0.5 kt tolerance for floating point)
+  return crosswindData.runways
+    .filter((r) => {
+      const xw = Math.abs(r.crosswindKt ?? 0);
+      const hw = Math.abs(r.headwindKt ?? 0);
+      return Math.abs(xw - recommendedXw) < 0.5 && Math.abs(hw - recommendedHw) < 0.5;
+    })
+    .map((r) => r.runwayEndId ?? '')
+    .filter(Boolean);
+};
+
 const CrosswindDisplay: React.FC<{
   crosswind: RunwayCrosswindComponentDto;
-  isRecommended?: boolean;
-}> = ({ crosswind, isRecommended }) => {
+}> = ({ crosswind }) => {
   const xw = Math.abs(crosswind.crosswindKt ?? 0);
   const hw = Math.abs(crosswind.headwindKt ?? 0);
 
   return (
-    <Paper
-      p="xs"
-      radius="md"
-      style={{
-        backgroundColor: isRecommended ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-        border: isRecommended ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)',
-      }}
-    >
-      {isRecommended && (
-        <Text size="xs" c="green" fw={600} ta="center" mb={4}>
-          Recommended
-        </Text>
-      )}
-      <Group justify="center" gap="lg">
-        <Box ta="center">
-          <Text size="xs" c="dimmed">
-            Crosswind
-          </Text>
-          <Text size="lg" fw={700} c={getCrosswindColor(xw)}>
-            {xw.toFixed(0)} kt
-          </Text>
-        </Box>
-        <Box ta="center">
-          <Text size="xs" c="dimmed">
-            {crosswind.hasHeadwind ? 'Headwind' : 'Tailwind'}
-          </Text>
-          <Text size="lg" fw={700} c={crosswind.hasHeadwind ? 'green' : 'yellow'}>
-            {hw.toFixed(0)} kt
-          </Text>
-        </Box>
-      </Group>
-    </Paper>
+    <Group gap="md">
+      <Badge size="lg" variant="light" color={getCrosswindColor(xw)}>
+        XW {xw.toFixed(0)} kt
+      </Badge>
+      <Badge size="lg" variant="light" color={crosswind.hasHeadwind ? 'green' : 'yellow'}>
+        {crosswind.hasHeadwind ? 'HW' : 'TW'} {hw.toFixed(0)} kt
+      </Badge>
+    </Group>
   );
 };
 
@@ -81,89 +78,95 @@ const RunwayEndDetails: React.FC<{
   runwayEnd: RunwayEndDto;
   crosswind?: RunwayCrosswindComponentDto;
   isRecommended?: boolean;
-}> = ({ runwayEnd, crosswind, isRecommended }) => (
-  <Paper
-    p="sm"
-    radius="md"
-    style={{
-      backgroundColor: 'rgba(255, 255, 255, 0.03)',
-      border: isRecommended ? '2px solid rgba(34, 197, 94, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
-    }}
+  isFirst?: boolean;
+}> = ({ runwayEnd, crosswind, isRecommended, isFirst }) => (
+  <Box
+    pt={isFirst ? 0 : 'sm'}
+    mt={isFirst ? 0 : 'sm'}
+    style={
+      isFirst
+        ? undefined
+        : {
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          }
+    }
   >
-    <Text fw={600} ta="center" mb="xs">
-      Runway {runwayEnd.runwayEndId}
-      {isRecommended && (
-        <Badge color="green" size="xs" ml="xs">
-          Best
-        </Badge>
-      )}
-    </Text>
-
-    {crosswind && <CrosswindDisplay crosswind={crosswind} isRecommended={isRecommended} />}
-
-    <Group justify="space-around" mt="sm" wrap="wrap">
-      {runwayEnd.trueAlignment !== undefined && (
-        <Box ta="center">
-          <Text size="xs" c="dimmed">
-            Heading
-          </Text>
-          <Text size="sm" fw={500}>
-            {runwayEnd.trueAlignment}°
-          </Text>
-        </Box>
-      )}
-      {runwayEnd.elevation !== undefined && runwayEnd.elevation !== null && (
-        <Box ta="center">
-          <Text size="xs" c="dimmed">
-            Elev
-          </Text>
-          <Text size="sm" fw={500}>
-            {runwayEnd.elevation.toFixed(0)}'
-          </Text>
-        </Box>
-      )}
-      <Box ta="center">
-        <Text size="xs" c="dimmed">
-          Pattern
-        </Text>
-        <Text size="sm" fw={500}>
-          {runwayEnd.rightHandTrafficPattern ? 'Right' : 'Left'}
-        </Text>
-      </Box>
-    </Group>
-
-    {/* Lighting badges */}
-    <Group gap={4} justify="center" mt="xs">
-      {runwayEnd.hasRunwayEndLights && (
-        <Badge size="xs" color="green">
-          REIL
-        </Badge>
-      )}
-      {runwayEnd.hasCenterlineLights && (
-        <Badge size="xs" color="green">
-          CL
-        </Badge>
-      )}
-      {runwayEnd.hasTouchdownZoneLights && (
-        <Badge size="xs" color="green">
-          TDZ
-        </Badge>
-      )}
-      {runwayEnd.visualGlideSlopeIndicator &&
-        runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
-        runwayEnd.visualGlideSlopeIndicator !== 'None' && (
-          <Badge size="xs" color="blue">
-            {runwayEnd.visualGlideSlopeIndicator}
+    <Group justify="space-between" align="center" mb="xs">
+      <Group gap="xs">
+        <Text fw={600}>Rwy {runwayEnd.runwayEndId}</Text>
+        {isRecommended && (
+          <Badge color="green" size="xs">
+            Best
           </Badge>
         )}
+      </Group>
+      {crosswind && <CrosswindDisplay crosswind={crosswind} />}
     </Group>
-  </Paper>
+
+    <Group gap="lg" wrap="wrap">
+      {runwayEnd.trueAlignment !== undefined && (
+        <Text size="xs">
+          <Text span c="dimmed">
+            Hdg:{' '}
+          </Text>
+          {runwayEnd.trueAlignment}°
+        </Text>
+      )}
+      {runwayEnd.elevation !== undefined && runwayEnd.elevation !== null && (
+        <Text size="xs">
+          <Text span c="dimmed">
+            Elev:{' '}
+          </Text>
+          {runwayEnd.elevation.toFixed(0)}'
+        </Text>
+      )}
+      <Text size="xs">
+        <Text span c="dimmed">
+          Pattern:{' '}
+        </Text>
+        {runwayEnd.rightHandTrafficPattern ? 'Right' : 'Left'}
+      </Text>
+      {/* Lighting info inline */}
+      {(runwayEnd.hasRunwayEndLights ||
+        runwayEnd.hasCenterlineLights ||
+        runwayEnd.hasTouchdownZoneLights ||
+        (runwayEnd.visualGlideSlopeIndicator &&
+          runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
+          runwayEnd.visualGlideSlopeIndicator !== 'None')) && (
+        <Group gap={4}>
+          {runwayEnd.hasRunwayEndLights && (
+            <Badge size="xs" color="green">
+              REIL
+            </Badge>
+          )}
+          {runwayEnd.hasCenterlineLights && (
+            <Badge size="xs" color="green">
+              CL
+            </Badge>
+          )}
+          {runwayEnd.hasTouchdownZoneLights && (
+            <Badge size="xs" color="green">
+              TDZ
+            </Badge>
+          )}
+          {runwayEnd.visualGlideSlopeIndicator &&
+            runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
+            runwayEnd.visualGlideSlopeIndicator !== 'None' && (
+              <Badge size="xs" color="blue">
+                {runwayEnd.visualGlideSlopeIndicator}
+              </Badge>
+            )}
+        </Group>
+      )}
+    </Group>
+  </Box>
 );
 
 const RunwayCard: React.FC<{
   runway: RunwayDto;
   crosswindData?: AirportCrosswindResponseDto;
-}> = ({ runway, crosswindData }) => {
+  showBest: boolean;
+}> = ({ runway, crosswindData, showBest }) => {
   const [expanded, setExpanded] = useState(false);
 
   const getCrosswindForRunwayEnd = (runwayEndId: string): RunwayCrosswindComponentDto | undefined => {
@@ -229,7 +232,7 @@ const RunwayCard: React.FC<{
               const cw = getCrosswindForRunwayEnd(end.runwayEndId ?? '');
               if (!cw) return null;
               const xw = Math.abs(cw.crosswindKt ?? 0);
-              const isRecommended = end.runwayEndId === crosswindData.recommendedRunway;
+              const isRecommended = showBest && end.runwayEndId === crosswindData.recommendedRunway;
               return (
                 <Badge
                   key={end.runwayEndId}
@@ -246,19 +249,18 @@ const RunwayCard: React.FC<{
       </Box>
 
       <Collapse in={expanded}>
-        <Box p="sm" pt={0}>
-          {runway.runwayEnds && runway.runwayEnds.length > 0 && (
-            <Stack gap="sm">
-              {runway.runwayEnds.map((runwayEnd) => (
-                <RunwayEndDetails
-                  key={runwayEnd.id || runwayEnd.runwayEndId}
-                  runwayEnd={runwayEnd}
-                  crosswind={getCrosswindForRunwayEnd(runwayEnd.runwayEndId ?? '')}
-                  isRecommended={runwayEnd.runwayEndId === crosswindData?.recommendedRunway}
-                />
-              ))}
-            </Stack>
-          )}
+        <Box px="sm" pb="sm">
+          {runway.runwayEnds &&
+            runway.runwayEnds.length > 0 &&
+            runway.runwayEnds.map((runwayEnd, index) => (
+              <RunwayEndDetails
+                key={runwayEnd.id || runwayEnd.runwayEndId}
+                runwayEnd={runwayEnd}
+                crosswind={getCrosswindForRunwayEnd(runwayEnd.runwayEndId ?? '')}
+                isRecommended={showBest && runwayEnd.runwayEndId === crosswindData?.recommendedRunway}
+                isFirst={index === 0}
+              />
+            ))}
         </Box>
       </Collapse>
     </Paper>
@@ -276,6 +278,9 @@ export const RunwayInformation: React.FC<RunwayInformationProps> = ({
       </Text>
     );
   }
+
+  const equivalentRunways = getEquivalentRunways(crosswindData);
+  const showBest = equivalentRunways.length === 1;
 
   return (
     <Stack gap="sm">
@@ -306,7 +311,7 @@ export const RunwayInformation: React.FC<RunwayInformationProps> = ({
                 </>
               )}
             </Text>
-            {crosswindData.recommendedRunway && (
+            {showBest && crosswindData.recommendedRunway && (
               <Badge color="green">Recommended: Rwy {crosswindData.recommendedRunway}</Badge>
             )}
           </Group>
@@ -318,6 +323,7 @@ export const RunwayInformation: React.FC<RunwayInformationProps> = ({
           key={runway.id || runway.runwayId}
           runway={runway}
           crosswindData={crosswindData}
+          showBest={showBest}
         />
       ))}
     </Stack>

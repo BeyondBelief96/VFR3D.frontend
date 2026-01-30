@@ -22,6 +22,28 @@ import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api'
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
 import { RunwayInformation } from '@/features/Airports/InformationPopup/AirportInfo/RunwayInformation';
+import { AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
+
+const hasUniqueBestRunway = (crosswindData?: AirportCrosswindResponseDto): boolean => {
+  if (!crosswindData?.runways || !crosswindData.recommendedRunway) return false;
+
+  const recommended = crosswindData.runways.find(
+    (r) => r.runwayEndId === crosswindData.recommendedRunway
+  );
+  if (!recommended) return false;
+
+  const recommendedXw = Math.abs(recommended.crosswindKt ?? 0);
+  const recommendedHw = Math.abs(recommended.headwindKt ?? 0);
+
+  // Count runways with equivalent crosswind (within 0.5 kt tolerance)
+  const equivalentCount = crosswindData.runways.filter((r) => {
+    const xw = Math.abs(r.crosswindKt ?? 0);
+    const hw = Math.abs(r.headwindKt ?? 0);
+    return Math.abs(xw - recommendedXw) < 0.5 && Math.abs(hw - recommendedHw) < 0.5;
+  }).length;
+
+  return equivalentCount === 1;
+};
 
 interface AirportDetailCardProps {
   airport: AirportDto;
@@ -201,9 +223,9 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
                   {runways.length}
                 </Badge>
               )}
-              {crosswindData?.recommendedRunway && (
+              {hasUniqueBestRunway(crosswindData) && (
                 <Badge size="sm" variant="filled" color="green">
-                  Best: Rwy {crosswindData.recommendedRunway}
+                  Best: Rwy {crosswindData?.recommendedRunway}
                 </Badge>
               )}
             </Group>
