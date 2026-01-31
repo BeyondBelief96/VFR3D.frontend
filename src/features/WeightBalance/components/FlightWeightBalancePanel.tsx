@@ -312,7 +312,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
       </Group>
 
       {/* Auto-populated fuel burn notice */}
-      {flight.totalFuelUsed && flight.totalFuelUsed > 0 && hasChanges && (
+      {flight.totalFuelUsed && flight.totalFuelUsed > 0 && (
         <Alert
           color="cyan"
           variant="light"
