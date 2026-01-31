@@ -34,6 +34,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { CgEnvelopeDto, CgEnvelopePointDto, ArmUnits, WeightUnits, CgEnvelopeFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
+import classes from '../WeightBalance.module.css';
 
 interface CgEnvelopeEditorProps {
   envelopes: CgEnvelopeDto[];
@@ -41,22 +42,6 @@ interface CgEnvelopeEditorProps {
   weightUnits: WeightUnits;
   onChange: (envelopes: CgEnvelopeDto[]) => void;
 }
-
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-    fontSize: '12px',
-  },
-};
 
 // Sortable point row component
 interface SortablePointRowProps {
@@ -106,19 +91,19 @@ function SortablePointRow({
 
   return (
     <Table.Tr ref={setNodeRef} style={style}>
-      <Table.Td style={{ width: 40 }}>
+      <Table.Td w={40}>
         <ActionIcon
           variant="subtle"
           color="gray"
           size="sm"
-          style={{ cursor: 'grab' }}
+          className={classes.cursorGrab}
           {...attributes}
           {...listeners}
         >
           <FiMove size={12} />
         </ActionIcon>
       </Table.Td>
-      <Table.Td style={{ width: 40 }}>
+      <Table.Td w={40}>
         <Text size="xs" c="dimmed">{index + 1}</Text>
       </Table.Td>
       <Table.Td>
@@ -127,7 +112,6 @@ function SortablePointRow({
           value={point.weight ?? ''}
           onChange={(value) => onWeightChange(Number(value) || 0)}
           min={0}
-          styles={inputStyles}
           size="xs"
           rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
         />
@@ -138,12 +122,11 @@ function SortablePointRow({
           value={xAxisValue}
           onChange={(value) => onXAxisChange(Number(value) || 0)}
           decimalScale={isMomentFormat ? 1 : 2}
-          styles={inputStyles}
           size="xs"
           rightSection={<Text size="xs" c="dimmed">{xAxisLabel}</Text>}
         />
       </Table.Td>
-      <Table.Td style={{ width: 40 }}>
+      <Table.Td w={40}>
         <ActionIcon
           size="sm"
           variant="subtle"
@@ -336,14 +319,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
   return (
     <Stack gap="md">
       {envelopes.length === 0 ? (
-        <Paper
-          p="lg"
-          style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.3)',
-            border: '1px dashed rgba(148, 163, 184, 0.3)',
-            borderRadius: 'var(--mantine-radius-md)',
-          }}
-        >
+        <Paper p="lg" className={classes.envelopeEmptyPaper}>
           <Stack align="center" gap="sm">
             <Text size="sm" c="dimmed" ta="center">
               No CG envelopes defined. Add at least one envelope to define safe weight and balance limits.
@@ -360,22 +336,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
         </Paper>
       ) : (
         <>
-          <Tabs
-            value={activeTab}
-            onChange={setActiveTab}
-            styles={{
-              tab: {
-                color: 'var(--mantine-color-gray-4)',
-                '&[data-active]': {
-                  color: 'white',
-                  borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-                },
-              },
-              panel: {
-                paddingTop: 'var(--mantine-spacing-md)',
-              },
-            }}
-          >
+          <Tabs value={activeTab} onChange={setActiveTab}>
             <Group justify="space-between" align="flex-end" mb="xs">
               <Tabs.List>
                 {envelopes.map((envelope, index) => (
@@ -395,15 +356,8 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
             </Group>
 
             {envelopes.map((envelope, envelopeIndex) => (
-              <Tabs.Panel key={envelopeIndex} value={String(envelopeIndex)}>
-                <Paper
-                  p="md"
-                  style={{
-                    backgroundColor: 'rgba(15, 23, 42, 0.3)',
-                    border: '1px solid rgba(148, 163, 184, 0.1)',
-                    borderRadius: 'var(--mantine-radius-md)',
-                  }}
-                >
+              <Tabs.Panel key={envelopeIndex} value={String(envelopeIndex)} pt="md">
+                <Paper p="md" className={classes.envelopePanelPaper}>
                   <Stack gap="md">
                     {/* Envelope name and format */}
                     <Group justify="space-between" align="flex-end" wrap="wrap" gap="md">
@@ -413,9 +367,8 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                           placeholder="e.g., Normal, Utility"
                           value={envelope.name || ''}
                           onChange={(e) => handleEnvelopeNameChange(envelopeIndex, e.target.value)}
-                          styles={inputStyles}
                           size="sm"
-                          style={{ minWidth: 180 }}
+                          miw={180}
                         />
                         <Box>
                           <Text size="xs" c="gray.4" mb={4}>X-Axis Format</Text>
@@ -427,18 +380,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                               { label: 'CG Arm', value: CgEnvelopeFormat.Arm },
                               { label: 'Moment ÷ 1000', value: CgEnvelopeFormat.MomentDividedBy1000 },
                             ]}
-                            styles={{
-                              root: {
-                                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                                border: '1px solid rgba(148, 163, 184, 0.2)',
-                              },
-                              label: {
-                                color: 'var(--mantine-color-gray-4)',
-                                '&[data-active]': {
-                                  color: 'white',
-                                },
-                              },
-                            }}
+                            className={classes.segmentedControlRoot}
                           />
                         </Box>
                       </Group>
@@ -515,28 +457,15 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                               <Table
                                 horizontalSpacing="xs"
                                 verticalSpacing="xs"
-                                styles={{
-                                  table: {
-                                    backgroundColor: 'transparent',
-                                  },
-                                  th: {
-                                    color: 'var(--mantine-color-gray-5)',
-                                    fontWeight: 500,
-                                    fontSize: '12px',
-                                    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-                                  },
-                                  td: {
-                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
-                                  },
-                                }}
+                                className={classes.envelopeTable}
                               >
                                 <Table.Thead>
                                   <Table.Tr>
-                                    <Table.Th style={{ width: 40 }}></Table.Th>
-                                    <Table.Th style={{ width: 40 }}>#</Table.Th>
+                                    <Table.Th w={40}></Table.Th>
+                                    <Table.Th w={40}>#</Table.Th>
                                     <Table.Th>Weight ({weightLabel})</Table.Th>
                                     <Table.Th>{xAxisHeader}</Table.Th>
-                                    <Table.Th style={{ width: 40 }}></Table.Th>
+                                    <Table.Th w={40}></Table.Th>
                                   </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>

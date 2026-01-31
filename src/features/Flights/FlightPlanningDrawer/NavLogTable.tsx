@@ -26,6 +26,7 @@ import {
 import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
 import { NavlogResponseDto, NavigationLegDto } from '@/redux/api/vfr3d/dtos';
 import { METRIC_COLORS, getIconBgColor } from '@/constants/colors';
+import classes from './NavLogTable.module.css';
 
 interface NavLogTableProps {
   navlog: NavlogResponseDto;
@@ -131,11 +132,7 @@ const FuelWarningAlert: React.FC<{ fuelStatus: FuelStatus; legs?: NavigationLegD
         color="red"
         variant="filled"
         mb="md"
-        styles={{
-          root: {
-            backgroundColor: 'rgba(239, 68, 68, 0.9)',
-          },
-        }}
+        className={classes.alertCritical}
       >
         <Text size="sm" c="white">
           You will run out of fuel before completing this flight. The following leg(s) have
@@ -179,13 +176,7 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
   const headwindInfo = formatHeadwind(navlog.averageWindComponent);
 
   return (
-    <Paper
-      p="md"
-      style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
-      }}
-    >
+    <Paper p="md" className={classes.summaryPaper}>
       {label && (
         <Text size="sm" fw={500} c="dimmed" mb="sm">
           {label}
@@ -194,17 +185,7 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
       <Grid gutter="md">
         <Grid.Col span={{ base: 6, sm: 3 }}>
           <Group gap="xs">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                backgroundColor: getIconBgColor('blue'),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCircle} bg={getIconBgColor('blue')}>
               <FaRoute size={16} color={METRIC_COLORS.DISTANCE} />
             </Box>
             <Box>
@@ -220,17 +201,7 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
 
         <Grid.Col span={{ base: 6, sm: 3 }}>
           <Group gap="xs">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                backgroundColor: getIconBgColor('cyan'),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCircle} bg={getIconBgColor('cyan')}>
               <FiClock size={16} color={METRIC_COLORS.TIME} />
             </Box>
             <Box>
@@ -246,17 +217,7 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
 
         <Grid.Col span={{ base: 6, sm: 3 }}>
           <Group gap="xs">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                backgroundColor: getIconBgColor('teal'),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCircle} bg={getIconBgColor('teal')}>
               <FaGasPump size={14} color={METRIC_COLORS.FUEL} />
             </Box>
             <Box>
@@ -272,17 +233,7 @@ const NavLogSummary: React.FC<{ navlog: NavlogResponseDto; label?: string }> = (
 
         <Grid.Col span={{ base: 6, sm: 3 }}>
           <Group gap="xs">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                backgroundColor: getIconBgColor('grape'),
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCircle} bg={getIconBgColor('grape')}>
               <FiWind size={16} color={METRIC_COLORS.WIND} />
             </Box>
             <Box>
@@ -316,34 +267,7 @@ const LegTable: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
 
   return (
     <ScrollArea>
-      <Table
-        striped
-        highlightOnHover
-        styles={{
-          table: {
-            backgroundColor: 'transparent',
-          },
-          thead: {
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-          },
-          th: {
-            color: 'var(--mantine-color-gray-4)',
-            fontWeight: 500,
-            fontSize: 'var(--mantine-font-size-xs)',
-            padding: '8px 12px',
-            whiteSpace: 'nowrap',
-          },
-          td: {
-            padding: '8px 12px',
-            fontSize: 'var(--mantine-font-size-sm)',
-          },
-          tr: {
-            '&[data-striped]': {
-              backgroundColor: 'rgba(30, 41, 59, 0.3)',
-            },
-          },
-        }}
-      >
+      <Table striped highlightOnHover className={classes.navTable}>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Leg</Table.Th>
@@ -488,7 +412,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
             <Grid gutter="xs">
               <Grid.Col span={4}>
                 <Group gap={4}>
-                  <FiNavigation size={12} style={{ opacity: 0.5 }} />
+                  <FiNavigation size={12} className={classes.iconOpacity} />
                   <Box>
                     <Text size="xs" c="dimmed">
                       Heading
@@ -502,7 +426,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
 
               <Grid.Col span={4}>
                 <Group gap={4}>
-                  <FiCompass size={12} style={{ opacity: 0.5 }} />
+                  <FiCompass size={12} className={classes.iconOpacity} />
                   <Box>
                     <Text size="xs" c="dimmed">
                       GS
@@ -514,7 +438,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
 
               <Grid.Col span={4}>
                 <Group gap={4}>
-                  <FiClock size={12} style={{ opacity: 0.5 }} />
+                  <FiClock size={12} className={classes.iconOpacity} />
                   <Box>
                     <Text size="xs" c="dimmed">
                       Time
@@ -526,7 +450,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
 
               <Grid.Col span={4}>
                 <Group gap={4}>
-                  <FiWind size={12} style={{ opacity: 0.5 }} />
+                  <FiWind size={12} className={classes.iconOpacity} />
                   <Box>
                     <Text size="xs" c="dimmed">
                       Wind
@@ -538,7 +462,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
 
               <Grid.Col span={4}>
                 <Group gap={4}>
-                  <FiThermometer size={12} style={{ opacity: 0.5 }} />
+                  <FiThermometer size={12} className={classes.iconOpacity} />
                   <Box>
                     <Text size="xs" c="dimmed">
                       Temp
@@ -601,23 +525,8 @@ export const NavLogTable: React.FC<NavLogTableProps> = ({ navlog, returnNavlog, 
 
     return (
       <Stack gap="md">
-        <Tabs
-          defaultValue="outbound"
-          variant="pills"
-          styles={{
-            list: {
-              backgroundColor: 'rgba(30, 41, 59, 0.6)',
-              padding: 4,
-              borderRadius: 'var(--mantine-radius-md)',
-            },
-            tab: {
-              '&[data-active]': {
-                backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
-              },
-            },
-          }}
-        >
-          <Tabs.List grow>
+        <Tabs defaultValue="outbound" variant="pills">
+          <Tabs.List grow className={classes.tabsList}>
             <Tabs.Tab
               value="outbound"
               leftSection={<FaPlane size={12} />}

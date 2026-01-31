@@ -74,6 +74,7 @@ import { FlightViewerContent } from './FlightViewerContent';
 import { QuickLayerSettings } from './QuickLayerSettings';
 import { FiAlertTriangle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
+import classes from './FlightPlanningDrawer.module.css';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -455,28 +456,8 @@ export const FlightPlanningDrawer: React.FC = () => {
         // Show saved flight confirmation
         if (savedFlightInfo) {
           return (
-            <Box
-              py="xl"
-              px="md"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100%',
-              }}
-            >
-              <Paper
-                p="xl"
-                radius="lg"
-                style={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  border: '1px solid rgba(148, 163, 184, 0.15)',
-                  width: '100%',
-                  maxWidth: 420,
-                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                }}
-              >
+            <Box py="xl" px="md" className={classes.savedConfirmationContainer}>
+              <Paper p="xl" radius="lg" className={classes.savedConfirmationPaper}>
                 <Stack align="center" gap="lg">
                   {/* Logo */}
                   <Image src={logo} alt="VFR3D" h={48} w="auto" />
@@ -494,15 +475,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                   </Box>
 
                   {/* Flight details card */}
-                  <Paper
-                    p="md"
-                    radius="md"
-                    w="100%"
-                    style={{
-                      backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                      border: '1px solid rgba(148, 163, 184, 0.1)',
-                    }}
-                  >
+                  <Paper p="md" radius="md" w="100%" className={classes.flightDetailsPaper}>
                     <Group justify="space-between" align="center">
                       <Box>
                         <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
@@ -608,7 +581,7 @@ export const FlightPlanningDrawer: React.FC = () => {
   const renderViewingContent = () => (
     <Stack h="100%" gap={0}>
       {/* Content area */}
-      <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+      <Box flex={1} p="md" style={{ overflowY: 'auto' }}>
         <QuickLayerSettings />
         <FlightViewerContent
           flight={activeFlightData}
@@ -618,12 +591,7 @@ export const FlightPlanningDrawer: React.FC = () => {
       </Box>
 
       {/* Actions */}
-      <Group
-        justify="space-between"
-        px="md"
-        py="sm"
-        style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
-      >
+      <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
         <Button
           variant="light"
           color="gray"
@@ -651,7 +619,7 @@ export const FlightPlanningDrawer: React.FC = () => {
     return (
       <Stack h="100%" gap={0}>
         {/* Content - show route builder for editing waypoints */}
-        <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+        <Box flex={1} p="md" style={{ overflowY: 'auto' }}>
           <FlightRouteBuilder
             routePoints={editingFlightPlan.waypoints}
             onRoutePointsChange={(points) => {
@@ -667,12 +635,7 @@ export const FlightPlanningDrawer: React.FC = () => {
         </Box>
 
         {/* Actions */}
-        <Group
-          justify="space-between"
-          px="md"
-          py="sm"
-          style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
-        >
+        <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
           <Button
             variant="subtle"
             leftSection={<FiX size={16} />}
@@ -702,7 +665,7 @@ export const FlightPlanningDrawer: React.FC = () => {
   const renderPlanningContent = () => (
     <Stack h="100%" gap={0}>
       {/* Stepper */}
-      <Box px="md" py="sm" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+      <Box px="md" py="sm" className={classes.borderBottom}>
         <Stepper
           active={currentStep}
           onStepClick={(step) => {
@@ -744,18 +707,13 @@ export const FlightPlanningDrawer: React.FC = () => {
       </Box>
 
       {/* Content area */}
-      <Box flex={1} p="md" style={{ overflow: 'auto' }}>
+      <Box flex={1} p="md" style={{ overflowY: 'auto' }}>
         {renderStepContent()}
       </Box>
 
       {/* Navigation - hide when showing saved confirmation */}
       {!savedFlightInfo && (
-        <Group
-          justify="space-between"
-          px="md"
-          py="sm"
-          style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}
-        >
+        <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
           <Button
             variant="subtle"
             leftSection={<FiChevronLeft size={16} />}

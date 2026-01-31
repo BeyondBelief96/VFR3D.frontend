@@ -178,3 +178,43 @@
   border-bottom: 1px solid rgba(148, 163, 184, 0.05);
   padding: 4px 6px;
 }
+
+/* =============================================================================
+   CG ENVELOPE EDITOR
+   ============================================================================= */
+
+.envelopeEmptyPaper {
+  background-color: rgba(15, 23, 42, 0.3);
+  border: 1px dashed rgba(148, 163, 184, 0.3);
+  border-radius: var(--mantine-radius-md);
+}
+
+.envelopePanelPaper {
+  background-color: rgba(15, 23, 42, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: var(--mantine-radius-md);
+}
+
+.segmentedControlRoot {
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.envelopeTable {
+  background-color: transparent;
+}
+
+.envelopeTable th {
+  color: var(--mantine-color-gray-5);
+  font-weight: 500;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.envelopeTable td {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+}
+
+.cursorGrab {
+  cursor: grab;
+}
