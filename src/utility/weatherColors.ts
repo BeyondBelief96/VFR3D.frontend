@@ -2,6 +2,9 @@ import { Color } from 'cesium';
 import { MetarDto } from '@/redux/api/vfr3d/dtos';
 import { WeatherFlightCategories } from '@/utility/enums';
 
+// Default color for airports without weather data - a neutral dark slate
+const NO_WEATHER_COLOR = Color.fromCssColorString('#4a5568');
+
 /**
  * Get Cesium Color for a flight category string
  * @param flightCategory - The flight category (VFR, MVFR, IFR, LIFR)
@@ -18,18 +21,30 @@ export function getColorForFlightCategory(flightCategory?: string): Color {
     case WeatherFlightCategories.LIFR:
       return Color.PURPLE;
     default:
-      return Color.WHITE;
+      return NO_WEATHER_COLOR;
   }
 }
 
 /**
  * Get Cesium Color for a METAR based on its flight category
  * @param metar - The METAR data containing flight category
- * @returns Cesium Color for the METAR's flight category
+ * @returns Cesium Color for the METAR's flight category (dark slate if no METAR)
  */
 export function getColorForMetar(metar?: MetarDto): Color {
-  if (!metar) return Color.WHITE;
+  if (!metar) return NO_WEATHER_COLOR;
   return getColorForFlightCategory(metar.flightCategory);
+}
+
+/**
+ * Get an appropriate label text color that contrasts with the given background color
+ * @param backgroundColor - The background color of the label
+ * @returns White text (works well on all our weather category colors including the dark default)
+ */
+export function getLabelTextColor(backgroundColor: Color): Color {
+  // All our colors (VFR green, IFR red, MVFR blue, LIFR purple, and dark slate default)
+  // work well with white text
+  void backgroundColor; // Unused for now, but kept for potential future light color support
+  return Color.WHITE;
 }
 
 /**

@@ -5,7 +5,7 @@ import { mapAirportDataToCartesian3Flat } from '@/utility/cesiumUtils';
 import { getAirportEntityIdFromAirport } from '@/utility/entityIdUtils';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { AirportDto, MetarDto } from '@/redux/api/vfr3d/dtos';
-import { getColorForMetar, buildAirportLabel } from '@/utility/weatherColors';
+import { getColorForMetar, buildAirportLabel, getLabelTextColor } from '@/utility/weatherColors';
 
 interface AirportEntityProps {
   airport: AirportDto;
@@ -19,6 +19,7 @@ const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) =>
   if (!position) return null;
 
   const color = getColorForMetar(metar);
+  const textColor = getLabelTextColor(color);
   
   // Get the airport identifier (prefer ICAO, fall back to FAA ID)
   const airportIdent = airport.icaoId || airport.arptId || '';
@@ -33,6 +34,7 @@ const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) =>
       id={getAirportEntityIdFromAirport(airport)}
       scaleByDistance={new NearFarScalar(1000000, 1.5, 5000000, 1)}
       labelText={labelText}
+      labelColor={textColor}
       labelBackgroundColor={color}
       labelPixelOffset={new Cartesian2(0, -20)}
       labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}

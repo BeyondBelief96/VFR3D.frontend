@@ -3,7 +3,7 @@ import { Cartesian2, Cartesian3, NearFarScalar } from 'cesium';
 import { PointEntity } from '@/components/Cesium/PointEntity';
 import { useGetMetarForAirportQuery } from '@/redux/api/vfr3d/weather.api';
 import { useGetAirportByIcaoCodeOrIdentQuery } from '@/redux/api/vfr3d/airports.api';
-import { getColorForMetar, buildAirportLabel } from '@/utility/weatherColors';
+import { getColorForMetar, buildAirportLabel, getLabelTextColor } from '@/utility/weatherColors';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { WaypointDto } from '@/redux/api/vfr3d/dtos';
@@ -46,6 +46,7 @@ const AirportWaypointEntity: React.FC<AirportWaypointEntityProps> = memo(({
 
   // Determine color based on flight category (weather)
   const pointColor = getColorForMetar(metar);
+  const textColor = getLabelTextColor(pointColor);
   
   // Build combined label with name, altitude, and optionally cloud base
   const labelText = buildAirportLabel(
@@ -84,6 +85,7 @@ const AirportWaypointEntity: React.FC<AirportWaypointEntityProps> = memo(({
       onLeftClick={handleClick}
       draggable={false}
       labelText={labelText}
+      labelColor={textColor}
       labelBackgroundColor={pointColor}
       labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
       labelPixelOffset={new Cartesian2(0, -40)}
