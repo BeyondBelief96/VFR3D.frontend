@@ -1,0 +1,62 @@
+/**
+ * EntitySelectionManager popup styles
+ * Shared styles for all entity info popups
+ */
+
+/* =============================================================================
+   POPUP CONTAINER BASE
+   ============================================================================= */
+
+.popup {
+  position: fixed;
+  top: 70px;
+  right: 16px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 100px);
+  background-color: rgba(37, 38, 43, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+  z-index: 1000;
+}
+
+.popupWide {
+  width: 400px;
+}
+
+/* =============================================================================
+   CONTENT ELEMENTS
+   ============================================================================= */
+
+.closeButton {
+  flex-shrink: 0;
+}
+
+.flexGroup {
+  flex: 1;
+  min-width: 0;
+}
+
+.codeBlock {
+  font-size: 0.7rem;
+  white-space: pre-wrap;
+}
+
+/* =============================================================================
+   EDUCATIONAL INFO BOX
+   ============================================================================= */
+
+.infoBox {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: var(--mantine-radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* =============================================================================
+   DIVIDERS
+   ============================================================================= */
+
+.divider {
+  border-color: rgba(148, 163, 184, 0.2);
+}

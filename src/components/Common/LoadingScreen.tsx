@@ -1,6 +1,7 @@
 import { Center, Stack, Loader, Text, Box } from '@mantine/core';
 import { FaPlane } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import classes from './LoadingScreen.module.css';
 
 interface LoadingScreenProps {
   title?: string;
@@ -16,15 +17,7 @@ export function LoadingScreen({
   return (
     <Center
       h={fullScreen ? '100vh' : '100%'}
-      style={{
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-        position: fullScreen ? 'fixed' : 'relative',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9999,
-      }}
+      className={`${classes.container} ${fullScreen ? classes.containerFullScreen : classes.containerRelative}`}
     >
       <Stack align="center" gap="xl">
         {/* Animated Logo */}
@@ -33,18 +26,7 @@ export function LoadingScreen({
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Box
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 16,
-              background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 10px 40px rgba(59, 130, 246, 0.3)',
-            }}
-          >
+          <Box className={classes.logoBox}>
             <motion.div
               animate={{
                 y: [-5, 5, -5],
@@ -56,7 +38,7 @@ export function LoadingScreen({
                 ease: 'easeInOut',
               }}
             >
-              <FaPlane size={40} color="white" style={{ transform: 'rotate(-45deg)' }} />
+              <FaPlane size={40} color="white" className={classes.planeIcon} />
             </motion.div>
           </Box>
         </motion.div>

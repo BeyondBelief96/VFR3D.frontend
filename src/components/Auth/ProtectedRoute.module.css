@@ -1,0 +1,7 @@
+/**
+ * ProtectedRoute component styles
+ */
+
+.loadingContainer {
+  background-color: var(--mantine-color-vfr3dSurface-9);
+}

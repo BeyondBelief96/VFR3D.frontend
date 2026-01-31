@@ -1,0 +1,197 @@
+/**
+ * Landing page (index) styles
+ * Only styles that Mantine props cannot express
+ */
+
+/* =============================================================================
+   PAGE BACKGROUND
+   ============================================================================= */
+
+.pageWrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0f1a 0%, #0f172a 30%, #1e293b 70%, #0f172a 100%);
+}
+
+/* =============================================================================
+   HERO SECTION
+   ============================================================================= */
+
+.heroSection {
+  position: relative;
+  overflow: hidden;
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.heroBackgroundPattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.heroLogo {
+  filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+}
+
+.heroBadge {
+  text-transform: none;
+  font-size: 14px;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.1;
+}
+
+.heroSubtitle {
+  line-height: 1.7;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+}
+
+.heroCtaButton {
+  font-weight: 600;
+}
+
+.heroExploreButton {
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* =============================================================================
+   SCREENSHOTS & PAPERS
+   ============================================================================= */
+
+.screenshotPaper {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.6);
+}
+
+.screenshotPaperSmall {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+.screenshotImage {
+  width: 100%;
+  display: block;
+}
+
+/* =============================================================================
+   SECTION BACKGROUNDS
+   ============================================================================= */
+
+.sectionAlt {
+  background-color: rgba(15, 23, 42, 0.5);
+}
+
+.sectionTitle {
+  font-size: 36px;
+}
+
+.sectionTitleSmall {
+  font-size: 32px;
+}
+
+.sectionText {
+  line-height: 1.8;
+}
+
+/* =============================================================================
+   CARDS
+   ============================================================================= */
+
+.featureCard {
+  background-color: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+}
+
+.featureCardDescription {
+  line-height: 1.6;
+}
+
+.stepCard {
+  background-color: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  position: relative;
+  overflow: visible;
+}
+
+.stepNumber {
+  position: absolute;
+  top: -16px;
+  left: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================================================
+   CTA SECTION
+   ============================================================================= */
+
+.ctaPaper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  text-align: center;
+}
+
+/* =============================================================================
+   FOOTER
+   ============================================================================= */
+
+.footerSection {
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* =============================================================================
+   STAT ITEM
+   ============================================================================= */
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* =============================================================================
+   FEATURE LIST ITEM
+   ============================================================================= */
+
+.featureListIcon {
+  flex-shrink: 0;
+}
+
+/* =============================================================================
+   DIVIDERS
+   ============================================================================= */
+
+.featureDivider {
+  border-color: rgba(148, 163, 184, 0.1);
+}

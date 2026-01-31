@@ -1,0 +1,92 @@
+/**
+ * BottomDrawer component styles
+ * Only styles that Mantine props cannot express
+ */
+
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s;
+  pointer-events: auto;
+}
+
+.drawerWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.drawer {
+  width: 100%;
+  max-width: 1024px;
+  transition: transform 0.3s ease-in-out;
+  background-color: rgba(26, 27, 30, 0.98);
+  backdrop-filter: blur(12px);
+  border-top-left-radius: var(--mantine-radius-lg);
+  border-top-right-radius: var(--mantine-radius-lg);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  pointer-events: auto;
+}
+
+.drawerOpen {
+  transform: translateY(0);
+}
+
+.drawerClosed {
+  transform: translateY(calc(100% - 48px));
+}
+
+.handle {
+  cursor: pointer;
+}
+
+.handleBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 4px;
+}
+
+.handleIndicator {
+  width: 48px;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: background-color 0.2s;
+}
+
+.headerBorder {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.content {
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.contentOpen {
+  height: 75vh;
+  opacity: 1;
+}
+
+.contentClosed {
+  height: 0;
+  opacity: 0;
+}

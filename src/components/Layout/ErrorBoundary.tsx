@@ -1,6 +1,7 @@
 import { Component, ReactNode } from 'react';
 import { Container, Title, Text, Button, Stack, Card, Code } from '@mantine/core';
 import { FiHome, FiRefreshCw } from 'react-icons/fi';
+import classes from './ErrorBoundary.module.css';
 
 interface Props {
   children: ReactNode;
@@ -39,26 +40,8 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <Container
-          size="sm"
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-          }}
-        >
-          <Card
-            padding="xl"
-            radius="md"
-            style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.9)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
-              maxWidth: 500,
-              width: '100%',
-            }}
-          >
+        <Container size="sm" className={classes.container}>
+          <Card padding="xl" radius="md" className={classes.card}>
             <Stack align="center" gap="lg">
               <Title order={1} c="red" ta="center">
                 Oops! Something went wrong.
@@ -70,18 +53,18 @@ export class ErrorBoundary extends Component<Props, State> {
               </Text>
 
               {import.meta.env.DEV && this.state.error && (
-                <Card withBorder p="md" bg="dark.7" style={{ width: '100%' }}>
+                <Card withBorder p="md" bg="dark.7" w="100%">
                   <Text size="xs" c="red" fw={600} mb="xs">
                     Error Details (Dev Mode):
                   </Text>
-                  <Code block style={{ whiteSpace: 'pre-wrap', fontSize: 10 }}>
+                  <Code block fz={10} style={{ whiteSpace: 'pre-wrap' }}>
                     {this.state.error.message}
                     {this.state.errorInfo?.componentStack}
                   </Code>
                 </Card>
               )}
 
-              <Stack gap="sm" style={{ width: '100%' }}>
+              <Stack gap="sm" w="100%">
                 <Button
                   fullWidth
                   variant="gradient"

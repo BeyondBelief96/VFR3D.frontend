@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { Card, Stack, Text, Button, Group, Box, ThemeIcon } from '@mantine/core';
 import { FiAlertCircle, FiRefreshCw, FiArrowLeft, FiHome } from 'react-icons/fi';
+import classes from './PageErrorState.module.css';
 
 export interface PageErrorStateProps {
   /** The main title shown in the error state */
@@ -40,26 +41,9 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
   fullPage = true,
 }) => {
   const content = (
-    <Card
-      padding="xl"
-      radius="md"
-      style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(239, 68, 68, 0.3)',
-      }}
-    >
+    <Card padding="xl" radius="md" className={classes.card}>
       <Stack align="center" gap="lg" py="md">
-        <Box
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(239, 68, 68, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <Box className={classes.iconBox}>
           {icon || (
             <ThemeIcon size={32} color="red" variant="transparent">
               <FiAlertCircle size={32} />
@@ -119,17 +103,7 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
   }
 
   return (
-    <Box
-      py="xl"
-      px="md"
-      style={{
-        minHeight: 'calc(100vh - 60px)',
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <Box py="xl" px="md" className={classes.fullPageContainer}>
       <Box maw={500} w="100%">
         {content}
       </Box>

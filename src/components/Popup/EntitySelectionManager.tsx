@@ -20,6 +20,7 @@ import { Paper, Stack, Text, Badge, Group, ActionIcon, Box, Code, ScrollArea, Di
 import { FiX, FiInfo } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
+import classes from './EntitySelectionManager.module.css';
 
 // Helper to get airspace class info (based on FAA definitions)
 const getAirspaceClassInfo = (airspaceClass: string | undefined): { color: string; description: string; requirements: string } => {
@@ -140,26 +141,9 @@ const AirspaceInfoPopup: React.FC<{ airspace: AirspaceDto | SpecialUseAirspaceDt
   };
 
   return (
-    <Paper
-      shadow="xl"
-      radius="md"
-      p="md"
-      style={{
-        position: 'fixed',
-        top: 70,
-        right: 16,
-        width: 380,
-        maxWidth: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 100px)',
-        backgroundColor: 'rgba(37, 38, 43, 0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        pointerEvents: 'auto',
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="xl" radius="md" p="md" className={classes.popup}>
       <Group justify="space-between" wrap="nowrap" mb="md">
-        <Box style={{ flex: 1, minWidth: 0 }}>
+        <Box className={classes.flexGroup}>
           <Group gap="xs" mb={4}>
             <Badge color={badgeColor}>
               {isSpecialUse ? 'Special Use Airspace' : `Class ${airspaceClass}`}
@@ -172,7 +156,7 @@ const AirspaceInfoPopup: React.FC<{ airspace: AirspaceDto | SpecialUseAirspaceDt
           </Group>
           <Text fw={600} lineClamp={2}>{airspace.name}</Text>
         </Box>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} className={classes.closeButton}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -222,17 +206,10 @@ const AirspaceInfoPopup: React.FC<{ airspace: AirspaceDto | SpecialUseAirspaceDt
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Educational Section */}
-          <Box
-            p="xs"
-            style={{
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              borderRadius: 'var(--mantine-radius-sm)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-            }}
-          >
+          <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
               <FiInfo size={12} color="var(--mantine-color-blue-5)" />
               <Text size="xs" fw={500} c="blue.4">
@@ -264,34 +241,17 @@ const PirepInfoPopup: React.FC<{ pirep: PirepDto }> = ({ pirep }) => {
   };
 
   return (
-    <Paper
-      shadow="xl"
-      radius="md"
-      p="md"
-      style={{
-        position: 'fixed',
-        top: 70,
-        right: 16,
-        width: 380,
-        maxWidth: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 100px)',
-        backgroundColor: 'rgba(37, 38, 43, 0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        pointerEvents: 'auto',
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="xl" radius="md" p="md" className={classes.popup}>
       <Group justify="space-between" wrap="nowrap" mb="md">
         <Badge color="violet">PIREP</Badge>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} className={classes.closeButton}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
 
       {/* Raw Text */}
       {pirep.rawText && (
-        <Code block mb="md" style={{ fontSize: '0.7rem', whiteSpace: 'pre-wrap' }}>
+        <Code block mb="md" className={classes.codeBlock}>
           {pirep.rawText}
         </Code>
       )}
@@ -443,26 +403,9 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
     obstacle.lighting !== ObstacleLighting.Unknown;
 
   return (
-    <Paper
-      shadow="xl"
-      radius="md"
-      p="md"
-      style={{
-        position: 'fixed',
-        top: 70,
-        right: 16,
-        width: 380,
-        maxWidth: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 100px)',
-        backgroundColor: 'rgba(37, 38, 43, 0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        pointerEvents: 'auto',
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="xl" radius="md" p="md" className={classes.popup}>
       <Group justify="space-between" wrap="nowrap" mb="md">
-        <Group gap="xs" style={{ flex: 1, minWidth: 0 }}>
+        <Group gap="xs" className={classes.flexGroup}>
           <Badge color="red">Obstacle</Badge>
           {isLit && (
             <Badge color="yellow" variant="outline">
@@ -470,7 +413,7 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
             </Badge>
           )}
         </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} className={classes.closeButton}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -492,7 +435,7 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Height Information */}
           <Text size="sm" fw={500} c="white">Height</Text>
@@ -511,7 +454,7 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Lighting and Marking */}
           <Text size="sm" fw={500} c="white">Markings & Lighting</Text>
@@ -533,7 +476,7 @@ const ObstacleInfoPopup: React.FC<{ obstacle: ObstacleDto }> = ({ obstacle }) =>
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Coordinates */}
           <Text size="sm" fw={500} c="white">Position</Text>
@@ -591,26 +534,9 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
   const isSigmet = airsigmet.airsigmetType === 'SIGMET';
 
   return (
-    <Paper
-      shadow="xl"
-      radius="md"
-      p="md"
-      style={{
-        position: 'fixed',
-        top: 70,
-        right: 16,
-        width: 400,
-        maxWidth: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 100px)',
-        backgroundColor: 'rgba(37, 38, 43, 0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        pointerEvents: 'auto',
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="xl" radius="md" p="md" className={`${classes.popup} ${classes.popupWide}`}>
       <Group justify="space-between" wrap="nowrap" mb="md">
-        <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+        <Group gap="xs" wrap="nowrap" className={classes.flexGroup}>
           <Badge color={isSigmet ? 'red' : 'orange'}>
             {airsigmet.airsigmetType}
           </Badge>
@@ -628,14 +554,14 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
             </Badge>
           )}
         </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} className={classes.closeButton}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
 
       {/* Raw Text */}
       {airsigmet.rawText && (
-        <Code block mb="md" style={{ fontSize: '0.7rem', whiteSpace: 'pre-wrap' }}>
+        <Code block mb="md" className={classes.codeBlock}>
           {airsigmet.rawText}
         </Code>
       )}
@@ -681,17 +607,10 @@ const AirsigmetInfoPopup: React.FC<{ airsigmet: AirsigmetDto }> = ({ airsigmet }
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Educational Section */}
-          <Box
-            p="xs"
-            style={{
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              borderRadius: 'var(--mantine-radius-sm)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-            }}
-          >
+          <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
               <FiInfo size={12} color="var(--mantine-color-blue-5)" />
               <Text size="xs" fw={500} c="blue.4">
@@ -822,26 +741,9 @@ const GAirmetInfoPopup: React.FC<{ gairmet: GAirmetDto }> = ({ gairmet }) => {
   const hazardColor = getGAirmetHazardColor(gairmet.hazard);
 
   return (
-    <Paper
-      shadow="xl"
-      radius="md"
-      p="md"
-      style={{
-        position: 'fixed',
-        top: 70,
-        right: 16,
-        width: 400,
-        maxWidth: 'calc(100vw - 32px)',
-        maxHeight: 'calc(100vh - 100px)',
-        backgroundColor: 'rgba(37, 38, 43, 0.95)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        pointerEvents: 'auto',
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="xl" radius="md" p="md" className={`${classes.popup} ${classes.popupWide}`}>
       <Group justify="space-between" wrap="nowrap" mb="md">
-        <Group gap="xs" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+        <Group gap="xs" wrap="nowrap" className={classes.flexGroup}>
           <Badge color={hazardColor}>G-AIRMET</Badge>
           <Badge variant="outline" color={hazardColor}>
             {hazardInfo.name}
@@ -852,7 +754,7 @@ const GAirmetInfoPopup: React.FC<{ gairmet: GAirmetDto }> = ({ gairmet }) => {
             </Badge>
           )}
         </Group>
-        <ActionIcon variant="subtle" color="gray" onClick={handleClose} style={{ flexShrink: 0 }}>
+        <ActionIcon variant="subtle" color="gray" onClick={handleClose} className={classes.closeButton}>
           <FiX size={18} />
         </ActionIcon>
       </Group>
@@ -975,17 +877,10 @@ const GAirmetInfoPopup: React.FC<{ gairmet: GAirmetDto }> = ({ gairmet }) => {
             </Text>
           )}
 
-          <Divider my="xs" color="rgba(148, 163, 184, 0.2)" />
+          <Divider my="xs" className={classes.divider} />
 
           {/* Educational Section */}
-          <Box
-            p="xs"
-            style={{
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              borderRadius: 'var(--mantine-radius-sm)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-            }}
-          >
+          <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
               <FiInfo size={12} color="var(--mantine-color-blue-5)" />
               <Text size="xs" fw={500} c="blue.4">

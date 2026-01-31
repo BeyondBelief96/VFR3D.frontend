@@ -36,6 +36,7 @@ import heroImage from '@/assets/images/hero.png';
 import weatherImage from '@/assets/images/weather.png';
 import obstaclesImage from '@/assets/images/obstacles.png';
 import flightPlannerImage from '@/assets/images/flight-planner.png';
+import classes from './index.module.css';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -45,38 +46,13 @@ function HomePage() {
   const { isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
 
   return (
-    <Box
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(180deg, #0a0f1a 0%, #0f172a 30%, #1e293b 70%, #0f172a 100%)',
-      }}
-    >
+    <Box className={classes.pageWrapper}>
       {/* Hero Section */}
-      <Box
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          paddingTop: rem(40),
-          paddingBottom: rem(80),
-        }}
-      >
+      <Box className={classes.heroSection}>
         {/* Background Pattern */}
-        <Box
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: `
-              radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%)
-            `,
-            pointerEvents: 'none',
-          }}
-        />
+        <Box className={classes.heroBackgroundPattern} />
 
-        <Container size="lg" style={{ position: 'relative', zIndex: 1 }}>
+        <Container size="lg" className={classes.heroContent}>
           <Stack align="center" gap="xl">
             {/* Logo */}
             <Image
@@ -84,9 +60,7 @@ function HomePage() {
               alt="VFR3D Logo"
               w={280}
               fit="contain"
-              style={{
-                filter: 'drop-shadow(0 0 30px rgba(59, 130, 246, 0.3))',
-              }}
+              className={classes.heroLogo}
             />
 
             {/* Tagline Badge */}
@@ -94,22 +68,13 @@ function HomePage() {
               size="lg"
               variant="gradient"
               gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-              style={{ textTransform: 'none', fontSize: rem(14) }}
+              className={classes.heroBadge}
             >
               Plan, Fly, Repeat
             </Badge>
 
             {/* Main Headline */}
-            <Title
-              order={1}
-              ta="center"
-              style={{
-                fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-                fontWeight: 800,
-                color: 'white',
-                lineHeight: 1.1,
-              }}
-            >
+            <Title order={1} ta="center" className={classes.heroTitle}>
               Experience VFR Flight Planning{' '}
               <Text
                 component="span"
@@ -127,7 +92,7 @@ function HomePage() {
               c="dimmed"
               ta="center"
               maw={700}
-              style={{ lineHeight: 1.7, fontSize: 'clamp(1rem, 2vw, 1.25rem)' }}
+              className={classes.heroSubtitle}
             >
               Plan your VFR routes on an interactive 3D globe with real-time weather,
               comprehensive airspace visualization, and professional navigation tools.
@@ -145,7 +110,7 @@ function HomePage() {
                   loading={isLoading}
                   onClick={() => loginWithRedirect()}
                   rightSection={<FiArrowRight size={20} />}
-                  style={{ fontWeight: 600 }}
+                  className={classes.heroCtaButton}
                 >
                   Get Started Free
                 </Button>
@@ -158,7 +123,7 @@ function HomePage() {
                   component={Link}
                   to="/viewer"
                   rightSection={<FiArrowRight size={20} />}
-                  style={{ fontWeight: 600 }}
+                  className={classes.heroCtaButton}
                 >
                   Open Flight Planner
                 </Button>
@@ -170,7 +135,7 @@ function HomePage() {
                 color="gray"
                 component="a"
                 href="#features"
-                style={{ borderColor: 'rgba(148, 163, 184, 0.3)' }}
+                className={classes.heroExploreButton}
               >
                 Explore Features
               </Button>
@@ -189,18 +154,11 @@ function HomePage() {
 
         {/* Hero Image - Full Width */}
         <Container size="xl" mt={60} pb={40}>
-          <Paper
-            radius="lg"
-            style={{
-              overflow: 'hidden',
-              border: '1px solid rgba(148, 163, 184, 0.2)',
-              boxShadow: '0 25px 80px -12px rgba(0, 0, 0, 0.6)',
-            }}
-          >
+          <Paper radius="lg" className={classes.screenshotPaper}>
             <Image
               src={heroImage}
               alt="VFR3D 3D Flight Planning Interface"
-              style={{ width: '100%', display: 'block' }}
+              className={classes.screenshotImage}
             />
           </Paper>
         </Container>
@@ -215,7 +173,7 @@ function HomePage() {
               <Badge size="md" variant="light" color="blue">
                 Comprehensive Tools
               </Badge>
-              <Title order={2} ta="center" c="white" style={{ fontSize: rem(36) }}>
+              <Title order={2} ta="center" c="white" fz={rem(36)}>
                 Everything You Need for VFR Flight Planning
               </Title>
               <Text size="lg" c="dimmed" ta="center" maw={600}>
@@ -331,14 +289,14 @@ function HomePage() {
       </Box>
 
       {/* How It Works Section */}
-      <Box py={100} style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Box py={100} className={classes.sectionAlt}>
         <Container size="lg">
           <Stack gap={60}>
             <Stack align="center" gap="md">
               <Badge size="md" variant="light" color="cyan">
                 Simple Workflow
               </Badge>
-              <Title order={2} ta="center" c="white" style={{ fontSize: rem(36) }}>
+              <Title order={2} ta="center" c="white" fz={rem(36)}>
                 Plan Your Flight in Minutes
               </Title>
               <Text size="lg" c="dimmed" ta="center" maw={600}>
@@ -386,10 +344,10 @@ function HomePage() {
                 <Badge size="md" variant="light" color="cyan" w="fit-content">
                   Weather Intelligence
                 </Badge>
-                <Title order={2} c="white" style={{ fontSize: rem(32) }}>
+                <Title order={2} c="white" fz={rem(32)}>
                   Make Informed Go/No-Go Decisions
                 </Title>
-                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                <Text size="lg" c="dimmed" className={classes.sectionText}>
                   VFR3D gives you the weather picture you need. See current conditions,
                   forecasts, and pilot reports all visualized on your route.
                 </Text>
@@ -419,18 +377,11 @@ function HomePage() {
             </SimpleGrid>
 
             {/* Weather Screenshot - Full Width */}
-            <Paper
-              radius="lg"
-              style={{
-                overflow: 'hidden',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
-              }}
-            >
+            <Paper radius="lg" className={classes.screenshotPaperSmall}>
               <Image
                 src={weatherImage}
                 alt="VFR3D Weather Visualization - METARs, PIREPs, and Weather Advisories"
-                style={{ width: '100%', display: 'block' }}
+                className={classes.screenshotImage}
               />
             </Paper>
           </Stack>
@@ -438,7 +389,7 @@ function HomePage() {
       </Box>
 
       {/* Obstacle Awareness Highlight */}
-      <Box py={100} style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Box py={100} className={classes.sectionAlt}>
         <Container size="lg">
           <Stack gap={50}>
             {/* Header and Feature List */}
@@ -447,10 +398,10 @@ function HomePage() {
                 <Badge size="md" variant="light" color="red" w="fit-content">
                   Obstacle Awareness
                 </Badge>
-                <Title order={2} c="white" style={{ fontSize: rem(32) }}>
+                <Title order={2} c="white" fz={rem(32)}>
                   Know What's Along Your Route
                 </Title>
-                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                <Text size="lg" c="dimmed" className={classes.sectionText}>
                   VFR3D displays obstacles from the FAA database with accurate heights
                   and positions. See towers, antennas, and other hazards in 3D.
                 </Text>
@@ -480,18 +431,11 @@ function HomePage() {
             </SimpleGrid>
 
             {/* Obstacles Screenshot - Full Width */}
-            <Paper
-              radius="lg"
-              style={{
-                overflow: 'hidden',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
-              }}
-            >
+            <Paper radius="lg" className={classes.screenshotPaperSmall}>
               <Image
                 src={obstaclesImage}
                 alt="VFR3D Obstacle Visualization - Towers and Hazards Along Route"
-                style={{ width: '100%', display: 'block' }}
+                className={classes.screenshotImage}
               />
             </Paper>
           </Stack>
@@ -508,10 +452,10 @@ function HomePage() {
                 <Badge size="md" variant="light" color="orange" w="fit-content">
                   Intuitive Planning
                 </Badge>
-                <Title order={2} c="white" style={{ fontSize: rem(32) }}>
+                <Title order={2} c="white" fz={rem(32)}>
                   Plan Your Flight Step by Step
                 </Title>
-                <Text size="lg" c="dimmed" style={{ lineHeight: 1.8 }}>
+                <Text size="lg" c="dimmed" className={classes.sectionText}>
                   The VFR3D flight planner guides you through building your route
                   with an intuitive interface. Add waypoints, configure your aircraft,
                   and generate your navigation log.
@@ -542,18 +486,11 @@ function HomePage() {
             </SimpleGrid>
 
             {/* Flight Planner Screenshot - Full Width */}
-            <Paper
-              radius="lg"
-              style={{
-                overflow: 'hidden',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
-              }}
-            >
+            <Paper radius="lg" className={classes.screenshotPaperSmall}>
               <Image
                 src={flightPlannerImage}
                 alt="VFR3D Flight Planner - Step-by-Step Route Building"
-                style={{ width: '100%', display: 'block' }}
+                className={classes.screenshotImage}
               />
             </Paper>
           </Stack>
@@ -561,20 +498,12 @@ function HomePage() {
       </Box>
 
       {/* Final CTA Section */}
-      <Box py={100} style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Box py={100} className={classes.sectionAlt}>
         <Container size="md">
-          <Paper
-            radius="xl"
-            p={60}
-            style={{
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              textAlign: 'center',
-            }}
-          >
+          <Paper radius="xl" p={60} className={classes.ctaPaper}>
             <Stack align="center" gap="xl">
               <TbPlane size={60} color="var(--mantine-color-vfr3dBlue-5)" />
-              <Title order={2} c="white" style={{ fontSize: rem(32) }}>
+              <Title order={2} c="white" fz={rem(32)}>
                 Ready to Plan, Fly, Repeat?
               </Title>
               <Text size="lg" c="dimmed" maw={500}>
@@ -614,7 +543,7 @@ function HomePage() {
       </Box>
 
       {/* Footer */}
-      <Box py={40} style={{ borderTop: '1px solid rgba(148, 163, 184, 0.1)' }}>
+      <Box py={40} className={classes.footerSection}>
         <Container size="lg">
           <Group justify="space-between" align="center">
             <Group gap="md">
@@ -637,17 +566,7 @@ function HomePage() {
 function StatItem({ value, label }: { value: string; label: string }) {
   return (
     <Stack align="center" gap={4}>
-      <Text
-        style={{
-          fontSize: rem(28),
-          fontWeight: 700,
-          background: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        {value}
-      </Text>
+      <Text className={classes.statValue}>{value}</Text>
       <Text size="sm" c="dimmed">
         {label}
       </Text>
@@ -666,25 +585,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, color, title, description, features }: FeatureCardProps) {
   return (
-    <Card
-      padding="xl"
-      radius="lg"
-      style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.6)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
-        transition: 'all 0.3s ease',
-        height: '100%',
-      }}
-      styles={{
-        root: {
-          '&:hover': {
-            transform: 'translateY(-4px)',
-            borderColor: `var(--mantine-color-${color}-6)`,
-            boxShadow: `0 20px 40px -20px var(--mantine-color-${color}-9)`,
-          },
-        },
-      }}
-    >
+    <Card padding="xl" radius="lg" className={classes.featureCard}>
       <Stack gap="md">
         <ThemeIcon size={56} radius="md" variant="light" color={color}>
           {icon}
@@ -692,14 +593,18 @@ function FeatureCard({ icon, color, title, description, features }: FeatureCardP
         <Title order={4} c="white">
           {title}
         </Title>
-        <Text size="sm" c="dimmed" style={{ lineHeight: 1.6 }}>
+        <Text size="sm" c="dimmed" className={classes.featureCardDescription}>
           {description}
         </Text>
-        <Divider color="rgba(148, 163, 184, 0.1)" />
+        <Divider className={classes.featureDivider} />
         <Stack gap={6}>
           {features.map((feature, index) => (
             <Group key={index} gap="xs" wrap="nowrap">
-              <FiCheckCircle size={14} color="var(--mantine-color-green-5)" style={{ flexShrink: 0 }} />
+              <FiCheckCircle
+                size={14}
+                color="var(--mantine-color-green-5)"
+                className={classes.featureListIcon}
+              />
               <Text size="xs" c="dimmed">
                 {feature}
               </Text>
@@ -721,7 +626,14 @@ interface FeatureListItemProps {
 function FeatureListItem({ color, title, description }: FeatureListItemProps) {
   return (
     <Group gap="sm" wrap="nowrap" align="flex-start">
-      <ThemeIcon size={20} radius="xl" color={color} variant="light" mt={2} style={{ flexShrink: 0 }}>
+      <ThemeIcon
+        size={20}
+        radius="xl"
+        color={color}
+        variant="light"
+        mt={2}
+        className={classes.featureListIcon}
+      >
         <FiCheckCircle size={12} />
       </ThemeIcon>
       <Box>
@@ -746,31 +658,9 @@ interface StepCardProps {
 
 function StepCard({ step, icon, title, description }: StepCardProps) {
   return (
-    <Card
-      padding="xl"
-      radius="lg"
-      style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.4)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
-        position: 'relative',
-        overflow: 'visible',
-      }}
-    >
+    <Card padding="xl" radius="lg" className={classes.stepCard}>
       {/* Step Number */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: -16,
-          left: 24,
-          width: 32,
-          height: 32,
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <Box className={classes.stepNumber}>
         <Text size="sm" fw={700} c="white">
           {step}
         </Text>
@@ -783,7 +673,7 @@ function StepCard({ step, icon, title, description }: StepCardProps) {
         <Title order={5} c="white">
           {title}
         </Title>
-        <Text size="sm" c="dimmed" style={{ lineHeight: 1.6 }}>
+        <Text size="sm" c="dimmed" className={classes.featureCardDescription}>
           {description}
         </Text>
       </Stack>

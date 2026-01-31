@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate, useLocation } from '@tanstack/react-router';
 import { Center, Loader, Stack, Text } from '@mantine/core';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
+import classes from './ProtectedRoute.module.css';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -34,7 +35,7 @@ export function ProtectedRoute({
   if (isLoading) {
     return (
       loadingComponent || (
-        <Center h="100vh" style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}>
+        <Center h="100vh" className={classes.loadingContainer}>
           <Stack align="center" gap="md">
             <Loader size="xl" color="blue" />
             <Text c="white" size="lg">
@@ -60,7 +61,7 @@ export function ProtectedRoute({
       });
 
       return (
-        <Center h="100vh" style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}>
+        <Center h="100vh" className={classes.loadingContainer}>
           <Stack align="center" gap="md">
             <Loader size="xl" color="blue" />
             <Text c="white" size="lg">

@@ -1,18 +1,13 @@
 import { Box, Container, Group, Text, Anchor, Stack, Divider } from '@mantine/core';
 import { Link } from '@tanstack/react-router';
 import { FaGithub, FaTwitter } from 'react-icons/fa';
+import classes from './Footer.module.css';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <Box
-      component="footer"
-      style={{
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        borderTop: '1px solid rgba(148, 163, 184, 0.1)',
-      }}
-    >
+    <Box component="footer" className={classes.footer}>
       <Container size="lg" py="xl">
         <Stack gap="md">
           <Group justify="space-between" align="flex-start" wrap="wrap">

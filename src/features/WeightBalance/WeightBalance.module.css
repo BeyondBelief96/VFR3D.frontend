@@ -1,0 +1,120 @@
+/**
+ * Shared WeightBalance feature styles
+ * Common patterns across WeightBalance components
+ */
+
+/* =============================================================================
+   INPUT STYLES
+   ============================================================================= */
+
+.input {
+  background-color: rgba(15, 23, 42, 0.6);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: white;
+}
+
+.input:focus {
+  border-color: var(--mantine-color-vfr3dBlue-5);
+}
+
+.inputCompact {
+  background-color: rgba(15, 23, 42, 0.6);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: white;
+  height: 32px;
+  min-height: 32px;
+}
+
+.inputCompact:focus {
+  border-color: var(--mantine-color-vfr3dBlue-5);
+}
+
+/* =============================================================================
+   SURFACE & CONTAINERS
+   ============================================================================= */
+
+.surface {
+  background-color: var(--mantine-color-vfr3dSurface-8);
+}
+
+.surfaceLight {
+  background-color: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.surfaceDark {
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* =============================================================================
+   MENU DROPDOWNS
+   ============================================================================= */
+
+.menuDropdown {
+  background-color: var(--mantine-color-vfr3dSurface-8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* =============================================================================
+   TABS STYLING
+   ============================================================================= */
+
+.tabsList {
+  background-color: var(--mantine-color-vfr3dSurface-8);
+}
+
+.tab {
+  color: var(--mantine-color-gray-5);
+}
+
+.tabActive {
+  background-color: var(--mantine-color-vfr3dBlue-5);
+}
+
+/* =============================================================================
+   EDUCATIONAL TIPS
+   ============================================================================= */
+
+.educationalTip {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--mantine-radius-sm);
+}
+
+.warningTip {
+  background-color: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: var(--mantine-radius-sm);
+}
+
+/* =============================================================================
+   TABLE CELLS
+   ============================================================================= */
+
+.tableHeader {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+.tableCell {
+  padding: var(--mantine-spacing-xs);
+}
+
+/* =============================================================================
+   CHART CONTAINER
+   ============================================================================= */
+
+.chartContainer {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: var(--mantine-radius-md);
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* =============================================================================
+   POINT EDITOR
+   ============================================================================= */
+
+.pointEditorCard {
+  background-color: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
