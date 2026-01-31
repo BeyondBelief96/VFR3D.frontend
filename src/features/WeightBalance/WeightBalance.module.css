@@ -4,47 +4,117 @@
  */
 
 /* =============================================================================
-   INPUT STYLES
+   SECTION PAPERS - Different colored borders for categories
    ============================================================================= */
 
-.input {
-  background-color: rgba(15, 23, 42, 0.6);
-  border-color: rgba(148, 163, 184, 0.2);
-  color: white;
+.sectionPaper {
+  background-color: rgba(15, 23, 42, 0.5);
+  border-radius: var(--mantine-radius-md);
 }
 
-.input:focus {
-  border-color: var(--mantine-color-vfr3dBlue-5);
+.sectionPaperBlue {
+  composes: sectionPaper;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-.inputCompact {
-  background-color: rgba(15, 23, 42, 0.6);
-  border-color: rgba(148, 163, 184, 0.2);
-  color: white;
-  height: 32px;
-  min-height: 32px;
+.sectionPaperCyan {
+  composes: sectionPaper;
+  border: 1px solid rgba(6, 182, 212, 0.2);
 }
 
-.inputCompact:focus {
-  border-color: var(--mantine-color-vfr3dBlue-5);
+.sectionPaperYellow {
+  composes: sectionPaper;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.sectionPaperGray {
+  composes: sectionPaper;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.sectionPaperGreen {
+  composes: sectionPaper;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 /* =============================================================================
-   SURFACE & CONTAINERS
+   STATION CARDS - Individual input cards with left accent border
    ============================================================================= */
 
-.surface {
-  background-color: var(--mantine-color-vfr3dSurface-8);
+.stationCard {
+  background-color: rgba(15, 23, 42, 0.3);
+  border-radius: var(--mantine-radius-sm);
 }
 
-.surfaceLight {
-  background-color: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+.stationCardBlue {
+  composes: stationCard;
+  border-left: 3px solid var(--mantine-color-blue-6);
 }
 
-.surfaceDark {
-  background-color: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+.stationCardCyan {
+  composes: stationCard;
+  border-left: 3px solid var(--mantine-color-cyan-6);
+}
+
+.stationCardYellow {
+  composes: stationCard;
+  border-left: 3px solid var(--mantine-color-yellow-6);
+}
+
+/* =============================================================================
+   INFO BANNER - Aircraft info section
+   ============================================================================= */
+
+.infoBanner {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--mantine-radius-md);
+}
+
+/* =============================================================================
+   RESULT CARDS - Takeoff/Landing result cards
+   ============================================================================= */
+
+.resultCardSuccess {
+  background-color: rgba(34, 197, 94, 0.1);
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  border-radius: var(--mantine-radius-md);
+}
+
+.resultCardError {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--mantine-radius-md);
+}
+
+.resultCardBlue {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  border-radius: var(--mantine-radius-md);
+}
+
+/* =============================================================================
+   TABLE SECTION PAPER - Colored border sections for table groups
+   ============================================================================= */
+
+.tableSectionPaper {
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: var(--mantine-radius-md);
+}
+
+.tableSectionPaperBlue {
+  composes: tableSectionPaper;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.tableSectionPaperCyan {
+  composes: tableSectionPaper;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.tableSectionPaperYellow {
+  composes: tableSectionPaper;
+  border: 1px solid rgba(234, 179, 8, 0.3);
 }
 
 /* =============================================================================
@@ -57,64 +127,54 @@
 }
 
 /* =============================================================================
-   TABS STYLING
+   EMPTY PROFILE STATE
    ============================================================================= */
 
-.tabsList {
-  background-color: var(--mantine-color-vfr3dSurface-8);
-}
-
-.tab {
-  color: var(--mantine-color-gray-5);
-}
-
-.tabActive {
-  background-color: var(--mantine-color-vfr3dBlue-5);
-}
-
-/* =============================================================================
-   EDUCATIONAL TIPS
-   ============================================================================= */
-
-.educationalTip {
-  background-color: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: var(--mantine-radius-sm);
-}
-
-.warningTip {
-  background-color: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.2);
-  border-radius: var(--mantine-radius-sm);
-}
-
-/* =============================================================================
-   TABLE CELLS
-   ============================================================================= */
-
-.tableHeader {
-  background-color: rgba(15, 23, 42, 0.4);
-}
-
-.tableCell {
-  padding: var(--mantine-spacing-xs);
-}
-
-/* =============================================================================
-   CHART CONTAINER
-   ============================================================================= */
-
-.chartContainer {
-  border: 1px solid rgba(148, 163, 184, 0.2);
+.emptyStatePaper {
+  background-color: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(234, 179, 8, 0.3);
   border-radius: var(--mantine-radius-md);
-  background-color: rgba(15, 23, 42, 0.4);
 }
 
 /* =============================================================================
-   POINT EDITOR
+   PROGRESS BAR BACKGROUND
    ============================================================================= */
 
-.pointEditorCard {
-  background-color: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+.progressBgCyan {
+  background-color: rgba(6, 182, 212, 0.1);
+}
+
+/* =============================================================================
+   UTILITY STYLES
+   ============================================================================= */
+
+.overflowX {
+  overflow-x: auto;
+}
+
+.cursorHelp {
+  cursor: help;
+}
+
+/* =============================================================================
+   TABLE STYLES - Loading stations table
+   ============================================================================= */
+
+.loadingStationsTable {
+  background-color: transparent;
+  min-width: 650px;
+}
+
+.loadingStationsTable th {
+  color: var(--mantine-color-gray-5);
+  font-weight: 500;
+  font-size: 11px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.loadingStationsTable td {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+  padding: 4px 6px;
 }

@@ -52,44 +52,12 @@ import { useWeightBalanceCalculation } from '../hooks/useWeightBalanceCalculatio
 import { CgEnvelopeChart } from '../visualization/CgEnvelopeChart';
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
+import classes from '../WeightBalance.module.css';
 
 interface FlightWeightBalancePanelProps {
   flight: FlightDto;
   userId: string;
 }
-
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-    fontSize: '12px',
-  },
-};
-
-const selectStyles = {
-  ...inputStyles,
-  dropdown: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-    border: '1px solid rgba(148, 163, 184, 0.2)',
-  },
-  option: {
-    color: 'white',
-    '&[data-selected]': {
-      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-    '&[data-hovered]': {
-      backgroundColor: 'rgba(148, 163, 184, 0.1)',
-    },
-  },
-};
 
 export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> = ({
   flight,
@@ -281,14 +249,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
   // No W&B profiles for aircraft
   if (profiles.length === 0) {
     return (
-      <Paper
-        p="xl"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
-          border: '1px solid rgba(234, 179, 8, 0.3)',
-          borderRadius: 'var(--mantine-radius-md)',
-        }}
-      >
+      <Paper p="xl" className={classes.emptyStatePaper}>
         <Stack align="center" gap="lg">
           <ThemeIcon size={60} radius="xl" variant="light" color="yellow">
             <FaBalanceScale size={28} />
@@ -368,13 +329,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
       {/* Profile Selection */}
       <Paper
         p="md"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
-          border: selectedProfileId
-            ? '1px solid rgba(34, 197, 94, 0.3)'
-            : '1px solid rgba(148, 163, 184, 0.2)',
-          borderRadius: 'var(--mantine-radius-md)',
-        }}
+        className={selectedProfileId ? classes.sectionPaperGreen : classes.sectionPaperGray}
       >
         <Stack gap="sm">
           <Group gap="xs">
@@ -401,7 +356,6 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
             value={selectedProfileId}
             onChange={() => {/* Profile is auto-selected, but could add manual selection */}}
             searchable
-            styles={selectStyles}
             size="md"
             leftSection={<FiBox size={14} />}
             disabled={profiles.length <= 1}
@@ -413,14 +367,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
       {selectedProfile && (
         <>
           {/* Aircraft Info Banner */}
-          <Paper
-            p="sm"
-            style={{
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-              borderRadius: 'var(--mantine-radius-md)',
-            }}
-          >
+          <Paper p="sm" className={classes.infoBanner}>
             <Group justify="space-between" wrap="wrap">
               <Group gap="md">
                 <Box>
@@ -464,14 +411,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
           {/* Passengers & Cargo Section */}
           {payloadStations.length > 0 && (
-            <Paper
-              p="md"
-              style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                borderRadius: 'var(--mantine-radius-md)',
-              }}
-            >
+            <Paper p="md" className={classes.sectionPaperBlue}>
               <Stack gap="md">
                 <Group gap="xs">
                   <ThemeIcon size="sm" variant="light" color="blue">
@@ -487,15 +427,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
                 <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                   {payloadStations.map((input) => (
-                    <Paper
-                      key={input.stationId}
-                      p="sm"
-                      style={{
-                        backgroundColor: 'rgba(15, 23, 42, 0.3)',
-                        borderRadius: 'var(--mantine-radius-sm)',
-                        borderLeft: '3px solid var(--mantine-color-blue-6)',
-                      }}
-                    >
+                    <Paper key={input.stationId} p="sm" className={classes.stationCardBlue}>
                       <Stack gap="xs">
                         <Group justify="space-between">
                           <Text size="sm" c="white" fw={500}>{input.name}</Text>
@@ -511,7 +443,6 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                           }
                           min={0}
                           max={input.maxWeight > 0 ? input.maxWeight : undefined}
-                          styles={inputStyles}
                           size="sm"
                           rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
                         />
@@ -525,14 +456,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
           {/* Fuel Section */}
           {fuelStations.length > 0 && (
-            <Paper
-              p="md"
-              style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid rgba(6, 182, 212, 0.2)',
-                borderRadius: 'var(--mantine-radius-md)',
-              }}
-            >
+            <Paper p="md" className={classes.sectionPaperCyan}>
               <Stack gap="md">
                 <Group justify="space-between">
                   <Group gap="xs">
@@ -571,15 +495,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                       : 0;
 
                     return (
-                      <Paper
-                        key={input.stationId}
-                        p="sm"
-                        style={{
-                          backgroundColor: 'rgba(15, 23, 42, 0.3)',
-                          borderRadius: 'var(--mantine-radius-sm)',
-                          borderLeft: '3px solid var(--mantine-color-cyan-6)',
-                        }}
-                      >
+                      <Paper key={input.stationId} p="sm" className={classes.stationCardCyan}>
                         <Stack gap="xs">
                           <Text size="sm" c="white" fw={500}>{input.name}</Text>
                           <Group gap="xs" align="flex-end">
@@ -592,9 +508,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                               min={0}
                               max={input.fuelCapacityGallons}
                               decimalScale={1}
-                              styles={inputStyles}
                               size="sm"
-                              style={{ flex: 1 }}
+                              flex={1}
                               rightSection={<Text size="xs" c="dimmed">gal</Text>}
                             />
                             <Button
@@ -624,7 +539,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                               value={fillPercent}
                               size="xs"
                               color="cyan"
-                              style={{ backgroundColor: 'rgba(6, 182, 212, 0.1)' }}
+                              className={classes.progressBgCyan}
                             />
                           )}
                         </Stack>
@@ -638,14 +553,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
           {/* Oil Section */}
           {oilStations.length > 0 && (
-            <Paper
-              p="md"
-              style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid rgba(234, 179, 8, 0.2)',
-                borderRadius: 'var(--mantine-radius-md)',
-              }}
-            >
+            <Paper p="md" className={classes.sectionPaperYellow}>
               <Stack gap="md">
                 <Group gap="xs">
                   <ThemeIcon size="sm" variant="light" color="yellow">
@@ -659,15 +567,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                     const oilWeight = Number(input.oilQuarts || 0) * (input.oilWeightPerQuart || 1.875);
 
                     return (
-                      <Paper
-                        key={input.stationId}
-                        p="sm"
-                        style={{
-                          backgroundColor: 'rgba(15, 23, 42, 0.3)',
-                          borderRadius: 'var(--mantine-radius-sm)',
-                          borderLeft: '3px solid var(--mantine-color-yellow-6)',
-                        }}
-                      >
+                      <Paper key={input.stationId} p="sm" className={classes.stationCardYellow}>
                         <Stack gap="xs">
                           <Text size="sm" c="white" fw={500}>{input.name}</Text>
                           <Group gap="xs" align="flex-end">
@@ -680,9 +580,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                               min={0}
                               max={input.oilCapacityQuarts}
                               decimalScale={1}
-                              styles={inputStyles}
                               size="sm"
-                              style={{ flex: 1 }}
+                              flex={1}
                               rightSection={<Text size="xs" c="dimmed">qt</Text>}
                             />
                             {input.oilCapacityQuarts && (
@@ -707,14 +606,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
           )}
 
           {/* Flight Planning Section */}
-          <Paper
-            p="md"
-            style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              border: '1px solid rgba(148, 163, 184, 0.2)',
-              borderRadius: 'var(--mantine-radius-md)',
-            }}
-          >
+          <Paper p="md" className={classes.sectionPaperGray}>
             <Stack gap="md">
               <Group gap="xs">
                 <ThemeIcon size="sm" variant="light" color="grape">
@@ -745,7 +637,6 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                       min={0}
                       max={totalFuelGallons}
                       decimalScale={1}
-                      styles={inputStyles}
                       size="sm"
                       rightSection={<Text size="xs" c="dimmed">gal</Text>}
                     />
@@ -763,7 +654,6 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                     data={availableEnvelopes}
                     value={selectedEnvelopeId}
                     onChange={setSelectedEnvelopeId}
-                    styles={selectStyles}
                     size="sm"
                   />
                 </Box>
@@ -793,26 +683,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
           {/* Results */}
           {result && (
-            <Paper
-              p="md"
-              style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
-                borderRadius: 'var(--mantine-radius-md)',
-              }}
-            >
-              <Tabs
-                defaultValue="chart"
-                styles={{
-                  tab: {
-                    color: 'var(--mantine-color-gray-4)',
-                    '&[data-active]': {
-                      color: 'white',
-                      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-                    },
-                  },
-                }}
-              >
+            <Paper p="md" className={classes.sectionPaperGray}>
+              <Tabs defaultValue="chart">
                 <Tabs.List>
                   <Tabs.Tab value="chart">CG Envelope</Tabs.Tab>
                   <Tabs.Tab value="breakdown">Weight Breakdown</Tabs.Tab>
@@ -840,17 +712,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                     {result.takeoff && (
                       <Paper
                         p="md"
-                        style={{
-                          backgroundColor: result.takeoff.isWithinEnvelope
-                            ? 'rgba(34, 197, 94, 0.1)'
-                            : 'rgba(239, 68, 68, 0.1)',
-                          border: `2px solid ${
-                            result.takeoff.isWithinEnvelope
-                              ? 'rgba(34, 197, 94, 0.5)'
-                              : 'rgba(239, 68, 68, 0.5)'
-                          }`,
-                          borderRadius: 'var(--mantine-radius-md)',
-                        }}
+                        className={result.takeoff.isWithinEnvelope ? classes.resultCardSuccess : classes.resultCardError}
                       >
                         <Group justify="space-between" mb="xs">
                           <Text size="sm" c="dimmed" fw={500}>TAKEOFF</Text>
@@ -882,17 +744,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                     {result.landing && (
                       <Paper
                         p="md"
-                        style={{
-                          backgroundColor: result.landing.isWithinEnvelope
-                            ? 'rgba(59, 130, 246, 0.1)'
-                            : 'rgba(239, 68, 68, 0.1)',
-                          border: `2px solid ${
-                            result.landing.isWithinEnvelope
-                              ? 'rgba(59, 130, 246, 0.5)'
-                              : 'rgba(239, 68, 68, 0.5)'
-                          }`,
-                          borderRadius: 'var(--mantine-radius-md)',
-                        }}
+                        className={result.landing.isWithinEnvelope ? classes.resultCardBlue : classes.resultCardError}
                       >
                         <Group justify="space-between" mb="xs">
                           <Text size="sm" c="dimmed" fw={500}>LANDING</Text>

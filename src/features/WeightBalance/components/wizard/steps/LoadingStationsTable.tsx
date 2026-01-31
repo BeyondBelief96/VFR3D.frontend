@@ -26,6 +26,7 @@ import {
   DEFAULT_FUEL_WEIGHT,
   DEFAULT_OIL_WEIGHT_PER_QUART,
 } from '../../../constants/defaults';
+import classes from '../../WeightBalance.module.css';
 
 interface LoadingStationsTableProps {
   stations: LoadingStationDto[];
@@ -33,19 +34,6 @@ interface LoadingStationsTableProps {
   loadingGraphFormat: LoadingGraphFormat;
   onChange: (stations: LoadingStationDto[]) => void;
 }
-
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    height: '32px',
-    minHeight: '32px',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-};
 
 function getEffectiveStationType(station: LoadingStationDto): LoadingStationType {
   if (station.stationType) return station.stationType;
@@ -166,17 +154,16 @@ export function LoadingStationsTable({
 
     return (
       <Table.Tr key={index}>
-        <Table.Td style={{ width: 70 }}>{getStationTypeBadge(station)}</Table.Td>
-        <Table.Td style={{ minWidth: 120 }}>
+        <Table.Td w={70}>{getStationTypeBadge(station)}</Table.Td>
+        <Table.Td miw={120}>
           <TextInput
             placeholder="Name"
             value={station.name || ''}
             onChange={(e) => handleStationChange(index, 'name', e.target.value)}
             size="xs"
-            styles={inputStyles}
           />
         </Table.Td>
-        <Table.Td style={{ width: 85 }}>
+        <Table.Td w={85}>
           {isFuel ? (
             <NumberInput
               placeholder="0"
@@ -184,7 +171,6 @@ export function LoadingStationsTable({
               onChange={(val) => handleStationChange(index, 'fuelCapacityGallons', val || 0)}
               size="xs"
               min={0}
-              styles={inputStyles}
               rightSection={<Text size="10px" c="dimmed">gal</Text>}
             />
           ) : isOil ? (
@@ -194,7 +180,6 @@ export function LoadingStationsTable({
               onChange={(val) => handleStationChange(index, 'oilCapacityQuarts', val || 0)}
               size="xs"
               min={0}
-              styles={inputStyles}
               rightSection={<Text size="10px" c="dimmed">qt</Text>}
             />
           ) : (
@@ -204,54 +189,49 @@ export function LoadingStationsTable({
               onChange={(val) => handleStationChange(index, 'maxWeight', val || 0)}
               size="xs"
               min={0}
-              styles={inputStyles}
               rightSection={<Text size="10px" c="dimmed">{weightLabel}</Text>}
             />
           )}
         </Table.Td>
         {/* Point 1 */}
-        <Table.Td style={{ width: 70 }}>
+        <Table.Td w={70}>
           <NumberInput
             placeholder="0"
             value={station.point1?.weight ?? ''}
             onChange={(val) => handleStationChange(index, 'point1Weight', val || 0)}
             size="xs"
             min={0}
-            styles={inputStyles}
           />
         </Table.Td>
-        <Table.Td style={{ width: 70 }}>
+        <Table.Td w={70}>
           <NumberInput
             placeholder="0"
             value={station.point1?.value ?? ''}
             onChange={(val) => handleStationChange(index, 'point1Value', val || 0)}
             size="xs"
             decimalScale={isMomentFormat ? 1 : 2}
-            styles={inputStyles}
           />
         </Table.Td>
         {/* Point 2 */}
-        <Table.Td style={{ width: 70 }}>
+        <Table.Td w={70}>
           <NumberInput
             placeholder="0"
             value={station.point2?.weight ?? ''}
             onChange={(val) => handleStationChange(index, 'point2Weight', val || 0)}
             size="xs"
             min={0}
-            styles={inputStyles}
           />
         </Table.Td>
-        <Table.Td style={{ width: 70 }}>
+        <Table.Td w={70}>
           <NumberInput
             placeholder="0"
             value={station.point2?.value ?? ''}
             onChange={(val) => handleStationChange(index, 'point2Value', val || 0)}
             size="xs"
             decimalScale={isMomentFormat ? 1 : 2}
-            styles={inputStyles}
           />
         </Table.Td>
-        <Table.Td style={{ width: 40 }}>
+        <Table.Td w={40}>
           <ActionIcon
             variant="subtle"
             color="red"
@@ -276,11 +256,8 @@ export function LoadingStationsTable({
     <Paper
       p="sm"
       mb="md"
-      style={{
-        background: 'rgba(15, 23, 42, 0.3)',
-        border: `1px solid ${color}`,
-        borderRadius: 'var(--mantine-radius-md)',
-      }}
+      className={classes.tableSectionPaper}
+      bd={`1px solid ${color}`}
     >
       <Group justify="space-between" mb="sm">
         <Group gap="xs">
@@ -300,32 +277,18 @@ export function LoadingStationsTable({
           No {title.toLowerCase()} added yet
         </Text>
       ) : (
-        <Box style={{ overflowX: 'auto' }}>
+        <Box className={classes.overflowX}>
           <Table
             horizontalSpacing="xs"
             verticalSpacing={6}
-            styles={{
-              table: { backgroundColor: 'transparent', minWidth: 650 },
-              th: {
-                color: 'var(--mantine-color-gray-5)',
-                fontWeight: 500,
-                fontSize: '11px',
-                borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-                padding: '4px 6px',
-                whiteSpace: 'nowrap',
-              },
-              td: {
-                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
-                padding: '4px 6px',
-              },
-            }}
+            className={classes.loadingStationsTable}
           >
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Type</Table.Th>
                 <Table.Th>Name</Table.Th>
                 <Table.Th>{capacityLabel}</Table.Th>
-                <Table.Th colSpan={2} style={{ textAlign: 'center' }}>
+                <Table.Th colSpan={2} ta="center">
                   <Group gap={4} justify="center">
                     <span>Point 1</span>
                     <Tooltip
@@ -333,13 +296,13 @@ export function LoadingStationsTable({
                       multiline
                       w={220}
                     >
-                      <Box component="span" style={{ cursor: 'help' }}>
+                      <Box component="span" className={classes.cursorHelp}>
                         <FiInfo size={10} />
                       </Box>
                     </Tooltip>
                   </Group>
                 </Table.Th>
-                <Table.Th colSpan={2} style={{ textAlign: 'center' }}>
+                <Table.Th colSpan={2} ta="center">
                   <Group gap={4} justify="center">
                     <span>Point 2</span>
                     <Tooltip
@@ -347,7 +310,7 @@ export function LoadingStationsTable({
                       multiline
                       w={220}
                     >
-                      <Box component="span" style={{ cursor: 'help' }}>
+                      <Box component="span" className={classes.cursorHelp}>
                         <FiInfo size={10} />
                       </Box>
                     </Tooltip>
@@ -359,10 +322,10 @@ export function LoadingStationsTable({
                 <Table.Th></Table.Th>
                 <Table.Th></Table.Th>
                 <Table.Th></Table.Th>
-                <Table.Th style={{ fontSize: '10px' }}>Wt ({weightLabel})</Table.Th>
-                <Table.Th style={{ fontSize: '10px' }}>{valueColumnLabel}</Table.Th>
-                <Table.Th style={{ fontSize: '10px' }}>Wt ({weightLabel})</Table.Th>
-                <Table.Th style={{ fontSize: '10px' }}>{valueColumnLabel}</Table.Th>
+                <Table.Th fz="10px">Wt ({weightLabel})</Table.Th>
+                <Table.Th fz="10px">{valueColumnLabel}</Table.Th>
+                <Table.Th fz="10px">Wt ({weightLabel})</Table.Th>
+                <Table.Th fz="10px">{valueColumnLabel}</Table.Th>
                 <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -395,7 +358,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown className={classes.menuDropdown}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Pilot', { maxWeight: 300 })}>
               Pilot
             </Menu.Item>
@@ -435,7 +398,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown className={classes.menuDropdown}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Fuel, 'Main Tank', { fuelCapacityGallons: 50 })}>
               Main Tank (50 gal)
             </Menu.Item>
@@ -472,7 +435,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown className={classes.menuDropdown}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Oil, 'Oil', { oilCapacityQuarts: 8 })}>
               Oil (8 qt)
             </Menu.Item>
