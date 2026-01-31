@@ -127,7 +127,7 @@ function FlightDetailsContent() {
 
   return (
     <Container
-      size="lg"
+      size="xl"
       py="xl"
       style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
