@@ -282,6 +282,7 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
           />
           <Button
             variant="light"
+            color="orange"
             size="xs"
             leftSection={<FiRefreshCw size={14} />}
             onClick={() => refetch()}

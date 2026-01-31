@@ -42,7 +42,7 @@ export function NavLogContent({ flight, userId }: NavLogContentProps) {
       <Group justify="flex-end">
         <Button
           variant="light"
-          color="cyan"
+          color="orange"
           leftSection={<FiRefreshCw size={16} />}
           onClick={handleRegenerate}
           loading={isRegenerating}

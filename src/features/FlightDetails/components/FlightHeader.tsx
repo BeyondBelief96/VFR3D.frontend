@@ -50,7 +50,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
           <Tooltip label="Refresh all flight data (weather, NOTAMs, navlog, etc.)">
             <Button
               variant="light"
-              color="gray"
+              color="orange"
               leftSection={isRefreshing ? <Loader size="xs" /> : <FiRefreshCw size={16} />}
               onClick={onRefreshAll}
               disabled={isRefreshing}
@@ -79,7 +79,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
           {({ loading }: { loading: boolean }) => (
             <Button
               variant="light"
-              color="blue"
+              color="green"
               leftSection={loading || pdfData.isLoading ? <Loader size="xs" /> : <FiDownload size={16} />}
               disabled={loading || pdfData.isLoading}
             >
