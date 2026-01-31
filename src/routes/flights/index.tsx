@@ -104,7 +104,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={18} color="var(--vfr3d-primary)" />
+                <FaPlane size={18} color="var(--mantine-color-vfr3dBlue-5)" />
               </Box>
               <Box>
                 <Text c="white" fw={600} size="lg" lineClamp={1}>
@@ -255,7 +255,7 @@ function FlightsContent() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">
@@ -310,7 +310,7 @@ function FlightsContent() {
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--vfr3d-primary)' }} />
+                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
               </Box>
               <Text c="white" size="lg" fw={500}>
                 No Flights Yet
@@ -353,8 +353,8 @@ function FlightsContent() {
         title="Delete Flight"
         centered
         styles={{
-          header: { backgroundColor: 'var(--vfr3d-surface)' },
-          body: { backgroundColor: 'var(--vfr3d-surface)' },
+          header: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
+          body: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
         }}
       >
         <Stack gap="md">

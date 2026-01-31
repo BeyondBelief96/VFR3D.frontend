@@ -49,7 +49,7 @@ export function RouteOptions() {
               />
             </Popover.Target>
             <Popover.Dropdown
-              style={{ backgroundColor: 'var(--vfr3d-surface)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+              style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
             >
               <Stack gap="sm">
                 <HexColorPicker color={rgbaToHex(lineColor)} onChange={handleLineColorChange} />
@@ -85,7 +85,7 @@ export function RouteOptions() {
               />
             </Popover.Target>
             <Popover.Dropdown
-              style={{ backgroundColor: 'var(--vfr3d-surface)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+              style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
             >
               <Stack gap="sm">
                 <HexColorPicker color={rgbaToHex(pointColor)} onChange={handlePointColorChange} />

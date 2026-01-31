@@ -111,7 +111,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="advisories">
           <Accordion.Control>
             <Group gap="xs">
-              <TbAlertTriangle size={14} color="#f59e0b" />
+              <TbAlertTriangle size={14} color="var(--mantine-color-warningYellow-5)" />
               <Text size="sm" c="white">
                 Weather Advisories
               </Text>
@@ -184,7 +184,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="obstacles">
           <Accordion.Control>
             <Group gap="xs">
-              <GiRadioTower size={14} color="#ef4444" />
+              <GiRadioTower size={14} color="var(--mantine-color-ifrRed-5)" />
               <Text size="sm" c="white">
                 Obstacles
               </Text>
@@ -247,7 +247,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="airspaces">
           <Accordion.Control>
             <Group gap="xs">
-              <FiAlertTriangle size={14} color="#ec4899" />
+              <FiAlertTriangle size={14} color="var(--mantine-color-pink-5)" />
               <Text size="sm" c="white">
                 Airspaces
               </Text>
@@ -301,7 +301,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="weather">
           <Accordion.Control>
             <Group gap="xs">
-              <FiCloud size={14} color="#3b82f6" />
+              <FiCloud size={14} color="var(--mantine-color-vfr3dBlue-5)" />
               <Text size="sm" c="white">
                 Weather
               </Text>

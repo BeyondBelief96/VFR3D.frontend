@@ -1,0 +1,36 @@
+/**
+ * Sidebar component styles
+ * Only styles that Mantine props cannot express
+ */
+
+.container {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.panel {
+  position: relative;
+  width: 320px;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+  background-color: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  pointer-events: auto;
+}
+
+.panelOpen {
+  transform: translateX(0);
+}
+
+.panelClosed {
+  transform: translateX(-100%);
+}
+
+.headerBorder {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}

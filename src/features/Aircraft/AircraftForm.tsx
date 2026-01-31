@@ -39,7 +39,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -54,13 +54,13 @@ const inputStyles = {
 const selectStyles = {
   ...inputStyles,
   dropdown: {
-    backgroundColor: 'var(--vfr3d-surface)',
+    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
     borderColor: 'rgba(148, 163, 184, 0.2)',
   },
   option: {
     color: 'white',
     '&[data-selected]': {
-      backgroundColor: 'var(--vfr3d-primary)',
+      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
     '&[data-hovered]': {
       backgroundColor: 'rgba(59, 130, 246, 0.2)',
@@ -263,7 +263,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       size="lg"
       styles={{
         header: {
-          backgroundColor: 'var(--vfr3d-surface)',
+          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
           padding: '16px 20px',
         },
@@ -272,11 +272,11 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
           color: 'white',
         },
         body: {
-          backgroundColor: 'var(--vfr3d-surface)',
+          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           padding: 0,
         },
         content: {
-          backgroundColor: 'var(--vfr3d-surface)',
+          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
         },
         close: {
           color: 'var(--mantine-color-gray-4)',
@@ -317,7 +317,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     justifyContent: 'center',
                   }}
                 >
-                  <FaPlane size={12} color="var(--vfr3d-primary)" />
+                  <FaPlane size={12} color="var(--mantine-color-vfr3dBlue-5)" />
                 </Box>
                 <Text size="sm" fw={600} c="white">
                   Basic Information

@@ -153,9 +153,9 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
       >
         <Group justify="space-between">
           <Group gap="xs">
-            {isToc && <FaArrowUp size={14} color="#22c55e" />}
-            {isTod && <FaArrowDown size={14} color="#f97316" />}
-            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color="#06b6d4" />}
+            {isToc && <FaArrowUp size={14} color="var(--mantine-color-vfrGreen-5)" />}
+            {isTod && <FaArrowDown size={14} color="var(--mantine-color-orange-5)" />}
+            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color="var(--mantine-color-cyan-5)" />}
             <Text fw={600}>
               {isToc ? 'Top of Climb' : isTod ? 'Top of Descent' : 'Waypoint'}
             </Text>

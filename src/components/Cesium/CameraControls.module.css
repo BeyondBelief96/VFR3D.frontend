@@ -1,0 +1,28 @@
+/**
+ * CameraControls component styles
+ * Only styles that Mantine props cannot express
+ */
+
+.container {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background-color: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.actionButton {
+  background-color: rgba(30, 41, 59, 0.9);
+  border: none;
+}
+
+.actionButton:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.divider {
+  border-color: rgba(148, 163, 184, 0.3);
+}

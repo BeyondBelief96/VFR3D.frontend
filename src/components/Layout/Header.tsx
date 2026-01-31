@@ -299,8 +299,8 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
           </Text>
         }
         styles={{
-          header: { backgroundColor: 'var(--vfr3d-surface)' },
-          body: { backgroundColor: 'var(--vfr3d-background)' },
+          header: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
+          body: { backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' },
           close: { color: 'white' },
         }}
         hiddenFrom="md"

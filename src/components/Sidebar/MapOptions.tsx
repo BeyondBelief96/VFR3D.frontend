@@ -35,7 +35,7 @@ export function MapOptions() {
               color: 'white',
             },
             dropdown: {
-              backgroundColor: 'var(--vfr3d-surface)',
+              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
               borderColor: 'rgba(148, 163, 184, 0.2)',
             },
           }}

@@ -42,7 +42,7 @@ const inputStyles = {
     height: '32px',
     minHeight: '32px',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
 };
@@ -395,7 +395,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--vfr3d-surface)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Pilot', { maxWeight: 300 })}>
               Pilot
             </Menu.Item>
@@ -435,7 +435,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--vfr3d-surface)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Fuel, 'Main Tank', { fuelCapacityGallons: 50 })}>
               Main Tank (50 gal)
             </Menu.Item>
@@ -472,7 +472,7 @@ export function LoadingStationsTable({
               Add
             </Button>
           </Menu.Target>
-          <Menu.Dropdown style={{ backgroundColor: 'var(--vfr3d-surface)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+          <Menu.Dropdown style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Oil, 'Oil', { oilCapacityQuarts: 8 })}>
               Oil (8 qt)
             </Menu.Item>

@@ -1,0 +1,143 @@
+/**
+ * Shared CSS Module for styles that Mantine props cannot express.
+ * Use Mantine props (c, p, m, fw, etc.) for everything else.
+ *
+ * Only use these classes for:
+ * - Positioning (fixed, absolute)
+ * - Backdrop effects (blur, filters)
+ * - Z-index layering
+ * - Animations and transitions
+ * - Pseudo-selectors
+ */
+
+/* =============================================================================
+   POSITIONING UTILITIES
+   ============================================================================= */
+
+/**
+ * Fixed overlay at top center (e.g., camera controls)
+ */
+.fixedTopCenter {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+/**
+ * Fixed sidebar positioning
+ */
+.fixedSidebar {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+/**
+ * Fixed popup overlay
+ */
+.fixedPopup {
+  position: fixed;
+  z-index: 200;
+}
+
+/**
+ * Fixed bottom drawer
+ */
+.fixedBottomDrawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 150;
+}
+
+/**
+ * Centered absolute positioning
+ */
+.absoluteCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* =============================================================================
+   GLASSMORPHISM / BACKDROP EFFECTS
+   ============================================================================= */
+
+/**
+ * Glass panel effect with blur
+ */
+.glassPanel {
+  background-color: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/**
+ * Glass panel - lighter variant
+ */
+.glassPanelLight {
+  background-color: rgba(30, 41, 59, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+/**
+ * Subtle glass effect for buttons/controls
+ */
+.glassButton {
+  background-color: rgba(30, 41, 59, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+.glassButton:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+/* =============================================================================
+   TRANSITIONS & ANIMATIONS
+   ============================================================================= */
+
+/**
+ * Smooth transition for interactive elements
+ */
+.transitionSmooth {
+  transition: all 0.2s ease;
+}
+
+/**
+ * Fast transition for hover states
+ */
+.transitionFast {
+  transition: all 0.15s ease;
+}
+
+/* =============================================================================
+   SCROLLABLE CONTAINERS
+   ============================================================================= */
+
+/**
+ * Scrollable container with hidden scrollbar
+ */
+.scrollableHidden {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollableHidden::-webkit-scrollbar {
+  display: none;
+}
+
+/**
+ * Scrollable container with custom scrollbar
+ */
+.scrollableStyled {
+  overflow-y: auto;
+  scrollbar-width: thin;
+}

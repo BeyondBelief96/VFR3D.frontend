@@ -74,8 +74,8 @@ function RedirectPage() {
       <Center
         h="100vh"
         style={{
-          backgroundColor: 'var(--vfr3d-background)',
-          background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%), var(--vfr3d-background)',
+          backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+          background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
         }}
       >
         <Paper
@@ -102,7 +102,7 @@ function RedirectPage() {
               }}
             >
               <Stack align="center" gap="xs">
-                <FiAlertCircle size={32} color="#ef4444" />
+                <FiAlertCircle size={32} color="var(--mantine-color-ifrRed-5)" />
                 <Text c="white" size="md" fw={600} ta="center">
                   Authentication Error
                 </Text>
@@ -132,8 +132,8 @@ function RedirectPage() {
     <Center
       h="100vh"
       style={{
-        backgroundColor: 'var(--vfr3d-background)',
-        background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%), var(--vfr3d-background)',
+        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+        background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
       }}
     >
       <Paper

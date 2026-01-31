@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { MantineProvider, createTheme } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Provider } from 'react-redux';
@@ -12,6 +12,7 @@ import { store, persistor } from './redux/store';
 import { routeTree } from './routeTree.gen';
 import { AuthProvider } from './components/Auth';
 import { LoadingScreen } from './components/Common';
+import { theme } from './theme';
 import './index.css';
 
 // Set Cesium Ion access token
@@ -32,52 +33,6 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
-
-// Mantine theme configuration
-const theme = createTheme({
-  primaryColor: 'blue',
-  fontFamily:
-    'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
-  colors: {
-    // Custom VFR3D colors
-    vfr3d: [
-      '#e6f2ff',
-      '#b3d9ff',
-      '#80bfff',
-      '#4da6ff',
-      '#1a8cff',
-      '#0073e6',
-      '#005cb3',
-      '#004480',
-      '#002d4d',
-      '#00161a',
-    ],
-  },
-  components: {
-    Button: {
-      defaultProps: {
-        radius: 'md',
-      },
-    },
-    Card: {
-      defaultProps: {
-        radius: 'md',
-        shadow: 'sm',
-      },
-    },
-    Modal: {
-      defaultProps: {
-        radius: 'md',
-        centered: true,
-      },
-    },
-    Paper: {
-      defaultProps: {
-        radius: 'md',
-      },
-    },
-  },
-});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

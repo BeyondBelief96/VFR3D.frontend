@@ -9,7 +9,7 @@ export function Footer() {
     <Box
       component="footer"
       style={{
-        backgroundColor: 'var(--vfr3d-surface)',
+        backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
         borderTop: '1px solid rgba(148, 163, 184, 0.1)',
       }}
     >

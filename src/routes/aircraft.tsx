@@ -147,7 +147,7 @@ function AircraftContent() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">
@@ -201,7 +201,7 @@ function AircraftContent() {
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--vfr3d-primary)' }} />
+                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
               </Box>
               <Text c="white" size="lg" fw={500}>
                 No Aircraft Configured
@@ -255,7 +255,7 @@ function AircraftContent() {
         size="md"
         styles={{
           header: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
             padding: '16px 20px',
           },
@@ -264,11 +264,11 @@ function AircraftContent() {
             color: 'white',
           },
           body: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             padding: '20px',
           },
           content: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           },
           close: {
             color: 'var(--mantine-color-gray-4)',

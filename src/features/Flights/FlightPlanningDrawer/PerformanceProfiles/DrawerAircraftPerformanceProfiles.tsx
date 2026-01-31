@@ -215,7 +215,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
             justifyContent: 'center',
           }}
         >
-          <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--vfr3d-primary)' }} />
+          <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
         </Box>
         <Text size="lg" fw={500} c="white">
           No Aircraft Configured
@@ -256,7 +256,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                     ? 'rgba(59, 130, 246, 0.15)'
                     : 'rgba(30, 41, 59, 0.8)',
                   border: isSelected
-                    ? '2px solid var(--vfr3d-primary)'
+                    ? '2px solid var(--mantine-color-vfr3dBlue-5)'
                     : '1px solid rgba(148, 163, 184, 0.1)',
                   borderRadius: 'var(--mantine-radius-md)',
                   padding: 'var(--mantine-spacing-sm)',
@@ -282,7 +282,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                   >
                     <FaPlane
                       size={14}
-                      color={isSelected ? 'var(--vfr3d-primary)' : 'var(--mantine-color-gray-5)'}
+                      color={isSelected ? 'var(--mantine-color-vfr3dBlue-5)' : 'var(--mantine-color-gray-5)'}
                     />
                   </Box>
                   <Box style={{ minWidth: 0 }}>
@@ -355,7 +355,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                         ? 'rgba(59, 130, 246, 0.15)'
                         : 'rgba(30, 41, 59, 0.8)',
                       border: isSelected
-                        ? '2px solid var(--vfr3d-primary)'
+                        ? '2px solid var(--mantine-color-vfr3dBlue-5)'
                         : '1px solid rgba(148, 163, 184, 0.1)',
                       borderRadius: 'var(--mantine-radius-md)',
                       padding: 'var(--mantine-spacing-sm)',

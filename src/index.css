@@ -6,24 +6,16 @@
 /* Cesium widget styles */
 @import 'cesium/Build/Cesium/Widgets/widgets.css';
 
-/* Custom CSS variables */
-:root {
-  /* VFR3D Theme Colors */
-  --vfr3d-primary: #3b82f6;
-  --vfr3d-primary-dark: #2563eb;
-  --vfr3d-secondary: #10b981;
-  --vfr3d-accent: #f59e0b;
-  --vfr3d-background: #0f172a;
-  --vfr3d-surface: #1e293b;
-  --vfr3d-text: #f1f5f9;
-  --vfr3d-text-muted: #94a3b8;
-
-  /* Flight Category Colors */
-  --vfr-color: #22c55e;
-  --mvfr-color: #3b82f6;
-  --ifr-color: #ef4444;
-  --lifr-color: #a855f7;
-}
+/*
+ * Custom CSS variables are now defined in the Mantine theme (src/theme/index.ts)
+ * Use Mantine color references instead:
+ *   - var(--mantine-color-vfr3dBlue-5) for primary blue
+ *   - var(--mantine-color-vfrGreen-5) for VFR green
+ *   - var(--mantine-color-ifrRed-5) for IFR red
+ *   - var(--mantine-color-lifrPurple-5) for LIFR purple
+ *   - var(--mantine-color-vfr3dSurface-8) for surface
+ *   - var(--mantine-color-vfr3dSurface-9) for background
+ */
 
 /* Base styles */
 *,
@@ -90,17 +82,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--vfr3d-surface);
+  background: var(--mantine-color-vfr3dSurface-8);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--vfr3d-text-muted);
+  background: var(--mantine-color-vfr3dSurface-4);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--vfr3d-text);
+  background: var(--mantine-color-vfr3dSurface-1);
 }
 
 /* Animation utilities */

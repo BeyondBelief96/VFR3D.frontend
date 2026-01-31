@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'var(--vfr3d-background)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
           }}
         >
           <Card

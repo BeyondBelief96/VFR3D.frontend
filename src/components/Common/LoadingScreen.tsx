@@ -17,7 +17,7 @@ export function LoadingScreen({
     <Center
       h={fullScreen ? '100vh' : '100%'}
       style={{
-        backgroundColor: 'var(--vfr3d-background)',
+        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
         position: fullScreen ? 'fixed' : 'relative',
         top: 0,
         left: 0,

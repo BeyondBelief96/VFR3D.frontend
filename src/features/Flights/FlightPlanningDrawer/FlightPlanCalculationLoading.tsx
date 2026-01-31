@@ -35,7 +35,7 @@ export const FlightPlanCalculationLoading: React.FC = () => {
                 ease: 'easeInOut',
               }}
             >
-              <FaPlane size={32} color="var(--vfr3d-primary)" />
+              <FaPlane size={32} color="var(--mantine-color-vfr3dBlue-5)" />
             </motion.div>
           </Box>
         </motion.div>

@@ -18,7 +18,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -72,12 +72,12 @@ export function GettingStartedStep({
             styles={{
               ...inputStyles,
               dropdown: {
-                backgroundColor: 'var(--vfr3d-surface)',
+                backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
                 border: '1px solid rgba(148, 163, 184, 0.2)',
               },
               option: {
                 '&[data-selected]': {
-                  backgroundColor: 'var(--vfr3d-primary)',
+                  backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
                 },
                 '&[data-hovered]': {
                   backgroundColor: 'rgba(59, 130, 246, 0.2)',

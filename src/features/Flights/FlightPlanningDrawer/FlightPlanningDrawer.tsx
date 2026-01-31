@@ -771,7 +771,7 @@ export const FlightPlanningDrawer: React.FC = () => {
             <>
               {/* Fuel Warning Badge */}
               {hasCriticalFuelIssue && (
-                <Group gap={4} style={{ color: '#ef4444' }}>
+                <Group gap={4} c="ifrRed.5">
                   <FiAlertTriangle size={16} />
                   <Text size="xs" fw={600} c="red.4">
                     FUEL ISSUE

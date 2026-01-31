@@ -134,7 +134,7 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
         }}
       >
         <Group gap="sm" mb="md">
-          <FaPlane size={18} color="var(--vfr3d-primary)" />
+          <FaPlane size={18} color="var(--mantine-color-vfr3dBlue-5)" />
           <Text fw={600} c="white">
             Aircraft & Performance
           </Text>

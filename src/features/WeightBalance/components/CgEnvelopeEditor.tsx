@@ -48,7 +48,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -368,7 +368,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                 color: 'var(--mantine-color-gray-4)',
                 '&[data-active]': {
                   color: 'white',
-                  borderColor: 'var(--vfr3d-primary)',
+                  borderColor: 'var(--mantine-color-vfr3dBlue-5)',
                 },
               },
               panel: {

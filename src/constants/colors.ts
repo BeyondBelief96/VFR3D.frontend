@@ -1,50 +1,57 @@
 /**
  * Standardized color constants for the VFR3D application.
- * Use these constants to ensure consistent coloring across all components.
+ * These constants use Mantine theme color references for consistency.
+ *
+ * Color Reference (use with Mantine props like `c="vfrGreen.5"`):
+ * - vfr3dBlue: Primary blue (#3b82f6 at shade 5)
+ * - vfrGreen: VFR green (#22c55e at shade 5)
+ * - ifrRed: IFR red (#ef4444 at shade 5)
+ * - lifrPurple: LIFR purple (#a855f7 at shade 5)
+ * - warningYellow: Warning amber (#fbbf24 at shade 5)
+ * - vfr3dSurface: Slate surface colors
  */
 
 // =============================================================================
 // SEMANTIC COLORS - Use these for specific data types/concepts
+// These return Mantine color names for use with Mantine props (c=, bg=, etc.)
 // =============================================================================
 
 /**
  * Colors for flight metrics and data types
+ * Use with Mantine props: <Text c={METRIC_COLORS.DISTANCE}>
  */
 export const METRIC_COLORS = {
   /** Distance, navigation, route-related metrics */
-  DISTANCE: 'var(--mantine-color-blue-4)',
+  DISTANCE: 'blue.4',
   /** Time, duration, ETA-related metrics */
-  TIME: 'var(--mantine-color-cyan-4)',
+  TIME: 'cyan.4',
   /** Fuel consumption, fuel levels */
-  FUEL: 'var(--mantine-color-teal-4)',
+  FUEL: 'teal.4',
   /** Wind speed, wind component */
-  WIND: 'var(--mantine-color-grape-4)',
+  WIND: 'grape.4',
   /** Temperature */
-  TEMPERATURE: 'var(--mantine-color-orange-4)',
+  TEMPERATURE: 'orange.4',
   /** Altitude, elevation */
-  ALTITUDE: 'var(--mantine-color-indigo-4)',
+  ALTITUDE: 'indigo.4',
   /** Heading, course, bearing */
-  HEADING: 'var(--mantine-color-violet-4)',
+  HEADING: 'violet.4',
   /** Speed, velocity */
-  SPEED: 'var(--mantine-color-pink-4)',
+  SPEED: 'pink.4',
 } as const;
 
 /**
  * Colors for status indicators
+ * Use with Mantine props: <Badge color={STATUS_COLORS.SUCCESS}>
  */
 export const STATUS_COLORS = {
   /** Success, within limits, favorable conditions */
-  SUCCESS: 'var(--mantine-color-green-5)',
-  SUCCESS_HEX: '#22c55e',
+  SUCCESS: 'vfrGreen.5',
   /** Warning, caution, approaching limits */
-  WARNING: 'var(--mantine-color-yellow-5)',
-  WARNING_HEX: '#fbbf24',
+  WARNING: 'warningYellow.5',
   /** Error, critical, outside limits */
-  ERROR: 'var(--mantine-color-red-5)',
-  ERROR_HEX: '#ef4444',
+  ERROR: 'ifrRed.5',
   /** Informational, neutral */
-  INFO: 'var(--mantine-color-blue-5)',
-  INFO_HEX: '#3b82f6',
+  INFO: 'vfr3dBlue.5',
 } as const;
 
 /**
@@ -52,13 +59,13 @@ export const STATUS_COLORS = {
  */
 export const FLIGHT_POINT_COLORS = {
   /** Departure airport/point */
-  DEPARTURE: 'var(--mantine-color-green-4)',
+  DEPARTURE: 'vfrGreen.4',
   /** Destination/arrival airport/point */
-  DESTINATION: 'var(--mantine-color-blue-4)',
+  DESTINATION: 'vfr3dBlue.4',
   /** Waypoint/intermediate point */
-  WAYPOINT: 'var(--mantine-color-cyan-4)',
+  WAYPOINT: 'cyan.4',
   /** Current position */
-  CURRENT: 'var(--mantine-color-yellow-4)',
+  CURRENT: 'warningYellow.4',
 } as const;
 
 /**
@@ -66,17 +73,16 @@ export const FLIGHT_POINT_COLORS = {
  */
 export const WIND_CONDITION_COLORS = {
   /** Favorable wind (headwind for landing, tailwind for cruise efficiency awareness) */
-  FAVORABLE: 'var(--mantine-color-green-5)',
-  FAVORABLE_HEX: '#22c55e',
+  FAVORABLE: 'vfrGreen.5',
   /** Unfavorable wind */
-  UNFAVORABLE: 'var(--mantine-color-red-5)',
-  UNFAVORABLE_HEX: '#ef4444',
+  UNFAVORABLE: 'ifrRed.5',
   /** Neutral/calm wind */
-  NEUTRAL: 'var(--mantine-color-grape-4)',
+  NEUTRAL: 'grape.4',
 } as const;
 
 /**
  * Colors for crosswind severity
+ * These are Mantine color names for use with color prop
  */
 export const CROSSWIND_COLORS = {
   /** Safe crosswind (≤10 knots) */
@@ -94,21 +100,30 @@ export const FUEL_STATUS_COLORS = {
   /** Normal fuel levels */
   NORMAL: 'white',
   /** Low fuel warning */
-  LOW: 'var(--mantine-color-yellow-4)',
-  LOW_HEX: '#fbbf24',
+  LOW: 'warningYellow.4',
   /** Critical fuel level */
-  CRITICAL: 'var(--mantine-color-red-4)',
-  CRITICAL_HEX: '#ef4444',
+  CRITICAL: 'ifrRed.4',
 } as const;
 
 /**
  * Colors for flight categories (VFR, MVFR, IFR, LIFR)
+ * These use custom theme colors for proper Mantine integration
  */
 export const FLIGHT_CATEGORY_COLORS = {
-  VFR: 'green',
+  VFR: 'vfrGreen',
   MVFR: 'blue',
-  IFR: 'red',
-  LIFR: 'grape',
+  IFR: 'ifrRed',
+  LIFR: 'lifrPurple',
+} as const;
+
+/**
+ * Flight category colors with shade (for more specific usage)
+ */
+export const FLIGHT_CATEGORY_COLORS_SHADED = {
+  VFR: 'vfrGreen.5',
+  MVFR: 'blue.5',
+  IFR: 'ifrRed.5',
+  LIFR: 'lifrPurple.5',
 } as const;
 
 /**
@@ -116,15 +131,13 @@ export const FLIGHT_CATEGORY_COLORS = {
  */
 export const WEIGHT_BALANCE_COLORS = {
   /** Within CG envelope */
-  WITHIN_ENVELOPE: 'var(--mantine-color-green-5)',
-  WITHIN_ENVELOPE_HEX: '#22c55e',
+  WITHIN_ENVELOPE: 'vfrGreen.5',
   /** Outside CG envelope */
-  OUTSIDE_ENVELOPE: 'var(--mantine-color-red-5)',
-  OUTSIDE_ENVELOPE_HEX: '#ef4444',
+  OUTSIDE_ENVELOPE: 'ifrRed.5',
   /** Takeoff condition indicator */
-  TAKEOFF: 'var(--mantine-color-green-5)',
+  TAKEOFF: 'vfrGreen.5',
   /** Landing condition indicator */
-  LANDING: 'var(--mantine-color-blue-5)',
+  LANDING: 'vfr3dBlue.5',
 } as const;
 
 // =============================================================================
@@ -154,26 +167,25 @@ export const CATEGORY_COLORS = {
 export const ICON_BG_OPACITY = 0.15;
 
 /**
- * Get an rgba background color for an icon container
+ * Get a Mantine CSS variable for icon background with alpha
+ * Use this for inline styles where CSS variables are needed
  */
 export const getIconBgColor = (baseColor: string, opacity = ICON_BG_OPACITY): string => {
-  // Common color mappings to RGB values
-  const colorMap: Record<string, string> = {
-    blue: '59, 130, 246',
-    cyan: '6, 182, 212',
-    teal: '20, 184, 166',
-    grape: '168, 85, 247',
-    green: '34, 197, 94',
-    red: '239, 68, 68',
-    yellow: '251, 191, 36',
-    orange: '251, 146, 60',
-    indigo: '99, 102, 241',
-    violet: '139, 92, 246',
-    pink: '236, 72, 153',
-  };
+  // Map color names to Mantine CSS variable format
+  // The alpha value is expressed as a percentage (0-100)
+  const alphaPercent = Math.round(opacity * 100);
 
-  const rgb = colorMap[baseColor] || '59, 130, 246'; // Default to blue
-  return `rgba(${rgb}, ${opacity})`;
+  // For custom theme colors, we need to reference them differently
+  const customColors = ['vfr3dBlue', 'vfrGreen', 'ifrRed', 'lifrPurple', 'warningYellow', 'vfr3dSurface'];
+
+  if (customColors.includes(baseColor)) {
+    // Custom colors use var(--mantine-color-{colorName}-5)
+    // For alpha, we use rgba with the color value
+    return `color-mix(in srgb, var(--mantine-color-${baseColor}-5) ${alphaPercent}%, transparent)`;
+  }
+
+  // Standard Mantine colors
+  return `color-mix(in srgb, var(--mantine-color-${baseColor}-5) ${alphaPercent}%, transparent)`;
 };
 
 // =============================================================================
@@ -181,27 +193,28 @@ export const getIconBgColor = (baseColor: string, opacity = ICON_BG_OPACITY): st
 // =============================================================================
 
 /**
- * Get the appropriate color for a fuel status
+ * Get the appropriate Mantine color for a fuel status
+ * Returns a Mantine color string for use with color props
  */
 export const getFuelStatusColor = (remainingGallons: number, warningThreshold = 10): string => {
-  if (remainingGallons < 0) return FUEL_STATUS_COLORS.CRITICAL_HEX;
-  if (remainingGallons < warningThreshold) return FUEL_STATUS_COLORS.LOW_HEX;
+  if (remainingGallons < 0) return FUEL_STATUS_COLORS.CRITICAL;
+  if (remainingGallons < warningThreshold) return FUEL_STATUS_COLORS.LOW;
   return FUEL_STATUS_COLORS.NORMAL;
 };
 
 /**
- * Get the appropriate color for wind component (headwind vs tailwind)
+ * Get the appropriate Mantine color for wind component (headwind vs tailwind)
  * Headwind is generally unfavorable (slows you down), tailwind is favorable
  */
 export const getWindComponentColor = (headwindComponent: number): string => {
   // Positive = headwind (unfavorable), Negative = tailwind (favorable)
   return headwindComponent >= 0
-    ? WIND_CONDITION_COLORS.UNFAVORABLE_HEX
-    : WIND_CONDITION_COLORS.FAVORABLE_HEX;
+    ? WIND_CONDITION_COLORS.UNFAVORABLE
+    : WIND_CONDITION_COLORS.FAVORABLE;
 };
 
 /**
- * Get the appropriate color for crosswind severity
+ * Get the appropriate Mantine color for crosswind severity
  */
 export const getCrosswindColor = (crosswindKnots: number): string => {
   if (crosswindKnots <= 10) return CROSSWIND_COLORS.SAFE;
@@ -210,14 +223,37 @@ export const getCrosswindColor = (crosswindKnots: number): string => {
 };
 
 /**
- * Get flight category color
+ * Get flight category Mantine color
  */
 export const getFlightCategoryColor = (category?: string): string => {
   switch (category) {
-    case 'VFR': return FLIGHT_CATEGORY_COLORS.VFR;
-    case 'MVFR': return FLIGHT_CATEGORY_COLORS.MVFR;
-    case 'IFR': return FLIGHT_CATEGORY_COLORS.IFR;
-    case 'LIFR': return FLIGHT_CATEGORY_COLORS.LIFR;
-    default: return 'gray';
+    case 'VFR':
+      return FLIGHT_CATEGORY_COLORS.VFR;
+    case 'MVFR':
+      return FLIGHT_CATEGORY_COLORS.MVFR;
+    case 'IFR':
+      return FLIGHT_CATEGORY_COLORS.IFR;
+    case 'LIFR':
+      return FLIGHT_CATEGORY_COLORS.LIFR;
+    default:
+      return 'gray';
+  }
+};
+
+/**
+ * Get flight category color with shade for more specific usage
+ */
+export const getFlightCategoryColorShaded = (category?: string): string => {
+  switch (category) {
+    case 'VFR':
+      return FLIGHT_CATEGORY_COLORS_SHADED.VFR;
+    case 'MVFR':
+      return FLIGHT_CATEGORY_COLORS_SHADED.MVFR;
+    case 'IFR':
+      return FLIGHT_CATEGORY_COLORS_SHADED.IFR;
+    case 'LIFR':
+      return FLIGHT_CATEGORY_COLORS_SHADED.LIFR;
+    default:
+      return 'gray.5';
   }
 };

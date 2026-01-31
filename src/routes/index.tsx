@@ -573,7 +573,7 @@ function HomePage() {
             }}
           >
             <Stack align="center" gap="xl">
-              <TbPlane size={60} color="#3b82f6" />
+              <TbPlane size={60} color="var(--mantine-color-vfr3dBlue-5)" />
               <Title order={2} c="white" style={{ fontSize: rem(32) }}>
                 Ready to Plan, Fly, Repeat?
               </Title>

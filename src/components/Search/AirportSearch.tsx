@@ -168,7 +168,7 @@ export function AirportSearch({
             borderColor: 'rgba(148, 163, 184, 0.3)',
             color: 'white',
             '&:focus': {
-              borderColor: 'var(--vfr3d-primary)',
+              borderColor: 'var(--mantine-color-vfr3dBlue-5)',
             },
             '&::placeholder': {
               color: 'rgba(148, 163, 184, 0.6)',
@@ -188,7 +188,7 @@ export function AirportSearch({
               left: dropdownPosition.left,
               width: dropdownPosition.width,
               zIndex: 10000,
-              backgroundColor: 'var(--vfr3d-surface)',
+              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
               border: '1px solid rgba(148, 163, 184, 0.2)',
               maxHeight: 400,
               overflow: 'auto',
@@ -224,7 +224,7 @@ export function AirportSearch({
                 >
                   <Group justify="space-between" wrap="nowrap">
                     <Group gap="sm" wrap="nowrap">
-                      <FiMapPin size={16} color="var(--vfr3d-primary)" />
+                      <FiMapPin size={16} color="var(--mantine-color-vfr3dBlue-5)" />
                       <Box>
                         <Group gap="xs">
                           <Text size="sm" fw={600} c="white">

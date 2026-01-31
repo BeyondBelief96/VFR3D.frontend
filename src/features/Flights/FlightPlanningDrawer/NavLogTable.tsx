@@ -373,7 +373,7 @@ const LegTable: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
                 <Table.Td>
                   <Group gap="xs" wrap="nowrap">
                     {fuelSeverity === 'critical' && (
-                      <FiAlertTriangle size={14} color="#ef4444" />
+                      <FiAlertTriangle size={14} color="var(--mantine-color-ifrRed-5)" />
                     )}
                     <Text size="sm" fw={500} c={fuelSeverity === 'critical' ? 'red.4' : 'white'}>
                       {leg.legStartPoint?.name ?? '?'} → {leg.legEndPoint?.name ?? '?'}
@@ -474,7 +474,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
             {/* Leg Header */}
             <Group justify="space-between" mb="xs">
               <Group gap="xs">
-                <FaPlane size={12} color={fuelSeverity === 'critical' ? '#ef4444' : 'var(--vfr3d-primary)'} />
+                <FaPlane size={12} color={fuelSeverity === 'critical' ? '#ef4444' : 'var(--mantine-color-vfr3dBlue-5)'} />
                 <Text size="sm" fw={600} c={fuelSeverity === 'critical' ? 'red.4' : 'white'}>
                   {leg.legStartPoint?.name ?? '?'} → {leg.legEndPoint?.name ?? '?'}
                 </Text>
@@ -612,7 +612,7 @@ export const NavLogTable: React.FC<NavLogTableProps> = ({ navlog, returnNavlog, 
             },
             tab: {
               '&[data-active]': {
-                backgroundColor: 'var(--vfr3d-primary)',
+                backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
               },
             },
           }}

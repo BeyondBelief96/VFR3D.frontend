@@ -64,7 +64,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -77,13 +77,13 @@ const inputStyles = {
 const selectStyles = {
   ...inputStyles,
   dropdown: {
-    backgroundColor: 'var(--vfr3d-surface)',
+    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
     border: '1px solid rgba(148, 163, 184, 0.2)',
   },
   option: {
     color: 'white',
     '&[data-selected]': {
-      backgroundColor: 'var(--vfr3d-primary)',
+      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
     '&[data-hovered]': {
       backgroundColor: 'rgba(148, 163, 184, 0.1)',
@@ -808,7 +808,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                     color: 'var(--mantine-color-gray-4)',
                     '&[data-active]': {
                       color: 'white',
-                      borderColor: 'var(--vfr3d-primary)',
+                      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
                     },
                   },
                 }}

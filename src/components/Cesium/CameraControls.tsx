@@ -13,6 +13,7 @@ import { Math as CesiumMath, Cartographic } from 'cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { FlightDisplayMode } from '@/utility/enums';
 import { LayerTogglePopover } from './LayerTogglePopover';
+import classes from './CameraControls.module.css';
 
 /**
  * CameraControls component provides UI controls for navigating the Cesium viewer.
@@ -138,31 +139,12 @@ export function CameraControls() {
     rotateDown,
   ]);
 
-  const buttonStyles = {
-    root: {
-      backgroundColor: 'rgba(30, 41, 59, 0.9)',
-      border: 'none',
-      '&:hover': {
-        backgroundColor: 'rgba(59, 130, 246, 0.3)',
-      },
-    },
-  };
-
   return (
     <Paper
       shadow="lg"
       radius="md"
-      style={{
-        position: 'absolute',
-        top: 12,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 100,
-        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
-        padding: 4,
-      }}
+      p={4}
+      className={classes.container}
     >
       <Group gap={4}>
         <Tooltip label="Zoom In" position="bottom">
@@ -171,7 +153,7 @@ export function CameraControls() {
             color="gray"
             size="lg"
             onClick={zoomIn}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <FiPlus size={18} />
           </ActionIcon>
@@ -183,7 +165,7 @@ export function CameraControls() {
             color="gray"
             size="lg"
             onClick={zoomOut}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <FiMinus size={18} />
           </ActionIcon>
@@ -199,7 +181,7 @@ export function CameraControls() {
             onMouseLeave={() => setIsRotatingLeft(false)}
             onTouchStart={() => setIsRotatingLeft(true)}
             onTouchEnd={() => setIsRotatingLeft(false)}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <TbArrowLeft size={18} />
           </ActionIcon>
@@ -215,7 +197,7 @@ export function CameraControls() {
             onMouseLeave={() => setIsRotatingRight(false)}
             onTouchStart={() => setIsRotatingRight(true)}
             onTouchEnd={() => setIsRotatingRight(false)}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <TbArrowRight size={18} />
           </ActionIcon>
@@ -231,7 +213,7 @@ export function CameraControls() {
             onMouseLeave={() => setIsRotatingUp(false)}
             onTouchStart={() => setIsRotatingUp(true)}
             onTouchEnd={() => setIsRotatingUp(false)}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <TbArrowUp size={18} />
           </ActionIcon>
@@ -247,7 +229,7 @@ export function CameraControls() {
             onMouseLeave={() => setIsRotatingDown(false)}
             onTouchStart={() => setIsRotatingDown(true)}
             onTouchEnd={() => setIsRotatingDown(false)}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <TbArrowDown size={18} />
           </ActionIcon>
@@ -259,7 +241,7 @@ export function CameraControls() {
             color="gray"
             size="lg"
             onClick={recenterCamera}
-            styles={buttonStyles}
+            classNames={{ root: classes.actionButton }}
           >
             <TbTarget size={18} />
           </ActionIcon>
@@ -267,7 +249,7 @@ export function CameraControls() {
 
         {showLayerToggle && (
           <>
-            <Divider orientation="vertical" color="rgba(148, 163, 184, 0.3)" />
+            <Divider orientation="vertical" className={classes.divider} />
             <LayerTogglePopover />
           </>
         )}

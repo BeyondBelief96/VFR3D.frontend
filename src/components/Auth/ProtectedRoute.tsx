@@ -34,7 +34,7 @@ export function ProtectedRoute({
   if (isLoading) {
     return (
       loadingComponent || (
-        <Center h="100vh" style={{ backgroundColor: 'var(--vfr3d-background)' }}>
+        <Center h="100vh" style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}>
           <Stack align="center" gap="md">
             <Loader size="xl" color="blue" />
             <Text c="white" size="lg">
@@ -60,7 +60,7 @@ export function ProtectedRoute({
       });
 
       return (
-        <Center h="100vh" style={{ backgroundColor: 'var(--vfr3d-background)' }}>
+        <Center h="100vh" style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}>
           <Stack align="center" gap="md">
             <Loader size="xl" color="blue" />
             <Text c="white" size="lg">

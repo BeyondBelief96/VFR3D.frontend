@@ -124,7 +124,7 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
       px="md"
       style={{
         minHeight: 'calc(100vh - 60px)',
-        backgroundColor: 'var(--vfr3d-background)',
+        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

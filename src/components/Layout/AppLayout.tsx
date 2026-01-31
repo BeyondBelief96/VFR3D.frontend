@@ -17,14 +17,14 @@ export function AppLayout() {
         padding={0}
         styles={{
           main: {
-            backgroundColor: 'var(--vfr3d-background)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
             minHeight: '100vh',
           },
         }}
       >
         <AppShell.Header
           style={{
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
           }}
         >

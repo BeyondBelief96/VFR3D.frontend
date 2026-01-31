@@ -107,7 +107,7 @@ function FlightDetailsContent() {
 
   if (isLoading) {
     return (
-      <Center h="calc(100vh - 60px)" bg="var(--vfr3d-background)">
+      <Center h="calc(100vh - 60px)" bg="var(--mantine-color-vfr3dSurface-9)">
         <Loader size="xl" color="blue" />
       </Center>
     );
@@ -129,7 +129,7 @@ function FlightDetailsContent() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--vfr3d-background)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
       <Stack gap="lg">
         {/* Header */}

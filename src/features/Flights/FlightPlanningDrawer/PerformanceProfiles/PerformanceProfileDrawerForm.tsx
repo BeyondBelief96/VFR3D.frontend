@@ -30,7 +30,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -236,7 +236,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 justifyContent: 'center',
               }}
             >
-              <FaPlane size={12} color="var(--vfr3d-primary)" />
+              <FaPlane size={12} color="var(--mantine-color-vfr3dBlue-5)" />
             </Box>
             <Text size="sm" fw={500} c="white">
               Cruise Performance
@@ -288,10 +288,10 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 position: 'relative',
               }}
             >
-              <FaPlane size={12} color="#22c55e" />
+              <FaPlane size={12} color="var(--mantine-color-vfrGreen-5)" />
               <FaArrowUp
                 size={8}
-                color="#22c55e"
+                color="var(--mantine-color-vfrGreen-5)"
                 style={{ position: 'absolute', top: 2, right: 2 }}
               />
             </Box>
@@ -357,10 +357,10 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 position: 'relative',
               }}
             >
-              <FaPlane size={12} color="#f97316" />
+              <FaPlane size={12} color="var(--mantine-color-orange-5)" />
               <FaArrowDown
                 size={8}
-                color="#f97316"
+                color="var(--mantine-color-orange-5)"
                 style={{ position: 'absolute', bottom: 2, right: 2 }}
               />
             </Box>
@@ -425,7 +425,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 justifyContent: 'center',
               }}
             >
-              <FaGasPump size={12} color="#a855f7" />
+              <FaGasPump size={12} color="var(--mantine-color-lifrPurple-5)" />
             </Box>
             <Text size="sm" fw={500} c="white">
               Fuel Planning

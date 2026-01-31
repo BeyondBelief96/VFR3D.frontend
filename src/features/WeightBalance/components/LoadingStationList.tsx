@@ -294,7 +294,7 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
             <Menu.Dropdown
               styles={{
                 dropdown: {
-                  backgroundColor: 'var(--vfr3d-surface)',
+                  backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
                   border: '1px solid rgba(148, 163, 184, 0.2)',
                 },
               }}
@@ -448,7 +448,7 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
               <Menu.Dropdown
                 styles={{
                   dropdown: {
-                    backgroundColor: 'var(--vfr3d-surface)',
+                    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
                     border: '1px solid rgba(148, 163, 184, 0.2)',
                   },
                 }}
@@ -496,7 +496,7 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
               <Menu.Dropdown
                 styles={{
                   dropdown: {
-                    backgroundColor: 'var(--vfr3d-surface)',
+                    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
                     border: '1px solid rgba(148, 163, 184, 0.2)',
                   },
                 }}

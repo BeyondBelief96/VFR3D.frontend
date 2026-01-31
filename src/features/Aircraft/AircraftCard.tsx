@@ -177,7 +177,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={20} color="var(--vfr3d-primary)" />
+                <FaPlane size={20} color="var(--mantine-color-vfr3dBlue-5)" />
               </Box>
               <Box>
                 <Text c="white" fw={600} size="lg" lineClamp={1}>
@@ -398,7 +398,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         size="lg"
         styles={{
           header: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
             padding: '16px 20px',
           },
@@ -407,13 +407,13 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             color: 'white',
           },
           body: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             padding: '20px',
             maxHeight: 'calc(100vh - 200px)',
             overflowY: 'auto',
           },
           content: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           },
           close: {
             color: 'var(--mantine-color-gray-4)',
@@ -441,7 +441,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         centered
         styles={{
           header: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
             padding: '16px 20px',
           },
@@ -450,11 +450,11 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             color: 'white',
           },
           body: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             padding: '20px',
           },
           content: {
-            backgroundColor: 'var(--vfr3d-surface)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           },
           close: {
             color: 'var(--mantine-color-gray-4)',

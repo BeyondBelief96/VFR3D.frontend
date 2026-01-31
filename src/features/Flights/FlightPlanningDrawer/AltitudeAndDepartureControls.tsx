@@ -19,7 +19,7 @@ const inputStyles = {
     borderColor: 'rgba(148, 163, 184, 0.2)',
     color: 'white',
     '&:focus': {
-      borderColor: 'var(--vfr3d-primary)',
+      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
     },
   },
   label: {
@@ -123,7 +123,7 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
               justifyContent: 'center',
             }}
           >
-            <FaPlane size={14} color="#22c55e" />
+            <FaPlane size={14} color="var(--mantine-color-vfrGreen-5)" />
           </Box>
           <Text fw={600} c="white">
             Outbound Flight
@@ -232,7 +232,7 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
                 justifyContent: 'center',
               }}
             >
-              <FaPlane size={14} color="#ef4444" style={{ transform: 'scaleX(-1)' }} />
+              <FaPlane size={14} color="var(--mantine-color-ifrRed-5)" style={{ transform: 'scaleX(-1)' }} />
             </Box>
             <Text fw={600} c="white">
               Return Flight
