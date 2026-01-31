@@ -9,7 +9,7 @@ import AirportEntities from './AirportEntities';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FlightDisplayMode } from '@/utility/enums';
-import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { AirportDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import type { RootState } from '@/redux/store';
 
 const Airports: React.FC = () => {
@@ -112,6 +112,22 @@ const Airports: React.FC = () => {
       .map((metar) => [metar.stationId as string, metar])
   );
 
+  // Get the set of airport identifiers from route waypoints (to exclude in PREVIEW/VIEWING mode)
+  const routeAirportIdents = useMemo(() => {
+    const isPreviewOrViewing =
+      displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING;
+    
+    if (!isPreviewOrViewing) return new Set<string>();
+    
+    // Get identifiers of airports that are waypoints on the route
+    return new Set(
+      flightPlanRoute
+        .filter((wp) => wp.waypointType === WaypointType.Airport)
+        .map((wp) => wp.name?.toUpperCase())
+        .filter((name): name is string => !!name)
+    );
+  }, [flightPlanRoute, displayMode]);
+
   // Filter airports based on toggle states and requirements
   const visibleAirports = useMemo(() => {
     // Start with an empty array
@@ -157,9 +173,20 @@ const Airports: React.FC = () => {
     }
 
     // Remove duplicates based on airport ID
-    const uniqueAirports = Array.from(
+    let uniqueAirports = Array.from(
       new Map(airports.map((airport) => [airport.siteNo, airport])).values()
     );
+
+    // In PREVIEW or VIEWING mode, filter out airports that are waypoints on the route
+    // These will be rendered by AirportWaypointEntity instead to show altitude info
+    if (routeAirportIdents.size > 0) {
+      uniqueAirports = uniqueAirports.filter((airport) => {
+        const icao = airport.icaoId?.toUpperCase();
+        const faa = airport.arptId?.toUpperCase();
+        // Keep airport if it's NOT in the route waypoints
+        return !routeAirportIdents.has(icao || '') && !routeAirportIdents.has(faa || '');
+      });
+    }
 
     return uniqueAirports;
   }, [
@@ -170,6 +197,7 @@ const Airports: React.FC = () => {
     routeAirports,
     showFlightPlanAirports,
     activeFlight,
+    routeAirportIdents,
   ]);
 
   return <AirportEntities airports={visibleAirports} metarMap={metarMap} />;

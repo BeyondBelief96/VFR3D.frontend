@@ -27,6 +27,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { setSelectedEntity, updateSelectedWaypointPosition } from '@/redux/slices/selectedEntitySlice';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAuth } from '@/components/Auth';
+import AirportWaypointEntity from '@/features/Airports/AirportWaypointEntity';
 
 // Fuel warning threshold (gallons)
 const FUEL_CRITICAL_THRESHOLD = 0;
@@ -281,11 +282,11 @@ const RouteComponent: React.FC = () => {
       ? mapWaypointToCartesian3Flat
       : mapWaypointToCartesian3;
 
-  // In PREVIEW mode, determine if we should show waypoint points
+  // In PREVIEW or VIEWING mode, show all waypoints
   // In PLANNING/EDITING mode, only show Custom and CalculatedPoint types
   const shouldShowWaypointPoint = (point: WaypointDto): boolean => {
-    if (displayMode === FlightDisplayMode.PREVIEW) {
-      // In preview mode, show all waypoints including airports and calculated points
+    if (displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING) {
+      // In preview or viewing mode, show all waypoints including airports and calculated points
       return true;
     }
     // In planning/editing mode, only show custom waypoints and calculated points
@@ -322,6 +323,23 @@ const RouteComponent: React.FC = () => {
         const entityKey = `${point.id}-${legId}-${isStartPoint ? 'start' : 'end'}`;
 
         const pointId = isViewingFlight ? `navlog-leg${legIndex} + ${point.id}` : point.id;
+
+        // For airport waypoints in PREVIEW or VIEWING mode, use AirportWaypointEntity
+        // which fetches weather data, colors based on flight category, and shows cloud bases
+        if (
+          point.waypointType === WaypointType.Airport &&
+          (displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING)
+        ) {
+          return (
+            <AirportWaypointEntity
+              key={entityKey}
+              waypoint={point}
+              position={displayPosition}
+              entityKey={entityKey}
+              pointId={pointId ?? ''}
+            />
+          );
+        }
 
         // Get color based on waypoint type and position
         const pointColor = getWaypointColor(point, index, renderPoints.length, endPointColor);
@@ -365,7 +383,7 @@ const RouteComponent: React.FC = () => {
             labelText={getWaypointLabel(point)}
             labelBackgroundColor={pointColor}
             labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
-            labelPixelOffset={new Cartesian2(0, -20)}
+            labelPixelOffset={new Cartesian2(0, -35)}
           />
         );
       })}

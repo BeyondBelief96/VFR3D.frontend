@@ -25,10 +25,15 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
         shadow="xl"
         radius={0}
         className={`${classes.panel} ${isOpen ? classes.panelOpen : classes.panelClosed}`}
+        bg="var(--mantine-color-vfr3dSurface-9)"
       >
         <Stack gap={0} h="100%" p="md">
           {/* Header */}
-          <Group justify="space-between" pb="md" className={classes.headerBorder}>
+          <Group
+            justify="space-between"
+            pb="md"
+            className={classes.headerBorder}
+          >
             <Box>
               <Text size="lg" fw={600} c="white">
                 Viewer Settings
