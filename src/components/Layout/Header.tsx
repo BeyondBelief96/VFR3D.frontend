@@ -23,6 +23,7 @@ import {
   FiChevronDown,
   FiUser,
   FiCloud,
+  FiMail,
 } from 'react-icons/fi';
 import { FaPlane, FaPlaneDeparture, FaBalanceScale } from 'react-icons/fa';
 import AirportSearch from '../Search/AirportSearch';
@@ -77,6 +78,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
         variant="subtle"
         color="gray"
         size={mobile ? 'md' : 'sm'}
+        leftSection={<FiMail size={14} />}
         onClick={onNavigate}
         fullWidth={mobile}
         justify={mobile ? 'flex-start' : 'center'}

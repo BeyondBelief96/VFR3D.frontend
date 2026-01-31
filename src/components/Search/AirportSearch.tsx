@@ -164,15 +164,9 @@ export function AirportSearch({
         rightSection={isFetching ? <Loader size="xs" /> : null}
         styles={{
           input: {
-            backgroundColor: 'rgba(15, 23, 42, 0.8)',
+            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderColor: 'rgba(148, 163, 184, 0.3)',
             color: 'white',
-            '&:focus': {
-              borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-            },
-            '&::placeholder': {
-              color: 'rgba(148, 163, 184, 0.6)',
-            },
           },
         }}
       />
@@ -236,12 +230,12 @@ export function AirportSearch({
                             </Badge>
                           )}
                         </Group>
-                        <Text size="xs" c="dimmed" lineClamp={1}>
+                        <Text size="xs" c="white" lineClamp={1}>
                           {airport.arptName}
                         </Text>
                       </Box>
                     </Group>
-                    <Text size="xs" c="dimmed" style={{ whiteSpace: 'nowrap' }}>
+                    <Text size="xs" c="white" style={{ whiteSpace: 'nowrap' }}>
                       {airport.city}, {airport.stateCode}
                     </Text>
                   </Group>
