@@ -119,10 +119,18 @@
   border: 1px solid rgba(148, 163, 184, 0.1);
   transition: all 0.3s ease;
   height: 100%;
+  /* Subtle glow based on the card's accent color */
+  box-shadow:
+    0 0 20px -5px var(--card-glow-color, transparent),
+    0 0 40px -10px var(--card-glow-color, transparent);
 }
 
 .featureCard:hover {
   transform: translateY(-4px);
+  /* Intensify glow on hover */
+  box-shadow:
+    0 0 30px -5px var(--card-glow-color, transparent),
+    0 0 60px -10px var(--card-glow-color, transparent);
 }
 
 .featureCardDescription {

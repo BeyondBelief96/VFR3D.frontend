@@ -583,9 +583,29 @@ interface FeatureCardProps {
   features: string[];
 }
 
+// Map Mantine color names to CSS color values for the glow effect
+const glowColorMap: Record<string, string> = {
+  blue: 'rgba(59, 130, 246, 0.4)',
+  violet: 'rgba(139, 92, 246, 0.4)',
+  cyan: 'rgba(6, 182, 212, 0.4)',
+  orange: 'rgba(249, 115, 22, 0.4)',
+  green: 'rgba(34, 197, 94, 0.4)',
+  pink: 'rgba(236, 72, 153, 0.4)',
+  red: 'rgba(239, 68, 68, 0.4)',
+  grape: 'rgba(190, 75, 219, 0.4)',
+  teal: 'rgba(20, 184, 166, 0.4)',
+};
+
 function FeatureCard({ icon, color, title, description, features }: FeatureCardProps) {
+  const glowColor = glowColorMap[color] || 'transparent';
+  
   return (
-    <Card padding="xl" radius="lg" className={classes.featureCard}>
+    <Card 
+      padding="xl" 
+      radius="lg" 
+      className={classes.featureCard}
+      style={{ '--card-glow-color': glowColor } as React.CSSProperties}
+    >
       <Stack gap="md">
         <ThemeIcon size={56} radius="md" variant="light" color={color}>
           {icon}
