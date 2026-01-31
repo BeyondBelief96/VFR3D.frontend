@@ -23,21 +23,7 @@ import {
   useUpdateAircraftPerformanceProfileMutation,
 } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { useAuth } from '@/components/Auth';
-
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-  },
-};
+import classes from './PerformanceProfileDrawerForm.module.css';
 
 interface PerformanceProfileDrawerFormProps {
   mode: 'create' | 'edit';
@@ -213,29 +199,12 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
           value={formData.profileName}
           onChange={(e) => handleInputChange('profileName', e.target.value)}
           required
-          styles={inputStyles}
         />
 
         {/* Cruise Performance */}
-        <Paper
-          p="md"
-          style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-          }}
-        >
+        <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
-            <Box
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCircleBlue}>
               <FaPlane size={12} color="var(--mantine-color-vfr3dBlue-5)" />
             </Box>
             <Text size="sm" fw={500} c="white">
@@ -251,7 +220,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               min={0}
               max={500}
               suffix=" kts"
-              styles={inputStyles}
             />
             <NumberInput
               label="Fuel Burn"
@@ -262,37 +230,19 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               max={100}
               decimalScale={1}
               suffix=" gph"
-              styles={inputStyles}
             />
           </Group>
         </Paper>
 
         {/* Climb Performance */}
-        <Paper
-          p="md"
-          style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-          }}
-        >
+        <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
-            <Box
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
-            >
+            <Box className={classes.iconCircleGreen}>
               <FaPlane size={12} color="var(--mantine-color-vfrGreen-5)" />
               <FaArrowUp
                 size={8}
                 color="var(--mantine-color-vfrGreen-5)"
-                style={{ position: 'absolute', top: 2, right: 2 }}
+                className={classes.arrowIconUp}
               />
             </Box>
             <Text size="sm" fw={500} c="white">
@@ -309,7 +259,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 min={0}
                 max={500}
                 suffix=" kts"
-                styles={inputStyles}
               />
               <NumberInput
                 label="Fuel Burn"
@@ -320,7 +269,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 max={100}
                 decimalScale={1}
                 suffix=" gph"
-                styles={inputStyles}
               />
             </Group>
             <NumberInput
@@ -331,37 +279,19 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               min={0}
               max={5000}
               suffix=" fpm"
-              styles={inputStyles}
             />
           </Stack>
         </Paper>
 
         {/* Descent Performance */}
-        <Paper
-          p="md"
-          style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-          }}
-        >
+        <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
-            <Box
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
-            >
+            <Box className={classes.iconCircleOrange}>
               <FaPlane size={12} color="var(--mantine-color-orange-5)" />
               <FaArrowDown
                 size={8}
                 color="var(--mantine-color-orange-5)"
-                style={{ position: 'absolute', bottom: 2, right: 2 }}
+                className={classes.arrowIconDown}
               />
             </Box>
             <Text size="sm" fw={500} c="white">
@@ -378,7 +308,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 min={0}
                 max={500}
                 suffix=" kts"
-                styles={inputStyles}
               />
               <NumberInput
                 label="Fuel Burn"
@@ -389,7 +318,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 max={100}
                 decimalScale={1}
                 suffix=" gph"
-                styles={inputStyles}
               />
             </Group>
             <NumberInput
@@ -400,31 +328,14 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               min={0}
               max={5000}
               suffix=" fpm"
-              styles={inputStyles}
             />
           </Stack>
         </Paper>
 
         {/* Fuel Planning */}
-        <Paper
-          p="md"
-          style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-          }}
-        >
+        <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
-            <Box
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(168, 85, 247, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <Box className={classes.iconCirclePurple}>
               <FaGasPump size={12} color="var(--mantine-color-lifrPurple-5)" />
             </Box>
             <Text size="sm" fw={500} c="white">
@@ -441,7 +352,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               max={50}
               decimalScale={1}
               suffix=" gal"
-              styles={inputStyles}
             />
             <NumberInput
               label="Usable Fuel Capacity"
@@ -452,7 +362,6 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               max={500}
               decimalScale={1}
               suffix=" gal"
-              styles={inputStyles}
             />
           </Group>
         </Paper>

@@ -1,0 +1,78 @@
+/**
+ * FlightDetails shared component styles
+ */
+
+/* =============================================================================
+   NOTAMS CARD
+   ============================================================================= */
+
+.notamItem {
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.notamItemActive {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.notamTextBox {
+  font-family: inherit;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+.notamTextBoxMono {
+  composes: notamTextBox;
+  font-family: monospace;
+}
+
+.notamIdText {
+  font-family: monospace;
+}
+
+.categoryHeader {
+  border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+}
+
+.letterSpacing {
+  letter-spacing: 0.5px;
+}
+
+.flexShrink0 {
+  flex-shrink: 0;
+}
+
+/* =============================================================================
+   AIRCRAFT CARD
+   ============================================================================= */
+
+.aircraftCard {
+  background-color: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  transition: all 0.2s ease;
+}
+
+.aircraftIconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profilePaper {
+  background-color: rgba(15, 23, 42, 0.5);
+  border-radius: var(--mantine-radius-md);
+}
+
+.profilePaperBorder {
+  composes: profilePaper;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}

@@ -21,6 +21,7 @@ import {
 import { FaPlane } from 'react-icons/fa';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { NavLogTable } from './NavLogTable';
+import classes from './FlightViewerContent.module.css';
 
 interface FlightViewerContentProps {
   flight?: FlightDto;
@@ -100,17 +101,10 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
   return (
     <Stack gap="md">
       {/* Flight Header */}
-      <Paper
-        p="md"
-        radius="md"
-        style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
-        }}
-      >
+      <Paper p="md" radius="md" className={classes.headerPaper}>
         <Group justify="space-between" mb="xs">
           <Group gap="xs">
-            <FaPlane size={18} style={{ color: 'var(--mantine-color-blue-4)' }} />
+            <FaPlane size={18} color="var(--mantine-color-blue-4)" />
             <Text size="lg" fw={600} c="white">
               {flight.name || 'Unnamed Flight'}
             </Text>
@@ -130,7 +124,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
         <Group grow gap="xs">
           <Box>
             <Group gap={4}>
-              <FiNavigation size={12} style={{ color: 'var(--mantine-color-gray-5)' }} />
+              <FiNavigation size={12} className={classes.iconGray} />
               <Text size="xs" c="dimmed">Distance</Text>
             </Group>
             <Text size="sm" fw={500} c="white">
@@ -140,7 +134,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
 
           <Box>
             <Group gap={4}>
-              <FiClock size={12} style={{ color: 'var(--mantine-color-gray-5)' }} />
+              <FiClock size={12} className={classes.iconGray} />
               <Text size="xs" c="dimmed">Duration</Text>
             </Group>
             <Text size="sm" fw={500} c="white">
@@ -150,7 +144,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
 
           <Box>
             <Group gap={4}>
-              <FiDroplet size={12} style={{ color: 'var(--mantine-color-gray-5)' }} />
+              <FiDroplet size={12} className={classes.iconGray} />
               <Text size="xs" c="dimmed">Fuel</Text>
             </Group>
             <Text size="sm" fw={500} c="white">
@@ -160,7 +154,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
 
           <Box>
             <Group gap={4}>
-              <FiWind size={12} style={{ color: 'var(--mantine-color-gray-5)' }} />
+              <FiWind size={12} className={classes.iconGray} />
               <Text size="xs" c="dimmed">Avg Wind</Text>
             </Group>
             <Text
@@ -181,14 +175,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
       </Paper>
 
       {/* Flight Details */}
-      <Paper
-        p="md"
-        radius="md"
-        style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.6)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
-        }}
-      >
+      <Paper p="md" radius="md" className={classes.detailsPaper}>
         <Group gap="xl">
           <Box>
             <Text size="xs" c="dimmed">Departure Time</Text>
@@ -222,23 +209,13 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
               </Group>
             }
             labelPosition="left"
-            styles={{
-              label: { color: 'var(--mantine-color-gray-5)' },
-            }}
+            color="gray.5"
           />
           <NavLogTable navlog={navlogData} isRoundTrip={false} />
         </>
       ) : (
-        <Paper
-          p="lg"
-          radius="md"
-          ta="center"
-          style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.4)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-          }}
-        >
-          <FiMapPin size={32} style={{ opacity: 0.3, marginBottom: 8 }} />
+        <Paper p="lg" radius="md" ta="center" className={classes.emptyNavlogPaper}>
+          <FiMapPin size={32} className={classes.iconOpacity} />
           <Text size="sm" c="dimmed">
             No navigation log data available for this flight.
           </Text>

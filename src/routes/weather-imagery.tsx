@@ -19,6 +19,7 @@ import {
 import { FiCloud } from 'react-icons/fi';
 import { IMAGERY_PRODUCTS } from '@/utility/constants';
 import { ImageryProduct } from '@/utility/types';
+import classes from './weather-imagery.module.css';
 
 export const Route = createFileRoute('/weather-imagery')({
   component: WeatherSupportImageryPage,
@@ -133,12 +134,7 @@ function WeatherSupportImageryPage() {
   };
 
   return (
-    <Box
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-      }}
-    >
+    <Box className={classes.pageWrapper}>
       <Container size="lg" py={60}>
         <Stack gap="xl">
           {/* Header */}
@@ -156,14 +152,7 @@ function WeatherSupportImageryPage() {
           </Stack>
 
           {/* Product Selection */}
-          <Paper
-            p="lg"
-            radius="md"
-            style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
-            }}
-          >
+          <Paper p="lg" radius="md" className={classes.sectionPaper}>
             <Stack gap="md">
               <Text c="white" fw={600} size="sm">
                 Select Product
@@ -176,12 +165,6 @@ function WeatherSupportImageryPage() {
                     color={selectedProduct?.id === product.id ? 'blue' : 'gray'}
                     size="sm"
                     onClick={() => handleProductSelect(product)}
-                    style={{
-                      borderColor:
-                        selectedProduct?.id === product.id
-                          ? undefined
-                          : 'rgba(148, 163, 184, 0.3)',
-                    }}
                   >
                     {product.name}
                   </Button>
@@ -192,14 +175,7 @@ function WeatherSupportImageryPage() {
 
           {/* Filter Selection */}
           {selectedProduct && selectedProduct.filters && (
-            <Paper
-              p="lg"
-              radius="md"
-              style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
-              }}
-            >
+            <Paper p="lg" radius="md" className={classes.sectionPaper}>
               <Stack gap="md">
                 <Text c="white" fw={600} size="sm">
                   Configure Filters for {selectedProduct.name}
@@ -213,17 +189,6 @@ function WeatherSupportImageryPage() {
                       data={options?.map((option) => ({ value: option, label: option })) || []}
                       value={selectedFilters[filterName] || null}
                       onChange={(value) => handleFilterChange(filterName, value)}
-                      styles={{
-                        label: { color: 'var(--mantine-color-dimmed)', marginBottom: 4 },
-                        input: {
-                          backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                          borderColor: 'rgba(148, 163, 184, 0.2)',
-                          color: 'white',
-                          '&:focus': {
-                            borderColor: 'var(--mantine-color-blue-5)',
-                          },
-                        },
-                      }}
                     />
                   ))}
                 </SimpleGrid>
@@ -235,13 +200,9 @@ function WeatherSupportImageryPage() {
           {imageUrl && (
             <Paper
               radius="md"
-              style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
-                overflow: 'hidden',
-              }}
+              className={`${classes.sectionPaper} ${classes.imagePaperOverflow}`}
             >
-              <Box pos="relative" style={{ minHeight: isLoading ? 300 : undefined }}>
+              <Box pos="relative" mih={isLoading ? 300 : undefined}>
                 {isLoading && (
                   <Box
                     pos="absolute"
@@ -249,13 +210,7 @@ function WeatherSupportImageryPage() {
                     left={0}
                     right={0}
                     bottom={0}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                      zIndex: 10,
-                    }}
+                    className={classes.imageLoaderOverlay}
                   >
                     <Loader color="blue" size="lg" />
                   </Box>
@@ -275,14 +230,12 @@ function WeatherSupportImageryPage() {
                       setIsLoading(false);
                       setHasError(true);
                     }}
-                    style={{
-                      width: '100%',
-                      display: 'block',
-                    }}
+                    w="100%"
+                    display="block"
                   />
                 )}
               </Box>
-              <Group justify="space-between" p="md" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.1)' }}>
+              <Group justify="space-between" p="md" className={classes.imageFooter}>
                 <Stack gap={2}>
                   <Text c="white" fw={600}>
                     {selectedProduct?.name} Imagery
@@ -315,15 +268,7 @@ function WeatherSupportImageryPage() {
 
           {/* Help text when no product selected */}
           {!selectedProduct && (
-            <Paper
-              p="xl"
-              radius="md"
-              ta="center"
-              style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.5)',
-                border: '1px dashed rgba(148, 163, 184, 0.2)',
-              }}
-            >
+            <Paper p="xl" radius="md" ta="center" className={classes.emptyStatePaper}>
               <Stack align="center" gap="md">
                 <FiCloud size={48} color="var(--mantine-color-dimmed)" />
                 <Text c="dimmed" size="sm">
@@ -335,15 +280,7 @@ function WeatherSupportImageryPage() {
 
           {/* Help text when product selected but filters incomplete */}
           {selectedProduct && !imageUrl && (
-            <Paper
-              p="xl"
-              radius="md"
-              ta="center"
-              style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.5)',
-                border: '1px dashed rgba(148, 163, 184, 0.2)',
-              }}
-            >
+            <Paper p="xl" radius="md" ta="center" className={classes.emptyStatePaper}>
               <Stack align="center" gap="md">
                 <FiCloud size={48} color="var(--mantine-color-dimmed)" />
                 <Text c="dimmed" size="sm">

@@ -9,7 +9,8 @@
 }
 
 .header {
-  background-color: var(--mantine-color-vfr3dSurface-8);
+  background-color: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 

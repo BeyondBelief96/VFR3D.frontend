@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Text, Box, Badge } from '@mantine/core';
 import { StationBreakdownDto, WeightUnits, ArmUnits } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
+import classes from '../WeightBalance.module.css';
 
 interface WeightBreakdownTableProps {
   breakdown: StationBreakdownDto[];
@@ -39,76 +40,42 @@ export const WeightBreakdownTable: React.FC<WeightBreakdownTableProps> = ({
         highlightOnHover
         withTableBorder
         withColumnBorders
-        styles={{
-          table: {
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
-            borderColor: 'rgba(148, 163, 184, 0.2)',
-          },
-          thead: {
-            backgroundColor: 'rgba(15, 23, 42, 0.8)',
-          },
-          th: {
-            color: 'var(--mantine-color-gray-4)',
-            borderColor: 'rgba(148, 163, 184, 0.2)',
-            fontSize: '12px',
-            fontWeight: 600,
-            padding: '8px 12px',
-          },
-          td: {
-            color: 'white',
-            borderColor: 'rgba(148, 163, 184, 0.1)',
-            fontSize: '13px',
-            padding: '8px 12px',
-          },
-          tr: {
-            '&[data-striped]': {
-              backgroundColor: 'rgba(15, 23, 42, 0.3)',
-            },
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.05)',
-            },
-          },
-        }}
+        className={classes.breakdownTable}
       >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Station</Table.Th>
-            <Table.Th style={{ textAlign: 'right' }}>Weight ({weightLabel})</Table.Th>
-            <Table.Th style={{ textAlign: 'right' }}>Arm ({armLabel})</Table.Th>
-            <Table.Th style={{ textAlign: 'right' }}>Moment</Table.Th>
+            <Table.Th className={classes.textRight}>Weight ({weightLabel})</Table.Th>
+            <Table.Th className={classes.textRight}>Arm ({armLabel})</Table.Th>
+            <Table.Th className={classes.textRight}>Moment</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {breakdown.map((station, index) => (
             <Table.Tr key={station.stationId || index}>
               <Table.Td>{station.name || 'Unknown'}</Table.Td>
-              <Table.Td style={{ textAlign: 'right' }}>
+              <Table.Td className={classes.textRight}>
                 {station.weight?.toLocaleString(undefined, { maximumFractionDigits: 1 })}
               </Table.Td>
-              <Table.Td style={{ textAlign: 'right' }}>
+              <Table.Td className={classes.textRight}>
                 {station.arm?.toFixed(2)}
               </Table.Td>
-              <Table.Td style={{ textAlign: 'right' }}>
+              <Table.Td className={classes.textRight}>
                 {station.moment?.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </Table.Td>
             </Table.Tr>
           ))}
           {/* Totals row */}
-          <Table.Tr
-            style={{
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fontWeight: 600,
-            }}
-          >
+          <Table.Tr className={classes.totalRow}>
             <Table.Td>
               <Text fw={600} c="white" size="sm">Total</Text>
             </Table.Td>
-            <Table.Td style={{ textAlign: 'right' }}>
+            <Table.Td className={classes.textRight}>
               <Text fw={600} c="white" size="sm">
                 {totalWeight.toLocaleString(undefined, { maximumFractionDigits: 1 })}
               </Text>
             </Table.Td>
-            <Table.Td style={{ textAlign: 'right' }}>
+            <Table.Td className={classes.textRight}>
               <Badge
                 color={isWithinEnvelope === undefined ? 'gray' : isWithinEnvelope ? 'green' : 'red'}
                 variant="light"
@@ -117,7 +84,7 @@ export const WeightBreakdownTable: React.FC<WeightBreakdownTableProps> = ({
                 {cgArm.toFixed(2)}
               </Badge>
             </Table.Td>
-            <Table.Td style={{ textAlign: 'right' }}>
+            <Table.Td className={classes.textRight}>
               <Text fw={600} c="white" size="sm">
                 {totalMoment.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </Text>

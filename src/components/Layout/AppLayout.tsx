@@ -17,8 +17,15 @@ export function AppLayout() {
         header={{ height: 60 }}
         padding={0}
         classNames={{ main: classes.main }}
+        styles={{
+          header: {
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          },
+        }}
       >
-        <AppShell.Header className={classes.header}>
+        <AppShell.Header>
           <Header
             isViewerPage={isViewerPage}
             sidebarOpened={sidebarOpened}

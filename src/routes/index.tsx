@@ -658,7 +658,7 @@ interface StepCardProps {
 
 function StepCard({ step, icon, title, description }: StepCardProps) {
   return (
-    <Card padding="xl" radius="lg" className={classes.stepCard}>
+    <Card padding="xl" radius="lg" className={classes.stepCard} styles={{ root: { overflow: 'visible' } }}>
       {/* Step Number */}
       <Box className={classes.stepNumber}>
         <Text size="sm" fw={700} c="white">

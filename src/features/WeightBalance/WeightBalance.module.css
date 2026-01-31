@@ -218,3 +218,48 @@
 .cursorGrab {
   cursor: grab;
 }
+
+/* =============================================================================
+   WEIGHT BREAKDOWN TABLE
+   ============================================================================= */
+
+.breakdownTable {
+  background-color: rgba(15, 23, 42, 0.5);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+.breakdownTable thead {
+  background-color: rgba(15, 23, 42, 0.8);
+}
+
+.breakdownTable th {
+  color: var(--mantine-color-gray-4);
+  border-color: rgba(148, 163, 184, 0.2);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.breakdownTable td {
+  color: white;
+  border-color: rgba(148, 163, 184, 0.1);
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.breakdownTable tr[data-striped] {
+  background-color: rgba(15, 23, 42, 0.3);
+}
+
+.breakdownTable tr:hover {
+  background-color: rgba(148, 163, 184, 0.05);
+}
+
+.totalRow {
+  background-color: rgba(59, 130, 246, 0.1);
+  font-weight: 600;
+}
+
+.textRight {
+  text-align: right;
+}

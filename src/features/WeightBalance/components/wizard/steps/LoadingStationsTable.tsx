@@ -26,7 +26,7 @@ import {
   DEFAULT_FUEL_WEIGHT,
   DEFAULT_OIL_WEIGHT_PER_QUART,
 } from '../../../constants/defaults';
-import classes from '../../WeightBalance.module.css';
+import classes from '../../../WeightBalance.module.css';
 
 interface LoadingStationsTableProps {
   stations: LoadingStationDto[];
