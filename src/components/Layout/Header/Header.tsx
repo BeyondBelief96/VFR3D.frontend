@@ -55,6 +55,22 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
     loginWithRedirect();
   };
 
+  // Handle nav drawer toggle - close sidebar when opening drawer
+  const handleNavDrawerToggle = () => {
+    if (!mobileMenuOpened && sidebarOpened) {
+      toggleSidebar();
+    }
+    toggleMobileMenu();
+  };
+
+  // Handle sidebar toggle - close nav drawer when opening sidebar
+  const handleSidebarToggle = () => {
+    if (!sidebarOpened && mobileMenuOpened) {
+      closeMobileMenu();
+    }
+    toggleSidebar();
+  };
+
   const NavLinks = () => (
     <>
       {/* Public links */}
@@ -200,7 +216,7 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
                 variant="subtle"
                 color="gray"
                 size="lg"
-                onClick={toggleSidebar}
+                onClick={handleSidebarToggle}
                 aria-label="Toggle map settings sidebar"
               >
                 <TbLayoutSidebar size={22} />
@@ -283,7 +299,7 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
             {compactNav && (
               <Burger
                 opened={mobileMenuOpened}
-                onClick={toggleMobileMenu}
+                onClick={handleNavDrawerToggle}
                 size="sm"
                 color="white"
                 aria-label="Toggle navigation"
@@ -328,7 +344,7 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
           {compactNav && (
             <Burger
               opened={mobileMenuOpened}
-              onClick={toggleMobileMenu}
+              onClick={handleNavDrawerToggle}
               size="sm"
               color="white"
               aria-label="Toggle navigation"
