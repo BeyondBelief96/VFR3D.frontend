@@ -26,3 +26,9 @@
   background-color: var(--mantine-color-vfr3dSurface-9);
   border-right: 1px solid rgba(148, 163, 184, 0.1);
 }
+
+/* CSS variable for sidebar offset - used by BottomDrawer to avoid overlap */
+:root {
+  --app-sidebar-width: 320px;
+  --app-sidebar-offset: 0px;
+}

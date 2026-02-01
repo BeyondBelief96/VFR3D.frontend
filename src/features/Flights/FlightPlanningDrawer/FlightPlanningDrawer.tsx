@@ -35,6 +35,7 @@ import {
 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { BottomDrawer } from '@/components/Common/BottomDrawer';
+import { useSidebar } from '@/components/Layout/SidebarContext';
 import { FlightRouteBuilder } from '@/features/Flights';
 import { RootState, AppDispatch } from '@/redux/store';
 import {
@@ -92,6 +93,7 @@ export const FlightPlanningDrawer: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const sidebar = useSidebar();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -125,9 +127,12 @@ export const FlightPlanningDrawer: React.FC = () => {
   // Auto-open drawer when viewing a flight
   useEffect(() => {
     if (displayMode === FlightDisplayMode.VIEWING && activeFlightId) {
+      if (sidebar.isOpen) {
+        sidebar.close();
+      }
       setIsOpen(true);
     }
-  }, [displayMode, activeFlightId]);
+  }, [displayMode, activeFlightId, sidebar]);
 
   const {
     waypoints: flightPlanRoute,
@@ -176,7 +181,13 @@ export const FlightPlanningDrawer: React.FC = () => {
     }
   }, [dispatch, flightPlanRoute]);
 
-  const toggleDrawer = () => setIsOpen(!isOpen);
+  const toggleDrawer = () => {
+    const willOpen = !isOpen;
+    if (willOpen && sidebar.isOpen) {
+      sidebar.close();
+    }
+    setIsOpen(willOpen);
+  };
 
   const handleNextStep = () => {
     if (currentStep < 3) {
