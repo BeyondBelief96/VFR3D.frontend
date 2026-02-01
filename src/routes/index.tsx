@@ -29,8 +29,10 @@ import {
   FiArrowRight,
   FiCompass,
 } from 'react-icons/fi';
+import { FaPlane } from 'react-icons/fa';
 import { GiRadioTower, GiAirplaneDeparture } from 'react-icons/gi';
 import { TbPlane, TbRoute, TbMapPin } from 'react-icons/tb';
+import { useIsPhone } from '@/hooks';
 import logo from '@/assets/images/logo_2.png';
 import heroImage from '@/assets/images/hero.png';
 import weatherImage from '@/assets/images/weather.png';
@@ -44,6 +46,7 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const { isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
+  const isPhone = useIsPhone();
 
   return (
     <Box className={classes.pageWrapper}>
@@ -114,7 +117,35 @@ function HomePage() {
                 >
                   Get Started Free
                 </Button>
+              ) : isPhone ? (
+                // Phone users get mobile-friendly CTAs
+                <Group gap="sm">
+                  <Button
+                    size="xl"
+                    radius="md"
+                    variant="gradient"
+                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    component={Link}
+                    to="/airports"
+                    leftSection={<TbMapPin size={20} />}
+                    className={classes.heroCtaButton}
+                  >
+                    Look Up Airport
+                  </Button>
+                  <Button
+                    size="xl"
+                    radius="md"
+                    variant="light"
+                    color="blue"
+                    component={Link}
+                    to="/flights"
+                    leftSection={<FaPlane size={18} />}
+                  >
+                    My Flights
+                  </Button>
+                </Group>
               ) : (
+                // Tablet/Desktop users get the map CTA
                 <Button
                   size="xl"
                   radius="md"
@@ -522,6 +553,18 @@ function HomePage() {
                     rightSection={<FiArrowRight size={20} />}
                   >
                     Start Planning Now
+                  </Button>
+                ) : isPhone ? (
+                  <Button
+                    size="xl"
+                    radius="md"
+                    variant="gradient"
+                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    component={Link}
+                    to="/airports"
+                    leftSection={<TbMapPin size={20} />}
+                  >
+                    Look Up Airport
                   </Button>
                 ) : (
                   <Button

@@ -13,7 +13,8 @@ import {
   EllipsoidTerrainProvider,
 } from 'cesium';
 import { ProtectedRoute } from '@/components/Auth';
-import { LoadingScreen } from '@/components/Common';
+import { LoadingScreen, MapUnavailableMobile } from '@/components/Common';
+import { useIsPhone } from '@/hooks';
 import { CesiumViewerConfig, ImageryLayers, CameraControls } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -40,6 +41,17 @@ export const Route = createFileRoute('/map')({
 });
 
 function MapPage() {
+  const isPhone = useIsPhone();
+
+  // Show mobile-friendly message for phone users
+  if (isPhone) {
+    return (
+      <ProtectedRoute>
+        <MapUnavailableMobile />
+      </ProtectedRoute>
+    );
+  }
+
   return (
     <ProtectedRoute>
       <MapContent />

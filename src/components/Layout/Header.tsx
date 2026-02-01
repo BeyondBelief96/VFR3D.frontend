@@ -26,8 +26,10 @@ import {
   FiMail,
 } from 'react-icons/fi';
 import { FaPlane, FaPlaneDeparture, FaBalanceScale } from 'react-icons/fa';
+import { TbMapPin } from 'react-icons/tb';
 import AirportSearch from '../Search/AirportSearch';
 import logo from '@/assets/images/logo_2.png';
+import { useIsPhone } from '@/hooks';
 
 interface HeaderProps {
   isMapPage: boolean;
@@ -39,6 +41,10 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
   const { user, isAuthenticated, loginWithRedirect, logout, isLoading } = useAuth0();
   const [mobileMenuOpened, { toggle: toggleMobileMenu, close: closeMobileMenu }] =
     useDisclosure(false);
+  const isPhone = useIsPhone();
+
+  // On map page + phone, we show MapUnavailableMobile, so use regular header style
+  const showMapHeader = isMapPage && !isPhone;
 
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URI } });
@@ -46,6 +52,7 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
 
   const NavLinks = ({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) => (
     <>
+      {/* Public links */}
       <Button
         component={Link}
         to="/"
@@ -61,19 +68,6 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
       </Button>
       <Button
         component={Link}
-        to="/weather-imagery"
-        variant="subtle"
-        color="gray"
-        size={mobile ? 'md' : 'sm'}
-        leftSection={<FiCloud size={16} />}
-        onClick={onNavigate}
-        fullWidth={mobile}
-        justify={mobile ? 'flex-start' : 'center'}
-      >
-        Weather
-      </Button>
-      <Button
-        component={Link}
         to="/contact"
         variant="subtle"
         color="gray"
@@ -85,8 +79,24 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
       >
         Contact
       </Button>
+
+      {/* Authenticated links */}
       {isAuthenticated && (
         <>
+          {/* Airports - available on all devices, prominent for phones */}
+          <Button
+            component={Link}
+            to="/airports"
+            variant="subtle"
+            color="gray"
+            size={mobile ? 'md' : 'sm'}
+            leftSection={<TbMapPin size={16} />}
+            onClick={onNavigate}
+            fullWidth={mobile}
+            justify={mobile ? 'flex-start' : 'center'}
+          >
+            Airports
+          </Button>
           <Button
             component={Link}
             to="/flights"
@@ -126,6 +136,20 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
           >
             W&B
           </Button>
+          <Button
+            component={Link}
+            to="/weather-imagery"
+            variant="subtle"
+            color="gray"
+            size={mobile ? 'md' : 'sm'}
+            leftSection={<FiCloud size={16} />}
+            onClick={onNavigate}
+            fullWidth={mobile}
+            justify={mobile ? 'flex-start' : 'center'}
+          >
+            Weather
+          </Button>
+
           <Button
             component={Link}
             to="/map"
@@ -186,8 +210,8 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
     );
   };
 
-  // Viewer page header - compact with search
-  if (isMapPage) {
+  // Viewer page header - compact with search (only on tablet/desktop)
+  if (showMapHeader) {
     return (
       <Group h="100%" px="md" justify="space-between">
         <Group>
@@ -216,13 +240,13 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
           </Button>
           <Button
             component={Link}
-            to="/weather-imagery"
+            to="/airports"
             variant="subtle"
             color="gray"
             size="sm"
-            leftSection={<FiCloud size={16} />}
+            leftSection={<TbMapPin size={16} />}
           >
-            Weather
+            Airports
           </Button>
           <Button
             component={Link}
@@ -253,6 +277,16 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
             leftSection={<FaBalanceScale size={14} />}
           >
             W&B
+          </Button>
+          <Button
+            component={Link}
+            to="/weather-imagery"
+            variant="subtle"
+            color="gray"
+            size="sm"
+            leftSection={<FiCloud size={16} />}
+          >
+            Weather
           </Button>
         </Group>
 

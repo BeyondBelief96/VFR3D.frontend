@@ -19,9 +19,11 @@ import {
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
+import { TbMapPin } from 'react-icons/tb';
 import { ProtectedRoute } from '@/components/Auth';
 import { useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
+import { useIsPhone } from '@/hooks';
 import { useGetFlightsQuery, useDeleteFlightMutation } from '@/redux/api/vfr3d/flights.api';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 
@@ -214,6 +216,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
 function FlightsContent() {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [flightToDelete, setFlightToDelete] = useState<string | null>(null);
@@ -262,15 +265,27 @@ function FlightsContent() {
           <Title order={1} c="white">
             My Flights
           </Title>
-          <Button
-            leftSection={<FiPlus />}
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-            component={Link}
-            to="/map"
-          >
-            Plan New Flight
-          </Button>
+          {isPhone ? (
+            <Button
+              leftSection={<TbMapPin size={18} />}
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              component={Link}
+              to="/airports"
+            >
+              Look Up Airport
+            </Button>
+          ) : (
+            <Button
+              leftSection={<FiPlus />}
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              component={Link}
+              to="/map"
+            >
+              Plan New Flight
+            </Button>
+          )}
         </Group>
 
         {isLoading && (
@@ -319,15 +334,27 @@ function FlightsContent() {
                 Start planning your first flight to see it here. Your saved flights will appear on
                 this page.
               </Text>
-              <Button
-                variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-                component={Link}
-                to="/map"
-                leftSection={<FiPlus />}
-              >
-                Plan Your First Flight
-              </Button>
+              {isPhone ? (
+                <Button
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  component={Link}
+                  to="/airports"
+                  leftSection={<TbMapPin size={18} />}
+                >
+                  Look Up Airport
+                </Button>
+              ) : (
+                <Button
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  component={Link}
+                  to="/map"
+                  leftSection={<FiPlus />}
+                >
+                  Plan Your First Flight
+                </Button>
+              )}
             </Stack>
           </Card>
         )}
