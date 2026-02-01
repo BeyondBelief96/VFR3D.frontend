@@ -8,6 +8,10 @@ export const DEVICE_BREAKPOINTS = {
   desktop: 1024, // > 1024px
 } as const;
 
+export const NAV_BREAKPOINTS = {
+  compact: 1400, // Collapse nav links at this width
+} as const;
+
 /**
  * Returns the current device type based on screen width.
  * SSR-safe - defaults to 'desktop' on server.
@@ -53,4 +57,12 @@ export function useIsTablet(): boolean {
  */
 export function useIsDesktop(): boolean {
   return useMediaQuery(`(min-width: ${DEVICE_BREAKPOINTS.desktop + 1}px)`, true) ?? true;
+}
+
+/**
+ * Returns true when nav links should collapse into hamburger menu (< 1400px).
+ * SSR-safe - defaults to false on server.
+ */
+export function useCompactNav(): boolean {
+  return useMediaQuery(`(max-width: ${NAV_BREAKPOINTS.compact}px)`, false) ?? false;
 }

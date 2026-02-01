@@ -7,6 +7,8 @@ export {
   useIsPhone,
   useIsTablet,
   useIsDesktop,
+  useCompactNav,
   DEVICE_BREAKPOINTS,
+  NAV_BREAKPOINTS,
   type DeviceType,
 } from './useDeviceType';

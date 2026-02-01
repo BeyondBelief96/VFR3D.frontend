@@ -1,4 +1,4 @@
-import { Stack, ScrollArea, Text, Box, ActionIcon, Group, Paper } from '@mantine/core';
+import { Stack, ScrollArea, Text, Box, ActionIcon, Group } from '@mantine/core';
 import { Accordion } from '@mantine/core';
 import { FiMap, FiNavigation, FiCloud, FiLayers, FiAlertTriangle, FiX } from 'react-icons/fi';
 import { FaPlaneArrival } from 'react-icons/fa';
@@ -13,53 +13,36 @@ import ObstacleOptions from './ObstacleOptions';
 import classes from './Sidebar.module.css';
 
 interface SidebarProps {
-  isOpen: boolean;
-  toggleOpen: () => void;
+  onClose: () => void;
 }
 
-export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
+export function Sidebar({ onClose }: SidebarProps) {
   return (
-    <Box className={classes.container}>
-      {/* Sidebar container */}
-      <Paper
-        shadow="xl"
-        radius={0}
-        className={`${classes.panel} ${isOpen ? classes.panelOpen : classes.panelClosed}`}
-        bg="var(--mantine-color-vfr3dSurface-9)"
-      >
-        <Stack gap={0} h="100%" p="md">
-          {/* Header */}
-          <Group
-            justify="space-between"
-            pb="md"
-            className={classes.headerBorder}
-          >
-            <Box>
-              <Text size="lg" fw={600} c="white">
-                Viewer Settings
-              </Text>
-              <Text size="xs" c="dimmed">
-                Adjust layers, overlays, and route styling
-              </Text>
-            </Box>
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              onClick={toggleOpen}
-            >
-              <FiX size={20} />
-            </ActionIcon>
-          </Group>
+    <Stack gap={0} h="100%" p="md" bg="var(--mantine-color-vfr3dSurface-9)">
+      {/* Header */}
+      <Group justify="space-between" pb="md" className={classes.headerBorder}>
+        <Box>
+          <Text size="lg" fw={600} c="white">
+            Map Settings
+          </Text>
+          <Text size="xs" c="dimmed">
+            Layers, overlays, and styling
+          </Text>
+        </Box>
+        <ActionIcon variant="subtle" color="gray" onClick={onClose} aria-label="Close sidebar">
+          <FiX size={20} />
+        </ActionIcon>
+      </Group>
 
-          {/* Scrollable Content */}
-          <ScrollArea flex={1} pt="md" scrollbarSize={6}>
+      {/* Scrollable Content */}
+      <ScrollArea flex={1} pt="md" scrollbarSize={6}>
         <Accordion
           multiple
           variant="separated"
           radius="md"
           styles={{
             item: {
-              backgroundColor: 'rgba(30, 41, 59, 0.5)',
+              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
               border: '1px solid rgba(148, 163, 184, 0.1)',
             },
             control: {
@@ -87,7 +70,9 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="route">
-            <Accordion.Control icon={<FiNavigation size={18} color="var(--mantine-color-vfrGreen-5)" />}>
+            <Accordion.Control
+              icon={<FiNavigation size={18} color="var(--mantine-color-vfrGreen-5)" />}
+            >
               Route Colors
             </Accordion.Control>
             <Accordion.Panel>
@@ -96,7 +81,9 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="airports">
-            <Accordion.Control icon={<FaPlaneArrival size={18} color="var(--mantine-color-warningYellow-5)" />}>
+            <Accordion.Control
+              icon={<FaPlaneArrival size={18} color="var(--mantine-color-warningYellow-5)" />}
+            >
               Airports
             </Accordion.Control>
             <Accordion.Panel>
@@ -105,7 +92,9 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="pireps">
-            <Accordion.Control icon={<FiCloud size={18} color="var(--mantine-color-lifrPurple-5)" />}>
+            <Accordion.Control
+              icon={<FiCloud size={18} color="var(--mantine-color-lifrPurple-5)" />}
+            >
               PIREPs
             </Accordion.Control>
             <Accordion.Panel>
@@ -123,7 +112,9 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="airsigmets">
-            <Accordion.Control icon={<FiAlertTriangle size={18} color="var(--mantine-color-orange-5)" />}>
+            <Accordion.Control
+              icon={<FiAlertTriangle size={18} color="var(--mantine-color-orange-5)" />}
+            >
               AIRMETs / SIGMETs
             </Accordion.Control>
             <Accordion.Panel>
@@ -132,7 +123,9 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="obstacles">
-            <Accordion.Control icon={<GiRadioTower size={18} color="var(--mantine-color-ifrRed-5)" />}>
+            <Accordion.Control
+              icon={<GiRadioTower size={18} color="var(--mantine-color-ifrRed-5)" />}
+            >
               Obstacles
             </Accordion.Control>
             <Accordion.Panel>
@@ -140,10 +133,8 @@ export function Sidebar({ isOpen, toggleOpen }: SidebarProps) {
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
-          </ScrollArea>
-        </Stack>
-      </Paper>
-    </Box>
+      </ScrollArea>
+    </Stack>
   );
 }
 
