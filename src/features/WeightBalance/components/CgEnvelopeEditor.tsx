@@ -13,8 +13,11 @@ import {
   Tooltip,
   Table,
   SegmentedControl,
+  SimpleGrid,
+  Badge,
 } from '@mantine/core';
-import { FiPlus, FiTrash2, FiMove, FiInfo } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiMove, FiInfo, FiChevronUp, FiChevronDown } from 'react-icons/fi';
+import { useIsPhone } from '@/hooks';
 import {
   DndContext,
   closestCenter,
@@ -146,6 +149,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
   weightUnits,
   onChange,
 }) => {
+  const isPhone = useIsPhone();
   const [activeTab, setActiveTab] = useState<string | null>(envelopes.length > 0 ? '0' : null);
 
   const sensors = useSensors(
@@ -316,6 +320,99 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
     onChange(newEnvelopes);
   };
 
+  // Move point up/down for mobile (simpler than drag-and-drop)
+  const handleMovePoint = (envelopeIndex: number, pointIndex: number, direction: 'up' | 'down') => {
+    const envelope = envelopes[envelopeIndex];
+    const points = [...(envelope.limits || [])];
+    const newIndex = direction === 'up' ? pointIndex - 1 : pointIndex + 1;
+
+    if (newIndex < 0 || newIndex >= points.length) return;
+
+    const newEnvelopes = [...envelopes];
+    newEnvelopes[envelopeIndex] = {
+      ...newEnvelopes[envelopeIndex],
+      limits: arrayMove(points, pointIndex, newIndex),
+    };
+    onChange(newEnvelopes);
+  };
+
+  // Render mobile card for a single point
+  const renderMobilePointCard = (
+    point: CgEnvelopePointDto,
+    pointIndex: number,
+    envelopeIndex: number,
+    totalPoints: number,
+    xAxisHeader: string,
+    isMomentFormat: boolean
+  ) => {
+    const xAxisValue = isMomentFormat
+      ? point.momentDividedBy1000 ?? ''
+      : point.arm ?? '';
+
+    return (
+      <Paper
+        key={`point-${pointIndex}`}
+        p="sm"
+        mb="xs"
+        withBorder
+        style={{ borderColor: 'rgba(148, 163, 184, 0.3)' }}
+      >
+        <Group justify="space-between" mb="xs">
+          <Badge size="sm" variant="light" color="gray">
+            Point {pointIndex + 1}
+          </Badge>
+          <Group gap="xs">
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="lg"
+              disabled={pointIndex === 0}
+              onClick={() => handleMovePoint(envelopeIndex, pointIndex, 'up')}
+            >
+              <FiChevronUp size={18} />
+            </ActionIcon>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="lg"
+              disabled={pointIndex === totalPoints - 1}
+              onClick={() => handleMovePoint(envelopeIndex, pointIndex, 'down')}
+            >
+              <FiChevronDown size={18} />
+            </ActionIcon>
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              size="lg"
+              onClick={() => handleRemovePoint(envelopeIndex, pointIndex)}
+            >
+              <FiTrash2 size={18} />
+            </ActionIcon>
+          </Group>
+        </Group>
+
+        <SimpleGrid cols={2} spacing="xs">
+          <NumberInput
+            label={`Weight (${weightLabel})`}
+            placeholder="0"
+            value={point.weight ?? ''}
+            onChange={(value) => handlePointChange(envelopeIndex, pointIndex, 'weight', Number(value) || 0)}
+            min={0}
+            size="sm"
+          />
+          <NumberInput
+            label={xAxisHeader}
+            placeholder={isMomentFormat ? "0.0" : "0.0"}
+            value={xAxisValue}
+            onChange={(value) => handleXAxisChange(envelopeIndex, pointIndex, Number(value) || 0)}
+            decimalScale={isMomentFormat ? 1 : 2}
+            size="sm"
+          />
+        </SimpleGrid>
+      </Paper>
+    );
+  };
+
   return (
     <Stack gap="md">
       {envelopes.length === 0 ? (
@@ -337,18 +434,20 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
       ) : (
         <>
           <Tabs value={activeTab} onChange={setActiveTab}>
-            <Group justify="space-between" align="flex-end" mb="xs">
-              <Tabs.List>
-                {envelopes.map((envelope, index) => (
-                  <Tabs.Tab key={index} value={String(index)}>
-                    {envelope.name || `Envelope ${index + 1}`}
-                  </Tabs.Tab>
-                ))}
-              </Tabs.List>
+            <Group justify="space-between" align="flex-end" mb="xs" wrap="nowrap" gap="xs">
+              <Box style={{ overflow: 'auto', flex: 1 }}>
+                <Tabs.List style={{ flexWrap: 'nowrap' }}>
+                  {envelopes.map((envelope, index) => (
+                    <Tabs.Tab key={index} value={String(index)} style={{ whiteSpace: 'nowrap' }}>
+                      {envelope.name || `Envelope ${index + 1}`}
+                    </Tabs.Tab>
+                  ))}
+                </Tabs.List>
+              </Box>
               <Button
                 variant="subtle"
-                size="xs"
-                leftSection={<FiPlus size={12} />}
+                size={isPhone ? 'sm' : 'xs'}
+                leftSection={<FiPlus size={isPhone ? 14 : 12} />}
                 onClick={handleAddEnvelope}
               >
                 Add
@@ -360,40 +459,76 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                 <Paper p="md" className={classes.envelopePanelPaper}>
                   <Stack gap="md">
                     {/* Envelope name and format */}
-                    <Group justify="space-between" align="flex-end" wrap="wrap" gap="md">
-                      <Group gap="md" align="flex-end">
+                    {isPhone ? (
+                      <Stack gap="sm">
                         <TextInput
                           label="Envelope Name"
                           placeholder="e.g., Normal, Utility"
                           value={envelope.name || ''}
                           onChange={(e) => handleEnvelopeNameChange(envelopeIndex, e.target.value)}
                           size="sm"
-                          miw={180}
                         />
                         <Box>
                           <Text size="xs" c="gray.4" mb={4}>X-Axis Format</Text>
                           <SegmentedControl
                             size="xs"
+                            fullWidth
                             value={envelope.format || CgEnvelopeFormat.Arm}
                             onChange={(value) => handleFormatChange(envelopeIndex, value as CgEnvelopeFormat)}
                             data={[
                               { label: 'CG Arm', value: CgEnvelopeFormat.Arm },
-                              { label: 'Moment ÷ 1000', value: CgEnvelopeFormat.MomentDividedBy1000 },
+                              { label: 'Mom ÷ 1000', value: CgEnvelopeFormat.MomentDividedBy1000 },
                             ]}
                             className={classes.segmentedControlRoot}
                           />
                         </Box>
+                        <Button
+                          variant="subtle"
+                          color="red"
+                          size="sm"
+                          fullWidth
+                          leftSection={<FiTrash2 size={14} />}
+                          onClick={() => handleRemoveEnvelope(envelopeIndex)}
+                        >
+                          Delete Envelope
+                        </Button>
+                      </Stack>
+                    ) : (
+                      <Group justify="space-between" align="flex-end" wrap="wrap" gap="md">
+                        <Group gap="md" align="flex-end">
+                          <TextInput
+                            label="Envelope Name"
+                            placeholder="e.g., Normal, Utility"
+                            value={envelope.name || ''}
+                            onChange={(e) => handleEnvelopeNameChange(envelopeIndex, e.target.value)}
+                            size="sm"
+                            miw={180}
+                          />
+                          <Box>
+                            <Text size="xs" c="gray.4" mb={4}>X-Axis Format</Text>
+                            <SegmentedControl
+                              size="xs"
+                              value={envelope.format || CgEnvelopeFormat.Arm}
+                              onChange={(value) => handleFormatChange(envelopeIndex, value as CgEnvelopeFormat)}
+                              data={[
+                                { label: 'CG Arm', value: CgEnvelopeFormat.Arm },
+                                { label: 'Moment ÷ 1000', value: CgEnvelopeFormat.MomentDividedBy1000 },
+                              ]}
+                              className={classes.segmentedControlRoot}
+                            />
+                          </Box>
+                        </Group>
+                        <Button
+                          variant="subtle"
+                          color="red"
+                          size="xs"
+                          leftSection={<FiTrash2 size={12} />}
+                          onClick={() => handleRemoveEnvelope(envelopeIndex)}
+                        >
+                          Delete Envelope
+                        </Button>
                       </Group>
-                      <Button
-                        variant="subtle"
-                        color="red"
-                        size="xs"
-                        leftSection={<FiTrash2 size={12} />}
-                        onClick={() => handleRemoveEnvelope(envelopeIndex)}
-                      >
-                        Delete Envelope
-                      </Button>
-                    </Group>
+                    )}
 
                     {/* Points section */}
                     <Box>
@@ -439,19 +574,43 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                           ? `Moment ÷ 1000 (${weightLabel}-${armLabel})`
                           : `CG Arm (${armLabel})`;
                         const xAxisLabel = isMomentFormat ? '' : armLabel;
+                        const points = envelope.limits || [];
 
-                        return (envelope.limits || []).length === 0 ? (
-                          <Text size="sm" c="dimmed" ta="center" py="md">
-                            Add points to define the envelope boundary. Minimum 3 points required.
-                          </Text>
-                        ) : (
+                        if (points.length === 0) {
+                          return (
+                            <Text size="sm" c="dimmed" ta="center" py="md">
+                              Add points to define the envelope boundary. Minimum 3 points required.
+                            </Text>
+                          );
+                        }
+
+                        // Mobile: Card-based layout with up/down buttons
+                        if (isPhone) {
+                          return (
+                            <Stack gap="xs">
+                              {points.map((point, pointIndex) =>
+                                renderMobilePointCard(
+                                  point,
+                                  pointIndex,
+                                  envelopeIndex,
+                                  points.length,
+                                  isMomentFormat ? 'Mom ÷ 1000' : `Arm (${armLabel})`,
+                                  isMomentFormat
+                                )
+                              )}
+                            </Stack>
+                          );
+                        }
+
+                        // Desktop: Table with drag-and-drop
+                        return (
                           <DndContext
                             sensors={sensors}
                             collisionDetection={closestCenter}
                             onDragEnd={(e) => handleDragEnd(envelopeIndex, e)}
                           >
                             <SortableContext
-                              items={(envelope.limits || []).map((_, i) => `point-${i}`)}
+                              items={points.map((_, i) => `point-${i}`)}
                               strategy={verticalListSortingStrategy}
                             >
                               <Table
@@ -469,7 +628,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                                   </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                  {(envelope.limits || []).map((point, pointIndex) => (
+                                  {points.map((point, pointIndex) => (
                                     <SortablePointRow
                                       key={`point-${pointIndex}`}
                                       id={`point-${pointIndex}`}
@@ -492,8 +651,9 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
 
                       <Button
                         variant="light"
-                        size="xs"
-                        leftSection={<FiPlus size={12} />}
+                        size={isPhone ? 'sm' : 'xs'}
+                        fullWidth={isPhone}
+                        leftSection={<FiPlus size={isPhone ? 14 : 12} />}
                         onClick={() => handleAddPoint(envelopeIndex)}
                         mt="sm"
                       >

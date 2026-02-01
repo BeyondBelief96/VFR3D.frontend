@@ -23,7 +23,7 @@ import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 import {
   useGetWeightBalanceProfilesQuery,
   useDeleteWeightBalanceProfileMutation,
@@ -55,6 +55,7 @@ function WeightBalanceContent() {
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [editingProfile, setEditingProfile] = useState<WeightBalanceProfileDto | null>(null);
@@ -189,22 +190,24 @@ function WeightBalanceContent() {
     return (
       <Container
         size="xl"
-        py="xl"
+        py={isPhone ? 'md' : 'xl'}
+        px={isPhone ? 'sm' : undefined}
         style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
       >
-        <Stack gap="lg">
-          <Group justify="space-between" align="center">
-            <Group gap="sm">
+        <Stack gap={isPhone ? 'md' : 'lg'}>
+          <Group justify="space-between" align="center" wrap="wrap" gap="sm">
+            <Group gap="sm" wrap={isPhone ? 'wrap' : 'nowrap'}>
               <Button
                 variant="subtle"
                 color="gray"
-                leftSection={<FiArrowLeft size={16} />}
+                leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
                 onClick={handleCancel}
+                size={isPhone ? 'sm' : 'md'}
               >
                 Back
               </Button>
-              <Title order={2} c="white">
-                {viewMode === 'create' ? 'Create Weight & Balance Profile' : 'Edit Weight & Balance Profile'}
+              <Title order={isPhone ? 3 : 2} c="white">
+                {viewMode === 'create' ? 'Create W&B Profile' : 'Edit W&B Profile'}
               </Title>
             </Group>
           </Group>
@@ -225,23 +228,25 @@ function WeightBalanceContent() {
     return (
       <Container
         size="xl"
-        py="xl"
+        py={isPhone ? 'md' : 'xl'}
+        px={isPhone ? 'sm' : undefined}
         style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
       >
-        <Stack gap="lg">
+        <Stack gap={isPhone ? 'md' : 'lg'}>
           <Group justify="space-between" align="center">
             <Button
               variant="subtle"
               color="gray"
-              leftSection={<FiArrowLeft size={16} />}
+              leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
               onClick={handleCancel}
+              size={isPhone ? 'sm' : 'md'}
             >
-              Back to Profiles
+              {isPhone ? 'Back' : 'Back to Profiles'}
             </Button>
           </Group>
 
           <Card
-            padding="xl"
+            padding={isPhone ? 'sm' : 'xl'}
             radius="md"
             style={{
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
@@ -253,6 +258,7 @@ function WeightBalanceContent() {
               preselectedAircraftId={selectedAircraftForCalc}
               standaloneState={standaloneState}
               persistCalculations
+              compact={isPhone}
             />
           </Card>
         </Stack>
@@ -264,11 +270,12 @@ function WeightBalanceContent() {
   return (
     <Container
       size="xl"
-      py="xl"
+      py={isPhone ? 'md' : 'xl'}
+      px={isPhone ? 'sm' : undefined}
       style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
-      <Stack gap="lg">
-        <Group justify="space-between" align="flex-start" wrap="wrap" gap="md">
+      <Stack gap={isPhone ? 'md' : 'lg'}>
+        <Group justify="space-between" align="flex-start" wrap="wrap" gap={isPhone ? 'xs' : 'md'}>
           <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
             {!isPhone && (
               <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
@@ -279,18 +286,20 @@ function WeightBalanceContent() {
               <Title order={isPhone ? 2 : 1} c="white">
                 Weight & Balance
               </Title>
-              <Text size="sm" c="dimmed">
-                Manage your W&B profiles and calculate for your flights
-              </Text>
+              {!isPhone && (
+                <Text size="sm" c="dimmed">
+                  Manage your W&B profiles and calculate for your flights
+                </Text>
+              )}
             </Box>
           </Group>
-          <Group gap="sm" wrap="wrap">
+          <Group gap={isPhone ? 'xs' : 'sm'} wrap="wrap" grow={isPhone} style={isPhone ? { width: '100%' } : undefined}>
             <Button
               variant="gradient"
               gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
               color="blue"
               size={isPhone ? 'sm' : 'md'}
-              leftSection={<FaBalanceScale size={14} />}
+              leftSection={<FaBalanceScale size={isPhone ? 12 : 14} />}
               onClick={() => {
                 setSelectedProfileForCalc(undefined);
                 setSelectedAircraftForCalc(undefined);
@@ -300,7 +309,7 @@ function WeightBalanceContent() {
               {isPhone ? 'Calculator' : 'Open Calculator'}
             </Button>
             <Button
-              leftSection={<FiPlus />}
+              leftSection={<FiPlus size={isPhone ? 14 : 16} />}
               size={isPhone ? 'sm' : 'md'}
               variant="gradient"
               gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
@@ -329,18 +338,18 @@ function WeightBalanceContent() {
 
         {!isLoading && !isError && profiles.length === 0 && (
           <Card
-            padding="xl"
+            padding={isPhone ? 'md' : 'xl'}
             radius="md"
             style={{
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
               border: '1px solid rgba(148, 163, 184, 0.1)',
             }}
           >
-            <Stack align="center" gap="lg" py="xl">
+            <Stack align="center" gap={isPhone ? 'md' : 'lg'} py={isPhone ? 'md' : 'xl'}>
               <Box
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: isPhone ? 64 : 80,
+                  height: isPhone ? 64 : 80,
                   borderRadius: '50%',
                   backgroundColor: 'rgba(59, 130, 246, 0.1)',
                   display: 'flex',
@@ -348,12 +357,12 @@ function WeightBalanceContent() {
                   justifyContent: 'center',
                 }}
               >
-                <FaBalanceScale size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaBalanceScale size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
               </Box>
-              <Text c="white" size="lg" fw={500}>
+              <Text c="white" size={isPhone ? 'md' : 'lg'} fw={500}>
                 No Weight & Balance Profiles
               </Text>
-              <Text c="dimmed" ta="center" maw={400}>
+              <Text c="dimmed" ta="center" maw={400} size={isPhone ? 'sm' : 'md'} px={isPhone ? 'xs' : undefined}>
                 Create a weight & balance profile for your aircraft to calculate takeoff and
                 landing weights, and verify CG is within limits.
               </Text>
@@ -362,6 +371,8 @@ function WeightBalanceContent() {
                 gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
+                size={isPhone ? 'sm' : 'md'}
+                fullWidth={isPhone}
               >
                 Create Your First Profile
               </Button>
@@ -385,6 +396,7 @@ function WeightBalanceContent() {
                 },
               },
               control: {
+                padding: isPhone ? 'var(--mantine-spacing-xs) var(--mantine-spacing-sm)' : undefined,
                 '&:hover': {
                   backgroundColor: 'rgba(148, 163, 184, 0.05)',
                 },
@@ -392,38 +404,41 @@ function WeightBalanceContent() {
               chevron: {
                 color: 'var(--mantine-color-gray-5)',
               },
+              content: {
+                padding: isPhone ? 'var(--mantine-spacing-xs)' : undefined,
+              },
             }}
           >
             {profilesByAircraft.map(([aircraftId, { aircraft: aircraftData, profiles: aircraftProfiles }]) => (
               <Accordion.Item key={aircraftId || 'no-aircraft'} value={aircraftId || 'no-aircraft'}>
                 <Accordion.Control>
-                  <Group gap="md">
+                  <Group gap={isPhone ? 'xs' : 'md'} wrap="nowrap">
                     <ThemeIcon
-                      size="md"
+                      size={isPhone ? 'sm' : 'md'}
                       variant="light"
                       color={aircraftData ? 'blue' : 'gray'}
                     >
-                      <FaPlane size={14} />
+                      <FaPlane size={isPhone ? 12 : 14} />
                     </ThemeIcon>
-                    <Box>
-                      <Text c="white" fw={500}>
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <Text c="white" fw={500} size={isPhone ? 'sm' : 'md'} lineClamp={1}>
                         {aircraftData
                           ? `${aircraftData.tailNumber || 'N/A'} - ${aircraftData.aircraftType || 'Unknown'}`
                           : 'No Aircraft Assigned'}
                       </Text>
-                      {aircraftData?.callSign && (
+                      {aircraftData?.callSign && !isPhone && (
                         <Text size="xs" c="dimmed">
                           Call Sign: {aircraftData.callSign}
                         </Text>
                       )}
                     </Box>
-                    <Badge size="sm" variant="light" color={aircraftData ? 'blue' : 'gray'}>
+                    <Badge size={isPhone ? 'xs' : 'sm'} variant="light" color={aircraftData ? 'blue' : 'gray'}>
                       {aircraftProfiles.length} profile{aircraftProfiles.length !== 1 ? 's' : ''}
                     </Badge>
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
+                  <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing={isPhone ? 'xs' : 'md'}>
                     {aircraftProfiles.map((profile) => (
                       <WeightBalanceProfileCard
                         key={profile.id}
@@ -446,23 +461,24 @@ function WeightBalanceContent() {
       <Modal
         opened={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        title="Delete Weight & Balance Profile"
+        title="Delete W&B Profile"
         centered
-        size={isPhone ? '100%' : 'md'}
+        size={isPhone ? '100%' : isTablet ? 'lg' : 'md'}
         fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-            padding: '16px 20px',
+            padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
             fontWeight: 600,
             color: 'white',
+            fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            padding: '20px',
+            padding: isPhone ? '16px' : '20px',
           },
           content: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -475,26 +491,26 @@ function WeightBalanceContent() {
           },
         }}
       >
-        <Stack gap="md">
+        <Stack gap={isPhone ? 'sm' : 'md'}>
           {profileBeingDeleted && (
             <Box
-              p="md"
+              p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: 'rgba(15, 23, 42, 0.5)',
                 borderRadius: 'var(--mantine-radius-md)',
                 border: '1px solid rgba(148, 163, 184, 0.1)',
               }}
             >
-              <Group gap="sm">
-                <ThemeIcon size="lg" radius="xl" color="blue" variant="light">
-                  <FaBalanceScale size={16} />
+              <Group gap="sm" wrap="nowrap">
+                <ThemeIcon size={isPhone ? 'md' : 'lg'} radius="xl" color="blue" variant="light">
+                  <FaBalanceScale size={isPhone ? 14 : 16} />
                 </ThemeIcon>
-                <Box>
-                  <Text c="white" fw={600}>
+                <Box style={{ minWidth: 0, flex: 1 }}>
+                  <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'} lineClamp={1}>
                     {profileBeingDeleted.profileName || 'Unnamed Profile'}
                   </Text>
                   {aircraftForDeletedProfile && (
-                    <Text c="dimmed" size="sm">
+                    <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
                       {aircraftForDeletedProfile.tailNumber} - {aircraftForDeletedProfile.aircraftType}
                     </Text>
                   )}
@@ -506,23 +522,36 @@ function WeightBalanceContent() {
           <Alert
             color="orange"
             variant="light"
-            icon={<FiAlertTriangle size={18} />}
+            icon={<FiAlertTriangle size={isPhone ? 16 : 18} />}
             title="This action will permanently delete:"
+            styles={{
+              title: { fontSize: isPhone ? '0.875rem' : undefined },
+            }}
           >
-            <Text size="sm" c="orange.3">
+            <Text size={isPhone ? 'xs' : 'sm'} c="orange.3">
               This weight & balance profile and all its configuration data including loading stations and CG envelopes.
             </Text>
           </Alert>
 
-          <Text c="dimmed" size="sm">
+          <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
             This action cannot be undone.
           </Text>
 
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+          <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={() => setDeleteModalOpen(false)}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Cancel
             </Button>
-            <Button color="red" onClick={handleDeleteConfirm} loading={isDeleting}>
+            <Button
+              color="red"
+              onClick={handleDeleteConfirm}
+              loading={isDeleting}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Delete Profile
             </Button>
           </Group>

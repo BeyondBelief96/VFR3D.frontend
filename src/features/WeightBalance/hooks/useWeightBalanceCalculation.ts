@@ -76,6 +76,13 @@ export interface UseWeightBalanceCalculationOptions {
    * - false: Uses calculate endpoint, result is ephemeral
    */
   persistCalculations?: boolean;
+
+  /**
+   * Whether to automatically calculate on initial load if there are valid saved inputs.
+   * This is useful when restoring a standaloneState that has inputs but no results.
+   * Default: false
+   */
+  autoCalculateOnLoad?: boolean;
 }
 
 /**
@@ -271,7 +278,7 @@ export function useWeightBalanceCalculation(
   profile: WeightBalanceProfileDto | null,
   options?: UseWeightBalanceCalculationOptions
 ): UseWeightBalanceCalculationReturn {
-  const { initialState, autoFuelBurn, flightId, persistCalculations = false } = options || {};
+  const { initialState, autoFuelBurn, flightId, persistCalculations = false, autoCalculateOnLoad = false } = options || {};
 
   // API mutations
   const [calculate, { isLoading: isCalculating }] = useCalculateWeightBalanceMutation();
@@ -293,6 +300,9 @@ export function useWeightBalanceCalculation(
 
   // Track initialization to prevent re-running setup
   const initializedProfileIdRef = useRef<string | null>(null);
+
+  // Track if auto-calculation has been performed
+  const autoCalculatedRef = useRef<boolean>(false);
 
   // -------------------------------------------------------------------------
   // Initialization Effect
@@ -481,6 +491,47 @@ export function useWeightBalanceCalculation(
     // Reset saved state reference
     savedStateRef.current = '';
   }, [autoFuelBurn]);
+
+  // -------------------------------------------------------------------------
+  // Auto-Calculate on Load Effect
+  // -------------------------------------------------------------------------
+
+  useEffect(() => {
+    // Only auto-calculate if:
+    // 1. autoCalculateOnLoad is enabled
+    // 2. We have a profile
+    // 3. We have an initialState with inputs (but no results displayed yet)
+    // 4. We haven't already auto-calculated for this profile
+    // 5. There are valid inputs to calculate with
+    if (
+      autoCalculateOnLoad &&
+      profile?.id &&
+      initialState &&
+      initialState.profileId === profile.id &&
+      !hasResultData(initialState) &&
+      !autoCalculatedRef.current &&
+      result === null &&
+      stationInputs.length > 0
+    ) {
+      // Check if there are any non-empty inputs
+      const hasValidInputs = stationInputs.some((input) => {
+        switch (input.stationType) {
+          case LoadingStationType.Fuel:
+            return input.fuelGallons !== '' && Number(input.fuelGallons) > 0;
+          case LoadingStationType.Oil:
+            return input.oilQuarts !== '' && Number(input.oilQuarts) > 0;
+          default:
+            return input.weight !== '' && Number(input.weight) > 0;
+        }
+      });
+
+      if (hasValidInputs) {
+        autoCalculatedRef.current = true;
+        // Trigger calculation asynchronously
+        calculateWeightBalance();
+      }
+    }
+  }, [autoCalculateOnLoad, profile?.id, initialState, result, stationInputs, calculateWeightBalance]);
 
   // -------------------------------------------------------------------------
   // Derived State

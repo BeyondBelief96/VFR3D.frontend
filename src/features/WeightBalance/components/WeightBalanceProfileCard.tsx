@@ -11,6 +11,7 @@ import {
 import { FiEdit2, FiTrash2, FiActivity } from 'react-icons/fi';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
+import { useIsPhone } from '@/hooks';
 
 interface WeightBalanceProfileCardProps {
   profile: WeightBalanceProfileDto;
@@ -27,6 +28,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
   onCalculate,
   isDeleting = false,
 }) => {
+  const isPhone = useIsPhone();
   const weightLabel = profile.weightUnits ? WEIGHT_UNIT_LABELS[profile.weightUnits] : 'lbs';
   const armLabel = profile.armUnits ? ARM_UNIT_LABELS[profile.armUnits] : 'in';
 
@@ -35,7 +37,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
 
   return (
     <Paper
-      p="sm"
+      p={isPhone ? 'xs' : 'sm'}
       style={{
         backgroundColor: 'rgba(15, 23, 42, 0.5)',
         borderRadius: 'var(--mantine-radius-md)',
@@ -43,43 +45,43 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
       }}
     >
       <Stack gap="xs">
-        <Group justify="space-between" wrap="nowrap">
+        <Group justify="space-between" wrap="nowrap" gap={isPhone ? 'xs' : 'sm'}>
           <Box style={{ flex: 1, minWidth: 0 }}>
-            <Text size="sm" fw={500} c="white" lineClamp={1}>
+            <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white" lineClamp={1}>
               {profile.profileName || 'Unnamed Profile'}
             </Text>
-            {profile.datumDescription && (
+            {profile.datumDescription && !isPhone && (
               <Text size="xs" c="dimmed" lineClamp={1}>
                 Datum: {profile.datumDescription}
               </Text>
             )}
           </Box>
-          <Group gap={4} wrap="nowrap">
+          <Group gap={isPhone ? 'xs' : 4} wrap="nowrap">
             <ActionIcon
-              size="sm"
+              size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
               color="green"
               onClick={() => onCalculate(profile)}
               title="Calculate W&B"
             >
-              <FiActivity size={14} />
+              <FiActivity size={isPhone ? 18 : 14} />
             </ActionIcon>
             <ActionIcon
-              size="sm"
+              size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
               color="blue"
               onClick={() => onEdit(profile)}
             >
-              <FiEdit2 size={14} />
+              <FiEdit2 size={isPhone ? 18 : 14} />
             </ActionIcon>
             <ActionIcon
-              size="sm"
+              size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
               color="red"
               onClick={() => profile.id && onDelete(profile.id)}
               loading={isDeleting}
             >
-              <FiTrash2 size={14} />
+              <FiTrash2 size={isPhone ? 18 : 14} />
             </ActionIcon>
           </Group>
         </Group>
@@ -93,16 +95,18 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
           </Badge>
         </Group>
 
-        <Group gap="xs">
+        <Group gap="xs" wrap="wrap">
           <Text size="xs" c="dimmed">
             {stationCount} station{stationCount !== 1 ? 's' : ''}
           </Text>
           <Text size="xs" c="dimmed">
             {envelopeCount} envelope{envelopeCount !== 1 ? 's' : ''}
           </Text>
-          <Text size="xs" c="dimmed">
-            CG: {profile.emptyWeightArm?.toFixed(1)} {armLabel}
-          </Text>
+          {!isPhone && (
+            <Text size="xs" c="dimmed">
+              CG: {profile.emptyWeightArm?.toFixed(1)} {armLabel}
+            </Text>
+          )}
         </Group>
       </Stack>
     </Paper>

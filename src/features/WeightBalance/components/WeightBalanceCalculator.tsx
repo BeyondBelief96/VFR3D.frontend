@@ -30,6 +30,7 @@ import {
   StandaloneCalculationStateDto,
 } from '@/redux/api/vfr3d/dtos';
 import { useAuth } from '@/components/Auth';
+import { useIsPhone } from '@/hooks';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { useWeightBalanceCalculation } from '../hooks/useWeightBalanceCalculation';
@@ -57,6 +58,8 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
 }) => {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
+  const isCompact = compact || isPhone;
 
   const { data: profiles = [], isLoading: profilesLoading } = useGetWeightBalanceProfilesQuery(
     userId,
@@ -111,6 +114,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   } = useWeightBalanceCalculation(userId, selectedProfile, {
     initialState: standaloneState,
     persistCalculations,
+    autoCalculateOnLoad: !!standaloneState,
   });
 
   // Filter profiles by selected aircraft
@@ -201,19 +205,23 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   };
 
   return (
-    <Stack gap="lg">
+    <Stack gap={isPhone ? 'md' : 'lg'}>
       {/* Header */}
-      <Group justify="space-between" align="flex-start">
+      <Group justify="space-between" align="flex-start" wrap="wrap" gap="xs">
         <Group gap="sm">
-          <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
-            <FiActivity size={18} />
-          </ThemeIcon>
+          {!isPhone && (
+            <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+              <FiActivity size={18} />
+            </ThemeIcon>
+          )}
           <Box>
-            <Title order={4} c="white">Weight & Balance Calculator</Title>
-            <Text size="xs" c="dimmed">Calculate takeoff and landing CG for your flight</Text>
+            <Title order={isPhone ? 5 : 4} c="white">Weight & Balance Calculator</Title>
+            {!isPhone && (
+              <Text size="xs" c="dimmed">Calculate takeoff and landing CG for your flight</Text>
+            )}
           </Box>
         </Group>
-        {lastCalculatedAt && (
+        {lastCalculatedAt && !isPhone && (
           <Badge leftSection={<FiClock size={12} />} color="blue" variant="light">
             Last calculated: {lastCalculatedAt.toLocaleString()}
           </Badge>
@@ -348,7 +356,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   </Text>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={isCompact ? 1 : { base: 1, sm: 2 }} spacing="sm">
                   {payloadStations.map((input) => (
                     <Paper key={input.stationId} p="sm" className={classes.stationCardBlue}>
                       <Stack gap="xs">
@@ -415,7 +423,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   </Button>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={isCompact ? 1 : { base: 1, sm: 2 }} spacing="sm">
                   {fuelStations.map((input) => {
                     const fuelWeight = calculateFuelWeight(input.fuelGallons || 0, input.fuelWeightPerGallon);
                     const fillPercent = input.fuelCapacityGallons
@@ -501,7 +509,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   </Tooltip>
                 </Group>
 
-                <SimpleGrid cols={compact ? 1 : { base: 1, sm: 2 }} spacing="sm">
+                <SimpleGrid cols={isCompact ? 1 : { base: 1, sm: 2 }} spacing="sm">
                   {oilStations.map((input) => {
                     const oilWeight = (Number(input.oilQuarts || 0)) * (input.oilWeightPerQuart || 1.875);
 
@@ -561,7 +569,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                 <Text size="sm" c="white" fw={500}>Flight Planning</Text>
               </Group>
 
-              <SimpleGrid cols={compact ? 1 : 2} spacing="md">
+              <SimpleGrid cols={isCompact ? 1 : 2} spacing={isPhone ? 'sm' : 'md'}>
                 {hasFuelStations && (
                   <Box>
                     <Group gap="xs" mb={4}>
@@ -726,7 +734,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                     landingResult={result.landing}
                     armUnits={selectedProfile?.armUnits}
                     weightUnits={selectedProfile?.weightUnits}
-                    height={compact ? 250 : 350}
+                    height={isCompact ? 250 : 350}
                   />
                 </Tabs.Panel>
 

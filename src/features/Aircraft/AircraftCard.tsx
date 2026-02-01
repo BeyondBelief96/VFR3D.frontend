@@ -304,6 +304,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
 
                 <Button
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                   size="xs"
                   leftSection={<FiPlus size={isPhone ? 12 : 14} />}
                   onClick={handleAddProfile}
@@ -381,6 +383,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
 
                 <Button
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                   component={Link}
                   to="/weight-balance"
                   size="xs"

@@ -12,6 +12,8 @@ import {
   Paper,
   Tooltip,
   Box,
+  SimpleGrid,
+  Divider,
 } from '@mantine/core';
 import { FiPlus, FiTrash2, FiChevronDown, FiInfo } from 'react-icons/fi';
 import { FaGasPump, FaOilCan, FaUser } from 'react-icons/fa';
@@ -27,6 +29,7 @@ import {
   DEFAULT_OIL_WEIGHT_PER_QUART,
 } from '../../../constants/defaults';
 import classes from '../../../WeightBalance.module.css';
+import { useIsPhone } from '@/hooks';
 
 interface LoadingStationsTableProps {
   stations: LoadingStationDto[];
@@ -76,6 +79,7 @@ export function LoadingStationsTable({
   loadingGraphFormat,
   onChange,
 }: LoadingStationsTableProps) {
+  const isPhone = useIsPhone();
   const weightLabel = WEIGHT_UNIT_LABELS[weightUnits] || 'lbs';
   const isMomentFormat = loadingGraphFormat === LoadingGraphFormat.MomentDividedBy1000;
   const valueColumnLabel = isMomentFormat ? 'Mom/1000' : 'Arm';
@@ -245,6 +249,117 @@ export function LoadingStationsTable({
     );
   };
 
+  // Mobile card layout for a single station
+  const renderStationCard = (station: LoadingStationDto, index: number, capacityLabel: string) => {
+    const type = getEffectiveStationType(station);
+    const isFuel = type === LoadingStationType.Fuel;
+    const isOil = type === LoadingStationType.Oil;
+
+    return (
+      <Paper
+        key={index}
+        p="sm"
+        mb="xs"
+        withBorder
+        style={{ borderColor: 'rgba(148, 163, 184, 0.3)' }}
+      >
+        <Group justify="space-between" mb="xs">
+          {getStationTypeBadge(station)}
+          <ActionIcon
+            variant="subtle"
+            color="red"
+            size="lg"
+            onClick={() => handleRemoveStation(index)}
+          >
+            <FiTrash2 size={18} />
+          </ActionIcon>
+        </Group>
+
+        <Stack gap="xs">
+          <TextInput
+            label="Name"
+            placeholder="Station name"
+            value={station.name || ''}
+            onChange={(e) => handleStationChange(index, 'name', e.target.value)}
+            size="sm"
+          />
+
+          {isFuel ? (
+            <NumberInput
+              label={capacityLabel}
+              placeholder="0"
+              value={station.fuelCapacityGallons ?? ''}
+              onChange={(val) => handleStationChange(index, 'fuelCapacityGallons', val || 0)}
+              size="sm"
+              min={0}
+              rightSection={<Text size="xs" c="dimmed">gal</Text>}
+            />
+          ) : isOil ? (
+            <NumberInput
+              label={capacityLabel}
+              placeholder="0"
+              value={station.oilCapacityQuarts ?? ''}
+              onChange={(val) => handleStationChange(index, 'oilCapacityQuarts', val || 0)}
+              size="sm"
+              min={0}
+              rightSection={<Text size="xs" c="dimmed">qt</Text>}
+            />
+          ) : (
+            <NumberInput
+              label={capacityLabel}
+              placeholder="0"
+              value={station.maxWeight ?? ''}
+              onChange={(val) => handleStationChange(index, 'maxWeight', val || 0)}
+              size="sm"
+              min={0}
+              rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
+            />
+          )}
+
+          <Divider label="Point 1" labelPosition="center" />
+          <SimpleGrid cols={2} spacing="xs">
+            <NumberInput
+              label={`Weight (${weightLabel})`}
+              placeholder="0"
+              value={station.point1?.weight ?? ''}
+              onChange={(val) => handleStationChange(index, 'point1Weight', val || 0)}
+              size="sm"
+              min={0}
+            />
+            <NumberInput
+              label={valueColumnLabel}
+              placeholder="0"
+              value={station.point1?.value ?? ''}
+              onChange={(val) => handleStationChange(index, 'point1Value', val || 0)}
+              size="sm"
+              decimalScale={isMomentFormat ? 1 : 2}
+            />
+          </SimpleGrid>
+
+          <Divider label="Point 2" labelPosition="center" />
+          <SimpleGrid cols={2} spacing="xs">
+            <NumberInput
+              label={`Weight (${weightLabel})`}
+              placeholder="0"
+              value={station.point2?.weight ?? ''}
+              onChange={(val) => handleStationChange(index, 'point2Weight', val || 0)}
+              size="sm"
+              min={0}
+            />
+            <NumberInput
+              label={valueColumnLabel}
+              placeholder="0"
+              value={station.point2?.value ?? ''}
+              onChange={(val) => handleStationChange(index, 'point2Value', val || 0)}
+              size="sm"
+              decimalScale={isMomentFormat ? 1 : 2}
+            />
+          </SimpleGrid>
+        </Stack>
+      </Paper>
+    );
+  };
+
   const renderSection = (
     title: string,
     icon: React.ReactNode,
@@ -276,7 +391,13 @@ export function LoadingStationsTable({
         <Text size="sm" c="dimmed" ta="center" py="sm">
           No {title.toLowerCase()} added yet
         </Text>
+      ) : isPhone ? (
+        // Mobile: Card-based layout
+        <Stack gap="xs">
+          {stationList.map(({ station, index }) => renderStationCard(station, index, capacityLabel))}
+        </Stack>
       ) : (
+        // Desktop: Table layout
         <Box className={classes.overflowX}>
           <Table
             horizontalSpacing="xs"

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Paper, Box, Alert, LoadingOverlay } from '@mantine/core';
+import { Paper, Box, Alert, LoadingOverlay, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
 import { useAuth0 } from '@auth0/auth0-react';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
+import { useIsPhone } from '@/hooks';
 import {
   useCreateWeightBalanceProfileMutation,
   useUpdateWeightBalanceProfileMutation,
@@ -34,6 +35,7 @@ export function WeightBalanceWizard({
 }: WeightBalanceWizardProps) {
   const { user } = useAuth0();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   // Fetch aircraft for selection
   const { data: aircraft = [], isLoading: isLoadingAircraft } = useGetAircraftQuery(userId, {
@@ -170,8 +172,8 @@ export function WeightBalanceWizard({
 
   return (
     <Paper
-      p="lg"
-      radius="lg"
+      p={isPhone ? 'sm' : 'lg'}
+      radius={isPhone ? 'md' : 'lg'}
       style={{
         background: 'rgba(15, 23, 42, 0.6)',
         border: '1px solid rgba(148, 163, 184, 0.2)',
@@ -185,7 +187,7 @@ export function WeightBalanceWizard({
       />
 
       {/* Stepper */}
-      <Box mb="xl">
+      <Box mb={isPhone ? 'md' : 'xl'}>
         <WizardStepper
           currentStep={currentStep}
           onStepClick={handleStepClick}
@@ -196,19 +198,19 @@ export function WeightBalanceWizard({
       {/* Submit Error */}
       {submitError && (
         <Alert
-          icon={<FiAlertCircle size={16} />}
+          icon={<FiAlertCircle size={isPhone ? 14 : 16} />}
           color="red"
           variant="light"
-          mb="lg"
+          mb={isPhone ? 'sm' : 'lg'}
           withCloseButton
           onClose={() => setSubmitError(null)}
         >
-          {submitError}
+          <Text size={isPhone ? 'xs' : 'sm'}>{submitError}</Text>
         </Alert>
       )}
 
       {/* Current Step Content */}
-      <Box mih={300}>{renderCurrentStep()}</Box>
+      <Box mih={isPhone ? 200 : 300}>{renderCurrentStep()}</Box>
 
       {/* Navigation */}
       <WizardNavigation

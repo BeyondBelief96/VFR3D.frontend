@@ -292,7 +292,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       }}
     >
       <form onSubmit={handleSubmit}>
-        <ScrollArea.Autosize mah={isPhone ? undefined : 'calc(100vh - 200px)'} offsetScrollbars>
+        <ScrollArea.Autosize mah={isPhone ? undefined : 'calc(100vh - 200px)'} offsetScrollbars={!isPhone}>
           <Stack gap={isPhone ? 'sm' : 'md'} p={isPhone ? 'md' : 'lg'}>
             {hasError && (
               <Alert color="red" icon={<FiAlertCircle size={isPhone ? 14 : 16} />}>
