@@ -10,7 +10,8 @@
       "Bash(npx eslint:*)",
       "Bash(find:*)",
       "Bash(echo:*)",
-      "WebFetch(domain:www.faa.gov)"
+      "WebFetch(domain:www.faa.gov)",
+      "Bash(git mv:*)"
     ]
   }
 }

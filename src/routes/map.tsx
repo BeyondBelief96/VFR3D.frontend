@@ -34,20 +34,20 @@ import { EntitySelectionManager } from '@/components/Popup';
 // Set the default access token for ArcGIS services
 ArcGisMapService.defaultAccessToken = import.meta.env.VITE_ARCGIS_API_KEY;
 
-export const Route = createFileRoute('/viewer')({
-  component: ViewerPage,
+export const Route = createFileRoute('/map')({
+  component: MapPage,
   loader: () => Promise.resolve(),
 });
 
-function ViewerPage() {
+function MapPage() {
   return (
     <ProtectedRoute>
-      <ViewerContent />
+      <MapContent />
     </ProtectedRoute>
   );
 }
 
-function ViewerContent() {
+function MapContent() {
   const screenSpaceError = useAppSelector((state) => state.viewer.globeMaximumScreenSpaceError);
 
   const [imageryViewModels, setImageryViewModels] = useState<ProviderViewModel[]>([]);

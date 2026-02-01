@@ -36,8 +36,8 @@ export function Footer() {
                 <Anchor component={Link} to="/features" size="sm" c="dimmed">
                   Features
                 </Anchor>
-                <Anchor component={Link} to="/viewer" size="sm" c="dimmed">
-                  Map Viewer
+                <Anchor component={Link} to="/map" size="sm" c="dimmed">
+                  Map
                 </Anchor>
               </Stack>
 

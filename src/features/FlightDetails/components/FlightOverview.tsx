@@ -23,7 +23,7 @@ export function FlightOverview({ flight }: FlightOverviewProps) {
     if (flight.id) {
       dispatch(viewFlightInMap(flight.id));
       dispatch(setDisplayMode(FlightDisplayMode.VIEWING));
-      navigate({ to: '/viewer' });
+      navigate({ to: '/map' });
     }
   };
 

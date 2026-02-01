@@ -9,7 +9,7 @@ import classes from './AppLayout.module.css';
 export function AppLayout() {
   const [sidebarOpened, { toggle: toggleSidebar }] = useDisclosure(false);
   const router = useRouterState();
-  const isViewerPage = router.location.pathname === '/viewer';
+  const isMapPage = router.location.pathname === '/map';
 
   return (
     <>
@@ -27,22 +27,22 @@ export function AppLayout() {
       >
         <AppShell.Header>
           <Header
-            isViewerPage={isViewerPage}
+            isMapPage={isMapPage}
             sidebarOpened={sidebarOpened}
             toggleSidebar={toggleSidebar}
           />
         </AppShell.Header>
 
         <AppShell.Main>
-          <Box className={isViewerPage ? classes.contentBoxViewer : classes.contentBox}>
+          <Box className={isMapPage ? classes.contentBoxMap : classes.contentBox}>
             <Outlet />
           </Box>
-          {!isViewerPage && <Footer />}
+          {!isMapPage && <Footer />}
         </AppShell.Main>
       </AppShell>
 
       {/* Overlay Sidebar - rendered outside AppShell to prevent layout shifts */}
-      {isViewerPage && (
+      {isMapPage && (
         <Sidebar isOpen={sidebarOpened} toggleOpen={toggleSidebar} />
       )}
     </>

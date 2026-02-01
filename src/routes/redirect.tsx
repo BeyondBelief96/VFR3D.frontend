@@ -51,7 +51,7 @@ function RedirectPage() {
         // Check if there's a return URL in the app state
         // This would be set by loginWithRedirect({ appState: { returnTo: ... } })
         const params = new URLSearchParams(window.location.search);
-        const returnTo = params.get('returnTo') || '/viewer';
+        const returnTo = params.get('returnTo') || '/map';
 
         console.log('[Redirect] Redirecting to:', returnTo);
         navigate({ to: returnTo });

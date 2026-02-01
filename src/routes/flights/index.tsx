@@ -267,7 +267,7 @@ function FlightsContent() {
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
             component={Link}
-            to="/viewer"
+            to="/map"
           >
             Plan New Flight
           </Button>
@@ -323,7 +323,7 @@ function FlightsContent() {
                 variant="gradient"
                 gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                 component={Link}
-                to="/viewer"
+                to="/map"
                 leftSection={<FiPlus />}
               >
                 Plan Your First Flight

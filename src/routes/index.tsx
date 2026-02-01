@@ -121,7 +121,7 @@ function HomePage() {
                   variant="gradient"
                   gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                   component={Link}
-                  to="/viewer"
+                  to="/map"
                   rightSection={<FiArrowRight size={20} />}
                   className={classes.heroCtaButton}
                 >
@@ -530,7 +530,7 @@ function HomePage() {
                     variant="gradient"
                     gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                     component={Link}
-                    to="/viewer"
+                    to="/map"
                     rightSection={<FiArrowRight size={20} />}
                   >
                     Open Flight Planner

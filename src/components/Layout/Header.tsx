@@ -30,12 +30,12 @@ import AirportSearch from '../Search/AirportSearch';
 import logo from '@/assets/images/logo_2.png';
 
 interface HeaderProps {
-  isViewerPage: boolean;
+  isMapPage: boolean;
   sidebarOpened: boolean;
   toggleSidebar: () => void;
 }
 
-export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderProps) {
+export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps) {
   const { user, isAuthenticated, loginWithRedirect, logout, isLoading } = useAuth0();
   const [mobileMenuOpened, { toggle: toggleMobileMenu, close: closeMobileMenu }] =
     useDisclosure(false);
@@ -128,7 +128,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
           </Button>
           <Button
             component={Link}
-            to="/viewer"
+            to="/map"
             variant="subtle"
             color="gray"
             size={mobile ? 'md' : 'sm'}
@@ -187,7 +187,7 @@ export function Header({ isViewerPage, sidebarOpened, toggleSidebar }: HeaderPro
   };
 
   // Viewer page header - compact with search
-  if (isViewerPage) {
+  if (isMapPage) {
     return (
       <Group h="100%" px="md" justify="space-between">
         <Group>
