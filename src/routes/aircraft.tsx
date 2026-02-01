@@ -22,7 +22,7 @@ import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 import { useGetAircraftQuery, useDeleteAircraftMutation } from '@/redux/api/vfr3d/aircraft.api';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { AircraftDto } from '@/redux/api/vfr3d/dtos';
@@ -45,6 +45,7 @@ function AircraftContent() {
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
 
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -148,12 +149,13 @@ function AircraftContent() {
   return (
     <Container
       size="lg"
-      py="xl"
+      py={isPhone ? 'md' : 'xl'}
+      px={isPhone ? 'sm' : undefined}
       style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
-      <Stack gap="lg">
-        <Group justify="space-between" align="center">
-          <Title order={1} c="white">
+      <Stack gap={isPhone ? 'md' : 'lg'}>
+        <Group justify="space-between" align="center" wrap="wrap" gap="sm">
+          <Title order={isPhone ? 2 : 1} c="white">
             My Aircraft
           </Title>
           <Button
@@ -161,6 +163,8 @@ function AircraftContent() {
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
             onClick={handleCreateClick}
+            size={isPhone ? 'sm' : 'md'}
+            fullWidth={isPhone}
           >
             Add Aircraft
           </Button>
@@ -184,18 +188,18 @@ function AircraftContent() {
 
         {aircraft && aircraft.length === 0 && (
           <Card
-            padding="xl"
+            padding={isPhone ? 'md' : 'xl'}
             radius="md"
             style={{
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
               border: '1px solid rgba(148, 163, 184, 0.1)',
             }}
           >
-            <Stack align="center" gap="lg" py="xl">
+            <Stack align="center" gap={isPhone ? 'md' : 'lg'} py={isPhone ? 'md' : 'xl'}>
               <Box
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: isPhone ? 64 : 80,
+                  height: isPhone ? 64 : 80,
                   borderRadius: '50%',
                   backgroundColor: 'rgba(59, 130, 246, 0.1)',
                   display: 'flex',
@@ -203,12 +207,12 @@ function AircraftContent() {
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaPlane size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
               </Box>
-              <Text c="white" size="lg" fw={500}>
+              <Text c="white" size={isPhone ? 'md' : 'lg'} fw={500}>
                 No Aircraft Configured
               </Text>
-              <Text c="dimmed" ta="center" maw={400}>
+              <Text c="dimmed" ta="center" maw={400} size={isPhone ? 'sm' : 'md'} px={isPhone ? 'xs' : undefined}>
                 Add your aircraft to manage performance profiles and calculate accurate navigation
                 logs for your flights.
               </Text>
@@ -217,6 +221,8 @@ function AircraftContent() {
                 gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
+                size={isPhone ? 'sm' : 'md'}
+                fullWidth={isPhone}
               >
                 Add Your First Aircraft
               </Button>
@@ -225,7 +231,7 @@ function AircraftContent() {
         )}
 
         {aircraft && aircraft.length > 0 && (
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 1, md: 2 }} spacing={isPhone ? 'sm' : 'md'}>
             {aircraft.map((aircraftItem) => (
               <AircraftCard
                 key={aircraftItem.id}
@@ -254,21 +260,22 @@ function AircraftContent() {
         onClose={() => setDeleteModalOpen(false)}
         title="Delete Aircraft"
         centered
-        size={isPhone ? '100%' : 'md'}
+        size={isPhone ? '100%' : isTablet ? 'lg' : 'md'}
         fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-            padding: '16px 20px',
+            padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
             fontWeight: 600,
             color: 'white',
+            fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            padding: '20px',
+            padding: isPhone ? '16px' : '20px',
           },
           content: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -281,26 +288,26 @@ function AircraftContent() {
           },
         }}
       >
-        <Stack gap="md">
+        <Stack gap={isPhone ? 'sm' : 'md'}>
           {aircraftBeingDeleted && (
             <Box
-              p="md"
+              p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: 'rgba(15, 23, 42, 0.5)',
                 borderRadius: 'var(--mantine-radius-md)',
                 border: '1px solid rgba(148, 163, 184, 0.1)',
               }}
             >
-              <Group gap="sm">
-                <ThemeIcon size="lg" radius="xl" color="blue" variant="light">
-                  <FaPlane size={16} />
+              <Group gap="sm" wrap="nowrap">
+                <ThemeIcon size={isPhone ? 'md' : 'lg'} radius="xl" color="blue" variant="light">
+                  <FaPlane size={isPhone ? 14 : 16} />
                 </ThemeIcon>
-                <Box>
-                  <Text c="white" fw={600}>
+                <Box style={{ minWidth: 0, flex: 1 }}>
+                  <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'} lineClamp={1}>
                     {aircraftBeingDeleted.aircraftType || 'Unnamed Aircraft'}
                   </Text>
                   {aircraftBeingDeleted.tailNumber && (
-                    <Text c="dimmed" size="sm">
+                    <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
                       {aircraftBeingDeleted.tailNumber}
                     </Text>
                   )}
@@ -312,10 +319,13 @@ function AircraftContent() {
           <Alert
             color="orange"
             variant="light"
-            icon={<FiAlertTriangle size={18} />}
+            icon={<FiAlertTriangle size={isPhone ? 16 : 18} />}
             title="This action will permanently delete:"
+            styles={{
+              title: { fontSize: isPhone ? '0.875rem' : undefined },
+            }}
           >
-            <List size="sm" spacing="xs" c="orange.3">
+            <List size={isPhone ? 'xs' : 'sm'} spacing="xs" c="orange.3">
               <List.Item>This aircraft and all its data</List.Item>
               <List.Item>
                 {aircraftBeingDeleted?.performanceProfiles?.length || 0} performance profile
@@ -328,22 +338,32 @@ function AircraftContent() {
             </List>
           </Alert>
 
-          <Alert color="blue" variant="light" title="Note">
-            <Text size="sm">
+          <Alert color="blue" variant="light" title="Note" styles={{ title: { fontSize: isPhone ? '0.875rem' : undefined } }}>
+            <Text size={isPhone ? 'xs' : 'sm'}>
               Aircraft with flights cannot be deleted. You must first delete or reassign any flights
               using this aircraft.
             </Text>
           </Alert>
 
-          <Text c="dimmed" size="sm">
+          <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
             This action cannot be undone.
           </Text>
 
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+          <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={() => setDeleteModalOpen(false)}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Cancel
             </Button>
-            <Button color="red" onClick={handleDeleteConfirm} loading={isDeleting}>
+            <Button
+              color="red"
+              onClick={handleDeleteConfirm}
+              loading={isDeleting}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Delete Aircraft
             </Button>
           </Group>

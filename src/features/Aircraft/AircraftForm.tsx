@@ -32,7 +32,7 @@ import {
   useUpdateAircraftMutation,
 } from '@/redux/api/vfr3d/aircraft.api';
 import { useAuth } from '@/components/Auth';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 
 const inputStyles = {
   input: {
@@ -152,6 +152,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
 
@@ -262,17 +263,18 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       onClose={handleClose}
       title={mode === 'create' ? 'Add Aircraft' : 'Edit Aircraft'}
       centered
-      size={isPhone ? '100%' : 'lg'}
+      size={isPhone ? '100%' : isTablet ? 'xl' : 'lg'}
       fullScreen={isPhone}
       styles={{
         header: {
           backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
           borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-          padding: '16px 20px',
+          padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
           fontWeight: 600,
           color: 'white',
+          fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
           backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -290,29 +292,31 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       }}
     >
       <form onSubmit={handleSubmit}>
-        <ScrollArea.Autosize mah="calc(100vh - 200px)" offsetScrollbars>
-          <Stack gap="md" p="lg">
+        <ScrollArea.Autosize mah={isPhone ? undefined : 'calc(100vh - 200px)'} offsetScrollbars>
+          <Stack gap={isPhone ? 'sm' : 'md'} p={isPhone ? 'md' : 'lg'}>
             {hasError && (
-              <Alert color="red" icon={<FiAlertCircle size={16} />}>
-                {mode === 'create'
-                  ? 'Failed to create aircraft. Please try again.'
-                  : 'Failed to update aircraft. Please try again.'}
+              <Alert color="red" icon={<FiAlertCircle size={isPhone ? 14 : 16} />}>
+                <Text size={isPhone ? 'xs' : 'sm'}>
+                  {mode === 'create'
+                    ? 'Failed to create aircraft. Please try again.'
+                    : 'Failed to update aircraft. Please try again.'}
+                </Text>
               </Alert>
             )}
 
             {/* Required Fields Section */}
             <Paper
-              p="md"
+              p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: 'rgba(30, 41, 59, 0.6)',
                 border: '1px solid rgba(148, 163, 184, 0.1)',
               }}
             >
-              <Group gap="xs" mb="md">
+              <Group gap="xs" mb={isPhone ? 'sm' : 'md'}>
                 <Box
                   style={{
-                    width: 28,
-                    height: 28,
+                    width: isPhone ? 24 : 28,
+                    height: isPhone ? 24 : 28,
                     borderRadius: '50%',
                     backgroundColor: 'rgba(59, 130, 246, 0.2)',
                     display: 'flex',
@@ -320,9 +324,9 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     justifyContent: 'center',
                   }}
                 >
-                  <FaPlane size={12} color="var(--mantine-color-vfr3dBlue-5)" />
+                  <FaPlane size={isPhone ? 10 : 12} color="var(--mantine-color-vfr3dBlue-5)" />
                 </Box>
-                <Text size="sm" fw={600} c="white">
+                <Text size={isPhone ? 'xs' : 'sm'} fw={600} c="white">
                   Basic Information
                 </Text>
                 <Badge size="xs" color="red" variant="light">
@@ -330,34 +334,35 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                 </Badge>
               </Group>
 
-              <Stack gap="sm">
+              <Stack gap={isPhone ? 'xs' : 'sm'}>
                 <TextInput
                   label="Aircraft Type / Model"
-                  description="e.g., Cessna 172S, Piper PA-28-181"
+                  description={isPhone ? undefined : 'e.g., Cessna 172S, Piper PA-28-181'}
                   placeholder="Enter aircraft type"
                   value={formData.aircraftType}
                   onChange={(e) => handleInputChange('aircraftType', e.target.value)}
                   required
                   withAsterisk
                   styles={inputStyles}
+                  size={isPhone ? 'sm' : 'md'}
                 />
 
-                <Group grow={!isPhone} wrap="wrap">
+                <Stack gap={isPhone ? 'xs' : 'sm'}>
                   <TextInput
                     label="Tail Number"
-                    description="Aircraft registration number"
+                    description={isPhone ? undefined : 'Aircraft registration number'}
                     placeholder="e.g., N12345"
                     value={formData.tailNumber}
                     onChange={(e) => handleInputChange('tailNumber', e.target.value.toUpperCase())}
                     required
                     withAsterisk
                     styles={inputStyles}
-                    style={{ flex: isPhone ? '1 1 100%' : undefined }}
+                    size={isPhone ? 'sm' : 'md'}
                   />
 
                   <Select
                     label="Category"
-                    description="Aircraft classification"
+                    description={isPhone ? undefined : 'Aircraft classification'}
                     placeholder="Select category"
                     value={formData.category}
                     onChange={(value) => handleInputChange('category', value || '')}
@@ -365,9 +370,9 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     required
                     withAsterisk
                     styles={selectStyles}
-                    style={{ flex: isPhone ? '1 1 100%' : undefined }}
+                    size={isPhone ? 'sm' : 'md'}
                   />
-                </Group>
+                </Stack>
               </Stack>
             </Paper>
 
@@ -384,12 +389,13 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   },
                 },
                 control: {
+                  padding: isPhone ? 'var(--mantine-spacing-xs) var(--mantine-spacing-sm)' : undefined,
                   '&:hover': {
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                   },
                 },
                 content: {
-                  padding: 'var(--mantine-spacing-md)',
+                  padding: isPhone ? 'var(--mantine-spacing-sm)' : 'var(--mantine-spacing-md)',
                 },
               }}
             >
@@ -397,8 +403,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="identification">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPlane size={14} color="var(--mantine-color-cyan-4)" />
-                    <Text size="sm" fw={500} c="white">
+                    <FaPlane size={isPhone ? 12 : 14} color="var(--mantine-color-cyan-4)" />
+                    <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Identification
                     </Text>
                     <Badge size="xs" color="gray" variant="light">
@@ -407,34 +413,37 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <Stack gap="sm">
-                    <Group grow>
+                  <Stack gap={isPhone ? 'xs' : 'sm'}>
+                    <Stack gap={isPhone ? 'xs' : 'sm'}>
                       <TextInput
                         label="Call Sign"
-                        description="Radio call sign if different from tail number"
+                        description={isPhone ? undefined : 'Radio call sign if different from tail number'}
                         placeholder="e.g., Skyhawk 123"
                         value={formData.callSign}
                         onChange={(e) => handleInputChange('callSign', e.target.value)}
                         styles={inputStyles}
+                        size={isPhone ? 'sm' : 'md'}
                       />
 
                       <TextInput
                         label="Serial Number"
-                        description="Aircraft serial/manufacturer number"
+                        description={isPhone ? undefined : 'Aircraft serial/manufacturer number'}
                         placeholder="e.g., 17265432"
                         value={formData.serialNumber}
                         onChange={(e) => handleInputChange('serialNumber', e.target.value)}
                         styles={inputStyles}
+                        size={isPhone ? 'sm' : 'md'}
                       />
-                    </Group>
+                    </Stack>
 
                     <TextInput
                       label="Home Airport"
-                      description="Where this aircraft is normally based"
+                      description={isPhone ? undefined : 'Where this aircraft is normally based'}
                       placeholder="e.g., KJFK or Kennedy Intl"
                       value={formData.aircraftHome}
                       onChange={(e) => handleInputChange('aircraftHome', e.target.value.toUpperCase())}
                       styles={inputStyles}
+                      size={isPhone ? 'sm' : 'md'}
                     />
                   </Stack>
                 </Accordion.Panel>
@@ -444,8 +453,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="appearance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPalette size={14} color="var(--mantine-color-grape-4)" />
-                    <Text size="sm" fw={500} c="white">
+                    <FaPalette size={isPhone ? 12 : 14} color="var(--mantine-color-grape-4)" />
+                    <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Appearance (Colors)
                     </Text>
                     <Badge size="xs" color="gray" variant="light">
@@ -454,16 +463,17 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <Text size="xs" c="dimmed" mb="sm">
+                  <Text size="xs" c="dimmed" mb={isPhone ? 'xs' : 'sm'}>
                     Aircraft colors help identify your aircraft and can be used for search and rescue.
                   </Text>
-                  <Group grow>
+                  <Stack gap={isPhone ? 'xs' : 'sm'}>
                     <ColorInput
                       label="Primary Color"
                       placeholder="Pick color"
                       value={formData.primaryColor}
                       onChange={(value) => handleInputChange('primaryColor', value)}
                       styles={inputStyles}
+                      size={isPhone ? 'sm' : 'md'}
                       swatches={['#ffffff', '#000000', '#ff0000', '#0000ff', '#ffff00', '#00ff00', '#ffa500', '#808080']}
                     />
                     <ColorInput
@@ -472,16 +482,16 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                       value={formData.color2}
                       onChange={(value) => handleInputChange('color2', value)}
                       styles={inputStyles}
+                      size={isPhone ? 'sm' : 'md'}
                       swatches={['#ffffff', '#000000', '#ff0000', '#0000ff', '#ffff00', '#00ff00', '#ffa500', '#808080']}
                     />
-                  </Group>
-                  <Group grow mt="sm">
                     <ColorInput
                       label="Accent Color 1"
                       placeholder="Pick color"
                       value={formData.color3}
                       onChange={(value) => handleInputChange('color3', value)}
                       styles={inputStyles}
+                      size={isPhone ? 'sm' : 'md'}
                       swatches={['#ffffff', '#000000', '#ff0000', '#0000ff', '#ffff00', '#00ff00', '#ffa500', '#808080']}
                     />
                     <ColorInput
@@ -490,9 +500,10 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                       value={formData.color4}
                       onChange={(value) => handleInputChange('color4', value)}
                       styles={inputStyles}
+                      size={isPhone ? 'sm' : 'md'}
                       swatches={['#ffffff', '#000000', '#ff0000', '#0000ff', '#ffff00', '#00ff00', '#ffa500', '#808080']}
                     />
-                  </Group>
+                  </Stack>
                 </Accordion.Panel>
               </Accordion.Item>
 
@@ -500,8 +511,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="performance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaTachometerAlt size={14} color="var(--mantine-color-teal-4)" />
-                    <Text size="sm" fw={500} c="white">
+                    <FaTachometerAlt size={isPhone ? 12 : 14} color="var(--mantine-color-teal-4)" />
+                    <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Performance Defaults
                     </Text>
                     <Badge size="xs" color="gray" variant="light">
@@ -510,11 +521,11 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <Stack gap="sm">
-                    <Group grow>
+                  <Stack gap={isPhone ? 'xs' : 'sm'}>
+                    <Stack gap={isPhone ? 'xs' : 'sm'}>
                       <NumberInput
                         label="Default Cruise Altitude"
-                        description="Typical cruising altitude"
+                        description={isPhone ? undefined : 'Typical cruising altitude'}
                         placeholder="e.g., 5500"
                         value={formData.defaultCruiseAltitude}
                         onChange={(val) => handleInputChange('defaultCruiseAltitude', val)}
@@ -522,11 +533,12 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                         max={60000}
                         suffix=" ft"
                         styles={inputStyles}
+                        size={isPhone ? 'sm' : 'md'}
                       />
 
                       <NumberInput
                         label="Maximum Ceiling"
-                        description="Service ceiling of the aircraft"
+                        description={isPhone ? undefined : 'Service ceiling of the aircraft'}
                         placeholder="e.g., 14000"
                         value={formData.maxCeiling}
                         onChange={(val) => handleInputChange('maxCeiling', val)}
@@ -534,15 +546,16 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                         max={60000}
                         suffix=" ft"
                         styles={inputStyles}
+                        size={isPhone ? 'sm' : 'md'}
                       />
-                    </Group>
+                    </Stack>
 
                     {/* Glider-specific fields */}
                     {isGlider && (
-                      <Group grow>
+                      <Stack gap={isPhone ? 'xs' : 'sm'}>
                         <NumberInput
                           label="Best Glide Speed"
-                          description="Speed for maximum glide range"
+                          description={isPhone ? undefined : 'Speed for maximum glide range'}
                           placeholder="e.g., 65"
                           value={formData.glideSpeed}
                           onChange={(val) => handleInputChange('glideSpeed', val)}
@@ -550,11 +563,12 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                           max={300}
                           suffix=" kts"
                           styles={inputStyles}
+                          size={isPhone ? 'sm' : 'md'}
                         />
 
                         <NumberInput
                           label="Glide Ratio"
-                          description="L/D ratio (e.g., 40 means 40:1)"
+                          description={isPhone ? undefined : 'L/D ratio (e.g., 40 means 40:1)'}
                           placeholder="e.g., 40"
                           value={formData.glideRatio}
                           onChange={(val) => handleInputChange('glideRatio', val)}
@@ -563,8 +577,9 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                           decimalScale={1}
                           suffix=":1"
                           styles={inputStyles}
+                          size={isPhone ? 'sm' : 'md'}
                         />
-                      </Group>
+                      </Stack>
                     )}
 
                     {!isGlider && (
@@ -580,8 +595,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="preferences">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaCog size={14} color="var(--mantine-color-orange-4)" />
-                    <Text size="sm" fw={500} c="white">
+                    <FaCog size={isPhone ? 12 : 14} color="var(--mantine-color-orange-4)" />
+                    <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Unit Preferences
                     </Text>
                     <Badge size="xs" color="gray" variant="light">
@@ -590,32 +605,34 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <Text size="xs" c="dimmed" mb="sm">
+                  <Text size="xs" c="dimmed" mb={isPhone ? 'xs' : 'sm'}>
                     Set default units for this aircraft. If not set, system defaults will be used.
                   </Text>
-                  <Group grow>
+                  <Stack gap={isPhone ? 'xs' : 'sm'}>
                     <Select
                       label="Airspeed Units"
-                      description="Preferred speed measurement"
+                      description={isPhone ? undefined : 'Preferred speed measurement'}
                       placeholder="Select units"
                       value={formData.airspeedUnits}
                       onChange={(value) => handleInputChange('airspeedUnits', value || '')}
                       data={airspeedUnitsOptions}
                       clearable
                       styles={selectStyles}
+                      size={isPhone ? 'sm' : 'md'}
                     />
 
                     <Select
                       label="Altitude/Distance Units"
-                      description="Preferred length measurement"
+                      description={isPhone ? undefined : 'Preferred length measurement'}
                       placeholder="Select units"
                       value={formData.lengthUnits}
                       onChange={(value) => handleInputChange('lengthUnits', value || '')}
                       data={lengthUnitsOptions}
                       clearable
                       styles={selectStyles}
+                      size={isPhone ? 'sm' : 'md'}
                     />
-                  </Group>
+                  </Stack>
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
@@ -624,17 +641,25 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
 
         {/* Footer with action buttons */}
         <Box
-          p="lg"
+          p={isPhone ? 'md' : 'lg'}
           style={{
             borderTop: '1px solid rgba(148, 163, 184, 0.1)',
           }}
         >
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">
-              Fields marked with <Text span c="red" fw={600}>*</Text> are required
-            </Text>
-            <Group gap="sm">
-              <Button variant="subtle" color="gray" onClick={handleClose} disabled={isLoading}>
+          <Stack gap={isPhone ? 'sm' : 'xs'}>
+            {!isPhone && (
+              <Text size="xs" c="dimmed">
+                Fields marked with <Text span c="red" fw={600}>*</Text> are required
+              </Text>
+            )}
+            <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
+              <Button
+                variant="subtle"
+                color="gray"
+                onClick={handleClose}
+                disabled={isLoading}
+                size={isPhone ? 'sm' : 'md'}
+              >
                 Cancel
               </Button>
               <Button
@@ -642,6 +667,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                 disabled={!isValid || isLoading}
                 variant="gradient"
                 gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                size={isPhone ? 'sm' : 'md'}
               >
                 {isLoading ? (
                   <Loader size="xs" color="white" />
@@ -652,7 +678,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                 )}
               </Button>
             </Group>
-          </Group>
+          </Stack>
         </Box>
       </form>
     </Modal>

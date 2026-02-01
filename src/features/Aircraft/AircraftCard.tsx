@@ -22,7 +22,7 @@ import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBal
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useAuth } from '@/components/Auth';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
 
 interface AircraftCardProps {
@@ -64,6 +64,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
 
   const [expanded, setExpanded] = useState(false);
   const [wbExpanded, setWbExpanded] = useState(false);
@@ -156,7 +157,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   return (
     <>
       <Card
-        padding="lg"
+        padding={isPhone ? 'md' : 'lg'}
         radius="md"
         style={{
           backgroundColor: 'rgba(30, 41, 59, 0.8)',
@@ -164,14 +165,15 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
           transition: 'all 0.2s ease',
         }}
       >
-        <Stack gap="md">
+        <Stack gap={isPhone ? 'sm' : 'md'}>
           {/* Header */}
-          <Group justify="space-between" wrap="nowrap">
-            <Group gap="sm" wrap="nowrap">
+          <Group justify="space-between" wrap="nowrap" gap={isPhone ? 'xs' : 'sm'}>
+            <Group gap={isPhone ? 'xs' : 'sm'} wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
               <Box
                 style={{
-                  width: 48,
-                  height: 48,
+                  width: isPhone ? 40 : 48,
+                  height: isPhone ? 40 : 48,
+                  minWidth: isPhone ? 40 : 48,
                   borderRadius: '50%',
                   backgroundColor: 'rgba(59, 130, 246, 0.15)',
                   display: 'flex',
@@ -179,43 +181,43 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={20} color="var(--mantine-color-vfr3dBlue-5)" />
+                <FaPlane size={isPhone ? 16 : 20} color="var(--mantine-color-vfr3dBlue-5)" />
               </Box>
-              <Box>
-                <Text c="white" fw={600} size="lg" lineClamp={1}>
+              <Box style={{ minWidth: 0, flex: 1 }}>
+                <Text c="white" fw={600} size={isPhone ? 'md' : 'lg'} lineClamp={1}>
                   {aircraft.aircraftType || 'Unnamed Aircraft'}
                 </Text>
                 {aircraft.tailNumber && (
-                  <Text c="dimmed" size="sm">
+                  <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
                     {aircraft.tailNumber}
                   </Text>
                 )}
               </Box>
             </Group>
-            <Group gap={4}>
+            <Group gap={isPhone ? 'xs' : 4} wrap="nowrap">
               <ActionIcon
                 variant="subtle"
                 color="blue"
-                size="lg"
+                size={isPhone ? 'xl' : 'lg'}
                 onClick={() => onEdit(aircraft)}
               >
-                <FiEdit2 size={18} />
+                <FiEdit2 size={isPhone ? 20 : 18} />
               </ActionIcon>
               <ActionIcon
                 variant="subtle"
                 color="red"
-                size="lg"
+                size={isPhone ? 'xl' : 'lg'}
                 onClick={() => aircraft.id && onDelete(aircraft.id)}
                 loading={isDeleting}
               >
-                <FiTrash2 size={18} />
+                <FiTrash2 size={isPhone ? 20 : 18} />
               </ActionIcon>
             </Group>
           </Group>
 
           {/* Category Badge */}
           {aircraft.category && (
-            <Badge size="sm" variant="light" color="blue">
+            <Badge size={isPhone ? 'xs' : 'sm'} variant="light" color="blue">
               {getCategoryLabel(aircraft.category)}
             </Badge>
           )}
@@ -225,29 +227,30 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             <Button
               variant="subtle"
               color="gray"
-              size="sm"
+              size={isPhone ? 'xs' : 'sm'}
               fullWidth
               justify="space-between"
-              rightSection={expanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+              rightSection={expanded ? <FiChevronUp size={isPhone ? 14 : 16} /> : <FiChevronDown size={isPhone ? 14 : 16} />}
               onClick={() => setExpanded(!expanded)}
               styles={{
                 root: {
                   backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  padding: isPhone ? '8px 12px' : undefined,
                   '&:hover': {
                     backgroundColor: 'rgba(15, 23, 42, 0.8)',
                   },
                 },
               }}
             >
-              <Text size="sm" c="white">
+              <Text size={isPhone ? 'xs' : 'sm'} c="white">
                 Performance Profiles ({profileCount})
               </Text>
             </Button>
 
             <Collapse in={expanded}>
-              <Stack gap="sm" mt="sm">
+              <Stack gap={isPhone ? 'xs' : 'sm'} mt={isPhone ? 'xs' : 'sm'}>
                 {profiles.length === 0 ? (
-                  <Text size="sm" c="dimmed" ta="center" py="md">
+                  <Text size={isPhone ? 'xs' : 'sm'} c="dimmed" ta="center" py={isPhone ? 'sm' : 'md'}>
                     No performance profiles configured
                   </Text>
                 ) : (
@@ -255,18 +258,18 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                     {profiles.map((profile) => (
                       <Paper
                         key={profile.id}
-                        p="sm"
+                        p={isPhone ? 'xs' : 'sm'}
                         style={{
                           backgroundColor: 'rgba(15, 23, 42, 0.5)',
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
-                        <Group justify="space-between" wrap="nowrap">
-                          <Box>
-                            <Text size="sm" fw={500} c="white" lineClamp={1}>
+                        <Group justify="space-between" wrap="nowrap" gap={isPhone ? 'xs' : 'sm'}>
+                          <Box style={{ minWidth: 0, flex: 1 }}>
+                            <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white" lineClamp={1}>
                               {profile.profileName}
                             </Text>
-                            <Group gap="xs" mt={4}>
+                            <Group gap="xs" mt={isPhone ? 2 : 4}>
                               <Text size="xs" c="dimmed">
                                 {profile.cruiseTrueAirspeed} kts
                               </Text>
@@ -275,23 +278,23 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                               </Text>
                             </Group>
                           </Box>
-                          <Group gap={4}>
+                          <Group gap={isPhone ? 'xs' : 4} wrap="nowrap">
                             <ActionIcon
-                              size="sm"
+                              size={isPhone ? 'lg' : 'sm'}
                               variant="subtle"
                               color="blue"
                               onClick={() => handleEditProfile(profile)}
                             >
-                              <FiEdit2 size={14} />
+                              <FiEdit2 size={isPhone ? 18 : 14} />
                             </ActionIcon>
                             <ActionIcon
-                              size="sm"
+                              size={isPhone ? 'lg' : 'sm'}
                               variant="subtle"
                               color="red"
                               onClick={() => profile.id && handleDeleteProfileClick(profile.id)}
                               loading={isDeletingProfile && profileToDelete === profile.id}
                             >
-                              <FiTrash2 size={14} />
+                              <FiTrash2 size={isPhone ? 18 : 14} />
                             </ActionIcon>
                           </Group>
                         </Group>
@@ -301,10 +304,10 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
 
                 <Button
-                  variant="light"
                   size="xs"
-                  leftSection={<FiPlus size={14} />}
+                  leftSection={<FiPlus size={isPhone ? 12 : 14} />}
                   onClick={handleAddProfile}
+                  fullWidth={isPhone}
                 >
                   Add Profile
                 </Button>
@@ -317,14 +320,15 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             <Button
               variant="subtle"
               color="gray"
-              size="sm"
+              size={isPhone ? 'xs' : 'sm'}
               fullWidth
               justify="space-between"
-              rightSection={wbExpanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+              rightSection={wbExpanded ? <FiChevronUp size={isPhone ? 14 : 16} /> : <FiChevronDown size={isPhone ? 14 : 16} />}
               onClick={() => setWbExpanded(!wbExpanded)}
               styles={{
                 root: {
                   backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  padding: isPhone ? '8px 12px' : undefined,
                   '&:hover': {
                     backgroundColor: 'rgba(15, 23, 42, 0.8)',
                   },
@@ -332,17 +336,17 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
               }}
             >
               <Group gap="xs">
-                <FaBalanceScale size={14} />
-                <Text size="sm" c="white">
+                <FaBalanceScale size={isPhone ? 12 : 14} />
+                <Text size={isPhone ? 'xs' : 'sm'} c="white">
                   Weight & Balance ({wbProfiles.length})
                 </Text>
               </Group>
             </Button>
 
             <Collapse in={wbExpanded}>
-              <Stack gap="sm" mt="sm">
+              <Stack gap={isPhone ? 'xs' : 'sm'} mt={isPhone ? 'xs' : 'sm'}>
                 {wbProfiles.length === 0 ? (
-                  <Text size="sm" c="dimmed" ta="center" py="md">
+                  <Text size={isPhone ? 'xs' : 'sm'} c="dimmed" ta="center" py={isPhone ? 'sm' : 'md'}>
                     No weight & balance profiles configured
                   </Text>
                 ) : (
@@ -350,18 +354,18 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                     {wbProfiles.map((profile: WeightBalanceProfileDto) => (
                       <Paper
                         key={profile.id}
-                        p="sm"
+                        p={isPhone ? 'xs' : 'sm'}
                         style={{
                           backgroundColor: 'rgba(15, 23, 42, 0.5)',
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
                         <Group justify="space-between" wrap="nowrap">
-                          <Box>
-                            <Text size="sm" fw={500} c="white" lineClamp={1}>
+                          <Box style={{ minWidth: 0, flex: 1 }}>
+                            <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white" lineClamp={1}>
                               {profile.profileName || 'Unnamed Profile'}
                             </Text>
-                            <Group gap="xs" mt={4}>
+                            <Group gap="xs" mt={isPhone ? 2 : 4} wrap={isPhone ? 'wrap' : 'nowrap'}>
                               <Text size="xs" c="dimmed">
                                 {profile.emptyWeight?.toLocaleString()} lbs empty
                               </Text>
@@ -379,9 +383,9 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 <Button
                   component={Link}
                   to="/weight-balance"
-                  variant="light"
                   size="xs"
-                  leftSection={<FiExternalLink size={14} />}
+                  leftSection={<FiExternalLink size={isPhone ? 12 : 14} />}
+                  fullWidth={isPhone}
                 >
                   Manage W&B Profiles
                 </Button>
@@ -397,22 +401,23 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         onClose={() => setProfileModalOpen(false)}
         title={profileFormMode === 'create' ? 'Create Performance Profile' : 'Edit Performance Profile'}
         centered
-        size={isPhone ? '100%' : 'lg'}
+        size={isPhone ? '100%' : isTablet ? 'xl' : 'lg'}
         fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-            padding: '16px 20px',
+            padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
             fontWeight: 600,
             color: 'white',
+            fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            padding: '20px',
-            maxHeight: 'calc(100vh - 200px)',
+            padding: isPhone ? '16px' : '20px',
+            maxHeight: isPhone ? undefined : 'calc(100vh - 200px)',
             overflowY: 'auto',
           },
           content: {
@@ -442,21 +447,22 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         onClose={() => setDeleteProfileModalOpen(false)}
         title="Delete Performance Profile"
         centered
-        size={isPhone ? '100%' : 'md'}
+        size={isPhone ? '100%' : isTablet ? 'lg' : 'md'}
         fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
-            padding: '16px 20px',
+            padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
             fontWeight: 600,
             color: 'white',
+            fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            padding: '20px',
+            padding: isPhone ? '16px' : '20px',
           },
           content: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -469,20 +475,20 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
           },
         }}
       >
-        <Stack gap="md">
+        <Stack gap={isPhone ? 'sm' : 'md'}>
           {profileBeingDeleted && (
             <Box
-              p="md"
+              p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: 'rgba(15, 23, 42, 0.5)',
                 borderRadius: 'var(--mantine-radius-md)',
                 border: '1px solid rgba(148, 163, 184, 0.1)',
               }}
             >
-              <Text c="white" fw={600}>
+              <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'}>
                 {profileBeingDeleted.profileName || 'Unnamed Profile'}
               </Text>
-              <Group gap="xs" mt={4}>
+              <Group gap="xs" mt={4} wrap="wrap">
                 <Badge size="xs" variant="light" color="blue">
                   {profileBeingDeleted.cruiseTrueAirspeed} kts
                 </Badge>
@@ -496,23 +502,33 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
           <Alert
             color="orange"
             variant="light"
-            icon={<FiAlertTriangle size={16} />}
+            icon={<FiAlertTriangle size={isPhone ? 14 : 16} />}
           >
-            <Text size="sm">
+            <Text size={isPhone ? 'xs' : 'sm'}>
               Flights using this profile will no longer have performance data associated with them.
               You may need to assign a new profile to those flights.
             </Text>
           </Alert>
 
-          <Text c="dimmed" size="sm">
+          <Text c="dimmed" size={isPhone ? 'xs' : 'sm'}>
             This action cannot be undone.
           </Text>
 
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteProfileModalOpen(false)}>
+          <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={() => setDeleteProfileModalOpen(false)}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Cancel
             </Button>
-            <Button color="red" onClick={handleDeleteProfileConfirm} loading={isDeletingProfile}>
+            <Button
+              color="red"
+              onClick={handleDeleteProfileConfirm}
+              loading={isDeletingProfile}
+              size={isPhone ? 'sm' : 'md'}
+            >
               Delete Profile
             </Button>
           </Group>
