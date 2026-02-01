@@ -15,7 +15,7 @@ export const notamsApi = baseApi.injectEndpoints({
 
     // Get NOTAMs for a single airport
     getNotamsForAirport: builder.query<NotamResponseDto, string>({
-      query: (icaoCode) => `/notam/airport/${icaoCode}`,
+      query: (icaoCode) => `/notam/${icaoCode}`,
       providesTags: (_result, _error, icaoCode) => [
         { type: 'notams', id: icaoCode },
         { type: 'notams', id: 'LIST' },

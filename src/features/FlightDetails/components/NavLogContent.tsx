@@ -2,6 +2,7 @@ import { Stack, Group, Button, Center, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiRefreshCw } from 'react-icons/fi';
 import { FaRoute } from 'react-icons/fa';
+import { useIsPhone } from '@/hooks';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { useRegenerateNavlogMutation } from '@/redux/api/vfr3d/flights.api';
 import { NavLogTable } from '@/features/Flights/FlightPlanningDrawer/NavLogTable';
@@ -13,6 +14,7 @@ interface NavLogContentProps {
 }
 
 export function NavLogContent({ flight, userId }: NavLogContentProps) {
+  const isPhone = useIsPhone();
   const [regenerateNavlog, { isLoading: isRegenerating }] = useRegenerateNavlogMutation();
 
   const navlogData = mapFlightToNavlogData(flight);
@@ -39,15 +41,17 @@ export function NavLogContent({ flight, userId }: NavLogContentProps) {
   return (
     <Stack gap="md">
       {/* Regenerate Button */}
-      <Group justify="flex-end">
+      <Group justify={isPhone ? 'center' : 'flex-end'}>
         <Button
           variant="light"
           color="orange"
-          leftSection={<FiRefreshCw size={16} />}
+          size={isPhone ? 'sm' : 'md'}
+          leftSection={<FiRefreshCw size={isPhone ? 14 : 16} />}
           onClick={handleRegenerate}
           loading={isRegenerating}
+          fullWidth={isPhone}
         >
-          Regenerate Nav Log
+          {isPhone ? 'Regenerate' : 'Regenerate Nav Log'}
         </Button>
       </Group>
 

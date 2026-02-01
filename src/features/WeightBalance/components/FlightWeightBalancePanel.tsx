@@ -9,7 +9,6 @@ import {
   Text,
   Box,
   Alert,
-  Divider,
   SimpleGrid,
   Badge,
   Tabs,
@@ -368,45 +367,47 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
         <>
           {/* Aircraft Info Banner */}
           <Paper p="sm" className={classes.infoBanner}>
-            <Group justify="space-between" wrap="wrap">
-              <Group gap="md">
-                <Box>
-                  <Text size="xs" c="dimmed">Aircraft</Text>
-                  <Text size="sm" c="white" fw={500}>
-                    {selectedAircraft?.tailNumber} - {selectedAircraft?.aircraftType}
-                  </Text>
-                </Box>
-                <Divider orientation="vertical" color="dark.4" />
+            <Stack gap="sm">
+              <Group justify="space-between" wrap="wrap">
+                <Text size="sm" c="white" fw={500}>
+                  {selectedAircraft?.tailNumber} - {selectedAircraft?.aircraftType}
+                </Text>
+                <Button
+                  variant="subtle"
+                  size="xs"
+                  leftSection={<FiRefreshCw size={12} />}
+                  onClick={clearInputs}
+                >
+                  Clear All
+                </Button>
+              </Group>
+              <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
                 <Box>
                   <Text size="xs" c="dimmed">Empty Weight</Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.emptyWeight?.toLocaleString()} {weightLabel}
                   </Text>
                 </Box>
-                <Divider orientation="vertical" color="dark.4" />
                 <Box>
                   <Text size="xs" c="dimmed">Empty CG</Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.emptyWeightArm?.toFixed(2)} {armLabel}
                   </Text>
                 </Box>
-                <Divider orientation="vertical" color="dark.4" />
                 <Box>
                   <Text size="xs" c="dimmed">Max Takeoff</Text>
                   <Text size="sm" c="white" fw={500}>
                     {selectedProfile.maxTakeoffWeight?.toLocaleString()} {weightLabel}
                   </Text>
                 </Box>
-              </Group>
-              <Button
-                variant="subtle"
-                size="xs"
-                leftSection={<FiRefreshCw size={12} />}
-                onClick={clearInputs}
-              >
-                Clear All
-              </Button>
-            </Group>
+                <Box>
+                  <Text size="xs" c="dimmed">Max Landing</Text>
+                  <Text size="sm" c="white" fw={500}>
+                    {selectedProfile.maxLandingWeight?.toLocaleString() || '--'} {weightLabel}
+                  </Text>
+                </Box>
+              </SimpleGrid>
+            </Stack>
           </Paper>
 
           {/* Passengers & Cargo Section */}
@@ -615,7 +616,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                 <Text size="sm" c="white" fw={500}>Flight Planning</Text>
               </Group>
 
-              <SimpleGrid cols={2} spacing="md">
+              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
                 {hasFuelStations && (
                   <Box>
                     <Group gap="xs" mb={4}>

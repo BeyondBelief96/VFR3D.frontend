@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Stack, SimpleGrid, Paper, Text, Group, Badge, Button } from '@mantine/core';
 import { FiClock, FiMap, FiNavigation, FiWind } from 'react-icons/fi';
 import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
+import { useIsPhone } from '@/hooks';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { setDisplayMode, viewFlightInMap } from '@/redux/slices/flightPlanningSlice';
 import { FlightDisplayMode } from '@/utility/enums';
@@ -18,6 +19,7 @@ interface FlightOverviewProps {
 export function FlightOverview({ flight }: FlightOverviewProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const isPhone = useIsPhone();
 
   const handleViewOnMap = () => {
     if (flight.id) {
@@ -145,9 +147,10 @@ export function FlightOverview({ flight }: FlightOverviewProps) {
       <Button
         variant="gradient"
         gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-        size="lg"
-        leftSection={<FiMap size={20} />}
+        size={isPhone ? 'md' : 'lg'}
+        leftSection={<FiMap size={isPhone ? 18 : 20} />}
         onClick={handleViewOnMap}
+        fullWidth={isPhone}
       >
         View Flight on Map
       </Button>

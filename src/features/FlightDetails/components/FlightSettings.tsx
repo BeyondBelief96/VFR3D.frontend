@@ -13,6 +13,7 @@ import { DateTimePicker } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import { FiSave } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
+import { useIsPhone } from '@/hooks';
 import { FlightDto, UpdateFlightRequestDto } from '@/redux/api/vfr3d/dtos';
 import { useUpdateFlightMutation } from '@/redux/api/vfr3d/flights.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
@@ -23,6 +24,7 @@ interface FlightSettingsProps {
 }
 
 export function FlightSettings({ flight, userId }: FlightSettingsProps) {
+  const isPhone = useIsPhone();
   const [departureTime, setDepartureTime] = useState<Date | null>(
     flight.departureTime ? new Date(flight.departureTime) : null
   );
@@ -220,15 +222,17 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
             styles={inputStyles}
           />
 
-          <Group justify="flex-end" mt="md">
+          <Group justify={isPhone ? 'center' : 'flex-end'} mt="md">
             <Button
-              leftSection={<FiSave size={16} />}
+              leftSection={<FiSave size={isPhone ? 14 : 16} />}
               onClick={handleSave}
               loading={isUpdating}
               disabled={!canSave}
+              size={isPhone ? 'sm' : 'md'}
+              fullWidth={isPhone}
             >
               {hasChanges && (!aircraftId || !profileId)
-                ? 'Select Aircraft & Profile'
+                ? isPhone ? 'Select Aircraft' : 'Select Aircraft & Profile'
                 : 'Save Changes'}
             </Button>
           </Group>

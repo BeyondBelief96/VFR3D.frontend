@@ -286,7 +286,9 @@ function WeightBalanceContent() {
           </Group>
           <Group gap="sm" wrap="wrap">
             <Button
-              variant="light"
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              color="blue"
               size={isPhone ? 'sm' : 'md'}
               leftSection={<FaBalanceScale size={14} />}
               onClick={() => {

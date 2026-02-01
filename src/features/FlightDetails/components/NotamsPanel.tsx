@@ -10,8 +10,10 @@ import {
   Button,
   SegmentedControl,
   Box,
+  ScrollArea,
 } from '@mantine/core';
 import { FiAlertTriangle, FiInfo, FiClock, FiRefreshCw } from 'react-icons/fi';
+import { useIsPhone } from '@/hooks';
 import {
   FlightDto,
   WaypointType,
@@ -29,6 +31,7 @@ const CORRIDOR_RADIUS_NM = 10;
 const AIRPORT_RADIUS_NM = 5;
 
 export function NotamsPanel({ flight }: NotamsPanelProps) {
+  const isPhone = useIsPhone();
 
   // Calculate the flight time window
   const flightTimeWindow = useMemo((): FlightTimeWindow | undefined => {
@@ -241,57 +244,86 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
   return (
     <Stack gap="md">
       {/* Header with summary and refresh */}
-      <Group justify="space-between" align="flex-start">
-        <Stack gap={4}>
-          <Group gap="sm">
-            <Text fw={500} c="gray.3">
-              NOTAMs for Route
-            </Text>
-            {isLoading || isFetching ? (
-              <Loader size="xs" />
-            ) : notamsData?.totalCount !== undefined ? (
-              <Badge variant="light" color="gray" size="sm">
-                {notamsData.totalCount} total
-              </Badge>
-            ) : null}
-            {criticalCount > 0 && (
-              <Badge variant="filled" color="red" size="sm">
-                {criticalCount} critical
-              </Badge>
-            )}
-          </Group>
-          {flightTimeDisplay && (
-            <Group gap="xs">
-              <FiClock size={12} color="var(--mantine-color-blue-5)" />
-              <Text size="xs" c="blue.4">
-                Flight window: {flightTimeDisplay}
+      <Stack gap="sm">
+        <Group justify="space-between" align="flex-start" wrap="wrap">
+          <Stack gap={4}>
+            <Group gap="sm" wrap="wrap">
+              <Text fw={500} c="gray.3">
+                NOTAMs for Route
               </Text>
+              {isLoading || isFetching ? (
+                <Loader size="xs" />
+              ) : notamsData?.totalCount !== undefined ? (
+                <Badge variant="light" color="gray" size="sm">
+                  {notamsData.totalCount} total
+                </Badge>
+              ) : null}
+              {criticalCount > 0 && (
+                <Badge variant="filled" color="red" size="sm">
+                  {criticalCount} critical
+                </Badge>
+              )}
+            </Group>
+            {flightTimeDisplay && (
+              <Group gap="xs">
+                <FiClock size={12} color="var(--mantine-color-blue-5)" />
+                <Text size="xs" c="blue.4">
+                  {isPhone ? flightTimeDisplay : `Flight window: ${flightTimeDisplay}`}
+                </Text>
+              </Group>
+            )}
+          </Stack>
+
+          {!isPhone && (
+            <Group gap="md">
+              <SegmentedControl
+                size="xs"
+                value={viewMode}
+                onChange={(v) => setViewMode(v as 'raw' | 'readable')}
+                data={[
+                  { label: 'Raw', value: 'raw' },
+                  { label: 'Translated', value: 'readable' },
+                ]}
+              />
+              <Button
+                variant="light"
+                color="orange"
+                size="xs"
+                leftSection={<FiRefreshCw size={14} />}
+                onClick={() => refetch()}
+                loading={isFetching}
+              >
+                Refresh
+              </Button>
             </Group>
           )}
-        </Stack>
-
-        <Group gap="md">
-          <SegmentedControl
-            size="xs"
-            value={viewMode}
-            onChange={(v) => setViewMode(v as 'raw' | 'readable')}
-            data={[
-              { label: 'Raw', value: 'raw' },
-              { label: 'Translated', value: 'readable' },
-            ]}
-          />
-          <Button
-            variant="light"
-            color="orange"
-            size="xs"
-            leftSection={<FiRefreshCw size={14} />}
-            onClick={() => refetch()}
-            loading={isFetching}
-          >
-            Refresh
-          </Button>
         </Group>
-      </Group>
+
+        {/* Mobile controls */}
+        {isPhone && (
+          <Group gap="sm" justify="space-between">
+            <SegmentedControl
+              size="xs"
+              value={viewMode}
+              onChange={(v) => setViewMode(v as 'raw' | 'readable')}
+              data={[
+                { label: 'Raw', value: 'raw' },
+                { label: 'Translated', value: 'readable' },
+              ]}
+            />
+            <Button
+              variant="light"
+              color="orange"
+              size="xs"
+              leftSection={<FiRefreshCw size={14} />}
+              onClick={() => refetch()}
+              loading={isFetching}
+            >
+              Refresh
+            </Button>
+          </Group>
+        )}
+      </Stack>
 
       {/* View mode warning */}
       {viewMode === 'readable' && (
@@ -347,52 +379,55 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
           {sortedLocations.length > 0 ? (
             <Stack gap="md">
               {/* Airport selector buttons */}
-              <Group gap="sm">
-                {sortedLocations.map((location) => {
-                  const counts = locationCounts[location];
-                  const isActive = location === effectiveActiveLocation;
+              <ScrollArea type={isPhone ? 'auto' : 'never'} scrollbarSize={4}>
+                <Group gap="sm" wrap={isPhone ? 'nowrap' : 'wrap'}>
+                  {sortedLocations.map((location) => {
+                    const counts = locationCounts[location];
+                    const isActive = location === effectiveActiveLocation;
 
-                  return (
-                    <Button
-                      key={location}
-                      variant={isActive ? 'filled' : 'default'}
-                      color={isActive ? 'blue' : 'gray'}
-                      size="sm"
-                      onClick={() => setActiveLocation(location)}
-                      styles={{
-                        root: {
-                          backgroundColor: isActive
-                            ? 'var(--mantine-color-blue-6)'
-                            : 'rgba(30, 41, 59, 0.6)',
-                          borderColor: isActive
-                            ? 'var(--mantine-color-blue-5)'
-                            : 'rgba(148, 163, 184, 0.3)',
-                          borderWidth: isActive ? '2px' : '1px',
-                          color: isActive ? 'white' : 'var(--mantine-color-gray-4)',
-                          fontWeight: isActive ? 700 : 500,
-                        },
-                      }}
-                      rightSection={
-                        <Badge
-                          size="xs"
-                          variant={isActive ? 'white' : 'filled'}
-                          color={counts?.critical > 0 ? 'red' : isActive ? 'blue' : 'gray'}
-                          styles={{
-                            root: isActive ? {
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              color: 'white',
-                            } : {},
-                          }}
-                        >
-                          {counts?.total || 0}
-                        </Badge>
-                      }
-                    >
-                      {location}
-                    </Button>
-                  );
-                })}
-              </Group>
+                    return (
+                      <Button
+                        key={location}
+                        variant={isActive ? 'filled' : 'default'}
+                        color={isActive ? 'blue' : 'gray'}
+                        size={isPhone ? 'xs' : 'sm'}
+                        onClick={() => setActiveLocation(location)}
+                        styles={{
+                          root: {
+                            backgroundColor: isActive
+                              ? 'var(--mantine-color-blue-6)'
+                              : 'rgba(30, 41, 59, 0.6)',
+                            borderColor: isActive
+                              ? 'var(--mantine-color-blue-5)'
+                              : 'rgba(148, 163, 184, 0.3)',
+                            borderWidth: isActive ? '2px' : '1px',
+                            color: isActive ? 'white' : 'var(--mantine-color-gray-4)',
+                            fontWeight: isActive ? 700 : 500,
+                            flexShrink: 0,
+                          },
+                        }}
+                        rightSection={
+                          <Badge
+                            size="xs"
+                            variant={isActive ? 'white' : 'filled'}
+                            color={counts?.critical > 0 ? 'red' : isActive ? 'blue' : 'gray'}
+                            styles={{
+                              root: isActive ? {
+                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                color: 'white',
+                              } : {},
+                            }}
+                          >
+                            {counts?.total || 0}
+                          </Badge>
+                        }
+                      >
+                        {location}
+                      </Button>
+                    );
+                  })}
+                </Group>
+              </ScrollArea>
 
               {/* Content for selected location */}
               <Box>

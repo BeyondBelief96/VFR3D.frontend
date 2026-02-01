@@ -8,13 +8,11 @@ import {
   Card,
   Text,
   Tabs,
-  Tooltip,
-  ScrollArea,
 } from '@mantine/core';
 import { FaBalanceScale, FaRoute, FaPlane } from 'react-icons/fa';
 import { FiFileText, FiClipboard, FiCloud, FiSettings } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
-import { useIsPhone } from '@/hooks';
+import { useIsDesktop } from '@/hooks';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
@@ -51,7 +49,7 @@ function FlightDetailsContent() {
   const userId = user?.sub || '';
   const dispatch = useDispatch();
   const [isRefreshingAll, setIsRefreshingAll] = useState(false);
-  const isPhone = useIsPhone();
+  const isDesktop = useIsDesktop();
 
   const {
     data: flight,
@@ -154,45 +152,41 @@ function FlightDetailsContent() {
           }}
         >
           <Tabs defaultValue="overview" color="blue">
-            <ScrollArea type="auto" scrollbarSize={4}>
-              <Tabs.List mb="md" style={{ flexWrap: 'nowrap' }}>
-                <Tooltip label="Overview" disabled={!isPhone}>
-                  <Tabs.Tab value="overview" leftSection={<FiClipboard size={14} />}>
-                    {!isPhone && 'Overview'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="Nav Log" disabled={!isPhone}>
-                  <Tabs.Tab value="navlog" leftSection={<FaRoute size={14} />}>
-                    {!isPhone && 'Nav Log'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="Weight & Balance" disabled={!isPhone}>
-                  <Tabs.Tab value="weight-balance" leftSection={<FaBalanceScale size={14} />}>
-                    {!isPhone && 'W&B'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="Airports" disabled={!isPhone}>
-                  <Tabs.Tab value="airports" leftSection={<FaPlane size={14} />}>
-                    {!isPhone && 'Airports'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="Weather" disabled={!isPhone}>
-                  <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
-                    {!isPhone && 'Weather'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="NOTAMs" disabled={!isPhone}>
-                  <Tabs.Tab value="notams" leftSection={<FiFileText size={14} />}>
-                    {!isPhone && 'NOTAMs'}
-                  </Tabs.Tab>
-                </Tooltip>
-                <Tooltip label="Settings" disabled={!isPhone}>
-                  <Tabs.Tab value="settings" leftSection={<FiSettings size={14} />}>
-                    {!isPhone && 'Settings'}
-                  </Tabs.Tab>
-                </Tooltip>
+            {isDesktop ? (
+              <Tabs.List mb="md" grow>
+                <Tabs.Tab value="overview" leftSection={<FiClipboard size={14} />}>
+                  Overview
+                </Tabs.Tab>
+                <Tabs.Tab value="navlog" leftSection={<FaRoute size={14} />}>
+                  Nav Log
+                </Tabs.Tab>
+                <Tabs.Tab value="weight-balance" leftSection={<FaBalanceScale size={14} />}>
+                  W&B
+                </Tabs.Tab>
+                <Tabs.Tab value="airports" leftSection={<FaPlane size={14} />}>
+                  Airports
+                </Tabs.Tab>
+                <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
+                  Weather
+                </Tabs.Tab>
+                <Tabs.Tab value="notams" leftSection={<FiFileText size={14} />}>
+                  NOTAMs
+                </Tabs.Tab>
+                <Tabs.Tab value="settings" leftSection={<FiSettings size={14} />}>
+                  Settings
+                </Tabs.Tab>
               </Tabs.List>
-            </ScrollArea>
+            ) : (
+              <Tabs.List mb="md" grow>
+                <Tabs.Tab value="overview" leftSection={<FiClipboard size={16} />} />
+                <Tabs.Tab value="navlog" leftSection={<FaRoute size={16} />} />
+                <Tabs.Tab value="weight-balance" leftSection={<FaBalanceScale size={16} />} />
+                <Tabs.Tab value="airports" leftSection={<FaPlane size={16} />} />
+                <Tabs.Tab value="weather" leftSection={<FiCloud size={16} />} />
+                <Tabs.Tab value="notams" leftSection={<FiFileText size={16} />} />
+                <Tabs.Tab value="settings" leftSection={<FiSettings size={16} />} />
+              </Tabs.List>
+            )}
 
             <Tabs.Panel value="overview">
               <FlightOverview flight={flight} />

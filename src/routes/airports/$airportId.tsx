@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import {
   Container,
@@ -12,19 +13,20 @@ import {
   Badge,
   Title,
   SimpleGrid,
-  Divider,
   Code,
   Alert,
   ThemeIcon,
-  Collapse,
-  UnstyledButton,
+  Tabs,
+  Table,
+  ScrollArea,
+  Tooltip,
+  ActionIcon,
+  SegmentedControl,
+  Paper,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import {
   FiArrowLeft,
   FiExternalLink,
-  FiChevronDown,
-  FiChevronUp,
   FiMapPin,
   FiWind,
   FiCloud,
@@ -33,19 +35,26 @@ import {
   FiAlertCircle,
   FiInfo,
   FiRadio,
+  FiRefreshCw,
+  FiFileText,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import { TbPlane, TbRuler } from 'react-icons/tb';
+import { FaRoute } from 'react-icons/fa';
 import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
+import { useIsPhone, useIsDesktop } from '@/hooks';
 import { useGetAirportByIcaoCodeOrIdentQuery, useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetMetarForAirportQuery, useGetTafForAirportQuery } from '@/redux/api/vfr3d/weather.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
 import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
 import { useGetCrosswindForAirportQuery, useGetDensityAltitudeForAirportQuery } from '@/redux/api/vfr3d/performance.api';
+import { useGetNotamsForAirportQuery } from '@/redux/api/vfr3d/notams.api';
 import { AirportDto, RunwayDto, CommunicationFrequencyDto, MetarDto, TafDto } from '@/redux/api/vfr3d/dtos';
 import { WeatherFlightCategories } from '@/utility/enums';
 import { getWeatherErrorMessage } from '@/features/Weather';
+import { NotamsList } from '@/features/FlightDetails/components/NotamsCard';
 
 export const Route = createFileRoute('/airports/$airportId')({
   component: AirportDetailPage,
@@ -88,6 +97,9 @@ const getCrosswindColor = (crosswindKt: number): string => {
 
 function AirportDetailContent() {
   const { airportId } = Route.useParams();
+  const isPhone = useIsPhone();
+  const isDesktop = useIsDesktop();
+  const [notamViewMode, setNotamViewMode] = useState<'raw' | 'readable'>('raw');
 
   // Fetch airport data
   const {
@@ -101,50 +113,106 @@ function AirportDetailContent() {
   const icaoCodeOrIdent = airport?.icaoId || airport?.arptId || airportId || '';
 
   // Fetch all related data
-  const { data: metar, isLoading: isLoadingMetar, error: metarError } = useGetMetarForAirportQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent, refetchOnMountOrArgChange: true, pollingInterval: 600000 }
-  );
+  const {
+    data: metar,
+    isLoading: isLoadingMetar,
+    isFetching: isMetarFetching,
+    error: metarError,
+    refetch: refetchMetar,
+  } = useGetMetarForAirportQuery(icaoCodeOrIdent, {
+    skip: !icaoCodeOrIdent,
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 600000,
+  });
 
-  const { data: taf, isLoading: isLoadingTaf, error: tafError } = useGetTafForAirportQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent, refetchOnMountOrArgChange: true, pollingInterval: 600000 }
-  );
+  const {
+    data: taf,
+    isLoading: isLoadingTaf,
+    isFetching: isTafFetching,
+    error: tafError,
+    refetch: refetchTaf,
+  } = useGetTafForAirportQuery(icaoCodeOrIdent, {
+    skip: !icaoCodeOrIdent,
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 600000,
+  });
 
-  const { data: runways, isLoading: isRunwaysLoading } = useGetRunwaysByAirportCodeQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent }
-  );
+  const {
+    data: runways,
+    isLoading: isRunwaysLoading,
+    isFetching: isRunwaysFetching,
+    refetch: refetchRunways,
+  } = useGetRunwaysByAirportCodeQuery(icaoCodeOrIdent, { skip: !icaoCodeOrIdent });
 
-  const { data: frequencies, isLoading: isFrequenciesLoading } = useGetFrequenciesByServicedFacilityQuery(
-    airport?.arptId ?? '',
-    { skip: !airport?.arptId }
-  );
+  const {
+    data: frequencies,
+    isLoading: isFrequenciesLoading,
+    isFetching: isFrequenciesFetching,
+    refetch: refetchFrequencies,
+  } = useGetFrequenciesByServicedFacilityQuery(airport?.arptId ?? '', { skip: !airport?.arptId });
 
-  const { data: chartSupplementUrl } = useGetChartSupplementUrlByAirportCodeQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent }
-  );
+  const { data: chartSupplementUrl } = useGetChartSupplementUrlByAirportCodeQuery(icaoCodeOrIdent, {
+    skip: !icaoCodeOrIdent,
+  });
 
-  const { data: airportDiagramUrl } = useGetAirportDiagramUrlByAirportCodeQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent }
-  );
+  const { data: airportDiagramUrl } = useGetAirportDiagramUrlByAirportCodeQuery(icaoCodeOrIdent, {
+    skip: !icaoCodeOrIdent,
+  });
 
-  const { data: densityAltitude, isLoading: isDensityAltitudeLoading } = useGetDensityAltitudeForAirportQuery(
-    { icaoCodeOrIdent },
-    { skip: !icaoCodeOrIdent }
-  );
+  const {
+    data: densityAltitude,
+    isLoading: isDensityAltitudeLoading,
+    isFetching: isDensityAltFetching,
+    refetch: refetchDensityAlt,
+  } = useGetDensityAltitudeForAirportQuery({ icaoCodeOrIdent }, { skip: !icaoCodeOrIdent });
 
-  const { data: crosswindData } = useGetCrosswindForAirportQuery(
-    icaoCodeOrIdent,
-    { skip: !icaoCodeOrIdent }
-  );
+  const {
+    data: crosswindData,
+    isFetching: isCrosswindFetching,
+    refetch: refetchCrosswind,
+  } = useGetCrosswindForAirportQuery(icaoCodeOrIdent, { skip: !icaoCodeOrIdent });
+
+  const {
+    data: notamsData,
+    isLoading: isNotamsLoading,
+    isFetching: isNotamsFetching,
+    error: notamsError,
+    refetch: refetchNotams,
+  } = useGetNotamsForAirportQuery(icaoCodeOrIdent, { skip: !icaoCodeOrIdent });
+
+  // Handle refresh all
+  const isRefreshingAll =
+    isMetarFetching ||
+    isTafFetching ||
+    isRunwaysFetching ||
+    isFrequenciesFetching ||
+    isDensityAltFetching ||
+    isCrosswindFetching ||
+    isNotamsFetching;
+
+  const handleRefreshAll = () => {
+    refetchMetar();
+    refetchTaf();
+    refetchRunways();
+    refetchFrequencies();
+    refetchDensityAlt();
+    refetchCrosswind();
+    refetchNotams();
+  };
+
+  // Count critical NOTAMs
+  const criticalNotamCount = useMemo(() => {
+    if (!notamsData?.notams) return 0;
+    return notamsData.notams.filter((n) => {
+      const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
+      return text.includes('CLSD') || text.includes('CLOSED') || text.includes('INOP') || text.includes('U/S');
+    }).length;
+  }, [notamsData]);
 
   // Loading state
   if (isAirportLoading) {
     return (
-      <Container size="sm" py="xl" style={{ minHeight: 'calc(100vh - 60px)' }}>
+      <Container size="xl" py="xl" style={{ minHeight: 'calc(100vh - 60px)' }}>
         <Center py="xl">
           <Stack align="center" gap="md">
             <Loader size="lg" />
@@ -158,9 +226,15 @@ function AirportDetailContent() {
   // Error state
   if (isAirportError || !airport) {
     return (
-      <Container size="sm" py="xl" style={{ minHeight: 'calc(100vh - 60px)' }}>
+      <Container size="xl" py="xl" style={{ minHeight: 'calc(100vh - 60px)' }}>
         <Stack gap="lg">
-          <Button component={Link} to="/airports" variant="subtle" color="gray" leftSection={<FiArrowLeft size={16} />}>
+          <Button
+            component={Link}
+            to="/airports"
+            variant="subtle"
+            color="gray"
+            leftSection={<FiArrowLeft size={16} />}
+          >
             Back to Search
           </Button>
           <PageErrorState
@@ -188,79 +262,127 @@ function AirportDetailContent() {
           background: 'linear-gradient(135deg, #1a365d 0%, #2563eb 100%)',
         }}
       >
-        <Container size="sm">
+        <Container size="xl">
           <Stack gap="md">
-            {/* Back button */}
-            <Button
-              component={Link}
-              to="/airports"
-              variant="subtle"
-              color="white"
-              size="compact-sm"
-              leftSection={<FiArrowLeft size={14} />}
-              style={{ alignSelf: 'flex-start', marginLeft: -8 }}
-            >
-              Back
-            </Button>
-
-            {/* Airport ID and Name */}
-            <Group gap="sm" align="center">
-              <Title order={1} c="white" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>
-                {airport.icaoId || airport.arptId}
-              </Title>
-              {metar?.flightCategory && (
-                <Badge size="lg" color={getFlightCategoryColor(metar.flightCategory)}>
-                  {metar.flightCategory}
-                </Badge>
-              )}
+            {/* Back button and actions */}
+            <Group justify="space-between" wrap="wrap">
+              <Button
+                component={Link}
+                to="/airports"
+                variant="subtle"
+                color="white"
+                size="compact-sm"
+                leftSection={<FiArrowLeft size={14} />}
+              >
+                Back
+              </Button>
+              <Group gap="sm">
+                <Tooltip label="Refresh all data">
+                  <Button
+                    color="green" 
+                    size={isPhone ? 'xs' : 'sm'}
+                    leftSection={<FiRefreshCw size={14} />}
+                    onClick={handleRefreshAll}
+                    loading={isRefreshingAll}
+                  >
+                    {isPhone ? 'Refresh' : 'Refresh All'}
+                  </Button>
+                </Tooltip>
+              </Group>
             </Group>
 
-            <Text c="blue.1" size="lg">
-              {airport.arptName}
-            </Text>
+            {/* Airport ID and Name */}
+            <Group gap="md" align="flex-start" wrap="wrap">
+              <Box>
+                <Group gap="sm" align="center">
+                  <Title order={1} c="white" style={{ fontSize: isPhone ? '2rem' : '3rem' }}>
+                    {airport.icaoId || airport.arptId}
+                  </Title>
+                  {metar?.flightCategory && (
+                    <Badge size="lg" color={getFlightCategoryColor(metar.flightCategory)}>
+                      {metar.flightCategory}
+                    </Badge>
+                  )}
+                </Group>
+                <Text c="blue.1" size={isPhone ? 'md' : 'lg'} mt={4}>
+                  {airport.arptName}
+                </Text>
+                <Group gap="xs" mt={4}>
+                  <FiMapPin size={14} color="var(--mantine-color-blue-3)" />
+                  <Text c="blue.2" size="sm">
+                    {airport.city}, {airport.stateCode}
+                  </Text>
+                </Group>
+              </Box>
 
-            {/* Location */}
-            <Group gap="xs">
-              <FiMapPin size={14} color="var(--mantine-color-blue-3)" />
-              <Text c="blue.2" size="sm">
-                {airport.city}, {airport.stateCode}
-              </Text>
+              {/* Quick Stats - Desktop only in header */}
+              {!isPhone && (
+                <SimpleGrid cols={3} spacing="lg" style={{ marginLeft: 'auto' }}>
+                  <QuickStat label="Elevation" value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'} />
+                  <QuickStat
+                    label="TPA"
+                    value={
+                      calculatePatternAltitude(airport.elev)
+                        ? `${calculatePatternAltitude(airport.elev)?.toLocaleString()}'`
+                        : '--'
+                    }
+                  />
+                  <QuickStat
+                    label="Density Alt"
+                    value={
+                      isDensityAltitudeLoading
+                        ? '...'
+                        : densityAltitude?.densityAltitudeFt
+                          ? `${densityAltitude.densityAltitudeFt.toLocaleString()}'`
+                          : '--'
+                    }
+                    highlight={
+                      densityAltitude?.densityAltitudeFt && airport.elev
+                        ? densityAltitude.densityAltitudeFt - airport.elev > 1000
+                        : false
+                    }
+                  />
+                </SimpleGrid>
+              )}
             </Group>
           </Stack>
         </Container>
       </Box>
 
       {/* Content */}
-      <Container size="sm" py="md">
-        <Stack gap="md">
-          {/* Quick Stats Card */}
-          <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
-            <SimpleGrid cols={3} spacing="xs">
-              <StatBox
-                label="Elevation"
-                value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'}
-              />
-              <StatBox
-                label="TPA"
-                value={calculatePatternAltitude(airport.elev) ? `${calculatePatternAltitude(airport.elev)?.toLocaleString()}'` : '--'}
-              />
-              <StatBox
-                label="Density Alt"
-                value={
-                  isDensityAltitudeLoading
-                    ? '...'
-                    : densityAltitude?.densityAltitudeFt
-                    ? `${densityAltitude.densityAltitudeFt.toLocaleString()}'`
-                    : '--'
-                }
-                highlight={
-                  densityAltitude?.densityAltitudeFt && airport.elev
-                    ? densityAltitude.densityAltitudeFt - airport.elev > 1000
-                    : false
-                }
-              />
-            </SimpleGrid>
-          </Card>
+      <Container size="xl" py="lg">
+        <Stack gap="lg">
+          {/* Quick Stats Card - Mobile only */}
+          {isPhone && (
+            <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
+              <SimpleGrid cols={3} spacing="xs">
+                <StatBox label="Elevation" value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'} />
+                <StatBox
+                  label="TPA"
+                  value={
+                    calculatePatternAltitude(airport.elev)
+                      ? `${calculatePatternAltitude(airport.elev)?.toLocaleString()}'`
+                      : '--'
+                  }
+                />
+                <StatBox
+                  label="Density Alt"
+                  value={
+                    isDensityAltitudeLoading
+                      ? '...'
+                      : densityAltitude?.densityAltitudeFt
+                        ? `${densityAltitude.densityAltitudeFt.toLocaleString()}'`
+                        : '--'
+                  }
+                  highlight={
+                    densityAltitude?.densityAltitudeFt && airport.elev
+                      ? densityAltitude.densityAltitudeFt - airport.elev > 1000
+                      : false
+                  }
+                />
+              </SimpleGrid>
+            </Card>
+          )}
 
           {/* Document Links */}
           {(hasChartSupplement || hasAirportDiagram) && (
@@ -296,35 +418,198 @@ function AirportDetailContent() {
             </SimpleGrid>
           )}
 
-          {/* Weather Section */}
-          <WeatherSection
-            metar={metar}
-            taf={taf}
-            isLoadingMetar={isLoadingMetar}
-            isLoadingTaf={isLoadingTaf}
-            metarError={metarError}
-            tafError={tafError}
-          />
+          {/* Tabs */}
+          <Card
+            padding="lg"
+            radius="md"
+            style={{
+              backgroundColor: 'rgba(30, 41, 59, 0.8)',
+              border: '1px solid rgba(148, 163, 184, 0.1)',
+            }}
+          >
+            <Tabs defaultValue="weather" color="blue">
+              {isDesktop ? (
+                <Tabs.List mb="md" grow>
+                  <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
+                    Weather
+                  </Tabs.Tab>
+                  <Tabs.Tab value="runways" leftSection={<TbPlane size={14} />}>
+                    Runways
+                  </Tabs.Tab>
+                  <Tabs.Tab value="frequencies" leftSection={<FiRadio size={14} />}>
+                    Frequencies
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    value="notams"
+                    leftSection={<FiFileText size={14} />}
+                    rightSection={
+                      criticalNotamCount > 0 ? (
+                        <Badge size="xs" color="red" variant="filled">
+                          {criticalNotamCount}
+                        </Badge>
+                      ) : notamsData?.totalCount ? (
+                        <Badge size="xs" color="gray" variant="light">
+                          {notamsData.totalCount}
+                        </Badge>
+                      ) : null
+                    }
+                  >
+                    NOTAMs
+                  </Tabs.Tab>
+                  <Tabs.Tab value="info" leftSection={<FiInfo size={14} />}>
+                    Info
+                  </Tabs.Tab>
+                </Tabs.List>
+              ) : (
+                <Tabs.List mb="md" grow>
+                  <Tabs.Tab value="weather" leftSection={<FiCloud size={16} />} />
+                  <Tabs.Tab value="runways" leftSection={<TbPlane size={16} />} />
+                  <Tabs.Tab value="frequencies" leftSection={<FiRadio size={16} />} />
+                  <Tabs.Tab
+                    value="notams"
+                    leftSection={<FiFileText size={16} />}
+                    rightSection={
+                      criticalNotamCount > 0 ? (
+                        <Badge size="xs" color="red" variant="filled">
+                          {criticalNotamCount}
+                        </Badge>
+                      ) : null
+                    }
+                  />
+                  <Tabs.Tab value="info" leftSection={<FiInfo size={16} />} />
+                </Tabs.List>
+              )}
 
-          {/* Runways Section */}
-          <RunwaysSection
-            runways={runways}
-            isLoading={isRunwaysLoading}
-            crosswindData={crosswindData}
-          />
+              {/* Weather Tab */}
+              <Tabs.Panel value="weather">
+                <WeatherContent
+                  metar={metar}
+                  taf={taf}
+                  isLoadingMetar={isLoadingMetar}
+                  isLoadingTaf={isLoadingTaf}
+                  metarError={metarError}
+                  tafError={tafError}
+                  onRefreshMetar={() => refetchMetar()}
+                  onRefreshTaf={() => refetchTaf()}
+                  isMetarRefreshing={isMetarFetching}
+                  isTafRefreshing={isTafFetching}
+                />
+              </Tabs.Panel>
 
-          {/* Frequencies Section */}
-          <FrequenciesSection frequencies={frequencies} isLoading={isFrequenciesLoading} />
+              {/* Runways Tab */}
+              <Tabs.Panel value="runways">
+                <RunwaysContent
+                  runways={runways}
+                  isLoading={isRunwaysLoading}
+                  crosswindData={crosswindData}
+                />
+              </Tabs.Panel>
 
-          {/* Airport Info Section */}
-          <AirportInfoSection airport={airport} />
+              {/* Frequencies Tab */}
+              <Tabs.Panel value="frequencies">
+                <FrequenciesContent frequencies={frequencies} isLoading={isFrequenciesLoading} isPhone={isPhone} />
+              </Tabs.Panel>
+
+              {/* NOTAMs Tab */}
+              <Tabs.Panel value="notams">
+                <Stack gap="md">
+                  <Group justify="space-between" wrap="wrap">
+                    <Group gap="sm">
+                      <Text fw={500} c="white">
+                        NOTAMs for {icaoCodeOrIdent}
+                      </Text>
+                      {notamsData?.totalCount !== undefined && (
+                        <Badge variant="light" color="gray" size="sm">
+                          {notamsData.totalCount} total
+                        </Badge>
+                      )}
+                      {criticalNotamCount > 0 && (
+                        <Badge variant="filled" color="red" size="sm">
+                          {criticalNotamCount} critical
+                        </Badge>
+                      )}
+                    </Group>
+                    <Group gap="sm">
+                      <SegmentedControl
+                        size="xs"
+                        value={notamViewMode}
+                        onChange={(v) => setNotamViewMode(v as 'raw' | 'readable')}
+                        data={[
+                          { label: 'Raw', value: 'raw' },
+                          { label: 'Translated', value: 'readable' },
+                        ]}
+                      />
+                      <Tooltip label="Refresh NOTAMs">
+                        <ActionIcon
+                          variant="light"
+                          color="orange"
+                          onClick={() => refetchNotams()}
+                          loading={isNotamsFetching}
+                        >
+                          <FiRefreshCw size={14} />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Group>
+                  </Group>
+
+                  {notamViewMode === 'readable' && (
+                    <Alert
+                      icon={<FiAlertTriangle size={14} />}
+                      color="yellow"
+                      variant="light"
+                      py="xs"
+                      styles={{ message: { fontSize: '12px' } }}
+                    >
+                      Translated text may contain errors. Always verify with raw NOTAM text.
+                    </Alert>
+                  )}
+
+                  {isNotamsLoading ? (
+                    <Center py="xl">
+                      <Stack align="center" gap="sm">
+                        <Loader size="md" />
+                        <Text size="sm" c="dimmed">
+                          Fetching NOTAMs...
+                        </Text>
+                      </Stack>
+                    </Center>
+                  ) : notamsError ? (
+                    <Alert icon={<FiAlertCircle size={16} />} title="Failed to load NOTAMs" color="red" variant="light">
+                      <Text size="sm">We couldn't retrieve NOTAMs for this airport. Please try again.</Text>
+                    </Alert>
+                  ) : (
+                    <NotamsList notamsData={notamsData} viewMode={notamViewMode} />
+                  )}
+                </Stack>
+              </Tabs.Panel>
+
+              {/* Info Tab */}
+              <Tabs.Panel value="info">
+                <AirportInfoContent airport={airport} />
+              </Tabs.Panel>
+            </Tabs>
+          </Card>
         </Stack>
       </Container>
     </Box>
   );
 }
 
-// Stat Box Component
+// Quick Stat for header (desktop)
+function QuickStat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <Box ta="center">
+      <Text size="xs" c="blue.3" tt="uppercase" fw={500}>
+        {label}
+      </Text>
+      <Text size="xl" c={highlight ? 'yellow' : 'white'} fw={700}>
+        {value}
+      </Text>
+    </Box>
+  );
+}
+
+// Stat Box for mobile card
 function StatBox({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
     <Box ta="center">
@@ -338,57 +623,18 @@ function StatBox({ label, value, highlight }: { label: string; value: string; hi
   );
 }
 
-// Collapsible Section Component
-function CollapsibleSection({
-  icon,
-  title,
-  children,
-  defaultOpen = false,
-  rightSection,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-  rightSection?: React.ReactNode;
-}) {
-  const [opened, { toggle }] = useDisclosure(defaultOpen);
-
-  return (
-    <Card padding={0} radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)', overflow: 'hidden' }}>
-      <UnstyledButton onClick={toggle} w="100%" p="md">
-        <Group justify="space-between" wrap="nowrap">
-          <Group gap="sm" wrap="nowrap">
-            <ThemeIcon size="md" variant="light" color="blue">
-              {icon}
-            </ThemeIcon>
-            <Text fw={600} c="white">
-              {title}
-            </Text>
-          </Group>
-          <Group gap="sm" wrap="nowrap">
-            {rightSection}
-            {opened ? <FiChevronUp size={18} /> : <FiChevronDown size={18} />}
-          </Group>
-        </Group>
-      </UnstyledButton>
-      <Collapse in={opened}>
-        <Box px="md" pb="md">
-          {children}
-        </Box>
-      </Collapse>
-    </Card>
-  );
-}
-
-// Weather Section
-function WeatherSection({
+// Weather Content
+function WeatherContent({
   metar,
   taf,
   isLoadingMetar,
   isLoadingTaf,
   metarError,
   tafError,
+  onRefreshMetar,
+  onRefreshTaf,
+  isMetarRefreshing,
+  isTafRefreshing,
 }: {
   metar?: MetarDto;
   taf?: TafDto;
@@ -396,76 +642,109 @@ function WeatherSection({
   isLoadingTaf: boolean;
   metarError: unknown;
   tafError: unknown;
+  onRefreshMetar: () => void;
+  onRefreshTaf: () => void;
+  isMetarRefreshing: boolean;
+  isTafRefreshing: boolean;
 }) {
   const hasValidMetar = metar && !metarError;
   const isVariableWind = metar?.windDirDegrees === 'VRB' || metar?.windDirDegrees === 'Variable';
 
   return (
-    <CollapsibleSection icon={<FiCloud size={16} />} title="Weather" defaultOpen={true}>
-      <Stack gap="md">
-        {/* METAR */}
+    <Stack gap="lg">
+      {/* METAR Section */}
+      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+        <Group justify="space-between" mb="md">
+          <Group gap="sm">
+            <ThemeIcon size="md" variant="light" color="blue">
+              <FiCloud size={16} />
+            </ThemeIcon>
+            <Text fw={600} c="white">
+              Current Conditions (METAR)
+            </Text>
+          </Group>
+          <Group gap="sm">
+            {hasValidMetar && metar.flightCategory && (
+              <Badge color={getFlightCategoryColor(metar.flightCategory)} size="lg">
+                {metar.flightCategory}
+              </Badge>
+            )}
+            <Tooltip label="Refresh METAR">
+              <ActionIcon
+                variant="light"
+                color="orange"
+                onClick={onRefreshMetar}
+                loading={isMetarRefreshing}
+              >
+                <FiRefreshCw size={14} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Group>
+
         {isLoadingMetar ? (
           <Group gap="sm">
             <Loader size="xs" />
-            <Text size="sm" c="dimmed">Loading METAR...</Text>
+            <Text size="sm" c="dimmed">
+              Loading METAR...
+            </Text>
           </Group>
         ) : metarError ? (
           <Alert icon={<FiAlertCircle size={16} />} color="red" variant="light" title="METAR unavailable">
             {getWeatherErrorMessage(metarError as any)}
           </Alert>
         ) : hasValidMetar ? (
-          <Stack gap="sm">
-            <Group justify="space-between" align="center">
-              <Text size="sm" fw={600} c="white">Current Conditions</Text>
-              {metar.flightCategory && (
-                <Badge color={getFlightCategoryColor(metar.flightCategory)}>
-                  {metar.flightCategory}
-                </Badge>
-              )}
-            </Group>
-
+          <Stack gap="md">
             {/* Raw METAR */}
-            <Code block style={{ fontSize: '0.75rem', whiteSpace: 'pre-wrap' }}>
+            <Code block style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>
               {metar.rawText}
             </Code>
 
             {/* Decoded Weather */}
-            <SimpleGrid cols={2} spacing="xs">
+            <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
               {(metar.windDirDegrees || metar.windSpeedKt) && (
                 <WeatherItem
-                  icon={<FiWind size={14} />}
+                  icon={<FiWind size={16} />}
                   label="Wind"
                   value={
                     <>
                       {isVariableWind ? 'VRB' : `${metar.windDirDegrees}°`} @ {metar.windSpeedKt}kt
-                      {metar.windGustKt && <Text span c="yellow"> G{metar.windGustKt}</Text>}
+                      {metar.windGustKt && (
+                        <Text span c="yellow" fw={600}>
+                          {' '}
+                          G{metar.windGustKt}
+                        </Text>
+                      )}
                     </>
                   }
                 />
               )}
               {metar.visibilityStatuteMi && (
-                <WeatherItem icon={<FiEye size={14} />} label="Visibility" value={`${metar.visibilityStatuteMi} SM`} />
+                <WeatherItem icon={<FiEye size={16} />} label="Visibility" value={`${metar.visibilityStatuteMi} SM`} />
               )}
               {(metar.tempC !== undefined || metar.dewpointC !== undefined) && (
                 <WeatherItem
-                  icon={<FiThermometer size={14} />}
+                  icon={<FiThermometer size={16} />}
                   label="Temp/Dew"
                   value={`${metar.tempC}°C / ${metar.dewpointC}°C`}
                 />
               )}
               {metar.altimInHg && (
-                <WeatherItem icon={<TbRuler size={14} />} label="Altimeter" value={`${metar.altimInHg.toFixed(2)}"`} />
+                <WeatherItem icon={<TbRuler size={16} />} label="Altimeter" value={`${metar.altimInHg.toFixed(2)}"`} />
               )}
             </SimpleGrid>
 
             {/* Sky Conditions */}
             {metar.skyCondition && metar.skyCondition.length > 0 && (
               <Box>
-                <Text size="xs" c="dimmed" mb={4}>Sky Conditions</Text>
+                <Text size="sm" c="dimmed" mb="xs">
+                  Sky Conditions
+                </Text>
                 <Group gap="xs">
                   {metar.skyCondition.map((sky, idx) => (
-                    <Badge key={idx} variant="light" color="blue" size="sm">
-                      {sky.skyCover}{sky.cloudBaseFtAgl ? ` @ ${sky.cloudBaseFtAgl.toLocaleString()}'` : ''}
+                    <Badge key={idx} variant="light" color="blue">
+                      {sky.skyCover}
+                      {sky.cloudBaseFtAgl ? ` @ ${sky.cloudBaseFtAgl.toLocaleString()}'` : ''}
                     </Badge>
                   ))}
                 </Group>
@@ -479,25 +758,49 @@ function WeatherSection({
             )}
           </Stack>
         ) : (
-          <Text c="dimmed" size="sm">No METAR available</Text>
+          <Text c="dimmed" size="sm">
+            No METAR available
+          </Text>
         )}
+      </Paper>
 
-        <Divider color="dark.4" />
+      {/* TAF Section */}
+      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+        <Group justify="space-between" mb="md">
+          <Group gap="sm">
+            <ThemeIcon size="md" variant="light" color="cyan">
+              <FaRoute size={14} />
+            </ThemeIcon>
+            <Text fw={600} c="white">
+              Forecast (TAF)
+            </Text>
+          </Group>
+          <Tooltip label="Refresh TAF">
+            <ActionIcon
+              variant="light"
+              color="orange"
+              onClick={onRefreshTaf}
+              loading={isTafRefreshing}
+            >
+              <FiRefreshCw size={14} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
 
-        {/* TAF */}
         {isLoadingTaf ? (
           <Group gap="sm">
             <Loader size="xs" />
-            <Text size="sm" c="dimmed">Loading TAF...</Text>
+            <Text size="sm" c="dimmed">
+              Loading TAF...
+            </Text>
           </Group>
         ) : tafError ? (
           <Alert icon={<FiAlertCircle size={16} />} color="orange" variant="light" title="TAF unavailable">
             {getWeatherErrorMessage(tafError as any)}
           </Alert>
         ) : taf ? (
-          <Stack gap="sm">
-            <Text size="sm" fw={600} c="white">Forecast (TAF)</Text>
-            <Code block style={{ fontSize: '0.7rem', whiteSpace: 'pre-wrap' }}>
+          <Stack gap="md">
+            <Code block style={{ fontSize: '0.75rem', whiteSpace: 'pre-wrap' }}>
               {taf.rawText}
             </Code>
             {taf.issueTime && (
@@ -507,27 +810,33 @@ function WeatherSection({
             )}
           </Stack>
         ) : (
-          <Text c="dimmed" size="sm">No TAF available</Text>
+          <Text c="dimmed" size="sm">
+            No TAF available
+          </Text>
         )}
-      </Stack>
-    </CollapsibleSection>
+      </Paper>
+    </Stack>
   );
 }
 
 function WeatherItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
-    <Group gap="xs" wrap="nowrap">
-      {icon}
+    <Group gap="sm" wrap="nowrap">
+      <Box c="blue.4">{icon}</Box>
       <Box>
-        <Text size="xs" c="dimmed">{label}</Text>
-        <Text size="sm" c="white">{value}</Text>
+        <Text size="xs" c="dimmed">
+          {label}
+        </Text>
+        <Text size="sm" c="white" fw={500}>
+          {value}
+        </Text>
       </Box>
     </Group>
   );
 }
 
-// Runways Section
-function RunwaysSection({
+// Runways Content
+function RunwaysContent({
   runways,
   isLoading,
   crosswindData,
@@ -538,58 +847,68 @@ function RunwaysSection({
 }) {
   if (isLoading) {
     return (
-      <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
+      <Center py="xl">
         <Group gap="sm">
-          <Loader size="xs" />
-          <Text size="sm" c="dimmed">Loading runways...</Text>
+          <Loader size="sm" />
+          <Text size="sm" c="dimmed">
+            Loading runways...
+          </Text>
         </Group>
-      </Card>
+      </Center>
     );
   }
 
   if (!runways || runways.length === 0) {
     return (
-      <CollapsibleSection icon={<TbPlane size={16} />} title="Runways">
-        <Text c="dimmed" size="sm">No runway information available</Text>
-      </CollapsibleSection>
+      <Center py="xl">
+        <Text c="dimmed">No runway information available</Text>
+      </Center>
     );
   }
 
   return (
-    <CollapsibleSection
-      icon={<TbPlane size={16} />}
-      title="Runways"
-      defaultOpen={true}
-      rightSection={
-        crosswindData?.recommendedRunway && (
-          <Badge color="green" size="sm">Best: {crosswindData.recommendedRunway}</Badge>
-        )
-      }
-    >
-      <Stack gap="sm">
-        {/* Current Wind */}
-        {crosswindData && (crosswindData.windDirectionDegrees || crosswindData.isVariableWind) && (
-          <Card padding="sm" radius="sm" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
-            <Text size="sm">
-              <Text span c="dimmed">Wind: </Text>
-              {crosswindData.isVariableWind ? (
-                'Variable'
-              ) : (
-                <>
-                  {crosswindData.windDirectionDegrees}° @ {crosswindData.windSpeedKt}kt
-                  {crosswindData.windGustKt && <Text span c="yellow" fw={600}> G{crosswindData.windGustKt}</Text>}
-                </>
-              )}
-            </Text>
-          </Card>
-        )}
+    <Stack gap="md">
+      {/* Current Wind Banner */}
+      {crosswindData && (crosswindData.windDirectionDegrees || crosswindData.isVariableWind) && (
+        <Paper p="md" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+          <Group justify="space-between" wrap="wrap">
+            <Group gap="sm">
+              <FiWind size={18} color="var(--mantine-color-blue-4)" />
+              <Text size="sm" c="white">
+                <Text span c="dimmed">
+                  Current Wind:{' '}
+                </Text>
+                {crosswindData.isVariableWind ? (
+                  'Variable'
+                ) : (
+                  <>
+                    {crosswindData.windDirectionDegrees}° @ {crosswindData.windSpeedKt}kt
+                    {crosswindData.windGustKt && (
+                      <Text span c="yellow" fw={600}>
+                        {' '}
+                        G{crosswindData.windGustKt}
+                      </Text>
+                    )}
+                  </>
+                )}
+              </Text>
+            </Group>
+            {crosswindData.recommendedRunway && (
+              <Badge color="green" size="lg">
+                Recommended: Runway {crosswindData.recommendedRunway}
+              </Badge>
+            )}
+          </Group>
+        </Paper>
+      )}
 
-        {/* Runway Cards */}
+      {/* Runway Cards */}
+      <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
         {runways.map((runway) => (
           <RunwayCard key={runway.id || runway.runwayId} runway={runway} crosswindData={crosswindData} />
         ))}
-      </Stack>
-    </CollapsibleSection>
+      </SimpleGrid>
+    </Stack>
   );
 }
 
@@ -600,175 +919,291 @@ function RunwayCard({ runway, crosswindData }: { runway: RunwayDto; crosswindDat
   };
 
   return (
-    <Card padding="sm" radius="sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
-      <Stack gap="xs">
+    <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Stack gap="sm">
         <Group justify="space-between" wrap="nowrap">
-          <Text fw={600} c="white">Runway {runway.runwayId}</Text>
-          <Badge variant="outline" size="sm">
+          <Text fw={600} size="lg" c="white">
+            Runway {runway.runwayId}
+          </Text>
+          <Badge variant="outline" size="md">
             {runway.length?.toLocaleString()} × {runway.width} ft
           </Badge>
         </Group>
 
-        <Text size="xs" c="dimmed">
-          Surface: {formatSurface(runway.surfaceType)}
-          {runway.edgeLightIntensity && runway.edgeLightIntensity !== 'None' && ` • Lights: ${runway.edgeLightIntensity}`}
-        </Text>
+        <SimpleGrid cols={2} spacing="xs">
+          <Box>
+            <Text size="xs" c="dimmed">
+              Surface
+            </Text>
+            <Text size="sm" c="white">
+              {formatSurface(runway.surfaceType)}
+            </Text>
+          </Box>
+          {runway.edgeLightIntensity && runway.edgeLightIntensity !== 'None' && (
+            <Box>
+              <Text size="xs" c="dimmed">
+                Lighting
+              </Text>
+              <Text size="sm" c="white">
+                {runway.edgeLightIntensity}
+              </Text>
+            </Box>
+          )}
+        </SimpleGrid>
 
         {/* Crosswind info for each runway end */}
         {crosswindData?.runways && runway.runwayEnds && (
-          <Group gap="xs">
+          <Group gap="xs" mt="xs">
             {runway.runwayEnds.map((end) => {
               const cw = crosswindData.runways.find((r: any) => r.runwayEndId === end.runwayEndId);
               if (!cw) return null;
               const xw = Math.abs(cw.crosswindKt ?? 0);
+              const hw = cw.headwindKt ?? 0;
               const isRecommended = end.runwayEndId === crosswindData.recommendedRunway;
               return (
-                <Badge
+                <Tooltip
                   key={end.runwayEndId}
-                  size="sm"
-                  color={isRecommended ? 'green' : getCrosswindColor(xw)}
-                  variant={isRecommended ? 'filled' : 'light'}
+                  label={`Headwind: ${hw >= 0 ? '+' : ''}${hw.toFixed(0)}kt, Crosswind: ${xw.toFixed(0)}kt`}
                 >
-                  {end.runwayEndId}: XW {xw.toFixed(0)}kt
-                </Badge>
+                  <Badge
+                    size="md"
+                    color={isRecommended ? 'green' : getCrosswindColor(xw)}
+                    variant={isRecommended ? 'filled' : 'light'}
+                  >
+                    {end.runwayEndId}: XW {xw.toFixed(0)}kt
+                  </Badge>
+                </Tooltip>
               );
             })}
           </Group>
         )}
       </Stack>
-    </Card>
+    </Paper>
   );
 }
 
-// Frequencies Section
-function FrequenciesSection({
+// Frequencies Content
+function FrequenciesContent({
   frequencies,
   isLoading,
+  isPhone,
 }: {
   frequencies?: CommunicationFrequencyDto[];
   isLoading: boolean;
+  isPhone: boolean;
 }) {
-  if (isLoading) {
-    return (
-      <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
-        <Group gap="sm">
-          <Loader size="xs" />
-          <Text size="sm" c="dimmed">Loading frequencies...</Text>
-        </Group>
-      </Card>
-    );
-  }
-
-  if (!frequencies || frequencies.length === 0) {
-    return (
-      <CollapsibleSection icon={<FiRadio size={16} />} title="Frequencies">
-        <Text c="dimmed" size="sm">No frequency information available</Text>
-      </CollapsibleSection>
-    );
-  }
-
   const translateFreqUse = (freqUse: string | null): string => {
     const translations: Record<string, string> = {
       'APCH/P': 'Approach',
       'DEP/P': 'Departure',
       'LCL/P': 'Tower',
       'GND/P': 'Ground',
-      'CD PRE TAXI CLNC': 'Clearance',
+      'CD PRE TAXI CLNC': 'Clearance Delivery',
+      'CD/P': 'Clearance',
       'D-ATIS': 'ATIS',
-      'UNICOM': 'UNICOM',
+      UNICOM: 'UNICOM',
+      CTAF: 'CTAF',
+      'EMERG': 'Emergency',
+      'APP/DEP': 'Approach/Departure',
     };
     return translations[freqUse || ''] || freqUse || 'Other';
   };
 
-  // Group and sort frequencies
-  const sortedFreqs = [...frequencies].sort((a, b) => {
-    const order = ['LCL/P', 'GND/P', 'APCH/P', 'DEP/P', 'CD PRE TAXI CLNC', 'D-ATIS', 'UNICOM'];
-    const indexA = order.indexOf(a.frequencyUse ?? '');
-    const indexB = order.indexOf(b.frequencyUse ?? '');
-    if (indexA === -1 && indexB === -1) return 0;
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
-    return indexA - indexB;
-  });
+  // Group frequencies by use
+  const groupedFrequencies = useMemo(() => {
+    if (!frequencies) return {};
+    return frequencies.reduce(
+      (acc, freq) => {
+        const use = translateFreqUse(freq.frequencyUse ?? '');
+        if (!acc[use]) acc[use] = [];
+        acc[use].push(freq);
+        return acc;
+      },
+      {} as Record<string, CommunicationFrequencyDto[]>
+    );
+  }, [frequencies]);
+
+  // Sort frequency groups
+  const sortOrder = [
+    'CTAF',
+    'UNICOM',
+    'Tower',
+    'Ground',
+    'Clearance Delivery',
+    'Clearance',
+    'ATIS',
+    'Approach',
+    'Departure',
+    'Approach/Departure',
+    'Emergency',
+  ];
+
+  const sortedGroups = useMemo(() => {
+    return Object.keys(groupedFrequencies).sort((a, b) => {
+      const indexA = sortOrder.indexOf(a);
+      const indexB = sortOrder.indexOf(b);
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  }, [groupedFrequencies]);
+
+  if (isLoading) {
+    return (
+      <Center py="xl">
+        <Group gap="sm">
+          <Loader size="sm" />
+          <Text size="sm" c="dimmed">
+            Loading frequencies...
+          </Text>
+        </Group>
+      </Center>
+    );
+  }
+
+  if (!frequencies || frequencies.length === 0) {
+    return (
+      <Center py="xl">
+        <Text c="dimmed">No frequency information available</Text>
+      </Center>
+    );
+  }
 
   return (
-    <CollapsibleSection icon={<FiRadio size={16} />} title="Frequencies">
-      <Stack gap="xs">
-        {sortedFreqs.slice(0, 10).map((freq, idx) => (
-          <Group key={idx} justify="space-between" wrap="nowrap" py={4}>
-            <Text size="sm" c="dimmed">{translateFreqUse(freq.frequencyUse ?? '')}</Text>
-            <Text size="sm" c="white" fw={600} ff="monospace">{freq.frequency}</Text>
+    <Stack gap="lg">
+      {sortedGroups.map((group) => (
+        <Paper key={group} p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+          <Group gap="sm" mb="md">
+            <ThemeIcon size="sm" variant="light" color="cyan">
+              <FiRadio size={12} />
+            </ThemeIcon>
+            <Text fw={600} c="white">
+              {group}
+            </Text>
+            <Badge size="sm" variant="light" color="gray">
+              {groupedFrequencies[group].length}
+            </Badge>
           </Group>
-        ))}
-        {frequencies.length > 10 && (
-          <Text size="xs" c="dimmed" ta="center">
-            + {frequencies.length - 10} more frequencies
-          </Text>
-        )}
-      </Stack>
-    </CollapsibleSection>
+
+          <ScrollArea>
+            <Table
+              striped
+              highlightOnHover
+              styles={{
+                table: { minWidth: isPhone ? 300 : 500 },
+                th: { color: 'var(--mantine-color-gray-4)', fontSize: '12px' },
+                td: { color: 'white', fontSize: '13px' },
+              }}
+            >
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Frequency</Table.Th>
+                  <Table.Th>Name/Call</Table.Th>
+                  {!isPhone && <Table.Th>Remarks</Table.Th>}
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {groupedFrequencies[group].map((freq, idx) => (
+                  <Table.Tr key={`${freq.id}-${idx}`}>
+                    <Table.Td>
+                      <Text fw={600} c="cyan" style={{ fontFamily: 'monospace' }}>
+                        {freq.frequency || '--'}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>{freq.towerOrCommCall || freq.facilityName || '--'}</Table.Td>
+                    {!isPhone && (
+                      <Table.Td>
+                        <Text size="xs" lineClamp={2}>
+                          {freq.remark || freq.sectorization || '--'}
+                        </Text>
+                      </Table.Td>
+                    )}
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </ScrollArea>
+        </Paper>
+      ))}
+    </Stack>
   );
 }
 
-// Airport Info Section
-function AirportInfoSection({ airport }: { airport: AirportDto }) {
+// Airport Info Content
+function AirportInfoContent({ airport }: { airport: AirportDto }) {
   return (
-    <CollapsibleSection icon={<FiInfo size={16} />} title="Airport Information">
-      <Stack gap="md">
-        {/* General Info */}
-        <Box>
-          <Text size="xs" c="dimmed" tt="uppercase" fw={500} mb="xs">General</Text>
-          <Stack gap={4}>
-            {airport.icaoId && <InfoRow label="ICAO" value={airport.icaoId} />}
-            {airport.arptId && <InfoRow label="FAA ID" value={airport.arptId} />}
-            {airport.siteTypeCode && <InfoRow label="Type" value={airport.siteTypeCode} />}
-            {airport.fuelTypes && <InfoRow label="Fuel" value={airport.fuelTypes} />}
+    <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+      {/* General Info */}
+      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+        <Group gap="sm" mb="md">
+          <ThemeIcon size="md" variant="light" color="blue">
+            <FiInfo size={16} />
+          </ThemeIcon>
+          <Text fw={600} c="white">
+            General Information
+          </Text>
+        </Group>
+        <Stack gap="sm">
+          {airport.icaoId && <InfoRow label="ICAO Code" value={airport.icaoId} />}
+          {airport.arptId && <InfoRow label="FAA ID" value={airport.arptId} />}
+          {airport.siteTypeCode && <InfoRow label="Type" value={airport.siteTypeCode} />}
+          {airport.fuelTypes && <InfoRow label="Fuel Available" value={airport.fuelTypes} />}
+          {airport.arptStatus && <InfoRow label="Status" value={airport.arptStatus} />}
+        </Stack>
+      </Paper>
+
+      {/* Location */}
+      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+        <Group gap="sm" mb="md">
+          <ThemeIcon size="md" variant="light" color="green">
+            <FiMapPin size={16} />
+          </ThemeIcon>
+          <Text fw={600} c="white">
+            Location
+          </Text>
+        </Group>
+        <Stack gap="sm">
+          {airport.city && <InfoRow label="City" value={airport.city} />}
+          {airport.stateName && <InfoRow label="State" value={airport.stateName} />}
+          {airport.latDecimal && airport.longDecimal && (
+            <InfoRow label="Coordinates" value={`${airport.latDecimal.toFixed(4)}°, ${airport.longDecimal.toFixed(4)}°`} />
+          )}
+          {airport.magVarn && <InfoRow label="Mag Variation" value={`${airport.magVarn}° ${airport.magHemis || ''}`} />}
+          {airport.elev && <InfoRow label="Field Elevation" value={`${airport.elev.toLocaleString()} ft MSL`} />}
+        </Stack>
+      </Paper>
+
+      {/* Contact Info (if available) */}
+      {(airport.contactName || airport.contactPhoneNumber) && (
+        <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+          <Group gap="sm" mb="md">
+            <ThemeIcon size="md" variant="light" color="grape">
+              <FiRadio size={16} />
+            </ThemeIcon>
+            <Text fw={600} c="white">
+              Contact
+            </Text>
+          </Group>
+          <Stack gap="sm">
+            {airport.contactName && <InfoRow label="Name" value={airport.contactName} />}
+            {airport.contactPhoneNumber && <InfoRow label="Phone" value={airport.contactPhoneNumber} />}
           </Stack>
-        </Box>
-
-        <Divider color="dark.4" />
-
-        {/* Location */}
-        <Box>
-          <Text size="xs" c="dimmed" tt="uppercase" fw={500} mb="xs">Location</Text>
-          <Stack gap={4}>
-            {airport.city && <InfoRow label="City" value={airport.city} />}
-            {airport.stateName && <InfoRow label="State" value={airport.stateName} />}
-            {airport.latDecimal && airport.longDecimal && (
-              <InfoRow
-                label="Coordinates"
-                value={`${airport.latDecimal.toFixed(4)}°, ${airport.longDecimal.toFixed(4)}°`}
-              />
-            )}
-            {airport.magVarn && (
-              <InfoRow label="Mag Var" value={`${airport.magVarn}° ${airport.magHemis || ''}`} />
-            )}
-          </Stack>
-        </Box>
-
-        {/* Contact Info (if available) */}
-        {(airport.contactName || airport.contactPhoneNumber) && (
-          <>
-            <Divider color="dark.4" />
-            <Box>
-              <Text size="xs" c="dimmed" tt="uppercase" fw={500} mb="xs">Contact</Text>
-              <Stack gap={4}>
-                {airport.contactName && <InfoRow label="Name" value={airport.contactName} />}
-                {airport.contactPhoneNumber && <InfoRow label="Phone" value={airport.contactPhoneNumber} />}
-              </Stack>
-            </Box>
-          </>
-        )}
-      </Stack>
-    </CollapsibleSection>
+        </Paper>
+      )}
+    </SimpleGrid>
   );
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <Group justify="space-between" wrap="nowrap">
-      <Text size="sm" c="dimmed">{label}</Text>
-      <Text size="sm" c="white" ta="right">{value}</Text>
+      <Text size="sm" c="dimmed">
+        {label}
+      </Text>
+      <Text size="sm" c="white" ta="right" fw={500}>
+        {value}
+      </Text>
     </Group>
   );
 }
