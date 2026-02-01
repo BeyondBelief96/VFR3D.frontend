@@ -1136,6 +1136,57 @@ export interface TafTemperature {
   minTempC?: string | undefined;
 }
 
+export interface TrafficPatternResponseDto {
+  modifiedNavlogWaypoints?: WaypointDto[];
+  patternWaypoints?: TrafficPatternWaypointDto[];
+  airportIdentifier?: string;
+  runwayEndId?: string;
+  entryType?: PatternEntryType;
+  isRightTraffic?: boolean;
+  patternAltitudeMsl?: number;
+  runwayHeadingTrue?: number;
+  validEntryTypes?: PatternEntryType[];
+  message?: string | undefined;
+}
+
+export interface TrafficPatternWaypointDto {
+  id?: string;
+  name?: string;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  waypointType?: TrafficPatternWaypointType;
+  sequenceNumber?: number;
+  trueHeading?: number | undefined;
+}
+
+export enum TrafficPatternWaypointType {
+  PatternEntry = "PatternEntry",
+  Downwind = "Downwind",
+  DownwindAbeam = "DownwindAbeam",
+  Base = "Base",
+  Final = "Final",
+  Threshold = "Threshold",
+  TurnPoint = "TurnPoint",
+  CrossoverPoint = "CrossoverPoint",
+  TeardropPoint = "TeardropPoint",
+}
+
+export enum PatternEntryType {
+  StraightIn = "StraightIn",
+  DownwindEntry = "DownwindEntry",
+  FortyFiveDegreeEntry = "FortyFiveDegreeEntry",
+  MidfieldCrossover = "MidfieldCrossover",
+}
+
+export interface TrafficPatternRequestDto {
+  navlogWaypoints?: WaypointDto[];
+  airportIdentifier?: string;
+  runwayEndId?: string;
+  entryType?: PatternEntryType;
+  aircraftPerformanceProfileId?: string | undefined;
+}
+
 export interface WeightBalanceProfileDto {
   id?: string;
   userId?: string;

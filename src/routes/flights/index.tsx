@@ -147,7 +147,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         </Box>
 
         {/* Stats Grid */}
-        <SimpleGrid cols={4} spacing="xs">
+        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
               <FiNavigation size={14} color="var(--mantine-color-blue-4)" />

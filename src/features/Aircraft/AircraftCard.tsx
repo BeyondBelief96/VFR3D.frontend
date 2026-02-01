@@ -22,6 +22,7 @@ import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBal
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useAuth } from '@/components/Auth';
+import { useIsPhone } from '@/hooks';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
 
 interface AircraftCardProps {
@@ -62,6 +63,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
 }) => {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [expanded, setExpanded] = useState(false);
   const [wbExpanded, setWbExpanded] = useState(false);
@@ -395,7 +397,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         onClose={() => setProfileModalOpen(false)}
         title={profileFormMode === 'create' ? 'Create Performance Profile' : 'Edit Performance Profile'}
         centered
-        size="lg"
+        size={isPhone ? '100%' : 'lg'}
+        fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -439,6 +442,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         onClose={() => setDeleteProfileModalOpen(false)}
         title="Delete Performance Profile"
         centered
+        size={isPhone ? '100%' : 'md'}
+        fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',

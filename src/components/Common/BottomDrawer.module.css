@@ -84,9 +84,17 @@
 .contentOpen {
   height: 75vh;
   opacity: 1;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .contentClosed {
   height: 0;
   opacity: 0;
+}
+
+/* Phone-specific height adjustment */
+@media (max-width: 767px) {
+  .contentOpen {
+    height: 85vh;
+  }
 }

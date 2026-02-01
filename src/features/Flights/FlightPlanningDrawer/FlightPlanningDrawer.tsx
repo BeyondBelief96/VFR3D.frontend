@@ -14,8 +14,10 @@ import {
   Image,
   Badge,
   Divider,
+  Tooltip,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { useIsPhone } from '@/hooks';
 import {
   FiMapPin,
   FiClock,
@@ -89,6 +91,7 @@ export const FlightPlanningDrawer: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -417,12 +420,12 @@ export const FlightPlanningDrawer: React.FC = () => {
     displayMode === FlightDisplayMode.PLANNING ||
     displayMode === FlightDisplayMode.EDITING;
 
-  // Step definitions
+  // Step definitions with mobile-friendly abbreviated labels
   const steps = [
-    { label: 'Route', icon: <FiMapPin size={16} /> },
-    { label: 'Aircraft', icon: <FaPlane size={14} /> },
-    { label: 'Time & Alt', icon: <FiClock size={16} /> },
-    { label: 'Nav Log', icon: <FiTable size={16} /> },
+    { label: isPhone ? 'Route' : 'Route', fullLabel: 'Route', icon: <FiMapPin size={16} /> },
+    { label: isPhone ? 'A/C' : 'Aircraft', fullLabel: 'Aircraft', icon: <FaPlane size={14} /> },
+    { label: isPhone ? 'Alt' : 'Time & Alt', fullLabel: 'Time & Altitude', icon: <FiClock size={16} /> },
+    { label: isPhone ? 'Log' : 'Nav Log', fullLabel: 'Navigation Log', icon: <FiTable size={16} /> },
   ];
 
   // Validation for step progression
@@ -696,12 +699,13 @@ export const FlightPlanningDrawer: React.FC = () => {
           }}
         >
           {steps.map((step, index) => (
-            <Stepper.Step
-              key={index}
-              icon={step.icon}
-              label={step.label}
-              allowStepSelect={index <= currentStep}
-            />
+            <Tooltip key={index} label={step.fullLabel} disabled={!isPhone}>
+              <Stepper.Step
+                icon={step.icon}
+                label={step.label}
+                allowStepSelect={index <= currentStep}
+              />
+            </Tooltip>
           ))}
         </Stepper>
       </Box>

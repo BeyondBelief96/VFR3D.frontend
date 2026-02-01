@@ -3,6 +3,7 @@ import { FiLayers, FiAlertTriangle, FiCloud } from 'react-icons/fi';
 import { GiRadioTower } from 'react-icons/gi';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
+import { useIsPhone } from '@/hooks';
 import {
   toggleShowRouteObstacles,
   toggleShowObstacleLabels,
@@ -53,6 +54,7 @@ const gairmetToggles: GairmetToggle[] = [
 
 export function QuickLayerSettings() {
   const dispatch = useAppDispatch();
+  const isPhone = useIsPhone();
 
   const { showRouteObstacles, showObstacleLabels, heightExaggeration } = useAppSelector(
     (state) => state.obstacles
@@ -123,13 +125,13 @@ export function QuickLayerSettings() {
               <Text size="xs" c="dimmed" mb={4}>
                 SIGMETs
               </Text>
-              <Group gap={4} mb="sm">
+              <Group gap={isPhone ? 8 : 4} mb="sm" wrap="wrap">
                 {sigmetToggles.map(({ type, label, color, tooltip }) => (
                   <Tooltip key={type} label={tooltip} withArrow position="top">
                     <Box
                       onClick={() => dispatch(toggleSigmetHazard(type))}
                       style={{
-                        padding: '2px 8px',
+                        padding: isPhone ? '6px 12px' : '4px 10px',
                         borderRadius: 4,
                         cursor: 'pointer',
                         backgroundColor: sigmetHazards[type]
@@ -138,9 +140,12 @@ export function QuickLayerSettings() {
                         border: sigmetHazards[type]
                           ? 'none'
                           : '1px solid rgba(148, 163, 184, 0.3)',
+                        minHeight: isPhone ? 36 : undefined,
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
-                      <Text size="xs" c="white">
+                      <Text size={isPhone ? 'sm' : 'xs'} c="white">
                         {label}
                       </Text>
                     </Box>
@@ -152,13 +157,13 @@ export function QuickLayerSettings() {
               <Text size="xs" c="dimmed" mb={4}>
                 G-AIRMETs
               </Text>
-              <Group gap={4}>
+              <Group gap={isPhone ? 8 : 4} wrap="wrap">
                 {gairmetToggles.map(({ hazard, label, color, tooltip }) => (
                   <Tooltip key={hazard} label={tooltip} withArrow position="top">
                     <Box
                       onClick={() => dispatch(toggleGAirmetHazard(hazard))}
                       style={{
-                        padding: '2px 8px',
+                        padding: isPhone ? '6px 12px' : '4px 10px',
                         borderRadius: 4,
                         cursor: 'pointer',
                         backgroundColor: gairmetHazards[hazard]
@@ -167,9 +172,12 @@ export function QuickLayerSettings() {
                         border: gairmetHazards[hazard]
                           ? 'none'
                           : '1px solid rgba(148, 163, 184, 0.3)',
+                        minHeight: isPhone ? 36 : undefined,
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
-                      <Text size="xs" c="white">
+                      <Text size={isPhone ? 'sm' : 'xs'} c="white">
                         {label}
                       </Text>
                     </Box>
@@ -193,26 +201,26 @@ export function QuickLayerSettings() {
           <Accordion.Panel>
             <Box pl="md">
               <Group justify="space-between" mb="xs">
-                <Text size="xs" c="dimmed">
+                <Text size={isPhone ? 'sm' : 'xs'} c="dimmed">
                   Show Route Obstacles
                 </Text>
                 <Switch
                   checked={showRouteObstacles}
                   onChange={() => dispatch(toggleShowRouteObstacles(!showRouteObstacles))}
                   color="orange"
-                  size="xs"
+                  size={isPhone ? 'sm' : 'xs'}
                 />
               </Group>
 
               <Group justify="space-between" mb="xs">
-                <Text size="xs" c="dimmed">
+                <Text size={isPhone ? 'sm' : 'xs'} c="dimmed">
                   Show Labels
                 </Text>
                 <Switch
                   checked={showObstacleLabels}
                   onChange={() => dispatch(toggleShowObstacleLabels(!showObstacleLabels))}
                   color="blue"
-                  size="xs"
+                  size={isPhone ? 'sm' : 'xs'}
                 />
               </Group>
 
@@ -256,27 +264,27 @@ export function QuickLayerSettings() {
           <Accordion.Panel>
             <Box pl="md">
               <Group justify="space-between" mb="xs">
-                <Text size="xs" c="dimmed">
+                <Text size={isPhone ? 'sm' : 'xs'} c="dimmed">
                   Show Route Airspaces
                 </Text>
                 <Switch
                   checked={showRouteAirspaces}
                   onChange={() => dispatch(toggleShowRouteAirspaces())}
                   color="blue"
-                  size="xs"
+                  size={isPhone ? 'sm' : 'xs'}
                 />
               </Group>
 
-              <Text size="xs" c="dimmed" mb={4}>
+              <Text size={isPhone ? 'sm' : 'xs'} c="dimmed" mb={4}>
                 Airspace Classes
               </Text>
-              <Group gap={4}>
+              <Group gap={isPhone ? 8 : 4} wrap="wrap">
                 {airspaceClasses.map((airspaceClass) => (
                   <Box
                     key={airspaceClass}
                     onClick={() => dispatch(toggleAirspaceClass(airspaceClass))}
                     style={{
-                      padding: '2px 8px',
+                      padding: isPhone ? '6px 12px' : '4px 10px',
                       borderRadius: 4,
                       cursor: 'pointer',
                       backgroundColor: visibleClasses[airspaceClass]
@@ -285,9 +293,12 @@ export function QuickLayerSettings() {
                       border: visibleClasses[airspaceClass]
                         ? 'none'
                         : '1px solid rgba(148, 163, 184, 0.3)',
+                      minHeight: isPhone ? 36 : undefined,
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                   >
-                    <Text size="xs" c="white">
+                    <Text size={isPhone ? 'sm' : 'xs'} c="white">
                       {airspaceClass}
                     </Text>
                   </Box>
@@ -310,14 +321,14 @@ export function QuickLayerSettings() {
           <Accordion.Panel>
             <Box pl="md">
               <Group justify="space-between" mb="xs">
-                <Text size="xs" c="dimmed">
+                <Text size={isPhone ? 'sm' : 'xs'} c="dimmed">
                   Show Cloud Base Labels
                 </Text>
                 <Switch
                   checked={showCloudBases}
                   onChange={() => dispatch(setShowCloudBases(!showCloudBases))}
                   color="blue"
-                  size="xs"
+                  size={isPhone ? 'sm' : 'xs'}
                 />
               </Group>
             </Box>

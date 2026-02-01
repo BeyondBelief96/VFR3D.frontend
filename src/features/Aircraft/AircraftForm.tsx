@@ -32,6 +32,7 @@ import {
   useUpdateAircraftMutation,
 } from '@/redux/api/vfr3d/aircraft.api';
 import { useAuth } from '@/components/Auth';
+import { useIsPhone } from '@/hooks';
 
 const inputStyles = {
   input: {
@@ -150,6 +151,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
 }) => {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
 
@@ -260,7 +262,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       onClose={handleClose}
       title={mode === 'create' ? 'Add Aircraft' : 'Edit Aircraft'}
       centered
-      size="lg"
+      size={isPhone ? '100%' : 'lg'}
+      fullScreen={isPhone}
       styles={{
         header: {
           backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
@@ -339,7 +342,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   styles={inputStyles}
                 />
 
-                <Group grow>
+                <Group grow={!isPhone} wrap="wrap">
                   <TextInput
                     label="Tail Number"
                     description="Aircraft registration number"
@@ -349,6 +352,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     required
                     withAsterisk
                     styles={inputStyles}
+                    style={{ flex: isPhone ? '1 1 100%' : undefined }}
                   />
 
                   <Select
@@ -361,6 +365,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     required
                     withAsterisk
                     styles={selectStyles}
+                    style={{ flex: isPhone ? '1 1 100%' : undefined }}
                   />
                 </Group>
               </Stack>

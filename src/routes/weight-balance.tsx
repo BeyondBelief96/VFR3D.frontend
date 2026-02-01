@@ -23,6 +23,7 @@ import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
+import { useIsPhone } from '@/hooks';
 import {
   useGetWeightBalanceProfilesQuery,
   useDeleteWeightBalanceProfileMutation,
@@ -53,6 +54,7 @@ type ViewMode = 'list' | 'create' | 'edit' | 'calculator';
 function WeightBalanceContent() {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [editingProfile, setEditingProfile] = useState<WeightBalanceProfileDto | null>(null);
@@ -266,13 +268,15 @@ function WeightBalanceContent() {
       style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
     >
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
-          <Group gap="sm">
-            <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
-              <FaBalanceScale size={24} />
-            </ThemeIcon>
+        <Group justify="space-between" align="flex-start" wrap="wrap" gap="md">
+          <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+            {!isPhone && (
+              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+                <FaBalanceScale size={24} />
+              </ThemeIcon>
+            )}
             <Box>
-              <Title order={1} c="white">
+              <Title order={isPhone ? 2 : 1} c="white">
                 Weight & Balance
               </Title>
               <Text size="sm" c="dimmed">
@@ -280,9 +284,10 @@ function WeightBalanceContent() {
               </Text>
             </Box>
           </Group>
-          <Group gap="sm">
+          <Group gap="sm" wrap="wrap">
             <Button
               variant="light"
+              size={isPhone ? 'sm' : 'md'}
               leftSection={<FaBalanceScale size={14} />}
               onClick={() => {
                 setSelectedProfileForCalc(undefined);
@@ -290,10 +295,11 @@ function WeightBalanceContent() {
                 setViewMode('calculator');
               }}
             >
-              Open Calculator
+              {isPhone ? 'Calculator' : 'Open Calculator'}
             </Button>
             <Button
               leftSection={<FiPlus />}
+              size={isPhone ? 'sm' : 'md'}
               variant="gradient"
               gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
               onClick={handleCreateClick}
@@ -415,7 +421,7 @@ function WeightBalanceContent() {
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
-                  <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+                  <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
                     {aircraftProfiles.map((profile) => (
                       <WeightBalanceProfileCard
                         key={profile.id}
@@ -440,7 +446,8 @@ function WeightBalanceContent() {
         onClose={() => setDeleteModalOpen(false)}
         title="Delete Weight & Balance Profile"
         centered
-        size="md"
+        size={isPhone ? '100%' : 'md'}
+        fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',

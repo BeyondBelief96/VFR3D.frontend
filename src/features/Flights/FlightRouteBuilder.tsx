@@ -11,9 +11,26 @@ import {
   Switch,
   NumberInput,
 } from '@mantine/core';
-import { FiTrash2, FiNavigation, FiMapPin, FiMap } from 'react-icons/fi';
+import { FiTrash2, FiNavigation, FiMapPin, FiMap, FiMenu } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { AppDispatch } from '@/redux/store';
 import { useCalcBearingAndDistanceMutation } from '@/redux/api/vfr3d/navlog.api';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
@@ -28,6 +45,202 @@ interface FlightRouteBuilderProps {
   disabled: boolean;
 }
 
+interface SortableWaypointProps {
+  waypoint: WaypointDto;
+  index: number;
+  waypointsLength: number;
+  legData: { [key: string]: BearingAndDistanceResponseDto };
+  waypoints: WaypointDto[];
+  disabled: boolean;
+  onRemove: (name: string) => void;
+  dispatch: AppDispatch;
+}
+
+const SortableWaypoint: React.FC<SortableWaypointProps> = ({
+  waypoint,
+  index,
+  waypointsLength,
+  legData,
+  waypoints,
+  disabled,
+  onRemove,
+  dispatch,
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: waypoint.id || `waypoint-${index}`, disabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 10 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Paper
+        p="sm"
+        radius="md"
+        withBorder
+        style={{
+          cursor: disabled ? 'default' : 'grab',
+          borderColor: isDragging ? 'var(--mantine-color-blue-5)' : undefined,
+        }}
+      >
+        <Group justify="space-between" wrap="nowrap">
+          <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+            {/* Drag handle - always visible for touch users */}
+            <Box
+              {...attributes}
+              {...listeners}
+              style={{
+                cursor: disabled ? 'default' : 'grab',
+                touchAction: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '4px',
+              }}
+            >
+              <FiMenu size={16} color="var(--mantine-color-gray-5)" />
+            </Box>
+            <Box
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                backgroundColor:
+                  index === 0
+                    ? 'rgba(34, 197, 94, 0.2)'
+                    : index === waypointsLength - 1
+                    ? 'rgba(239, 68, 68, 0.2)'
+                    : 'rgba(59, 130, 246, 0.2)',
+                color:
+                  index === 0
+                    ? 'var(--mantine-color-green-6)'
+                    : index === waypointsLength - 1
+                    ? 'var(--mantine-color-red-6)'
+                    : 'var(--mantine-color-blue-6)',
+              }}
+            >
+              {index === 0 ? (
+                <FaPlane size={14} />
+              ) : index === waypointsLength - 1 ? (
+                <FiMapPin size={14} />
+              ) : (
+                <FiNavigation size={14} />
+              )}
+            </Box>
+            <Box style={{ minWidth: 0, flex: 1 }}>
+              <Text size="sm" fw={600} truncate>
+                {waypoint.name}
+              </Text>
+              <Text size="xs" c="dimmed" truncate>
+                {waypoint.latitude?.toFixed(4)}°, {waypoint.longitude?.toFixed(4)}°
+              </Text>
+            </Box>
+          </Group>
+          <ActionIcon
+            variant="subtle"
+            color="red"
+            size="md"
+            onClick={() => onRemove(waypoint.name || '')}
+            disabled={disabled}
+          >
+            <FiTrash2 size={16} />
+          </ActionIcon>
+        </Group>
+
+        {/* Refueling option for intermediate airports */}
+        {waypoint.waypointType === WaypointType.Airport && index > 0 && index < waypointsLength - 1 && (
+          <Box mt="sm" pt="sm" style={{ borderTop: '1px solid var(--mantine-color-dark-4)' }}>
+            <Switch
+              size="sm"
+              label="Refueling stop"
+              checked={!!waypoint.isRefuelingStop}
+              onChange={(e) =>
+                dispatch(
+                  setWaypointRefuel({
+                    waypointId: waypoint.id || '',
+                    isRefuel: e.currentTarget.checked,
+                  })
+                )
+              }
+              disabled={disabled}
+            />
+            {waypoint.isRefuelingStop && (
+              <Group gap="sm" mt="xs" wrap="wrap">
+                <Switch
+                  size="xs"
+                  label="Refuel to full"
+                  checked={waypoint.refuelToFull ?? true}
+                  onChange={(e) =>
+                    dispatch(
+                      setWaypointRefuel({
+                        waypointId: waypoint.id || '',
+                        isRefuel: true,
+                        refuelToFull: e.currentTarget.checked,
+                      })
+                    )
+                  }
+                  disabled={disabled}
+                />
+                {!(waypoint.refuelToFull ?? true) && (
+                  <NumberInput
+                    size="xs"
+                    w={{ base: 70, sm: 80 }}
+                    value={waypoint.refuelGallons}
+                    onChange={(v) =>
+                      dispatch(
+                        setWaypointRefuel({
+                          waypointId: waypoint.id || '',
+                          isRefuel: true,
+                          refuelToFull: false,
+                          refuelGallons: typeof v === 'number' ? v : undefined,
+                        })
+                      )
+                    }
+                    min={0}
+                    disabled={disabled}
+                    suffix=" gal"
+                  />
+                )}
+              </Group>
+            )}
+          </Box>
+        )}
+
+        {/* Leg info */}
+        {index < waypointsLength - 1 && legData[`${waypoint.id}~${waypoints[index + 1].id}`] && (
+          <Group gap="xs" mt="xs" wrap="wrap">
+            <Badge size="xs" variant="light">
+              {legData[`${waypoint.id}~${waypoints[index + 1].id}`].trueCourse?.toFixed(0)}° TC
+            </Badge>
+            <Badge size="xs" variant="light">
+              {legData[`${waypoint.id}~${waypoints[index + 1].id}`].distance?.toFixed(1)} nm
+            </Badge>
+          </Group>
+        )}
+      </Paper>
+    </motion.div>
+  );
+};
+
 const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
   routePoints: waypoints,
   onRoutePointsChange,
@@ -37,8 +250,24 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
   const [legData, setLegData] = useState<{ [key: string]: BearingAndDistanceResponseDto }>({});
   const [calcBearingAndDistance] = useCalcBearingAndDistanceMutation();
   const [totalDistance, setTotalDistance] = useState<number>(0);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  // Configure sensors for both mouse and touch support
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     const fetchBearingAndDistance = async (
@@ -97,23 +326,24 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
     onRoutePointsChange(waypoints.filter((point) => point.name !== name));
   };
 
-  const handleDragStart = (index: number) => {
-    setDragIndex(index);
-  };
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
+    if (!over || active.id === over.id || disabled) return;
 
-  const handleDrop = (index: number) => {
-    if (dragIndex === null || dragIndex === index || disabled) return;
-    const dragged = waypoints[dragIndex];
+    const oldIndex = waypoints.findIndex((w) => (w.id || `waypoint-${waypoints.indexOf(w)}`) === active.id);
+    const newIndex = waypoints.findIndex((w) => (w.id || `waypoint-${waypoints.indexOf(w)}`) === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const dragged = waypoints[oldIndex];
+
     // Rule: Only an Airport can become the first waypoint
-    if (index === 0 && dragged?.waypointType !== WaypointType.Airport) {
+    if (newIndex === 0 && dragged?.waypointType !== WaypointType.Airport) {
       return;
     }
     // Rule: If moving the current first away, the next item must be an Airport
-    if (dragIndex === 0 && index !== 0) {
+    if (oldIndex === 0 && newIndex !== 0) {
       const wouldBeFirst = waypoints[1];
       if (!wouldBeFirst || wouldBeFirst.waypointType !== WaypointType.Airport) {
         return;
@@ -121,16 +351,9 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
     }
 
     const updated = [...waypoints];
-    const [moved] = updated.splice(dragIndex, 1);
-    updated.splice(index, 0, moved);
+    const [moved] = updated.splice(oldIndex, 1);
+    updated.splice(newIndex, 0, moved);
     onRoutePointsChange(updated);
-    setDragIndex(null);
-    setOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDragIndex(null);
-    setOverIndex(null);
   };
 
   return (
@@ -164,160 +387,34 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
       {/* Waypoints List */}
       <Box style={{ flex: 1, overflow: 'auto' }}>
         {waypoints.length > 0 ? (
-          <Stack gap="xs">
-            <AnimatePresence>
-              {waypoints.map((point: WaypointDto, index: number) => (
-                <motion.div
-                  key={point.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Paper
-                    p="sm"
-                    radius="md"
-                    withBorder
-                    draggable={!disabled}
-                    onDragStart={() => handleDragStart(index)}
-                    onDragOver={(e) => {
-                      handleDragOver(e);
-                      if (overIndex !== index) setOverIndex(index);
-                    }}
-                    onDragEnd={() => handleDragEnd()}
-                    onDrop={() => handleDrop(index)}
-                    style={{
-                      cursor: disabled ? 'default' : 'grab',
-                      borderColor: overIndex === index && dragIndex !== null ? 'var(--mantine-color-blue-5)' : undefined,
-                      opacity: dragIndex === index ? 0.5 : 1,
-                    }}
-                  >
-                    <Group justify="space-between" wrap="nowrap">
-                      <Group gap="sm" wrap="nowrap">
-                        <Box
-                          style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor:
-                              index === 0
-                                ? 'rgba(34, 197, 94, 0.2)'
-                                : index === waypoints.length - 1
-                                ? 'rgba(239, 68, 68, 0.2)'
-                                : 'rgba(59, 130, 246, 0.2)',
-                            color:
-                              index === 0
-                                ? 'var(--mantine-color-green-6)'
-                                : index === waypoints.length - 1
-                                ? 'var(--mantine-color-red-6)'
-                                : 'var(--mantine-color-blue-6)',
-                          }}
-                        >
-                          {index === 0 ? (
-                            <FaPlane size={14} />
-                          ) : index === waypoints.length - 1 ? (
-                            <FiMapPin size={14} />
-                          ) : (
-                            <FiNavigation size={14} />
-                          )}
-                        </Box>
-                        <Box>
-                          <Text size="sm" fw={600}>
-                            {point.name}
-                          </Text>
-                          <Text size="xs" c="dimmed">
-                            {point.latitude?.toFixed(4)}°, {point.longitude?.toFixed(4)}°
-                          </Text>
-                        </Box>
-                      </Group>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() => handleRemoveRoutePoint(point.name || '')}
-                        disabled={disabled}
-                      >
-                        <FiTrash2 size={16} />
-                      </ActionIcon>
-                    </Group>
-
-                    {/* Refueling option for intermediate airports */}
-                    {point.waypointType === WaypointType.Airport && index > 0 && index < waypoints.length - 1 && (
-                      <Box mt="sm" pt="sm" style={{ borderTop: '1px solid var(--mantine-color-dark-4)' }}>
-                        <Switch
-                          size="sm"
-                          label="Refueling stop"
-                          checked={!!point.isRefuelingStop}
-                          onChange={(e) =>
-                            dispatch(
-                              setWaypointRefuel({
-                                waypointId: point.id || '',
-                                isRefuel: e.currentTarget.checked,
-                              })
-                            )
-                          }
-                          disabled={disabled}
-                        />
-                        {point.isRefuelingStop && (
-                          <Group gap="sm" mt="xs">
-                            <Switch
-                              size="xs"
-                              label="Refuel to full"
-                              checked={point.refuelToFull ?? true}
-                              onChange={(e) =>
-                                dispatch(
-                                  setWaypointRefuel({
-                                    waypointId: point.id || '',
-                                    isRefuel: true,
-                                    refuelToFull: e.currentTarget.checked,
-                                  })
-                                )
-                              }
-                              disabled={disabled}
-                            />
-                            {!(point.refuelToFull ?? true) && (
-                              <NumberInput
-                                size="xs"
-                                w={80}
-                                value={point.refuelGallons}
-                                onChange={(v) =>
-                                  dispatch(
-                                    setWaypointRefuel({
-                                      waypointId: point.id || '',
-                                      isRefuel: true,
-                                      refuelToFull: false,
-                                      refuelGallons: typeof v === 'number' ? v : undefined,
-                                    })
-                                  )
-                                }
-                                min={0}
-                                disabled={disabled}
-                                suffix=" gal"
-                              />
-                            )}
-                          </Group>
-                        )}
-                      </Box>
-                    )}
-
-                    {/* Leg info */}
-                    {index < waypoints.length - 1 && legData[`${point.id}~${waypoints[index + 1].id}`] && (
-                      <Group gap="xs" mt="xs">
-                        <Badge size="xs" variant="light">
-                          {legData[`${point.id}~${waypoints[index + 1].id}`].trueCourse?.toFixed(0)}° TC
-                        </Badge>
-                        <Badge size="xs" variant="light">
-                          {legData[`${point.id}~${waypoints[index + 1].id}`].distance?.toFixed(1)} nm
-                        </Badge>
-                      </Group>
-                    )}
-                  </Paper>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </Stack>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={waypoints.map((w, i) => w.id || `waypoint-${i}`)}
+              strategy={verticalListSortingStrategy}
+            >
+              <Stack gap="xs">
+                <AnimatePresence>
+                  {waypoints.map((point: WaypointDto, index: number) => (
+                    <SortableWaypoint
+                      key={point.id || `waypoint-${index}`}
+                      waypoint={point}
+                      index={index}
+                      waypointsLength={waypoints.length}
+                      legData={legData}
+                      waypoints={waypoints}
+                      disabled={disabled}
+                      onRemove={handleRemoveRoutePoint}
+                      dispatch={dispatch}
+                    />
+                  ))}
+                </AnimatePresence>
+              </Stack>
+            </SortableContext>
+          </DndContext>
         ) : (
           <Paper p="xl" radius="md" withBorder ta="center">
             <FiMap size={32} style={{ opacity: 0.5 }} />

@@ -22,6 +22,7 @@ import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
+import { useIsPhone } from '@/hooks';
 import { useGetAircraftQuery, useDeleteAircraftMutation } from '@/redux/api/vfr3d/aircraft.api';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { AircraftDto } from '@/redux/api/vfr3d/dtos';
@@ -43,6 +44,7 @@ function AircraftPage() {
 function AircraftContent() {
   const { user } = useAuth();
   const userId = user?.sub || '';
+  const isPhone = useIsPhone();
 
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -252,7 +254,8 @@ function AircraftContent() {
         onClose={() => setDeleteModalOpen(false)}
         title="Delete Aircraft"
         centered
-        size="md"
+        size={isPhone ? '100%' : 'md'}
+        fullScreen={isPhone}
         styles={{
           header: {
             backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
