@@ -1,4 +1,4 @@
-import { createTheme, MantineColorsTuple } from '@mantine/core';
+import { createTheme, MantineColorsTuple, CSSVariablesResolver } from '@mantine/core';
 
 // =============================================================================
 // CUSTOM COLOR PALETTES
@@ -209,6 +209,17 @@ export const theme = createTheme({
         radius: 'sm',
       },
     },
+  },
+});
+
+// CSS Variables Resolver for custom overrides
+// This ensures dimmed text has better contrast against dark backgrounds
+export const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
+  variables: {},
+  light: {},
+  dark: {
+    // Override dimmed color for better readability (slate-400)
+    '--mantine-color-dimmed': '#ADADAD',
   },
 });
 

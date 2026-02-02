@@ -12,7 +12,7 @@ import { store, persistor } from './redux/store';
 import { routeTree } from './routeTree.gen';
 import { AuthProvider } from './components/Auth';
 import { LoadingScreen } from './components/Common';
-import { theme } from './theme';
+import { theme, cssVariablesResolver } from './theme';
 import './index.css';
 
 // Set Cesium Ion access token
@@ -36,7 +36,7 @@ declare module '@tanstack/react-router' {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider theme={theme} defaultColorScheme="dark" cssVariablesResolver={cssVariablesResolver}>
       <Auth0Provider
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}

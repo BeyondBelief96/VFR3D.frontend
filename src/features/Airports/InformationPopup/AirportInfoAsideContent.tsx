@@ -1,6 +1,19 @@
 import { useState, useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Box, Tabs, ScrollArea, Loader, Center, Stack, Badge, Button, Text, Alert, SegmentedControl, Group } from '@mantine/core';
+import {
+  Box,
+  Tabs,
+  ScrollArea,
+  Loader,
+  Center,
+  Stack,
+  Badge,
+  Button,
+  Text,
+  Alert,
+  SegmentedControl,
+  Group,
+} from '@mantine/core';
 import { FiExternalLink, FiAlertCircle, FiAlertTriangle } from 'react-icons/fi';
 import AirportInfoHeader from './AirportInfoHeader';
 import AirportInfo from './AirportInfo/AirportInfo';
@@ -29,7 +42,10 @@ interface AirportInfoAsideContentProps {
   onClose: () => void;
 }
 
-const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selectedAirport, onClose }) => {
+const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
+  selectedAirport,
+  onClose,
+}) => {
   const [activeTab, setActiveTab] = useState<string | null>('info');
   const [notamViewMode, setNotamViewMode] = useState<'raw' | 'readable'>('raw');
 
@@ -88,7 +104,12 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
     if (!notamsData?.notams) return 0;
     return notamsData.notams.filter((n) => {
       const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-      return text.includes('CLSD') || text.includes('CLOSED') || text.includes('INOP') || text.includes('U/S');
+      return (
+        text.includes('CLSD') ||
+        text.includes('CLOSED') ||
+        text.includes('INOP') ||
+        text.includes('U/S')
+      );
     }).length;
   }, [notamsData]);
 
@@ -110,11 +131,7 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
       />
 
       <Box className={classes.tabsList}>
-        <Tabs
-          value={activeTab}
-          onChange={setActiveTab}
-          variant="pills"
-        >
+        <Tabs value={activeTab} onChange={setActiveTab} variant="pills">
           <Tabs.List grow>
             <Tabs.Tab value="info" size="xs">
               Info
@@ -153,8 +170,8 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
         <Box p="sm">
           {activeTab === 'info' && <AirportInfo airport={selectedAirport} />}
 
-          {activeTab === 'runways' && (
-            isRunwayInfoLoading ? (
+          {activeTab === 'runways' &&
+            (isRunwayInfoLoading ? (
               <Center py="xl">
                 <Loader size="sm" />
               </Center>
@@ -164,18 +181,16 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
                 crosswindData={crosswindData}
                 isCrosswindLoading={isCrosswindLoading}
               />
-            )
-          )}
+            ))}
 
-          {activeTab === 'frequencies' && (
-            isFrequenciesLoading ? (
+          {activeTab === 'frequencies' &&
+            (isFrequenciesLoading ? (
               <Center py="xl">
                 <Loader size="sm" />
               </Center>
             ) : (
               <FrequencyInformation frequencies={frequencies} />
-            )
-          )}
+            ))}
 
           {activeTab === 'weather' && (
             <AirportWeather
@@ -236,7 +251,12 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
                   </Stack>
                 </Center>
               ) : notamsError ? (
-                <Alert icon={<FiAlertCircle size={16} />} title="Failed to load NOTAMs" color="red" variant="light">
+                <Alert
+                  icon={<FiAlertCircle size={16} />}
+                  title="Failed to load NOTAMs"
+                  color="red"
+                  variant="light"
+                >
                   <Text size="sm">We couldn't retrieve NOTAMs for this airport.</Text>
                 </Alert>
               ) : (
@@ -263,7 +283,7 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({ selec
           fullWidth
           leftSection={<FiExternalLink size={14} />}
         >
-          View Full Details
+          View Full Airport Details
         </Button>
       </Box>
     </Stack>
