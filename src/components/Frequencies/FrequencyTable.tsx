@@ -41,6 +41,21 @@ export function FrequencyTable({
     return sortFrequencyGroups(Object.keys(groupedFrequencies));
   }, [groupedFrequencies]);
 
+  // Determine if ANY frequency has sector info (for consistent column display)
+  const hasSectorInfo = useMemo(() => {
+    return frequencies?.some((f) => f.sectorization) ?? false;
+  }, [frequencies]);
+
+  // Determine if ANY frequency has hours info
+  const hasHoursInfo = useMemo(() => {
+    return frequencies?.some((f) => f.towerHours) ?? false;
+  }, [frequencies]);
+
+  // Determine if ANY frequency has remarks
+  const hasRemarksInfo = useMemo(() => {
+    return frequencies?.some((f) => f.remark) ?? false;
+  }, [frequencies]);
+
   if (!frequencies || frequencies.length === 0) {
     return (
       <Text c="dimmed" ta="center" py="md">
@@ -49,16 +64,15 @@ export function FrequencyTable({
     );
   }
 
-  // Determine which columns to show based on variant
-  const showSector = variant === 'full';
-  const showHours = variant === 'full' || variant === 'compact';
-  const showRemarks = variant !== 'minimal';
+  // Determine which columns to show based on variant AND data availability
+  const showSector = (variant === 'full' || variant === 'compact') && hasSectorInfo;
+  const showHours = (variant === 'full' || variant === 'compact') && hasHoursInfo;
+  const showRemarks = variant !== 'minimal' && hasRemarksInfo;
 
   return (
     <Stack gap={variant === 'minimal' ? 'xs' : 'md'}>
       {sortedGroups.map((group) => {
         const freqs = groupedFrequencies[group];
-        const hasSectorInfo = freqs.some((f) => f.sectorization);
 
         const tableContent = (
           <ScrollArea>
@@ -66,7 +80,7 @@ export function FrequencyTable({
               striped
               highlightOnHover
               styles={{
-                table: { minWidth: variant === 'minimal' ? 280 : 400 },
+                table: { minWidth: variant === 'minimal' ? 280 : 400, tableLayout: 'fixed' },
                 th: {
                   color: 'var(--mantine-color-gray-4)',
                   fontSize: variant === 'minimal' ? '0.7rem' : '0.75rem',
@@ -80,10 +94,10 @@ export function FrequencyTable({
             >
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Frequency</Table.Th>
-                  <Table.Th>Name/Call</Table.Th>
-                  {showSector && hasSectorInfo && <Table.Th>Sector</Table.Th>}
-                  {showHours && <Table.Th>Hours</Table.Th>}
+                  <Table.Th style={{ width: '120px' }}>Frequency</Table.Th>
+                  <Table.Th style={{ width: '180px' }}>Name/Call</Table.Th>
+                  {showSector && <Table.Th style={{ width: '120px' }}>Sector</Table.Th>}
+                  {showHours && <Table.Th style={{ width: '120px' }}>Hours</Table.Th>}
                   {showRemarks && <Table.Th>Remarks</Table.Th>}
                 </Table.Tr>
               </Table.Thead>
@@ -96,7 +110,7 @@ export function FrequencyTable({
                       </Text>
                     </Table.Td>
                     <Table.Td>{freq.towerOrCommCall || freq.facilityName || '--'}</Table.Td>
-                    {showSector && hasSectorInfo && (
+                    {showSector && (
                       <Table.Td>
                         <Text size="xs">{freq.sectorization || '--'}</Text>
                       </Table.Td>
