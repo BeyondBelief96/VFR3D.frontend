@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AppShell, Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useRouterState } from '@tanstack/react-router';
@@ -12,7 +12,7 @@ import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import classes from './AppLayout.module.css';
 
 const SIDEBAR_WIDTH = 320;
-const ASIDE_WIDTH = 380;
+const ASIDE_WIDTH = 350;
 
 export function AppLayout() {
   const [sidebarOpened, { toggle: toggleSidebar, open: openSidebar, close: closeSidebar }] =
@@ -28,19 +28,34 @@ export function AppLayout() {
   const selectedEntity = useAppSelector((state) => state.selectedEntity);
   const hasSelectedEntity = isMapPage && selectedEntity.entity !== null;
 
-  // Close aside panel when sidebar opens (mutual exclusivity on small screens only)
-  useEffect(() => {
-    if (isSmallScreen && sidebarOpened && hasSelectedEntity) {
-      dispatch(clearSelectedEntity());
-    }
-  }, [isSmallScreen, sidebarOpened, hasSelectedEntity, dispatch]);
+  // Track previous states to detect what changed (only on small screens)
+  const prevSidebarOpened = useRef<boolean | null>(null);
+  const prevHasSelectedEntity = useRef<boolean | null>(null);
 
-  // Close sidebar when aside panel opens (mutual exclusivity on small screens only)
+  // Handle mutual exclusivity on small screens - only react to the state that changed
   useEffect(() => {
-    if (isSmallScreen && hasSelectedEntity && sidebarOpened) {
-      closeSidebar();
+    if (isSmallScreen) {
+      // Only act if we have previous state to compare against
+      if (prevSidebarOpened.current !== null && prevHasSelectedEntity.current !== null) {
+        // Sidebar was just opened while aside was already open -> close aside
+        if (sidebarOpened && !prevSidebarOpened.current && hasSelectedEntity) {
+          dispatch(clearSelectedEntity());
+        }
+        // Aside was just opened while sidebar was already open -> close sidebar
+        else if (hasSelectedEntity && !prevHasSelectedEntity.current && sidebarOpened) {
+          closeSidebar();
+        }
+      }
+
+      // Update refs only when on small screen
+      prevSidebarOpened.current = sidebarOpened;
+      prevHasSelectedEntity.current = hasSelectedEntity;
+    } else {
+      // Reset refs when not on small screen so we start fresh when transitioning
+      prevSidebarOpened.current = null;
+      prevHasSelectedEntity.current = null;
     }
-  }, [isSmallScreen, hasSelectedEntity, sidebarOpened, closeSidebar]);
+  }, [isSmallScreen, sidebarOpened, hasSelectedEntity, dispatch, closeSidebar]);
 
   // Set CSS variable for sidebar offset - used by BottomDrawer to avoid overlap
   useEffect(() => {

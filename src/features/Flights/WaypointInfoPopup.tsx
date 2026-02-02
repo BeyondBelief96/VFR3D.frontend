@@ -1,10 +1,24 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Box, Paper, TextInput, Text, Group, Button, Stack, ActionIcon, Badge } from '@mantine/core';
+import {
+  Box,
+  Paper,
+  TextInput,
+  Text,
+  Group,
+  Button,
+  Stack,
+  ActionIcon,
+  Badge,
+} from '@mantine/core';
 import { WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { FlightDisplayMode } from '@/utility/enums';
-import { addWaypoint, removeWaypoint, updateWaypointName } from '@/redux/slices/flightPlanningSlice';
+import {
+  addWaypoint,
+  removeWaypoint,
+  updateWaypointName,
+} from '@/redux/slices/flightPlanningSlice';
 import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { FiX } from 'react-icons/fi';
 import { FaPlane, FaArrowUp, FaArrowDown } from 'react-icons/fa';
@@ -18,25 +32,30 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
   const { draftFlightPlan, displayMode } = useSelector((s: RootState) => s.flightPlanning);
   const selectedContext = useSelector((s: RootState) => s.selectedEntity.context);
   const isExisting = selectedContext?.mode === 'existing';
-  const isCalculatedPoint = selectedContext?.isCalculatedPoint || selectedWaypoint.waypointType === WaypointType.CalculatedPoint;
+  const isCalculatedPoint =
+    selectedContext?.isCalculatedPoint ||
+    selectedWaypoint.waypointType === WaypointType.CalculatedPoint;
   const isPreviewMode = displayMode === FlightDisplayMode.PREVIEW;
-  const canEdit = (displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING) && !isCalculatedPoint;
+  const canEdit =
+    (displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING) &&
+    !isCalculatedPoint;
 
   // Determine if this is a TOC or TOD point
   const waypointName = selectedWaypoint.name?.toLowerCase() || '';
   const isToc = waypointName.includes('toc') || waypointName.includes('top of climb');
   const isTod = waypointName.includes('tod') || waypointName.includes('top of descent');
-  const initialName = isExisting
-    ? selectedWaypoint.name || ''
-    : 'New waypoint';
+  const initialName = isExisting ? selectedWaypoint.name || '' : 'New waypoint';
   const [name, setName] = useState(initialName);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { latitude, longitude } = selectedWaypoint;
 
-  const originalName = useMemo(() => (isExisting ? selectedContext?.originalName ?? selectedWaypoint.name ?? '' : ''), [isExisting, selectedContext?.originalName, selectedWaypoint.name]);
+  const originalName = useMemo(
+    () => (isExisting ? (selectedContext?.originalName ?? selectedWaypoint.name ?? '') : ''),
+    [isExisting, selectedContext?.originalName, selectedWaypoint.name]
+  );
   const hasNameChanged = isExisting ? name.trim() !== (originalName || '') : false;
-  
+
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (!canEdit) return;
@@ -64,7 +83,12 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
     if (!draftFlightPlan.waypoints || draftFlightPlan.waypoints.length === 0) {
       dispatch(
         addWaypoint({
-          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
+          waypoint: {
+            ...selectedWaypoint,
+            id: `wp-${Date.now()}`,
+            name,
+            waypointType: WaypointType.Custom,
+          },
           index: 0,
         })
       );
@@ -76,8 +100,16 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
     if (typeof selectedContext?.insertIndex === 'number') {
       dispatch(
         addWaypoint({
-          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
-          index: Math.max(0, Math.min(selectedContext.insertIndex, draftFlightPlan.waypoints.length)),
+          waypoint: {
+            ...selectedWaypoint,
+            id: `wp-${Date.now()}`,
+            name,
+            waypointType: WaypointType.Custom,
+          },
+          index: Math.max(
+            0,
+            Math.min(selectedContext.insertIndex, draftFlightPlan.waypoints.length)
+          ),
         })
       );
       dispatch(clearSelectedEntity());
@@ -100,7 +132,12 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
 
     dispatch(
       addWaypoint({
-        waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
+        waypoint: {
+          ...selectedWaypoint,
+          id: `wp-${Date.now()}`,
+          name,
+          waypointType: WaypointType.Custom,
+        },
         index: bestIndex,
       })
     );
@@ -155,10 +192,10 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
           <Group gap="xs">
             {isToc && <FaArrowUp size={14} color="var(--mantine-color-vfrGreen-5)" />}
             {isTod && <FaArrowDown size={14} color="var(--mantine-color-orange-5)" />}
-            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color="var(--mantine-color-cyan-5)" />}
-            <Text fw={600}>
-              {isToc ? 'Top of Climb' : isTod ? 'Top of Descent' : 'Waypoint'}
-            </Text>
+            {!isToc && !isTod && isCalculatedPoint && (
+              <FaPlane size={14} color="var(--mantine-color-cyan-5)" />
+            )}
+            <Text fw={600}>{isToc ? 'Top of Climb' : isTod ? 'Top of Descent' : 'Waypoint'}</Text>
           </Group>
           <ActionIcon variant="subtle" color="gray" onClick={cancel}>
             <FiX size={18} />
@@ -229,8 +266,8 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
           </Box>
         )}
 
-        {canEdit && (
-          isExisting ? (
+        {canEdit &&
+          (isExisting ? (
             <Group gap="sm" mt="xs">
               <Button size="xs" onClick={saveEdit} disabled={!hasNameChanged}>
                 Save
@@ -248,8 +285,7 @@ const WaypointInfoPopup: React.FC<WaypointInfoPopupProps> = ({ selectedWaypoint 
                 Cancel
               </Button>
             </Group>
-          )
-        )}
+          ))}
       </Stack>
     </Paper>
   );
