@@ -12,7 +12,7 @@ import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import classes from './AppLayout.module.css';
 
 const SIDEBAR_WIDTH = 320;
-const ASIDE_WIDTH = 350;
+const ASIDE_WIDTH = 380;
 
 export function AppLayout() {
   const [sidebarOpened, { toggle: toggleSidebar, open: openSidebar, close: closeSidebar }] =
