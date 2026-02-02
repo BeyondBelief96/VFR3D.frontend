@@ -12,7 +12,7 @@ interface QuickStatProps {
 export function QuickStat({ label, value, highlight }: QuickStatProps) {
   return (
     <Box ta="center">
-      <Text size="xs" c="blue.3" tt="uppercase" fw={500}>
+      <Text size="xs" c="white" tt="uppercase" fw={500}>
         {label}
       </Text>
       <Text size="xl" c={highlight ? 'yellow' : 'white'} fw={700}>

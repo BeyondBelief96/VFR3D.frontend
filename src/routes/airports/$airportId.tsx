@@ -35,12 +35,21 @@ import { TbPlane } from 'react-icons/tb';
 import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone, useIsDesktop } from '@/hooks';
-import { useGetAirportByIcaoCodeOrIdentQuery, useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
-import { useGetMetarForAirportQuery, useGetTafForAirportQuery } from '@/redux/api/vfr3d/weather.api';
+import {
+  useGetAirportByIcaoCodeOrIdentQuery,
+  useGetRunwaysByAirportCodeQuery,
+} from '@/redux/api/vfr3d/airports.api';
+import {
+  useGetMetarForAirportQuery,
+  useGetTafForAirportQuery,
+} from '@/redux/api/vfr3d/weather.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
 import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
-import { useGetCrosswindForAirportQuery, useGetDensityAltitudeForAirportQuery } from '@/redux/api/vfr3d/performance.api';
+import {
+  useGetCrosswindForAirportQuery,
+  useGetDensityAltitudeForAirportQuery,
+} from '@/redux/api/vfr3d/performance.api';
 import { useGetNotamsForAirportQuery } from '@/redux/api/vfr3d/notams.api';
 import { WeatherFlightCategories } from '@/utility/enums';
 import { NotamsList } from '@/features/FlightDetails/components/NotamsCard';
@@ -196,7 +205,12 @@ function AirportDetailContent() {
     if (!notamsData?.notams) return 0;
     return notamsData.notams.filter((n) => {
       const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-      return text.includes('CLSD') || text.includes('CLOSED') || text.includes('INOP') || text.includes('U/S');
+      return (
+        text.includes('CLSD') ||
+        text.includes('CLOSED') ||
+        text.includes('INOP') ||
+        text.includes('U/S')
+      );
     }).length;
   }, [notamsData]);
 
@@ -244,7 +258,12 @@ function AirportDetailContent() {
   const hasAirportDiagram = !!airportDiagramUrl?.pdfUrl;
 
   return (
-    <Box style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}>
+    <Box
+      style={{
+        minHeight: 'calc(100vh - 60px)',
+        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+      }}
+    >
       {/* Header */}
       <Box
         py="lg"
@@ -270,7 +289,7 @@ function AirportDetailContent() {
               <Group gap="sm">
                 <Tooltip label="Refresh all data">
                   <Button
-                    color="green"
+                    color="teal"
                     size={isPhone ? 'xs' : 'sm'}
                     leftSection={<FiRefreshCw size={14} />}
                     onClick={handleRefreshAll}
@@ -309,7 +328,10 @@ function AirportDetailContent() {
               {/* Quick Stats - Desktop only in header */}
               {!isPhone && (
                 <SimpleGrid cols={3} spacing="lg" style={{ marginLeft: 'auto' }}>
-                  <QuickStat label="Elevation" value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'} />
+                  <QuickStat
+                    label="Elevation"
+                    value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'}
+                  />
                   <QuickStat
                     label="TPA"
                     value={
@@ -347,7 +369,10 @@ function AirportDetailContent() {
           {isPhone && (
             <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
               <SimpleGrid cols={3} spacing="xs">
-                <StatBox label="Elevation" value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'} />
+                <StatBox
+                  label="Elevation"
+                  value={airport.elev ? `${airport.elev.toLocaleString()}'` : '--'}
+                />
                 <StatBox
                   label="TPA"
                   value={
@@ -383,8 +408,9 @@ function AirportDetailContent() {
                   component="a"
                   href={chartSupplementUrl!.pdfUrl}
                   target="_blank"
-                  variant="light"
                   color="blue"
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
                   size="md"
                   leftSection={<FiExternalLink size={16} />}
                   fullWidth
@@ -397,8 +423,9 @@ function AirportDetailContent() {
                   component="a"
                   href={airportDiagramUrl!.pdfUrl}
                   target="_blank"
-                  variant="light"
                   color="blue"
+                  variant="gradient"
+                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
                   size="md"
                   leftSection={<FiExternalLink size={16} />}
                   fullWidth
@@ -489,12 +516,20 @@ function AirportDetailContent() {
 
               {/* Runways Tab */}
               <Tabs.Panel value="runways">
-                <RunwaysContent runways={runways} isLoading={isRunwaysLoading} crosswindData={crosswindData} />
+                <RunwaysContent
+                  runways={runways}
+                  isLoading={isRunwaysLoading}
+                  crosswindData={crosswindData}
+                />
               </Tabs.Panel>
 
               {/* Frequencies Tab */}
               <Tabs.Panel value="frequencies">
-                <FrequenciesContent frequencies={frequencies} isLoading={isFrequenciesLoading} isPhone={isPhone} />
+                <FrequenciesContent
+                  frequencies={frequencies}
+                  isLoading={isFrequenciesLoading}
+                  isPhone={isPhone}
+                />
               </Tabs.Panel>
 
               {/* NOTAMs Tab */}
@@ -561,8 +596,15 @@ function AirportDetailContent() {
                       </Stack>
                     </Center>
                   ) : notamsError ? (
-                    <Alert icon={<FiAlertCircle size={16} />} title="Failed to load NOTAMs" color="red" variant="light">
-                      <Text size="sm">We couldn't retrieve NOTAMs for this airport. Please try again.</Text>
+                    <Alert
+                      icon={<FiAlertCircle size={16} />}
+                      title="Failed to load NOTAMs"
+                      color="red"
+                      variant="light"
+                    >
+                      <Text size="sm">
+                        We couldn't retrieve NOTAMs for this airport. Please try again.
+                      </Text>
                     </Alert>
                   ) : (
                     <NotamsList notamsData={notamsData} viewMode={notamViewMode} />
