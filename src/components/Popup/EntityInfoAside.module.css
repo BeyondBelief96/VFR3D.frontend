@@ -1,0 +1,33 @@
+/**
+ * EntityInfoAside component styles
+ * Styles for entity info displayed in the AppShell aside panel
+ */
+
+.header {
+  padding: var(--mantine-spacing-md);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.closeButton {
+  flex-shrink: 0;
+}
+
+.flexGroup {
+  flex: 1;
+  min-width: 0;
+}
+
+.codeBlock {
+  font-size: 0.7rem;
+  white-space: pre-wrap;
+}
+
+.infoBox {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: var(--mantine-radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.divider {
+  border-color: rgba(148, 163, 184, 0.2);
+}

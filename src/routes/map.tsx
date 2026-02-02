@@ -30,7 +30,6 @@ import { Pireps } from '@/features/Pireps';
 import { AirsigmetComponent, GAirmetComponent } from '@/features/Airsigmets';
 import { Obstacles, RouteObstacles } from '@/features/Obstacles';
 import { RouteComponent, FlightPlanningDrawer } from '@/features/Flights';
-import { EntitySelectionManager } from '@/components/Popup';
 
 // Set the default access token for ArcGIS services
 ArcGisMapService.defaultAccessToken = import.meta.env.VITE_ARCGIS_API_KEY;
@@ -199,10 +198,7 @@ function MapContent() {
         {/* Flight Planning */}
         <RouteComponent />
       </ResiumViewer>
-      
-      {/* Entity Info Popups */}
-      <EntitySelectionManager />
-      
+
       {/* Flight Planning Drawer */}
       <FlightPlanningDrawer />
     </Box>

@@ -1,0 +1,12 @@
+/**
+ * AirportInfoAsideContent component styles
+ */
+
+.tabsList {
+  padding-left: var(--mantine-spacing-sm);
+  padding-right: var(--mantine-spacing-sm);
+  padding-top: var(--mantine-spacing-xs);
+  padding-bottom: var(--mantine-spacing-xs);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(26, 27, 30, 0.6);
+}

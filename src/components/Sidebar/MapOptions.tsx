@@ -59,7 +59,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
           }}
         />
       </Box>
@@ -81,7 +81,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
           }}
         />
       </Box>
@@ -103,10 +103,10 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: 'var(--mantine-color-gray-6)' },
           }}
         />
-        <Text size="xs" c="dimmed" mt={4}>
+        <Text size="xs" c="white" mt={10}>
           Lower values = more detail (uses more memory)
         </Text>
       </Box>

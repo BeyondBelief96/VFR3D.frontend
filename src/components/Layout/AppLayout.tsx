@@ -6,15 +6,22 @@ import Header from './Header';
 import Footer from './Footer';
 import Sidebar from '../Sidebar/Sidebar';
 import { SidebarProvider } from './SidebarContext';
+import { EntityInfoAside } from '../Popup';
+import { useAppSelector } from '@/hooks';
 import classes from './AppLayout.module.css';
 
 const SIDEBAR_WIDTH = 320;
+const ASIDE_WIDTH = 380;
 
 export function AppLayout() {
   const [sidebarOpened, { toggle: toggleSidebar, open: openSidebar, close: closeSidebar }] =
     useDisclosure(true);
   const router = useRouterState();
   const isMapPage = router.location.pathname === '/map';
+
+  // Get selected entity for aside state
+  const selectedEntity = useAppSelector((state) => state.selectedEntity);
+  const hasSelectedEntity = isMapPage && selectedEntity.entity !== null;
 
   // Set CSS variable for sidebar offset - used by BottomDrawer to avoid overlap
   useEffect(() => {
@@ -25,6 +32,16 @@ export function AppLayout() {
       document.documentElement.style.setProperty('--app-sidebar-offset', '0px');
     };
   }, [isMapPage, sidebarOpened]);
+
+  // Set CSS variable for aside offset - used by BottomDrawer to avoid overlap
+  useEffect(() => {
+    const offset = hasSelectedEntity ? ASIDE_WIDTH : 0;
+    document.documentElement.style.setProperty('--app-aside-offset', `${offset}px`);
+
+    return () => {
+      document.documentElement.style.setProperty('--app-aside-offset', '0px');
+    };
+  }, [hasSelectedEntity]);
 
   // Memoize sidebar context value to prevent unnecessary re-renders
   const sidebarContextValue = useMemo(
@@ -50,10 +67,20 @@ export function AppLayout() {
               }
             : undefined
         }
+        aside={
+          isMapPage
+            ? {
+                width: ASIDE_WIDTH,
+                breakpoint: 0,
+                collapsed: { desktop: !hasSelectedEntity, mobile: !hasSelectedEntity },
+              }
+            : undefined
+        }
         padding={0}
         classNames={{
           main: classes.main,
           navbar: classes.navbar,
+          aside: classes.aside,
         }}
         styles={{
           header: {
@@ -75,6 +102,12 @@ export function AppLayout() {
           <AppShell.Navbar>
             <Sidebar onClose={toggleSidebar} />
           </AppShell.Navbar>
+        )}
+
+        {isMapPage && (
+          <AppShell.Aside>
+            <EntityInfoAside />
+          </AppShell.Aside>
         )}
 
         <AppShell.Main>

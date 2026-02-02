@@ -27,8 +27,14 @@
   border-right: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-/* CSS variable for sidebar offset - used by BottomDrawer to avoid overlap */
+/* CSS variables for sidebar/aside offset - used by BottomDrawer to avoid overlap */
 :root {
   --app-sidebar-width: 320px;
   --app-sidebar-offset: 0px;
+  --app-aside-offset: 0px;
+}
+
+.aside {
+  background-color: var(--mantine-color-vfr3dSurface-9);
+  border-left: 1px solid rgba(148, 163, 184, 0.1);
 }

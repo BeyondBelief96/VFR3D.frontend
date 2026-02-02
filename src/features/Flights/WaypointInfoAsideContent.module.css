@@ -1,0 +1,9 @@
+/**
+ * WaypointInfoAsideContent component styles
+ */
+
+.header {
+  padding: var(--mantine-spacing-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(26, 27, 30, 0.6);
+}
