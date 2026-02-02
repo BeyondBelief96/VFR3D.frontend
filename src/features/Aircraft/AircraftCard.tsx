@@ -20,6 +20,7 @@ import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle,
 import { FaPlane, FaBalanceScale } from 'react-icons/fa';
 import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
+import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useAuth } from '@/components/Auth';
 import { useIsPhone, useIsTablet } from '@/hooks';
@@ -273,7 +274,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                             </Text>
                             <Group gap="xs" mt={isPhone ? 2 : 4}>
                               <Text size="xs" c="dimmed">
-                                {profile.cruiseTrueAirspeed} kts
+                                {profile.cruiseTrueAirspeed} {getAirspeedUnitLabel(aircraft.airspeedUnits)}
                               </Text>
                               <Text size="xs" c="dimmed">
                                 {profile.cruiseFuelBurn} gph
@@ -451,6 +452,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
           mode={profileFormMode}
           existingProfile={editingProfile}
           aircraftId={aircraft.id}
+          airspeedUnits={aircraft.airspeedUnits}
           onCancel={() => setProfileModalOpen(false)}
           onSuccess={handleProfileFormSuccess}
           isModal
@@ -506,7 +508,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
               </Text>
               <Group gap="xs" mt={4} wrap="wrap">
                 <Badge size="xs" variant="light" color="blue">
-                  {profileBeingDeleted.cruiseTrueAirspeed} kts
+                  {profileBeingDeleted.cruiseTrueAirspeed} {getAirspeedUnitLabel(aircraft.airspeedUnits)}
                 </Badge>
                 <Badge size="xs" variant="light" color="cyan">
                   {profileBeingDeleted.cruiseFuelBurn} gph

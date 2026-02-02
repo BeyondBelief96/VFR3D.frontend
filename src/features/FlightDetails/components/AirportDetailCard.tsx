@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   Paper,
   Group,
@@ -10,19 +9,18 @@ import {
   Center,
   Loader,
   Stack,
-  Table,
-  ScrollArea,
   ActionIcon,
   Tooltip,
   Overlay,
 } from '@mantine/core';
 import { FiRefreshCw } from 'react-icons/fi';
-import { AirportDto, CommunicationFrequencyDto } from '@/redux/api/vfr3d/dtos';
+import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
 import { RunwayInformation } from '@/features/Airports/InformationPopup/AirportInfo/RunwayInformation';
 import { AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
+import { FrequencyTable } from '@/components/Frequencies';
 
 const hasUniqueBestRunway = (crosswindData?: AirportCrosswindResponseDto): boolean => {
   if (!crosswindData?.runways || !crosswindData.recommendedRunway) return false;
@@ -87,19 +85,6 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
     refetchFrequencies();
     refetchCrosswind();
   };
-
-  const groupedFrequencies = useMemo(() => {
-    if (!frequencies) return {};
-    return frequencies.reduce(
-      (acc, freq) => {
-        const use = freq.frequencyUse || 'Other';
-        if (!acc[use]) acc[use] = [];
-        acc[use].push(freq);
-        return acc;
-      },
-      {} as Record<string, CommunicationFrequencyDto[]>
-    );
-  }, [frequencies]);
 
   return (
     <Paper
@@ -264,55 +249,13 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
               <Center py="md">
                 <Loader size="sm" />
               </Center>
-            ) : frequencies && frequencies.length > 0 ? (
-              <Stack gap="sm">
-                {Object.entries(groupedFrequencies).map(([use, freqs]) => (
-                  <Box key={use}>
-                    <Text size="xs" c="dimmed" fw={500} mb="xs">
-                      {use}
-                    </Text>
-                    <ScrollArea>
-                      <Table
-                        striped
-                        styles={{
-                          table: { minWidth: 400 },
-                          th: { color: 'var(--mantine-color-gray-4)', fontSize: '11px' },
-                          td: { color: 'white', fontSize: '12px' },
-                        }}
-                      >
-                        <Table.Thead>
-                          <Table.Tr>
-                            <Table.Th>Frequency</Table.Th>
-                            <Table.Th>Name/Call</Table.Th>
-                            <Table.Th>Remarks</Table.Th>
-                          </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                          {freqs.map((freq, idx) => (
-                            <Table.Tr key={`${freq.id}-${idx}`}>
-                              <Table.Td>
-                                <Text fw={600} c="cyan">
-                                  {freq.frequency || '--'}
-                                </Text>
-                              </Table.Td>
-                              <Table.Td>{freq.towerOrCommCall || freq.facilityName || '--'}</Table.Td>
-                              <Table.Td>
-                                <Text size="xs" lineClamp={1}>
-                                  {freq.remark || freq.sectorization || '--'}
-                                </Text>
-                              </Table.Td>
-                            </Table.Tr>
-                          ))}
-                        </Table.Tbody>
-                      </Table>
-                    </ScrollArea>
-                  </Box>
-                ))}
-              </Stack>
             ) : (
-              <Text c="dimmed" size="sm" ta="center" py="md">
-                No frequency information available
-              </Text>
+              <FrequencyTable
+                frequencies={frequencies}
+                variant="compact"
+                showGroupHeader={true}
+                showGroupPaper={false}
+              />
             )}
           </Accordion.Panel>
         </Accordion.Item>

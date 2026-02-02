@@ -1,0 +1,1 @@
+export { FrequencyTable } from './FrequencyTable';

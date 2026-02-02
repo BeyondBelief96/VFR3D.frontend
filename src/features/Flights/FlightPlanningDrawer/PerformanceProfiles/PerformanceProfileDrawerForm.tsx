@@ -15,6 +15,7 @@ import { FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
 import { FaPlane, FaArrowUp, FaArrowDown, FaGasPump } from 'react-icons/fa';
 import {
   AircraftPerformanceProfileDto,
+  AirspeedUnits,
   SaveAircraftPerformanceProfileRequestDto,
   UpdateAircraftPerformanceProfileRequestDto,
 } from '@/redux/api/vfr3d/dtos';
@@ -23,12 +24,14 @@ import {
   useUpdateAircraftPerformanceProfileMutation,
 } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { useAuth } from '@/components/Auth';
+import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import classes from './PerformanceProfileDrawerForm.module.css';
 
 interface PerformanceProfileDrawerFormProps {
   mode: 'create' | 'edit';
   existingProfile?: AircraftPerformanceProfileDto | null;
   aircraftId?: string; // Optional aircraft ID to associate profile with
+  airspeedUnits?: AirspeedUnits; // Aircraft's preferred airspeed units
   onCancel: () => void;
   onSuccess: () => void;
   isModal?: boolean; // When true, hides the back button header (modal has its own)
@@ -66,12 +69,16 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
   mode,
   existingProfile,
   aircraftId,
+  airspeedUnits,
   onCancel,
   onSuccess,
   isModal = false,
 }) => {
   const { user } = useAuth();
   const userId = user?.sub || '';
+
+  // Get the unit label for airspeed fields
+  const speedUnitLabel = getAirspeedUnitLabel(airspeedUnits);
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
 
@@ -84,6 +91,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
   const hasError = isSaveError || isUpdateError;
 
   // Initialize form with existing profile data when editing
+  // Values are stored in user's preferred units on the backend, so no conversion needed
   useEffect(() => {
     if (mode === 'edit' && existingProfile) {
       setFormData({
@@ -118,6 +126,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
 
     if (!formData.profileName.trim()) return;
 
+    // Values are stored in user's preferred units on the backend, so no conversion needed
     try {
       if (mode === 'create') {
         const request: SaveAircraftPerformanceProfileRequestDto = {
@@ -219,7 +228,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               onChange={(val) => handleInputChange('cruiseTrueAirspeed', val)}
               min={0}
               max={500}
-              suffix=" kts"
+              suffix={` ${speedUnitLabel}`}
             />
             <NumberInput
               label="Fuel Burn"
@@ -258,7 +267,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 onChange={(val) => handleInputChange('climbTrueAirspeed', val)}
                 min={0}
                 max={500}
-                suffix=" kts"
+                suffix={` ${speedUnitLabel}`}
               />
               <NumberInput
                 label="Fuel Burn"
@@ -307,7 +316,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
                 onChange={(val) => handleInputChange('descentTrueAirspeed', val)}
                 min={0}
                 max={500}
-                suffix=" kts"
+                suffix={` ${speedUnitLabel}`}
               />
               <NumberInput
                 label="Fuel Burn"

@@ -22,6 +22,7 @@ import { updateDraftPlanSettings } from '@/redux/slices/flightPlanningSlice';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { AircraftPerformanceProfileDto } from '@/redux/api/vfr3d/dtos';
+import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { PerformanceProfileDrawerForm } from './PerformanceProfileDrawerForm';
 
 type ViewMode = 'selection' | 'create' | 'edit';
@@ -194,6 +195,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
         mode={viewMode}
         existingProfile={editingProfile}
         aircraftId={selectedAircraftId || undefined}
+        airspeedUnits={selectedAircraft?.airspeedUnits}
         onCancel={handleFormCancel}
         onSuccess={handleFormSuccess}
       />
@@ -371,7 +373,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                         </Text>
                         <Group gap="xs" mt={4}>
                           <Badge size="xs" variant="light" color="blue">
-                            {profile.cruiseTrueAirspeed} kts
+                            {profile.cruiseTrueAirspeed} {getAirspeedUnitLabel(selectedAircraft?.airspeedUnits)}
                           </Badge>
                           <Badge size="xs" variant="light" color="cyan">
                             {profile.cruiseFuelBurn} gph

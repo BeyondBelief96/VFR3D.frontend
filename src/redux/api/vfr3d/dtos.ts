@@ -68,6 +68,8 @@ export interface AircraftPerformanceProfileDto {
   descentTrueAirspeed?: number;
   sttFuelGals?: number;
   fuelOnBoardGals?: number;
+  airspeedUnits?: AirspeedUnits;
+  lengthUnits?: LengthUnits;
 }
 
 export interface ProblemDetails {

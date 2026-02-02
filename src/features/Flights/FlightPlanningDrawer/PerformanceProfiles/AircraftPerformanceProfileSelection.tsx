@@ -11,7 +11,8 @@ import {
 } from '@mantine/core';
 import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
-import { AircraftPerformanceProfileDto } from '@/redux/api/vfr3d/dtos';
+import { AircraftPerformanceProfileDto, AirspeedUnits } from '@/redux/api/vfr3d/dtos';
+import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 
 interface AircraftPerformanceProfileSelectionProps {
   profiles: AircraftPerformanceProfileDto[];
@@ -21,11 +22,13 @@ interface AircraftPerformanceProfileSelectionProps {
   onEdit: (profileId: string) => void;
   onDelete: (profileId: string) => void;
   disabled?: boolean;
+  airspeedUnits?: AirspeedUnits;
 }
 
 export const AircraftPerformanceProfileSelection: React.FC<
   AircraftPerformanceProfileSelectionProps
-> = ({ profiles, selectedProfileId, onSelect, onCreate, onEdit, onDelete, disabled }) => {
+> = ({ profiles, selectedProfileId, onSelect, onCreate, onEdit, onDelete, disabled, airspeedUnits }) => {
+  const speedUnitLabel = getAirspeedUnitLabel(airspeedUnits);
   if (!profiles || profiles.length === 0) {
     return (
       <Stack align="center" py="xl">
@@ -154,7 +157,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
               {/* Quick Stats */}
               <Group gap="xs" mt="sm">
                 <Badge size="sm" variant="light" color="blue">
-                  {profile.cruiseTrueAirspeed} kts
+                  {profile.cruiseTrueAirspeed} {speedUnitLabel}
                 </Badge>
                 <Badge size="sm" variant="light" color="cyan">
                   {profile.cruiseFuelBurn} gph
