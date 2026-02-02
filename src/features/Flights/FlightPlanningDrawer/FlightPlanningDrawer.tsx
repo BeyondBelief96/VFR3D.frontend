@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 import {
   FiMapPin,
   FiClock,
@@ -53,6 +53,7 @@ import {
   startNewFlight,
   setActiveFlightId,
 } from '@/redux/slices/flightPlanningSlice';
+import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { FlightDisplayMode } from '@/utility/enums';
 import {
   WaypointDto,
@@ -93,6 +94,8 @@ export const FlightPlanningDrawer: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
+  const isSmallScreen = isPhone || isTablet;
   const sidebar = useSidebar();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -127,12 +130,16 @@ export const FlightPlanningDrawer: React.FC = () => {
   // Auto-open drawer when viewing a flight
   useEffect(() => {
     if (displayMode === FlightDisplayMode.VIEWING && activeFlightId) {
-      if (sidebar.isOpen) {
-        sidebar.close();
+      // Close sidebar and aside panel when drawer auto-opens (mutual exclusivity on small screens only)
+      if (isSmallScreen) {
+        if (sidebar.isOpen) {
+          sidebar.close();
+        }
+        dispatch(clearSelectedEntity());
       }
       setIsOpen(true);
     }
-  }, [displayMode, activeFlightId, sidebar]);
+  }, [displayMode, activeFlightId, sidebar, dispatch, isSmallScreen]);
 
   const {
     waypoints: flightPlanRoute,
@@ -183,8 +190,12 @@ export const FlightPlanningDrawer: React.FC = () => {
 
   const toggleDrawer = () => {
     const willOpen = !isOpen;
-    if (willOpen && sidebar.isOpen) {
-      sidebar.close();
+    if (willOpen && isSmallScreen) {
+      // Close sidebar and aside panel when drawer opens (mutual exclusivity on small screens only)
+      if (sidebar.isOpen) {
+        sidebar.close();
+      }
+      dispatch(clearSelectedEntity());
     }
     setIsOpen(willOpen);
   };

@@ -7,7 +7,8 @@ import Footer from './Footer';
 import Sidebar from '../Sidebar/Sidebar';
 import { SidebarProvider } from './SidebarContext';
 import { EntityInfoAside } from '../Popup';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useAppDispatch, useIsPhone, useIsTablet } from '@/hooks';
+import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import classes from './AppLayout.module.css';
 
 const SIDEBAR_WIDTH = 320;
@@ -16,12 +17,30 @@ const ASIDE_WIDTH = 380;
 export function AppLayout() {
   const [sidebarOpened, { toggle: toggleSidebar, open: openSidebar, close: closeSidebar }] =
     useDisclosure(true);
+  const dispatch = useAppDispatch();
   const router = useRouterState();
   const isMapPage = router.location.pathname === '/map';
+  const isPhone = useIsPhone();
+  const isTablet = useIsTablet();
+  const isSmallScreen = isPhone || isTablet;
 
   // Get selected entity for aside state
   const selectedEntity = useAppSelector((state) => state.selectedEntity);
   const hasSelectedEntity = isMapPage && selectedEntity.entity !== null;
+
+  // Close aside panel when sidebar opens (mutual exclusivity on small screens only)
+  useEffect(() => {
+    if (isSmallScreen && sidebarOpened && hasSelectedEntity) {
+      dispatch(clearSelectedEntity());
+    }
+  }, [isSmallScreen, sidebarOpened, hasSelectedEntity, dispatch]);
+
+  // Close sidebar when aside panel opens (mutual exclusivity on small screens only)
+  useEffect(() => {
+    if (isSmallScreen && hasSelectedEntity && sidebarOpened) {
+      closeSidebar();
+    }
+  }, [isSmallScreen, hasSelectedEntity, sidebarOpened, closeSidebar]);
 
   // Set CSS variable for sidebar offset - used by BottomDrawer to avoid overlap
   useEffect(() => {
