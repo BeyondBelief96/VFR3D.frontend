@@ -5,7 +5,7 @@ import {
   Box,
   Text,
   SimpleGrid,
-  Accordion,
+  Tabs,
   Center,
   Loader,
   Stack,
@@ -97,16 +97,12 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
     >
       {/* Refreshing overlay */}
       {isRefreshing && !isInitialLoading && (
-        <Overlay
-          color="rgba(15, 23, 42, 0.7)"
-          backgroundOpacity={0.7}
-          blur={1}
-          center
-          zIndex={10}
-        >
+        <Overlay color="rgba(15, 23, 42, 0.7)" backgroundOpacity={0.7} blur={1} center zIndex={10}>
           <Stack align="center" gap="xs">
             <Loader size="sm" color="blue" />
-            <Text size="xs" c="dimmed">Refreshing airport data...</Text>
+            <Text size="xs" c="dimmed">
+              Refreshing airport data...
+            </Text>
           </Stack>
         </Overlay>
       )}
@@ -179,87 +175,79 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
         </Box>
       </SimpleGrid>
 
-      <Accordion
-        variant="separated"
+      <Tabs
+        defaultValue="runways"
+        color="blue"
         styles={{
-          item: {
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
-            '&[data-active]': {
-              backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            },
+          list: {
+            borderBottomColor: 'rgba(148, 163, 184, 0.2)',
           },
-          control: {
+          tab: {
+            color: '#94a3b8',
+            fontWeight: 500,
             '&:hover': {
-              backgroundColor: 'rgba(30, 41, 59, 0.5)',
+              backgroundColor: 'rgba(148, 163, 184, 0.08)',
+              color: '#cbd5e1',
+            },
+            '&[data-active]': {
+              color: 'white',
             },
           },
         }}
       >
-        {/* Runways Section with Crosswind Data */}
-        <Accordion.Item value="runways">
-          <Accordion.Control>
-            <Group gap="sm">
-              <Text c="white" fw={500}>
-                Runways
-              </Text>
-              {runways && (
-                <Badge size="sm" variant="light" color="blue">
-                  {runways.length}
-                </Badge>
-              )}
-              {hasUniqueBestRunway(crosswindData) && (
-                <Badge size="sm" variant="filled" color="green">
-                  Best: Rwy {crosswindData?.recommendedRunway}
-                </Badge>
-              )}
-            </Group>
-          </Accordion.Control>
-          <Accordion.Panel>
-            {runwaysLoading || crosswindLoading ? (
-              <Center py="md">
-                <Loader size="sm" />
-              </Center>
-            ) : (
-              <RunwayInformation
-                runwayInformation={runways}
-                crosswindData={crosswindData}
-                isCrosswindLoading={crosswindLoading}
-              />
+        <Tabs.List mb="sm">
+          <Tabs.Tab value="runways">
+            Runways
+            {runways && (
+              <Badge size="xs" variant="light" color="blue" ml="xs">
+                {runways.length}
+              </Badge>
             )}
-          </Accordion.Panel>
-        </Accordion.Item>
+            {hasUniqueBestRunway(crosswindData) && (
+              <Badge size="xs" variant="filled" color="green" ml="xs">
+                Best: {crosswindData?.recommendedRunway}
+              </Badge>
+            )}
+          </Tabs.Tab>
+          <Tabs.Tab value="frequencies">
+            Frequencies
+            {frequencies && (
+              <Badge size="xs" variant="light" color="blue" ml="xs">
+                {frequencies.length}
+              </Badge>
+            )}
+          </Tabs.Tab>
+        </Tabs.List>
 
-        {/* Frequencies Section */}
-        <Accordion.Item value="frequencies">
-          <Accordion.Control>
-            <Group gap="sm">
-              <Text c="white" fw={500}>
-                Frequencies
-              </Text>
-              {frequencies && (
-                <Badge size="sm" variant="light" color="cyan">
-                  {frequencies.length}
-                </Badge>
-              )}
-            </Group>
-          </Accordion.Control>
-          <Accordion.Panel>
-            {frequenciesLoading ? (
-              <Center py="md">
-                <Loader size="sm" />
-              </Center>
-            ) : (
-              <FrequencyTable
-                frequencies={frequencies}
-                variant="compact"
-                showGroupHeader={true}
-                showGroupPaper={false}
-              />
-            )}
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
+        <Tabs.Panel value="runways">
+          {runwaysLoading || crosswindLoading ? (
+            <Center py="md">
+              <Loader size="sm" />
+            </Center>
+          ) : (
+            <RunwayInformation
+              runwayInformation={runways}
+              crosswindData={crosswindData}
+              isCrosswindLoading={crosswindLoading}
+            />
+          )}
+        </Tabs.Panel>
+
+        <Tabs.Panel value="frequencies">
+          {frequenciesLoading ? (
+            <Center py="md">
+              <Loader size="sm" />
+            </Center>
+          ) : (
+            <FrequencyTable
+              frequencies={frequencies}
+              variant="compact"
+              showGroupHeader={true}
+              showGroupPaper={false}
+            />
+          )}
+        </Tabs.Panel>
+      </Tabs>
     </Paper>
   );
 }
