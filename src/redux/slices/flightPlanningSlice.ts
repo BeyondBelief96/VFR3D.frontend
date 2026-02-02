@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { REHYDRATE } from 'redux-persist';
 import { FlightDisplayMode } from '@/utility/enums';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
 import { fetchAirportByCode } from '@/redux/thunks/airports';
@@ -44,14 +45,14 @@ const initialState: FlightPlanningState = {
     name: '',
     selectedPerformanceProfileId: null,
     plannedCruisingAltitude: 4500,
-    departureTimeUtc: new Date().toUTCString(),
+    departureTimeUtc: new Date().toISOString(),
     isComplete: false,
     canCalculateNavlog: false,
     currentStep: 0,
     waypoints: [],
     roundTrip: false,
     returnPlannedCruisingAltitude: 4500,
-    returnDepartureTimeUtc: new Date().toUTCString(),
+    returnDepartureTimeUtc: new Date().toISOString(),
   },
   editingFlightPlan: null,
   navlogPreview: null,
@@ -321,22 +322,64 @@ const flightPlanningSlice = createSlice({
 
     // Reset Operations
     startNewFlight: (state) => {
+      const now = new Date().toISOString();
       state.displayMode = FlightDisplayMode.PLANNING;
       state.activeFlightId = null;
-      state.draftFlightPlan = initialState.draftFlightPlan;
+      state.draftFlightPlan = {
+        ...initialState.draftFlightPlan,
+        departureTimeUtc: now,
+        returnDepartureTimeUtc: now,
+      };
       state.navlogPreview = null;
       state.navlogPreviewReturn = null;
     },
 
     viewFlightInMap: (state, action: PayloadAction<string>) => {
+      const now = new Date().toISOString();
       state.activeFlightId = action.payload;
       state.displayMode = FlightDisplayMode.VIEWING;
-      state.draftFlightPlan = initialState.draftFlightPlan;
+      state.draftFlightPlan = {
+        ...initialState.draftFlightPlan,
+        departureTimeUtc: now,
+        returnDepartureTimeUtc: now,
+      };
     },
 
-    resetToPlanning: () => initialState,
+    resetToPlanning: () => {
+      const now = new Date().toISOString();
+      return {
+        ...initialState,
+        draftFlightPlan: {
+          ...initialState.draftFlightPlan,
+          departureTimeUtc: now,
+          returnDepartureTimeUtc: now,
+        },
+      };
+    },
   },
   extraReducers: (builder) => {
+    // Reset departure times to current time when state is rehydrated from localStorage
+    builder.addCase(REHYDRATE, (state, action) => {
+      const now = new Date().toISOString();
+      // Only update if we have rehydrated state for this slice
+      if (action.payload && 'flightPlanning' in action.payload) {
+        const rehydratedState = action.payload.flightPlanning as FlightPlanningState;
+        return {
+          ...rehydratedState,
+          draftFlightPlan: {
+            ...rehydratedState.draftFlightPlan,
+            departureTimeUtc: now,
+            returnDepartureTimeUtc: now,
+          },
+        };
+      }
+      // If no rehydrated state, just update the current state
+      if (state.draftFlightPlan) {
+        state.draftFlightPlan.departureTimeUtc = now;
+        state.draftFlightPlan.returnDepartureTimeUtc = now;
+      }
+    });
+
     builder.addCase(fetchAirportByCode.fulfilled, (state, action) => {
       const airport = action.payload;
       if (airport && state.displayMode === FlightDisplayMode.PLANNING) {

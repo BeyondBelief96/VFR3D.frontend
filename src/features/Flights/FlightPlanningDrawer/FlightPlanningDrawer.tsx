@@ -14,7 +14,6 @@ import {
   Image,
   Badge,
   Divider,
-  Tooltip,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useIsPhone, useIsTablet } from '@/hooks';
@@ -439,15 +438,22 @@ export const FlightPlanningDrawer: React.FC = () => {
   };
 
   const isEditable =
-    displayMode === FlightDisplayMode.PLANNING ||
-    displayMode === FlightDisplayMode.EDITING;
+    displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING;
 
   // Step definitions with mobile-friendly abbreviated labels
   const steps = [
     { label: isPhone ? 'Route' : 'Route', fullLabel: 'Route', icon: <FiMapPin size={16} /> },
     { label: isPhone ? 'A/C' : 'Aircraft', fullLabel: 'Aircraft', icon: <FaPlane size={14} /> },
-    { label: isPhone ? 'Alt' : 'Time & Alt', fullLabel: 'Time & Altitude', icon: <FiClock size={16} /> },
-    { label: isPhone ? 'Log' : 'Nav Log', fullLabel: 'Navigation Log', icon: <FiTable size={16} /> },
+    {
+      label: isPhone ? 'Alt' : 'Time & Alt',
+      fullLabel: 'Time & Altitude',
+      icon: <FiClock size={16} />,
+    },
+    {
+      label: isPhone ? 'Log' : 'Nav Log',
+      fullLabel: 'Navigation Log',
+      icon: <FiTable size={16} />,
+    },
   ];
 
   // Validation for step progression
@@ -707,6 +713,12 @@ export const FlightPlanningDrawer: React.FC = () => {
             }
           }}
           size="sm"
+          completedIcon={<FiCheck size={14} />}
+          classNames={{
+            stepIcon: classes.stepIcon,
+            stepCompletedIcon: classes.stepCompletedIcon,
+            separator: classes.separator,
+          }}
           styles={{
             step: {
               padding: 0,
@@ -721,13 +733,12 @@ export const FlightPlanningDrawer: React.FC = () => {
           }}
         >
           {steps.map((step, index) => (
-            <Tooltip key={index} label={step.fullLabel} disabled={!isPhone}>
-              <Stepper.Step
-                icon={step.icon}
-                label={step.label}
-                allowStepSelect={index <= currentStep}
-              />
-            </Tooltip>
+            <Stepper.Step
+              key={index}
+              icon={step.icon}
+              label={step.label}
+              allowStepSelect={index <= currentStep}
+            />
           ))}
         </Stepper>
       </Box>
@@ -741,7 +752,7 @@ export const FlightPlanningDrawer: React.FC = () => {
       {!savedFlightInfo && (
         <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
           <Button
-            variant="subtle"
+            color="red"
             leftSection={<FiChevronLeft size={16} />}
             onClick={handlePreviousStep}
             disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
@@ -752,69 +763,67 @@ export const FlightPlanningDrawer: React.FC = () => {
 
           <Group gap="sm">
             {currentStep === FlightPlannerStep.NAVLOG_PREVIEW ? (
-            <>
-              {/* Fuel Warning Badge */}
-              {hasCriticalFuelIssue && (
-                <Group gap={4} c="ifrRed.5">
-                  <FiAlertTriangle size={16} />
-                  <Text size="xs" fw={600} c="red.4">
-                    FUEL ISSUE
-                  </Text>
-                </Group>
-              )}
+              <>
+                {/* Fuel Warning Badge */}
+                {hasCriticalFuelIssue && (
+                  <Group gap={4} c="ifrRed.5">
+                    <FiAlertTriangle size={16} />
+                    <Text size="xs" fw={600} c="red.4">
+                      FUEL ISSUE
+                    </Text>
+                  </Group>
+                )}
+                <Button
+                  variant="light"
+                  color="gray"
+                  leftSection={<FiRefreshCw size={16} />}
+                  onClick={handleResetPlanning}
+                  disabled={isSaving}
+                >
+                  New Flight
+                </Button>
+                <Button
+                  leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
+                  onClick={handleSaveFlight}
+                  disabled={!navlogPreview || isSaving || !userId}
+                  color={hasCriticalFuelIssue ? 'red' : 'blue'}
+                  variant={hasCriticalFuelIssue ? 'outline' : 'filled'}
+                >
+                  {isSaving ? 'Saving...' : hasCriticalFuelIssue ? 'Save Anyway' : 'Save Flight'}
+                </Button>
+              </>
+            ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
               <Button
-                variant="light"
-                color="gray"
-                leftSection={<FiRefreshCw size={16} />}
-                onClick={handleResetPlanning}
-                disabled={isSaving}
+                color="blue"
+                onClick={handleCalculateRoute}
+                disabled={!canCalculate || isCalculating}
+                leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
               >
-                New Flight
+                {isCalculating ? 'Calculating...' : 'Calculate Route'}
               </Button>
+            ) : (
               <Button
-                leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
-                onClick={handleSaveFlight}
-                disabled={!navlogPreview || isSaving || !userId}
-                color={hasCriticalFuelIssue ? 'red' : undefined}
-                variant={hasCriticalFuelIssue ? 'outline' : 'filled'}
+                rightSection={<FiChevronRight size={16} />}
+                onClick={handleNextStep}
+                color="blue"
+                disabled={
+                  isEditingProfile ||
+                  (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
+                  (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
+                  currentStep === 3
+                }
               >
-                {isSaving ? 'Saving...' : hasCriticalFuelIssue ? 'Save Anyway' : 'Save Flight'}
+                Next
               </Button>
-            </>
-          ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
-            <Button
-              onClick={handleCalculateRoute}
-              disabled={!canCalculate || isCalculating}
-              leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
-            >
-              {isCalculating ? 'Calculating...' : 'Calculate Route'}
-            </Button>
-          ) : (
-            <Button
-              rightSection={<FiChevronRight size={16} />}
-              onClick={handleNextStep}
-              disabled={
-                isEditingProfile ||
-                (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||
-                (currentStep === FlightPlannerStep.AIRCRAFT && !canProceedToAltitude) ||
-                currentStep === 3
-              }
-            >
-              Next
-            </Button>
-          )}
-        </Group>
+            )}
+          </Group>
         </Group>
       )}
     </Stack>
   );
 
   return (
-    <BottomDrawer
-      isOpen={isOpen}
-      toggleOpen={toggleDrawer}
-      title={getDrawerTitle()}
-    >
+    <BottomDrawer isOpen={isOpen} toggleOpen={toggleDrawer} title={getDrawerTitle()}>
       {isViewingMode && renderViewingContent()}
       {isEditingMode && renderEditingContent()}
       {!isViewingMode && !isEditingMode && renderPlanningContent()}

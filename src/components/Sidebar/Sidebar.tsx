@@ -35,7 +35,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </Group>
 
       {/* Scrollable Content */}
-      <ScrollArea flex={1} pt="md" scrollbarSize={6}>
+      <ScrollArea flex={1} pt="md" scrollbarSize={6} offsetScrollbars>
         <Accordion
           multiple
           variant="separated"
