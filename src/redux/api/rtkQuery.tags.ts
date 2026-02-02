@@ -3,3 +3,4 @@ export const aircraftTag = 'aircraft';
 export const aircraftPerformanceProfileTag = 'aircraftPerformanceProfile';
 export const weightBalanceTag = 'weightBalance';
 export const weightBalanceCalculationTag = 'weightBalanceCalculation';
+export const aircraftDocumentsTag = 'aircraftDocuments';

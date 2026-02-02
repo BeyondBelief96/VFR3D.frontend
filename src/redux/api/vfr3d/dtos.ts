@@ -118,6 +118,52 @@ export interface UpdateAircraftRequestDto {
   glideRatio?: number | undefined;
 }
 
+export interface AircraftDocumentDto {
+  id?: string;
+  aircraftId?: string;
+  userId?: string;
+  fileName?: string;
+  contentType?: string;
+  fileSizeBytes?: number;
+  displayName?: string;
+  description?: string | undefined;
+  category?: DocumentCategory;
+  uploadedAt?: Date;
+  lastModifiedAt?: Date;
+}
+
+export enum DocumentCategory {
+  POH = "POH",
+  Manual = "Manual",
+  Checklist = "Checklist",
+  Maintenance = "Maintenance",
+  Insurance = "Insurance",
+  Registration = "Registration",
+  Other = "Other",
+}
+
+export interface AircraftDocumentListDto {
+  id?: string;
+  fileName?: string;
+  contentType?: string;
+  fileSizeBytes?: number;
+  displayName?: string;
+  category?: DocumentCategory;
+  uploadedAt?: Date;
+}
+
+export interface AircraftDocumentUrlDto {
+  id?: string;
+  url?: string;
+  expiresAt?: Date;
+}
+
+export interface UpdateAircraftDocumentRequest {
+  displayName?: string;
+  description?: string | undefined;
+  category?: DocumentCategory;
+}
+
 export interface SaveAircraftPerformanceProfileRequestDto {
   userId?: string;
   aircraftId?: string | undefined;
@@ -1136,57 +1182,6 @@ export interface TafTemperature {
   minTempC?: string | undefined;
 }
 
-export interface TrafficPatternResponseDto {
-  modifiedNavlogWaypoints?: WaypointDto[];
-  patternWaypoints?: TrafficPatternWaypointDto[];
-  airportIdentifier?: string;
-  runwayEndId?: string;
-  entryType?: PatternEntryType;
-  isRightTraffic?: boolean;
-  patternAltitudeMsl?: number;
-  runwayHeadingTrue?: number;
-  validEntryTypes?: PatternEntryType[];
-  message?: string | undefined;
-}
-
-export interface TrafficPatternWaypointDto {
-  id?: string;
-  name?: string;
-  latitude?: number;
-  longitude?: number;
-  altitude?: number;
-  waypointType?: TrafficPatternWaypointType;
-  sequenceNumber?: number;
-  trueHeading?: number | undefined;
-}
-
-export enum TrafficPatternWaypointType {
-  PatternEntry = "PatternEntry",
-  Downwind = "Downwind",
-  DownwindAbeam = "DownwindAbeam",
-  Base = "Base",
-  Final = "Final",
-  Threshold = "Threshold",
-  TurnPoint = "TurnPoint",
-  CrossoverPoint = "CrossoverPoint",
-  TeardropPoint = "TeardropPoint",
-}
-
-export enum PatternEntryType {
-  StraightIn = "StraightIn",
-  DownwindEntry = "DownwindEntry",
-  FortyFiveDegreeEntry = "FortyFiveDegreeEntry",
-  MidfieldCrossover = "MidfieldCrossover",
-}
-
-export interface TrafficPatternRequestDto {
-  navlogWaypoints?: WaypointDto[];
-  airportIdentifier?: string;
-  runwayEndId?: string;
-  entryType?: PatternEntryType;
-  aircraftPerformanceProfileId?: string | undefined;
-}
-
 export interface WeightBalanceProfileDto {
   id?: string;
   userId?: string;
@@ -1366,4 +1361,9 @@ export interface StandaloneCalculationStateDto {
   fuelBurnGallons?: number | undefined;
   loadedStations?: StationLoadDto[];
   calculatedAt?: Date;
+}
+
+export interface FileParameter {
+  data: any;
+  fileName: string;
 }

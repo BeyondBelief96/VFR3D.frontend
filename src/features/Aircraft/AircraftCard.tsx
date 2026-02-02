@@ -24,6 +24,7 @@ import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/w
 import { useAuth } from '@/components/Auth';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
+import { AircraftDocumentsSection } from './AircraftDocuments';
 
 interface AircraftCardProps {
   aircraft: AircraftDto;
@@ -68,6 +69,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
 
   const [expanded, setExpanded] = useState(false);
   const [wbExpanded, setWbExpanded] = useState(false);
+  const [docsExpanded, setDocsExpanded] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<AircraftPerformanceProfileDto | null>(null);
   const [profileFormMode, setProfileFormMode] = useState<'create' | 'edit'>('create');
@@ -194,7 +196,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
               </Box>
             </Group>
-            <Group gap={isPhone ? 'xs' : 4} wrap="nowrap">
+            <Group gap="sm" wrap="nowrap">
               <ActionIcon
                 variant="subtle"
                 color="blue"
@@ -278,23 +280,23 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                               </Text>
                             </Group>
                           </Box>
-                          <Group gap={isPhone ? 'xs' : 4} wrap="nowrap">
+                          <Group gap="sm" wrap="nowrap">
                             <ActionIcon
-                              size={isPhone ? 'lg' : 'sm'}
-                              variant="subtle"
+                              size={isPhone ? 'xl' : 'lg'}
+                              variant="light"
                               color="blue"
                               onClick={() => handleEditProfile(profile)}
                             >
-                              <FiEdit2 size={isPhone ? 18 : 14} />
+                              <FiEdit2 size={isPhone ? 20 : 18} />
                             </ActionIcon>
                             <ActionIcon
-                              size={isPhone ? 'lg' : 'sm'}
-                              variant="subtle"
+                              size={isPhone ? 'xl' : 'lg'}
+                              variant="light"
                               color="red"
                               onClick={() => profile.id && handleDeleteProfileClick(profile.id)}
                               loading={isDeletingProfile && profileToDelete === profile.id}
                             >
-                              <FiTrash2 size={isPhone ? 18 : 14} />
+                              <FiTrash2 size={isPhone ? 20 : 18} />
                             </ActionIcon>
                           </Group>
                         </Group>
@@ -396,6 +398,16 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
               </Stack>
             </Collapse>
           </Box>
+
+          {/* Documents Section */}
+          {aircraft.id && userId && (
+            <AircraftDocumentsSection
+              userId={userId}
+              aircraftId={aircraft.id}
+              expanded={docsExpanded}
+              onToggle={() => setDocsExpanded(!docsExpanded)}
+            />
+          )}
         </Stack>
       </Card>
 

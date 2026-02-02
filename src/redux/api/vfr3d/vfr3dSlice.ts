@@ -17,6 +17,7 @@ export const tagTypes = [
   'performance',
   'frequencies',
   'runways',
+  'aircraftDocuments',
 ] as const;
 
 // Base API configuration
@@ -31,8 +32,9 @@ export const baseApi = createApi({
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
-      
-      headers.set('Content-Type', 'application/json');
+
+      // Don't set Content-Type here - let endpoints handle it
+      // FormData uploads need browser to set boundary automatically
       return headers;
     },
   }),
