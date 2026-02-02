@@ -11,7 +11,7 @@ import {
   Collapse,
   Alert,
 } from '@mantine/core';
-import { FiChevronDown, FiChevronUp, FiInfo, FiClock } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiInfo, FiClock, FiHelpCircle } from 'react-icons/fi';
 import { NotamDto, NotamResponseDto } from '@/redux/api/vfr3d/dtos';
 import {
   translateNotam,
@@ -78,10 +78,7 @@ function parseNotamDateString(dateStr?: string): Date | undefined {
 /**
  * Check if a NOTAM's effective period overlaps with the flight time window
  */
-function notamOverlapsFlightTime(
-  notam: ParsedNotam,
-  flightWindow?: FlightTimeWindow
-): boolean {
+function notamOverlapsFlightTime(notam: ParsedNotam, flightWindow?: FlightTimeWindow): boolean {
   if (!flightWindow) return false;
 
   const notamStart = notam.effectiveStartDate;
@@ -185,9 +182,7 @@ function NotamItem({
     <Paper
       p="sm"
       style={{
-        backgroundColor: appliesToFlight
-          ? 'rgba(59, 130, 246, 0.1)'
-          : 'rgba(15, 23, 42, 0.6)',
+        backgroundColor: appliesToFlight ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 23, 42, 0.6)',
         border: appliesToFlight
           ? '1px solid rgba(59, 130, 246, 0.3)'
           : '1px solid rgba(148, 163, 184, 0.15)',
@@ -196,12 +191,7 @@ function NotamItem({
     >
       <Group justify="space-between" mb={expanded ? 'xs' : 0} wrap="nowrap">
         <Group gap="xs" wrap="nowrap" style={{ flex: 1, overflow: 'hidden' }}>
-          <Badge
-            variant="light"
-            color={notam.severityColor}
-            size="sm"
-            style={{ flexShrink: 0 }}
-          >
+          <Badge variant="light" color={notam.severityColor} size="sm" style={{ flexShrink: 0 }}>
             {notam.category}
           </Badge>
           {appliesToFlight && (
@@ -223,21 +213,12 @@ function NotamItem({
             </Badge>
           )}
           {!expanded && (
-            <Text
-              size="xs"
-              c="gray.4"
-              lineClamp={1}
-              style={{ flex: 1 }}
-            >
+            <Text size="xs" c="gray.4" lineClamp={1} style={{ flex: 1 }}>
               {displayText.slice(0, 100)}...
             </Text>
           )}
         </Group>
-        <ActionIcon
-          variant="subtle"
-          size="sm"
-          onClick={() => setExpanded(!expanded)}
-        >
+        <ActionIcon variant="subtle" size="sm" onClick={() => setExpanded(!expanded)}>
           {expanded ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
         </ActionIcon>
       </Group>
@@ -263,7 +244,9 @@ function NotamItem({
           <Group gap="lg">
             {notam.effectiveStart && (
               <Box>
-                <Text size="xs" c="dimmed">Effective From</Text>
+                <Text size="xs" c="dimmed">
+                  Effective From
+                </Text>
                 <Text size="xs" c="gray.4">
                   {formatNotamDate(notam.effectiveStart)}
                 </Text>
@@ -271,7 +254,9 @@ function NotamItem({
             )}
             {notam.effectiveEnd && (
               <Box>
-                <Text size="xs" c="dimmed">Until</Text>
+                <Text size="xs" c="dimmed">
+                  Until
+                </Text>
                 <Text size="xs" c="gray.4">
                   {formatNotamDate(notam.effectiveEnd)}
                 </Text>
@@ -279,7 +264,9 @@ function NotamItem({
             )}
             {notam.id && (
               <Box>
-                <Text size="xs" c="dimmed">NOTAM ID</Text>
+                <Text size="xs" c="dimmed">
+                  NOTAM ID
+                </Text>
                 <Text size="xs" c="gray.5" style={{ fontFamily: 'monospace' }}>
                   {notam.id}
                 </Text>
@@ -306,11 +293,7 @@ const CATEGORY_ORDER = [
   'General',
 ];
 
-export function NotamsList({
-  notamsData,
-  viewMode,
-  flightTimeWindow,
-}: NotamsListProps) {
+export function NotamsList({ notamsData, viewMode, flightTimeWindow }: NotamsListProps) {
   // Parse and group NOTAMs by category
   const { notamsByCategory, sortedCategories, severityCounts, duringFlightCount } = useMemo(() => {
     if (!notamsData?.notams) {
@@ -322,21 +305,28 @@ export function NotamsList({
       };
     }
 
-    const parsed = notamsData.notams
-      .map(parseNotam)
-      .filter((n): n is ParsedNotam => n !== null);
+    const parsed = notamsData.notams.map(parseNotam).filter((n): n is ParsedNotam => n !== null);
 
     // Group by category
-    const byCategory = parsed.reduce((acc, notam) => {
-      if (!acc[notam.category]) {
-        acc[notam.category] = [];
-      }
-      acc[notam.category].push(notam);
-      return acc;
-    }, {} as Record<string, ParsedNotam[]>);
+    const byCategory = parsed.reduce(
+      (acc, notam) => {
+        if (!acc[notam.category]) {
+          acc[notam.category] = [];
+        }
+        acc[notam.category].push(notam);
+        return acc;
+      },
+      {} as Record<string, ParsedNotam[]>
+    );
 
     // Sort NOTAMs within each category by severity
-    const severityOrder: Record<string, number> = { red: 0, orange: 1, yellow: 2, blue: 3, gray: 4 };
+    const severityOrder: Record<string, number> = {
+      red: 0,
+      orange: 1,
+      yellow: 2,
+      blue: 3,
+      gray: 4,
+    };
     Object.values(byCategory).forEach((notams) => {
       notams.sort((a, b) => {
         const aSeverity = severityOrder[a.severityColor] ?? 5;
@@ -382,11 +372,7 @@ export function NotamsList({
 
   if (sortedCategories.length === 0) {
     return (
-      <Alert
-        icon={<FiInfo size={16} />}
-        color="blue"
-        variant="light"
-      >
+      <Alert icon={<FiInfo size={16} />} color="blue" variant="light">
         No NOTAMs found for this location.
       </Alert>
     );
@@ -417,13 +403,39 @@ export function NotamsList({
             </Badge>
           </Tooltip>
         )}
+        <Tooltip
+          multiline
+          w={280}
+          bg={'var(--mantine-color-vfr3dSurface-9)'}
+          label={
+            <Stack gap={4}>
+              <Text size="xs" fw={600}>
+                Priority Legend (not FAA official):
+              </Text>
+              <Group gap={4}>
+                <Badge size="xs" color="red" variant="filled">
+                  Critical
+                </Badge>
+                <Text size="xs">Closures, Inoperative, TFRs</Text>
+              </Group>
+              <Group gap={4}>
+                <Badge size="xs" color="orange" variant="light">
+                  Caution
+                </Badge>
+                <Text size="xs">Hazards, Obstructions, Construction</Text>
+              </Group>
+            </Stack>
+          }
+        >
+          <ActionIcon variant="subtle" size="xs" color="gray">
+            <FiHelpCircle size={14} />
+          </ActionIcon>
+        </Tooltip>
       </Group>
 
       {/* NOTAMs grouped by category */}
       {sortedCategories.map((category) => {
         const categoryNotams = notamsByCategory[category];
-        const hasCritical = categoryNotams.some((n) => n.severityColor === 'red');
-        const hasCaution = categoryNotams.some((n) => n.severityColor === 'orange');
 
         return (
           <Box key={category}>
@@ -439,11 +451,7 @@ export function NotamsList({
               <Text size="md" fw={700} c="gray.3" tt="uppercase" style={{ letterSpacing: '0.5px' }}>
                 {category}
               </Text>
-              <Badge
-                size="sm"
-                variant="filled"
-                color={hasCritical ? 'red' : hasCaution ? 'orange' : 'gray'}
-              >
+              <Badge size="sm" color="blue">
                 {categoryNotams.length}
               </Badge>
             </Group>
@@ -457,7 +465,7 @@ export function NotamsList({
                     key={notam.id || idx}
                     notam={notam}
                     viewMode={viewMode}
-                    defaultExpanded={notam.severityColor === 'red' || appliesToFlight}
+                    defaultExpanded={true}
                     appliesToFlight={appliesToFlight}
                   />
                 );

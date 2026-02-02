@@ -53,6 +53,7 @@ import {
 import { useGetNotamsForAirportQuery } from '@/redux/api/vfr3d/notams.api';
 import { WeatherFlightCategories } from '@/utility/enums';
 import { NotamsList } from '@/features/FlightDetails/components/NotamsCard';
+import { isCriticalNotam } from '@/features/FlightDetails/utils/notamAbbreviations';
 import {
   QuickStat,
   StatBox,
@@ -204,13 +205,8 @@ function AirportDetailContent() {
   const criticalNotamCount = useMemo(() => {
     if (!notamsData?.notams) return 0;
     return notamsData.notams.filter((n) => {
-      const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-      return (
-        text.includes('CLSD') ||
-        text.includes('CLOSED') ||
-        text.includes('INOP') ||
-        text.includes('U/S')
-      );
+      const text = n.properties?.coreNOTAMData?.notam?.text || '';
+      return isCriticalNotam(text);
     }).length;
   }, [notamsData]);
 

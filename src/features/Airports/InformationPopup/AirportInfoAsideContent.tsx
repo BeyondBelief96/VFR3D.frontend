@@ -21,6 +21,7 @@ import { RunwayInformation } from './AirportInfo/RunwayInformation';
 import { FrequencyInformation } from './AirportInfo/FrequencyInformation';
 import AirportWeather from './Weather/AirportWeather';
 import { NotamsList } from '@/features/FlightDetails/components/NotamsCard';
+import { isCriticalNotam } from '@/features/FlightDetails/utils/notamAbbreviations';
 import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
@@ -103,13 +104,8 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
   const criticalNotamCount = useMemo(() => {
     if (!notamsData?.notams) return 0;
     return notamsData.notams.filter((n) => {
-      const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-      return (
-        text.includes('CLSD') ||
-        text.includes('CLOSED') ||
-        text.includes('INOP') ||
-        text.includes('U/S')
-      );
+      const text = n.properties?.coreNOTAMData?.notam?.text || '';
+      return isCriticalNotam(text);
     }).length;
   }, [notamsData]);
 

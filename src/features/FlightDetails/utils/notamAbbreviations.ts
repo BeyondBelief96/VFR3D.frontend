@@ -709,20 +709,36 @@ export function translateNotam(rawText: string): string {
 }
 
 /**
+ * Checks if a NOTAM is critical based on keywords in the text
+ * Critical NOTAMs include: closures, inoperative equipment, and TFRs
+ */
+export function isCriticalNotam(text: string): boolean {
+  const upperText = text.toUpperCase();
+  return (
+    // Closures
+    upperText.includes('CLSD') ||
+    upperText.includes('CLOSED') ||
+    // Inoperative/Unserviceable
+    upperText.includes('INOP') ||
+    upperText.includes('U/S') ||
+    upperText.includes('UNSERVICEABLE') ||
+    upperText.includes('OUT OF SERVICE') ||
+    upperText.includes('NOT AVBL') ||
+    upperText.includes('UNAVBL') ||
+    // TFRs and flight restrictions
+    upperText.includes('TFR') ||
+    upperText.includes('TEMPORARY FLIGHT RESTRICTION')
+  );
+}
+
+/**
  * Gets the color for a NOTAM based on keywords in the text
  */
 export function getNotamSeverityColor(text: string): string {
   const upperText = text.toUpperCase();
 
-  // Critical/Safety keywords
-  if (upperText.includes('CLSD') ||
-      upperText.includes('CLOSED') ||
-      upperText.includes('OUT OF SERVICE') ||
-      upperText.includes('INOP') ||
-      upperText.includes('U/S') ||
-      upperText.includes('UNSERVICEABLE') ||
-      upperText.includes('NOT AVBL') ||
-      upperText.includes('UNAVBL')) {
+  // Critical/Safety keywords (closures, inoperative, TFRs)
+  if (isCriticalNotam(text)) {
     return 'red';
   }
 
@@ -738,16 +754,10 @@ export function getNotamSeverityColor(text: string): string {
       upperText.includes('WIP') ||
       upperText.includes('WORK IN PROGRESS') ||
       upperText.includes('CONST') ||
-      upperText.includes('CONSTRUCTION')) {
-    return 'orange';
-  }
-
-  // TFR keywords
-  if (upperText.includes('TFR') ||
-      upperText.includes('TEMPORARY FLIGHT RESTRICTION') ||
+      upperText.includes('CONSTRUCTION') ||
       upperText.includes('PROHIBITED') ||
       upperText.includes('RESTRICTED')) {
-    return 'yellow';
+    return 'orange';
   }
 
   // Information keywords

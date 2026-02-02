@@ -22,6 +22,7 @@ import {
 } from '@/redux/api/vfr3d/dtos';
 import { useGetNotamsByRouteQuery } from '@/redux/api/vfr3d/notams.api';
 import { NotamsList, FlightTimeWindow } from './NotamsCard';
+import { isCriticalNotam } from '../utils/notamAbbreviations';
 
 interface NotamsPanelProps {
   flight: FlightDto;
@@ -174,13 +175,8 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
   const criticalCount = useMemo(() => {
     if (!notamsData?.notams) return 0;
     return notamsData.notams.filter((n) => {
-      const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-      return (
-        text.includes('CLSD') ||
-        text.includes('CLOSED') ||
-        text.includes('INOP') ||
-        text.includes('U/S')
-      );
+      const text = n.properties?.coreNOTAMData?.notam?.text || '';
+      return isCriticalNotam(text);
     }).length;
   }, [notamsData]);
 
@@ -233,8 +229,8 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
       const locationData = notamsByLocation.get(location);
       const notams = locationData?.notams || [];
       const critical = notams.filter((n) => {
-        const text = n.properties?.coreNOTAMData?.notam?.text?.toUpperCase() || '';
-        return text.includes('CLSD') || text.includes('CLOSED') || text.includes('INOP') || text.includes('U/S');
+        const text = n.properties?.coreNOTAMData?.notam?.text || '';
+        return isCriticalNotam(text);
       }).length;
       counts[location] = { total: notams.length, critical };
     });
