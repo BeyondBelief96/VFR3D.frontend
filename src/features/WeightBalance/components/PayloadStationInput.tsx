@@ -7,12 +7,14 @@ import {
   Paper,
 } from '@mantine/core';
 import { FiTrash2, FiMove } from 'react-icons/fi';
+import { DraggableAttributes } from '@dnd-kit/core';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, LoadingGraphFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 
 export interface DragHandleProps {
-  attributes: any;
-  listeners: any;
+  attributes: DraggableAttributes;
+  listeners: SyntheticListenerMap | undefined;
 }
 
 interface PayloadStationInputProps {
@@ -58,7 +60,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
     ? 'Mom/1000'
     : `Arm (${armLabel})`;
 
-  const handleChange = (field: keyof LoadingStationDto, value: any) => {
+  const handleChange = (field: keyof LoadingStationDto, value: LoadingStationDto[keyof LoadingStationDto]) => {
     onChange(index, { ...station, [field]: value });
   };
 

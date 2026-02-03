@@ -58,7 +58,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
     ? 'Mom/1000'
     : `Arm (${armLabel})`;
 
-  const handleChange = (field: keyof LoadingStationDto, value: any) => {
+  const handleChange = (field: keyof LoadingStationDto, value: LoadingStationDto[keyof LoadingStationDto]) => {
     onChange(index, { ...station, [field]: value });
   };
 

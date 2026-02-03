@@ -154,8 +154,9 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
       });
 
       onClose();
-    } catch (error: any) {
-      const errorMessage = error?.data?.title || error?.data?.detail || 'Update failed';
+    } catch (error: unknown) {
+      const err = error as { data?: { title?: string; detail?: string } };
+      const errorMessage = err?.data?.title || err?.data?.detail || 'Update failed';
       notifications.show({
         title: 'Update Failed',
         message: errorMessage,

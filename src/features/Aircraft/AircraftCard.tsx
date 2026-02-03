@@ -120,9 +120,10 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         message: 'The performance profile has been deleted.',
         color: 'green',
       });
-    } catch (error: any) {
-      const status = error?.status;
-      const errorMessage = error?.data || error?.message || '';
+    } catch (error: unknown) {
+      const err = error as { status?: number; data?: string; message?: string };
+      const status = err?.status;
+      const errorMessage = err?.data || err?.message || '';
 
       if (status === 409 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('flight'))) {
         notifications.show({

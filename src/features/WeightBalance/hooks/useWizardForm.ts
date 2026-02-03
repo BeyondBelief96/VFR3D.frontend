@@ -169,7 +169,8 @@ export function useWizardForm({
           }
           break;
 
-        case 2: // Loading Stations
+        case 2: {
+          // Loading Stations
           const validStations = formState.loadingStations.filter(
             (s) => s.name && s.name.trim().length > 0
           );
@@ -177,6 +178,7 @@ export function useWizardForm({
             newErrors.loadingStations = VALIDATION_MESSAGES.minStations;
           }
           break;
+        }
 
         case 3: // CG Envelope
           if (formState.cgEnvelopes.length === 0) {
@@ -198,6 +200,7 @@ export function useWizardForm({
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formState]
   );
 

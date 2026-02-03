@@ -148,7 +148,7 @@ function WeightBalanceContent() {
       });
       setDeleteModalOpen(false);
       setProfileToDelete(null);
-    } catch (error: any) {
+    } catch (_error: unknown) {
       notifications.show({
         title: 'Delete Failed',
         message: 'Unable to delete the profile. Please try again.',

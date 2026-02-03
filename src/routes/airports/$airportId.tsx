@@ -61,7 +61,7 @@ import {
   RunwaysContent,
   FrequenciesContent,
   AirportInfoContent,
-} from './components';
+} from '@/features/Airports/components';
 
 export const Route = createFileRoute('/airports/$airportId')({
   component: AirportDetailPage,

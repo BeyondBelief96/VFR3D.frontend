@@ -126,6 +126,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
         unregisterPointCallbacks(id);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewer]);
 
   // Keep registry callbacks updated if props change

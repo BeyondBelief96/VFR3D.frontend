@@ -101,9 +101,10 @@ export function WeightBalanceWizard({
       }
 
       onSuccess();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to save profile:', error);
-      const errorMessage = error?.data?.title || error?.message || 'Failed to save profile. Please try again.';
+      const err = error as { data?: { title?: string }; message?: string };
+      const errorMessage = err?.data?.title || err?.message || 'Failed to save profile. Please try again.';
       setSubmitError(errorMessage);
       notifications.show({
         title: 'Error',

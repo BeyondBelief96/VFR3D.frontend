@@ -10,7 +10,9 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DraggableAttributes,
 } from '@dnd-kit/core';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import {
   arrayMove,
   SortableContext,
@@ -54,7 +56,7 @@ function getEffectiveStationType(station: LoadingStationDto): LoadingStationType
 // Sortable wrapper for stations - provides drag context to children
 interface SortableStationProps {
   id: string;
-  children: (dragHandleProps: { attributes: any; listeners: any }) => React.ReactNode;
+  children: (dragHandleProps: { attributes: DraggableAttributes; listeners: SyntheticListenerMap | undefined }) => React.ReactNode;
 }
 
 function SortableStation({ id, children }: SortableStationProps) {

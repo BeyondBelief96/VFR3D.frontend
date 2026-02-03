@@ -44,8 +44,9 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
       });
 
       onClose();
-    } catch (error: any) {
-      const errorMessage = error?.data?.title || error?.data?.detail || 'Delete failed';
+    } catch (error: unknown) {
+      const err = error as { data?: { title?: string; detail?: string } };
+      const errorMessage = err?.data?.title || err?.data?.detail || 'Delete failed';
       notifications.show({
         title: 'Delete Failed',
         message: errorMessage,

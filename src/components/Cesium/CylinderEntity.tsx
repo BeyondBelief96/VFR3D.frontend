@@ -126,6 +126,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
         cylinderEntityRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewer, id]);
 
   // Create separate label entity at the top of the cylinder

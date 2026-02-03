@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { REHYDRATE } from 'redux-persist';
+import { REHYDRATE, RehydrateAction } from 'redux-persist';
 import { FlightDisplayMode } from '@/utility/enums';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
 import { fetchAirportByCode } from '@/redux/thunks/airports';
@@ -359,7 +359,7 @@ const flightPlanningSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Reset departure times to current time when state is rehydrated from localStorage
-    builder.addCase(REHYDRATE, (state, action) => {
+    builder.addCase(REHYDRATE, (state, action: RehydrateAction & { payload?: { flightPlanning?: FlightPlanningState } }) => {
       const now = new Date().toISOString();
       // Only update if we have rehydrated state for this slice
       if (action.payload && 'flightPlanning' in action.payload) {

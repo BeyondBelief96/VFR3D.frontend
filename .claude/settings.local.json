@@ -16,7 +16,8 @@
       "Bash(npm run)",
       "Bash(timeout 20 npm run dev:*)",
       "Bash(timeout 15 npm run dev:*)",
-      "WebFetch(domain:mantine.dev)"
+      "WebFetch(domain:mantine.dev)",
+      "Bash(npm run lint:*)"
     ]
   }
 }

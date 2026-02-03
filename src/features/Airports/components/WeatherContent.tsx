@@ -121,7 +121,7 @@ export function WeatherContent({
           </Group>
         ) : metarError ? (
           <Alert icon={<FiAlertCircle size={16} />} color="red" variant="light" title="METAR unavailable">
-            {getWeatherErrorMessage(metarError as any)}
+            {getWeatherErrorMessage(metarError as { status?: number; message?: string })}
           </Alert>
         ) : hasValidMetar ? (
           <Stack gap="md">
@@ -221,7 +221,7 @@ export function WeatherContent({
           </Group>
         ) : tafError ? (
           <Alert icon={<FiAlertCircle size={16} />} color="orange" variant="light" title="TAF unavailable">
-            {getWeatherErrorMessage(tafError as any)}
+            {getWeatherErrorMessage(tafError as { status?: number; message?: string })}
           </Alert>
         ) : taf ? (
           <Stack gap="md">

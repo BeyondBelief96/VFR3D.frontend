@@ -104,10 +104,11 @@ function AircraftContent() {
       });
       setDeleteModalOpen(false);
       setAircraftToDelete(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Check if it's a conflict error (409) - aircraft has flights
-      const status = error?.status;
-      const errorMessage = error?.data || error?.message || '';
+      const err = error as { status?: number; data?: string; message?: string };
+      const status = err?.status;
+      const errorMessage = err?.data || err?.message || '';
 
       if (status === 409) {
         notifications.show({

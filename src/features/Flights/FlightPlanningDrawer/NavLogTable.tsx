@@ -591,6 +591,7 @@ export const NavLogTable: React.FC<NavLogTableProps> = ({ navlog, returnNavlog, 
 };
 
 // Export fuel analysis helper for use in other components
+// eslint-disable-next-line react-refresh/only-export-components
 export { analyzeFuelStatus, type FuelStatus };
 
 export default NavLogTable;

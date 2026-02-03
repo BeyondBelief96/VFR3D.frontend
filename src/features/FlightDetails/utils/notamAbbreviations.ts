@@ -689,7 +689,7 @@ export function translateNotam(rawText: string): string {
 
   return words.map(word => {
     // Skip empty strings and delimiters
-    if (!word || /^[\s\/\.\,\(\)]+$/.test(word)) {
+    if (!word || /^[\s/.,()]+$/.test(word)) {
       return word;
     }
 

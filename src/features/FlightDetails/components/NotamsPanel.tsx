@@ -34,6 +34,10 @@ const AIRPORT_RADIUS_NM = 5;
 export function NotamsPanel({ flight }: NotamsPanelProps) {
   const isPhone = useIsPhone();
 
+  // State for active tab and view mode - must be declared before any early returns
+  const [activeLocation, setActiveLocation] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'raw' | 'readable'>('raw');
+
   // Calculate the flight time window
   const flightTimeWindow = useMemo((): FlightTimeWindow | undefined => {
     if (!flight?.departureTime) return undefined;
@@ -194,14 +198,6 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
     return `${formatTime(flightTimeWindow.start)} - ${formatTime(flightTimeWindow.end)}`;
   }, [flightTimeWindow]);
 
-  if (!flight?.waypoints || flight.waypoints.length === 0) {
-    return (
-      <Center py="xl">
-        <Text c="dimmed">No waypoints in this flight to fetch NOTAMs for</Text>
-      </Center>
-    );
-  }
-
   // Format the retrieved timestamp
   const lastUpdatedDisplay = useMemo(() => {
     if (!notamsData?.retrievedAt) return null;
@@ -214,10 +210,6 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
       minute: '2-digit',
     });
   }, [notamsData?.retrievedAt]);
-
-  // State for active tab and view mode
-  const [activeLocation, setActiveLocation] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'raw' | 'readable'>('raw');
 
   // Set default active location when data loads
   const effectiveActiveLocation = activeLocation || sortedLocations[0] || null;
@@ -236,6 +228,14 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
     });
     return counts;
   }, [sortedLocations, notamsByLocation]);
+
+  if (!flight?.waypoints || flight.waypoints.length === 0) {
+    return (
+      <Center py="xl">
+        <Text c="dimmed">No waypoints in this flight to fetch NOTAMs for</Text>
+      </Center>
+    );
+  }
 
   return (
     <Stack gap="md">

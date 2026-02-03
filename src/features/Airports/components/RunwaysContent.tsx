@@ -1,6 +1,6 @@
 import { Stack, Paper, Group, Text, Badge, Center, Loader, SimpleGrid, Box, Tooltip } from '@mantine/core';
 import { FiWind } from 'react-icons/fi';
-import { RunwayDto } from '@/redux/api/vfr3d/dtos';
+import { RunwayDto, AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
 
 const getCrosswindColor = (crosswindKt: number): string => {
   if (crosswindKt > 15) return 'red';
@@ -10,7 +10,7 @@ const getCrosswindColor = (crosswindKt: number): string => {
 
 interface RunwayCardProps {
   runway: RunwayDto;
-  crosswindData?: any;
+  crosswindData?: AirportCrosswindResponseDto;
 }
 
 function RunwayCard({ runway, crosswindData }: RunwayCardProps) {
@@ -56,7 +56,7 @@ function RunwayCard({ runway, crosswindData }: RunwayCardProps) {
         {crosswindData?.runways && runway.runwayEnds && (
           <Group gap="xs" mt="xs">
             {runway.runwayEnds.map((end) => {
-              const cw = crosswindData.runways.find((r: any) => r.runwayEndId === end.runwayEndId);
+              const cw = crosswindData.runways?.find((r) => r.runwayEndId === end.runwayEndId);
               if (!cw) return null;
               const xw = Math.abs(cw.crosswindKt ?? 0);
               const hw = cw.headwindKt ?? 0;
@@ -86,7 +86,7 @@ function RunwayCard({ runway, crosswindData }: RunwayCardProps) {
 interface RunwaysContentProps {
   runways?: RunwayDto[];
   isLoading: boolean;
-  crosswindData?: any;
+  crosswindData?: AirportCrosswindResponseDto;
 }
 
 export function RunwaysContent({ runways, isLoading, crosswindData }: RunwaysContentProps) {

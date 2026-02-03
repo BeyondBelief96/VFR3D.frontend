@@ -47,7 +47,9 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
     return aircraftList?.find((a) => a.id === aircraftId);
   }, [aircraftList, aircraftId]);
 
-  const profiles = selectedAircraft?.performanceProfiles || [];
+  const profiles = useMemo(() => {
+    return selectedAircraft?.performanceProfiles || [];
+  }, [selectedAircraft?.performanceProfiles]);
 
   // Auto-select aircraft based on current profile when data loads
   useMemo(() => {

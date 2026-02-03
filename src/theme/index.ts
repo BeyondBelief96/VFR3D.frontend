@@ -214,7 +214,7 @@ export const theme = createTheme({
 
 // CSS Variables Resolver for custom overrides
 // This ensures dimmed text has better contrast against dark backgrounds
-export const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
+export const cssVariablesResolver: CSSVariablesResolver = (_theme) => ({
   variables: {},
   light: {},
   dark: {

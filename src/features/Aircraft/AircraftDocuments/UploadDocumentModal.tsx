@@ -118,8 +118,9 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       });
 
       onClose();
-    } catch (error: any) {
-      const errorMessage = error?.data?.title || error?.data?.detail || 'Upload failed';
+    } catch (error: unknown) {
+      const err = error as { data?: { title?: string; detail?: string } };
+      const errorMessage = err?.data?.title || err?.data?.detail || 'Upload failed';
       notifications.show({
         title: 'Upload Failed',
         message: errorMessage,

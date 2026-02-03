@@ -19,13 +19,7 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
   showLabel = false,
 }) => {
   const position = mapObstacleToCartesian3(obstacle);
-
-  if (!position) return null;
-
   const heightMeters = getObstacleHeightMeters(obstacle, true);
-
-  // Skip obstacles with no meaningful height
-  if (heightMeters < 10) return null;
 
   // Apply height exaggeration with a minimum visual height
   const exaggeratedHeight = Math.max(heightMeters * heightExaggeration, 100);
@@ -69,6 +63,12 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
     const mslFt = obstacle.heightAmsl ? Math.round(obstacle.heightAmsl).toLocaleString() : '?';
     return `${type}\n${aglFt} AGL\n${mslFt} MSL`;
   }, [showLabel, obstacle.obstacleType, obstacle.heightAgl, obstacle.heightAmsl]);
+
+  // Skip if no valid position
+  if (!position) return null;
+
+  // Skip obstacles with no meaningful height
+  if (heightMeters < 10) return null;
 
   return (
     <CylinderEntity

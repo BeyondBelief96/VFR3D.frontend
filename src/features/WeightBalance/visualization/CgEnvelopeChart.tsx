@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   ResponsiveContainer,
   ScatterChart,
@@ -45,19 +45,19 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
   const xAxisName = isMomentFormat ? `Moment÷1000 (${weightLabel}-${armLabel})` : `CG (${armLabel})`;
 
   // Helper to get X value based on format
-  const getXValue = (point: CgEnvelopePointDto): number => {
+  const getXValue = useCallback((point: CgEnvelopePointDto): number => {
     if (isMomentFormat) {
       return point.momentDividedBy1000 ?? 0;
     }
     return point.arm ?? 0;
-  };
+  }, [isMomentFormat]);
 
-  const getTakeoffX = (result: WeightBalanceCgResultDto): number => {
+  const getTakeoffX = useCallback((result: WeightBalanceCgResultDto): number => {
     if (isMomentFormat) {
       return (result.totalMoment ?? 0) / 1000;
     }
     return result.cgArm ?? 0;
-  };
+  }, [isMomentFormat]);
 
   // Calculate chart bounds
   const bounds = useMemo(() => {
@@ -93,7 +93,7 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       minWeight: Math.max(0, minWeight - weightPadding),
       maxWeight: maxWeight + weightPadding,
     };
-  }, [envelopePoints, takeoffResult, landingResult, isMomentFormat]);
+  }, [envelopePoints, takeoffResult, landingResult, getXValue, getTakeoffX]);
 
   // Prepare data points for takeoff and landing markers
   const takeoffData = useMemo(() => {
@@ -104,7 +104,7 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       name: 'Takeoff',
       isWithin: takeoffResult.isWithinEnvelope,
     }];
-  }, [takeoffResult, isMomentFormat]);
+  }, [takeoffResult, getTakeoffX]);
 
   const landingData = useMemo(() => {
     if (!landingResult) return [];
@@ -114,7 +114,7 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       name: 'Landing',
       isWithin: landingResult.isWithinEnvelope,
     }];
-  }, [landingResult, isMomentFormat]);
+  }, [landingResult, getTakeoffX]);
 
   // Convert envelope points to format for custom rendering
   const sortedEnvelopePoints = useMemo(() => {
@@ -125,10 +125,18 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       name: `Point ${index + 1}`,
       isEnvelopePoint: true,
     }));
-  }, [envelopePoints, isMomentFormat]);
+  }, [envelopePoints, getXValue]);
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  interface TooltipData {
+    name?: string;
+    x?: number;
+    weight?: number;
+    isEnvelopePoint?: boolean;
+    isWithin?: boolean;
+  }
+
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: TooltipData }> }) => {
     if (active && payload && payload.length > 0) {
       const data = payload[0].payload;
       const isEnvelopePoint = data.isEnvelopePoint;
