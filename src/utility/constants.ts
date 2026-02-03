@@ -1,6 +1,12 @@
 import { ImageryProduct } from './types';
 
 /**
+ * The base URL for ArcGis world sattelite imagery
+ */
+export const ARCGIS_WORLD_IMAGERY_MAP_SERVER_URL =
+  'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer';
+
+/**
  * The base URL for VFR Sectional Charts from FAA's servers on ARCGIS.
  */
 export const ARCGIS_FAA_VFR_SECTIONAL_URL =
@@ -23,12 +29,6 @@ export const ARCGIS_FAA_IFR_LOW_URL =
  */
 export const ARCGIS_FAA_IFR_HIGH_URL =
   'https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/IFR_High/MapServer';
-
-/**
- * The base URL for accessing the FAA's airports database on ARCGIS.
- */
-export const ARCGIS_FAA_FEATURESERVICE_BASE_URL =
-  'https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/US_Airport/FeatureServer/0';
 
 export const ARCGIS_WORLD_IMAGERY_ICON_URL =
   'https://www.arcgis.com/sharing/rest/content/items/10df2279f9684e4a9f6a7f08febac2a9/info/thumbnail/thumbnail1584118328864.jpeg?w=400';

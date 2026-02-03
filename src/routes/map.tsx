@@ -1,29 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Box } from '@mantine/core';
-import { Globe, Viewer as ResiumViewer, Scene } from 'resium';
-import {
-  ArcGisMapServerImageryProvider,
-  ProviderViewModel,
-  ArcGisMapService,
-  ArcGISTiledElevationTerrainProvider,
-  ArcGisBaseMapType,
-  ImageryLayer,
-  OpenStreetMapImageryProvider,
-  EllipsoidTerrainProvider,
-} from 'cesium';
+import { Viewer as ResiumViewer, Scene } from 'resium';
+import { ArcGisMapServerImageryProvider, ArcGisMapService, ImageryLayer, Credit } from 'cesium';
 import { ProtectedRoute } from '@/components/Auth';
 import { LoadingScreen, MapUnavailableMobile } from '@/components/Common';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { CesiumViewerConfig, ImageryLayers, CameraControls } from '@/components/Cesium';
-import { useAppSelector } from '@/hooks/reduxHooks';
-import {
-  ARCGIS_3D_TERRAIN_PROVIDER_URL,
-  ARCGIS_3D_TERRAIN_VIEWMODEL_IMAGE_URL,
-  ARCGIS_NO_TERRAIN_VIEWMODEL_IMAGE_URL,
-  ARCGIS_WORLD_IMAGERY_ICON_URL,
-  ARCIS_OPEN_STREET_MAPS_VIEWMODEL_IMAGE_URL,
-} from '@/utility/constants';
+import { ARCGIS_WORLD_IMAGERY_MAP_SERVER_URL } from '@/utility/constants';
 import { Airports, FlyTo } from '@/features/Airports';
 import { AirspaceComponent } from '@/features/Airspace';
 import { Pireps } from '@/features/Pireps';
@@ -59,95 +43,20 @@ function MapPage() {
 }
 
 function MapContent() {
-  const screenSpaceError = useAppSelector((state) => state.viewer.globeMaximumScreenSpaceError);
   const isTablet = useIsTablet();
 
-  const [imageryViewModels, setImageryViewModels] = useState<ProviderViewModel[]>([]);
-  const [terrainViewModels, setTerrainViewModels] = useState<ProviderViewModel[]>([]);
-  const [baseLayer, setBaseLayer] = useState<ImageryLayer | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const hasInitialized = useRef(false);
+  const esriArcgisWorldImageryCredit = new Credit(
+    'Esri, Maxar, Earthstar Geographics, and the GIS User Community',
+    true
+  );
 
-  useEffect(() => {
-    // Prevent double initialization in React 19 strict mode
-    if (hasInitialized.current) return;
-    hasInitialized.current = true;
+  const baseMapLayer = ArcGisMapServerImageryProvider.fromUrl(ARCGIS_WORLD_IMAGERY_MAP_SERVER_URL, {
+    credit: esriArcgisWorldImageryCredit,
+  });
 
-    const loadViewModels = async () => {
-      try {
-        // Create imagery view models
-        const baseMapLayer = ArcGisMapServerImageryProvider.fromUrl(
-          'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-        );
+  const baseImageryLayer = ImageryLayer.fromProviderAsync(baseMapLayer);
 
-        const imageryProviders = [
-          new ProviderViewModel({
-            name: 'ArcGIS World Imagery',
-            iconUrl: ARCGIS_WORLD_IMAGERY_ICON_URL,
-            creationFunction: () => baseMapLayer,
-            tooltip: 'ArcGIS World Imagery',
-          }),
-          new ProviderViewModel({
-            name: 'Open Street Map',
-            iconUrl: ARCIS_OPEN_STREET_MAPS_VIEWMODEL_IMAGE_URL,
-            tooltip: 'Open Street Map',
-            creationFunction: () => {
-              return new OpenStreetMapImageryProvider({
-                url: 'https://a.tile.openstreetmap.org/',
-              });
-            },
-          }),
-        ];
-
-        setImageryViewModels(imageryProviders);
-        setBaseLayer(ImageryLayer.fromProviderAsync(baseMapLayer, {}));
-
-        // Create terrain view models
-        const noTerrainProvider = new EllipsoidTerrainProvider();
-        const arcgisTerrainProvider = await ArcGISTiledElevationTerrainProvider.fromUrl(
-          ARCGIS_3D_TERRAIN_PROVIDER_URL
-        );
-
-        const terrainProviders = [
-          new ProviderViewModel({
-            name: 'No Terrain',
-            tooltip: 'WGS84 Ellipsoid',
-            iconUrl: ARCGIS_NO_TERRAIN_VIEWMODEL_IMAGE_URL,
-            creationFunction: () => {
-              return noTerrainProvider;
-            },
-          }),
-          new ProviderViewModel({
-            name: 'ArcGIS World Terrain',
-            tooltip: 'ArcGIS World Terrain',
-            iconUrl: ARCGIS_3D_TERRAIN_VIEWMODEL_IMAGE_URL,
-            creationFunction: () => {
-              return arcgisTerrainProvider;
-            },
-          }),
-        ];
-
-        setTerrainViewModels(terrainProviders);
-      } catch (error) {
-        console.error('Error loading view models:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadViewModels();
-  }, []);
-
-  // Memoize selected view models to prevent Viewer recreation
-  const selectedImageryViewModel = useMemo(() => imageryViewModels[0], [imageryViewModels]);
-  const selectedTerrainViewModel = useMemo(() => terrainViewModels[0], [terrainViewModels]);
-
-  // Show loading while view models are being created
-  if (isLoading || imageryViewModels.length === 0 || terrainViewModels.length === 0 || !baseLayer) {
-    return (
-      <LoadingScreen message="Initializing 3D map and aviation charts..." fullScreen={false} />
-    );
-  }
+  const isReady = baseMapLayer;
 
   return (
     <Box
@@ -158,37 +67,43 @@ function MapContent() {
         overflow: 'hidden',
       }}
     >
-      <ResiumViewer
-        full
-        useBrowserRecommendedResolution={isTablet ? true : false}
-        baseLayer={baseLayer}
-        timeline={false}
-        shouldAnimate={false}
-        animation={false}
-        infoBox={false}
-        selectionIndicator={false}
-      >
-        {/*<CesiumViewerConfig />*/}
-        <Scene />
-        {/*<Globe />*/}
-        <ImageryLayers />
-        <CameraControls />
-        {/* Map Features */}
-        <Airports />
-        <AirspaceComponent />
-        <Pireps />
-        <AirsigmetComponent />
-        <GAirmetComponent />
-        <Obstacles />
-        <RouteObstacles />
-        <FlyTo />
+      {!isReady ? (
+        <LoadingScreen message="Initializing 3D map and aviation charts..." fullScreen={false} />
+      ) : (
+        <>
+          <ResiumViewer
+            full
+            useBrowserRecommendedResolution={isTablet ? true : false}
+            baseLayer={baseImageryLayer}
+            timeline={false}
+            shouldAnimate={false}
+            animation={false}
+            infoBox={false}
+            selectionIndicator={false}
+            creditContainer={'root'}
+          >
+            <CesiumViewerConfig />
+            <Scene />
+            <ImageryLayers />
+            <CameraControls />
+            {/* Map Features */}
+            <Airports />
+            <AirspaceComponent />
+            <Pireps />
+            <AirsigmetComponent />
+            <GAirmetComponent />
+            <Obstacles />
+            <RouteObstacles />
+            <FlyTo />
 
-        {/* Flight Planning */}
-        <RouteComponent />
-      </ResiumViewer>
+            {/* Flight Planning */}
+            <RouteComponent />
+          </ResiumViewer>
 
-      {/* Flight Planning Drawer */}
-      <FlightPlanningDrawer />
+          {/* Flight Planning Drawer */}
+          <FlightPlanningDrawer />
+        </>
+      )}
     </Box>
   );
 }
