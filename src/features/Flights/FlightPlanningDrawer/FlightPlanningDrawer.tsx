@@ -496,7 +496,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                   {/* Success indicator */}
                   <Box ta="center">
                     <Group gap="xs" justify="center" mb="xs">
-                      <ThemeIcon size={28} radius="xl" color="green" variant="filled">
+                      <ThemeIcon size={28} radius="xl" color="blue" variant="filled">
                         <FiCheck size={16} />
                       </ThemeIcon>
                       <Text size="lg" fw={600} c="white">
@@ -753,6 +753,7 @@ export const FlightPlanningDrawer: React.FC = () => {
         <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
           <Button
             color="red"
+            variant="subtle"
             leftSection={<FiChevronLeft size={16} />}
             onClick={handlePreviousStep}
             disabled={currentStep === 0 || isCalculating || isSaving || isEditingProfile}
@@ -806,6 +807,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                 rightSection={<FiChevronRight size={16} />}
                 onClick={handleNextStep}
                 color="blue"
+                variant="subtle"
                 disabled={
                   isEditingProfile ||
                   (currentStep === FlightPlannerStep.ROUTE_BUILDING && !canProceedToAircraft) ||

@@ -45,8 +45,8 @@
 
 .stepIcon {
   &[data-completed] {
-    background-color: var(--mantine-color-green-6);
-    border-color: var(--mantine-color-green-6);
+    background-color: var(--mantine-color-blue-6);
+    border-color: var(--mantine-color-blue-6);
   }
 }
 
@@ -56,6 +56,6 @@
 
 .separator {
   &[data-active] {
-    background-color: var(--mantine-color-green-6);
+    background-color: var(--mantine-color-blue-6);
   }
 }
