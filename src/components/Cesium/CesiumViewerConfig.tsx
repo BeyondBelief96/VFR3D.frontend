@@ -14,6 +14,7 @@ import {
 } from 'cesium';
 import { useDisableDoubleClickZoom } from '@/hooks/useDisableDoubleClickZoom';
 import { getPointCallbacks, setSharedScreenHandler } from './pointEventRegistry';
+import { useAppSelector } from '@/hooks';
 
 const HOVER_OVERLAY_NAME = '__hover_overlay__';
 
@@ -273,10 +274,7 @@ export function CesiumViewerConfig() {
       if (!activePointId) return;
       const callbacks = getPointCallbacks(activePointId);
       const ellipsoid = viewer.scene.globe.ellipsoid;
-      const cartesian = viewer.camera.pickEllipsoid(
-        event.position,
-        ellipsoid
-      ) as Cartesian3 | null;
+      const cartesian = viewer.camera.pickEllipsoid(event.position, ellipsoid) as Cartesian3 | null;
       if (callbacks) {
         if (hasDragged && callbacks.onDragEnd && cartesian) {
           callbacks.onDragEnd(activePointId, cartesian, true);

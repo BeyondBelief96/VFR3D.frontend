@@ -24,7 +24,10 @@ import { FlightDisplayMode } from '@/utility/enums';
 import { updateWaypointPosition } from '@/redux/slices/flightPlanningSlice';
 import { NavigationLegDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { useDebounce } from '@uidotdev/usehooks';
-import { setSelectedEntity, updateSelectedWaypointPosition } from '@/redux/slices/selectedEntitySlice';
+import {
+  setSelectedEntity,
+  updateSelectedWaypointPosition,
+} from '@/redux/slices/selectedEntitySlice';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAuth } from '@/components/Auth';
 import AirportWaypointEntity from '@/features/Airports/AirportWaypointEntity';
@@ -37,7 +40,10 @@ const isTocTodPoint = (waypoint: WaypointDto): boolean => {
   const name = waypoint.name?.toLowerCase() || '';
   return (
     waypoint.waypointType === WaypointType.CalculatedPoint &&
-    (name.includes('toc') || name.includes('tod') || name.includes('top of climb') || name.includes('top of descent'))
+    (name.includes('toc') ||
+      name.includes('tod') ||
+      name.includes('top of climb') ||
+      name.includes('top of descent'))
   );
 };
 
@@ -49,11 +55,17 @@ const getWaypointColor = (
   defaultColor: string
 ): Color => {
   // TOC points - green (climbing)
-  if (waypoint.name?.toLowerCase().includes('toc') || waypoint.name?.toLowerCase().includes('top of climb')) {
+  if (
+    waypoint.name?.toLowerCase().includes('toc') ||
+    waypoint.name?.toLowerCase().includes('top of climb')
+  ) {
     return Color.fromCssColorString('#22c55e');
   }
   // TOD points - orange (descending)
-  if (waypoint.name?.toLowerCase().includes('tod') || waypoint.name?.toLowerCase().includes('top of descent')) {
+  if (
+    waypoint.name?.toLowerCase().includes('tod') ||
+    waypoint.name?.toLowerCase().includes('top of descent')
+  ) {
     return Color.fromCssColorString('#f97316');
   }
   // First point (departure) - green
@@ -129,8 +141,6 @@ const RouteComponent: React.FC = () => {
     // Case: Editing - show copy of current flight plan points
     return editingFlightPlan?.waypoints?.map(mapWaypointsFlat) ?? [];
   }, [displayMode, navlogPreview, draftFlightPlan, editingFlightPlan, activeFlightData]);
-
-  console.log('displayMode', displayMode);
 
   // State to track the waypoint being dragged
   const [draggedWaypointId, setDraggedWaypointId] = useState<string | null>(null);
@@ -389,7 +399,9 @@ const RouteComponent: React.FC = () => {
       })}
 
       {/* Temporary waypoint preview when selecting on blank map */}
-      {selectedType === 'Waypoint' && selectedEntity && selectedContext?.mode !== 'existing' && (
+      {selectedType === 'Waypoint' &&
+        selectedEntity &&
+        selectedContext?.mode !== 'existing' &&
         (() => {
           const tempWp = selectedEntity as WaypointDto;
           const pos = mapWaypointToPosition(tempWp);
@@ -420,8 +432,7 @@ const RouteComponent: React.FC = () => {
               labelPixelOffset={new Cartesian2(0, -20)}
             />
           );
-        })()
-      )}
+        })()}
 
       {renderPoints?.map((point: WaypointDto, index: number) => {
         if (index === 0) return null;
@@ -436,8 +447,7 @@ const RouteComponent: React.FC = () => {
         // Check for fuel issues in PREVIEW mode
         // Find the leg that matches this segment (start point -> end point)
         const matchingLeg = navlogPreview?.legs?.find(
-          (leg) =>
-            leg.legStartPoint?.id === prevPoint.id && leg.legEndPoint?.id === point.id
+          (leg) => leg.legStartPoint?.id === prevPoint.id && leg.legEndPoint?.id === point.id
         );
         const hasInsufficientFuel =
           matchingLeg?.remainingFuelGals !== undefined &&

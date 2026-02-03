@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { Box } from '@mantine/core';
-import { Globe, Viewer as ResiumViewer } from 'resium';
+import { Globe, Viewer as ResiumViewer, Scene } from 'resium';
 import {
   ArcGisMapServerImageryProvider,
   ProviderViewModel,
@@ -14,7 +14,7 @@ import {
 } from 'cesium';
 import { ProtectedRoute } from '@/components/Auth';
 import { LoadingScreen, MapUnavailableMobile } from '@/components/Common';
-import { useIsPhone } from '@/hooks';
+import { useIsPhone, useIsTablet } from '@/hooks';
 import { CesiumViewerConfig, ImageryLayers, CameraControls } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -60,21 +60,24 @@ function MapPage() {
 
 function MapContent() {
   const screenSpaceError = useAppSelector((state) => state.viewer.globeMaximumScreenSpaceError);
+  const isTablet = useIsTablet();
 
   const [imageryViewModels, setImageryViewModels] = useState<ProviderViewModel[]>([]);
   const [terrainViewModels, setTerrainViewModels] = useState<ProviderViewModel[]>([]);
   const [baseLayer, setBaseLayer] = useState<ImageryLayer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
+    // Prevent double initialization in React 19 strict mode
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     const loadViewModels = async () => {
       try {
         // Create imagery view models
-        const baseMapLayer = ArcGisMapServerImageryProvider.fromBasemapType(
-          ArcGisBaseMapType.SATELLITE,
-          {
-            enablePickFeatures: false,
-          }
+        const baseMapLayer = ArcGisMapServerImageryProvider.fromUrl(
+          'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         );
 
         const imageryProviders = [
@@ -135,14 +138,14 @@ function MapContent() {
     loadViewModels();
   }, []);
 
+  // Memoize selected view models to prevent Viewer recreation
+  const selectedImageryViewModel = useMemo(() => imageryViewModels[0], [imageryViewModels]);
+  const selectedTerrainViewModel = useMemo(() => terrainViewModels[0], [terrainViewModels]);
+
   // Show loading while view models are being created
   if (isLoading || imageryViewModels.length === 0 || terrainViewModels.length === 0 || !baseLayer) {
     return (
-      <LoadingScreen
-        title="Loading VFR3D"
-        message="Initializing 3D map and aviation charts..."
-        fullScreen={false}
-      />
+      <LoadingScreen message="Initializing 3D map and aviation charts..." fullScreen={false} />
     );
   }
 
@@ -156,35 +159,20 @@ function MapContent() {
       }}
     >
       <ResiumViewer
-        useBrowserRecommendedResolution={false}
-        imageryProviderViewModels={imageryViewModels}
-        terrainProviderViewModels={terrainViewModels}
-        selectedImageryProviderViewModel={imageryViewModels[0]}
-        selectedTerrainProviderViewModel={terrainViewModels[0]}
-        geocoder={false}
-        vrButton={false}
-        fullscreenButton={false}
-        sceneModePicker={false}
-        navigationHelpButton={false}
-        homeButton={false}
+        full
+        useBrowserRecommendedResolution={isTablet ? true : false}
+        baseLayer={baseLayer}
         timeline={false}
+        shouldAnimate={false}
         animation={false}
-        selectionIndicator={false}
         infoBox={false}
-        baseLayerPicker={true}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
+        selectionIndicator={false}
       >
-        <CesiumViewerConfig />
-        <Globe maximumScreenSpaceError={screenSpaceError} />
+        {/*<CesiumViewerConfig />*/}
+        <Scene />
+        {/*<Globe />*/}
         <ImageryLayers />
         <CameraControls />
-        
         {/* Map Features */}
         <Airports />
         <AirspaceComponent />
@@ -194,7 +182,7 @@ function MapContent() {
         <Obstacles />
         <RouteObstacles />
         <FlyTo />
-        
+
         {/* Flight Planning */}
         <RouteComponent />
       </ResiumViewer>

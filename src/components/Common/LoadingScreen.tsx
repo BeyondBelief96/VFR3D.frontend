@@ -1,74 +1,56 @@
-import { Center, Stack, Loader, Text, Box } from '@mantine/core';
-import { FaPlane } from 'react-icons/fa';
+import { Center, Stack, Loader, Text, Image } from '@mantine/core';
 import { motion } from 'framer-motion';
+import logo from '@/assets/images/logo_2.png';
 import classes from './LoadingScreen.module.css';
 
 interface LoadingScreenProps {
-  title?: string;
   message?: string;
   fullScreen?: boolean;
 }
 
 export function LoadingScreen({
-  title = 'Loading VFR3D',
-  message = 'Get ready to Plan, Fly, Repeat...',
+  message = 'Preparing your flight experience...',
   fullScreen = true,
 }: LoadingScreenProps) {
   return (
     <Center
-      h={fullScreen ? '100vh' : '100%'}
       className={`${classes.container} ${fullScreen ? classes.containerFullScreen : classes.containerRelative}`}
     >
-      <Stack align="center" gap="xl">
+      <Stack align="center" gap="lg">
         {/* Animated Logo */}
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <Box className={classes.logoBox}>
-            <motion.div
-              animate={{
-                y: [-5, 5, -5],
-                rotate: [-5, 5, -5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              <FaPlane size={40} color="white" className={classes.planeIcon} />
-            </motion.div>
-          </Box>
-        </motion.div>
-
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Text
-            size="xl"
-            fw={700}
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+          <motion.div
+            animate={{ opacity: [0.85, 1, 0.85] }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
           >
-            {title}
-          </Text>
+            <Image src={logo} alt="VFR3D" w={220} fit="contain" />
+          </motion.div>
         </motion.div>
 
         {/* Loader */}
-        <Loader size="lg" color="blue" type="dots" />
-
-        {/* Message */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
         >
-          <Text size="sm" c="dimmed" ta="center" maw={300}>
+          <Loader size="md" color="blue" type="bars" />
+        </motion.div>
+
+        {/* Message */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <Text size="sm" c="dimmed" ta="center" maw={280}>
             {message}
           </Text>
         </motion.div>

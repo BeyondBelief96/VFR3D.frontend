@@ -72,7 +72,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
   const entityRef = useRef<Entity | null>(null);
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewer.cesiumWidget) return;
 
     const pointGraphics = new PointGraphics({
       show: new ConstantProperty(show),
@@ -120,7 +120,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
     registerPointCallbacks(id, { draggable, onLeftClick, onRightClick, onDragStart, onDrag, onDragEnd });
 
     return () => {
-      if (viewer && entity) {
+      if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
         unregisterPointCallbacks(id);

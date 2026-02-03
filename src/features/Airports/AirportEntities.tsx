@@ -18,7 +18,7 @@ const AirportEntities: React.FC<AirportEntitiesProps> = ({ airports, metarMap })
 
   const handleClick = useCallback(
     (movement: ScreenSpaceEventHandler.PositionedEvent) => {
-      if (!viewer || viewer.isDestroyed()) return;
+      if (!viewer || !viewer.cesiumWidget || viewer.isDestroyed()) return;
       const pickedObject = viewer.scene.pick(movement.position);
       if (pickedObject?.id) {
         const airport = airports.find(
@@ -33,7 +33,7 @@ const AirportEntities: React.FC<AirportEntitiesProps> = ({ airports, metarMap })
   );
 
   useEffect(() => {
-    if (!viewer || viewer.isDestroyed()) return;
+    if (!viewer || !viewer.cesiumWidget || viewer.isDestroyed()) return;
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
     handler.setInputAction(handleClick, ScreenSpaceEventType.LEFT_CLICK);
     return () => {

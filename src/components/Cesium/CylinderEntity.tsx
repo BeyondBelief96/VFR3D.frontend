@@ -87,7 +87,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
 
   // Create cylinder entity
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewer.cesiumWidget) return;
 
     // Create material - either striped or solid color
     const material = striped
@@ -121,7 +121,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
     cylinderEntityRef.current = entity;
 
     return () => {
-      if (viewer && entity) {
+      if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         cylinderEntityRef.current = null;
       }
@@ -131,7 +131,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
 
   // Create separate label entity at the top of the cylinder
   useEffect(() => {
-    if (!viewer || !labelText || !showLabel) return;
+    if (!viewer || !viewer.cesiumWidget || !labelText || !showLabel) return;
 
     const defaultBgColor = Color.fromCssColorString('rgba(20, 20, 20, 0.95)');
     const defaultFillColor = Color.fromCssColorString('#FFFF00');
@@ -163,7 +163,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
     labelEntityRef.current = labelEntity;
 
     return () => {
-      if (viewer && labelEntity) {
+      if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && labelEntity) {
         viewer.entities.remove(labelEntity);
         labelEntityRef.current = null;
       }

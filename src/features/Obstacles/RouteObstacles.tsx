@@ -60,7 +60,7 @@ export const RouteObstacles: React.FC = () => {
 
   // Click handler for route obstacles
   useEffect(() => {
-    if (!viewer || viewer.isDestroyed() || !routeObstacles?.length) return;
+    if (!viewer || !viewer.cesiumWidget || viewer.isDestroyed() || !routeObstacles?.length) return;
 
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
     handlerRef.current = handler;

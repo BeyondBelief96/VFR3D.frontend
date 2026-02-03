@@ -35,28 +35,28 @@ export function ImageryLayers() {
 
   return (
     <>
-      {vfrImagery && (
+      {vfrImagery && selectedImageryLayer === 'vfrImagery' && (
         <ImageryLayer
           {...commonImageryLayerProps}
           imageryProvider={vfrImagery}
           show={selectedImageryLayer === 'vfrImagery'}
         />
       )}
-      {vfrTerminal && (
+      {vfrTerminal && selectedImageryLayer === 'vfrTerminal' && (
         <ImageryLayer
           {...commonImageryLayerProps}
           imageryProvider={vfrTerminal}
           show={selectedImageryLayer === 'vfrTerminal'}
         />
       )}
-      {ifrLowImagery && (
+      {ifrLowImagery && selectedImageryLayer === 'ifrLowImagery' && (
         <ImageryLayer
           {...commonImageryLayerProps}
           imageryProvider={ifrLowImagery}
           show={selectedImageryLayer === 'ifrLowImagery'}
         />
       )}
-      {ifrHighImagery && (
+      {ifrHighImagery && selectedImageryLayer === 'ifrHighImagery' && (
         <ImageryLayer
           {...commonImageryLayerProps}
           imageryProvider={ifrHighImagery}

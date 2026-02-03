@@ -30,7 +30,7 @@ export const PolygonEntity: React.FC<PolygonEntityProps> = React.memo(
     }, [points]);
 
     useEffect(() => {
-      if (!viewer || points.length < 3) {
+      if (!viewer || !viewer.cesiumWidget || points.length < 3) {
         return;
       }
 
@@ -55,7 +55,7 @@ export const PolygonEntity: React.FC<PolygonEntityProps> = React.memo(
       entityRef.current = entity;
 
       return () => {
-        if (viewer && entityRef.current) {
+        if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entityRef.current) {
           viewer.entities.remove(entityRef.current);
           entityRef.current = null;
         }

@@ -57,7 +57,7 @@ export const BillboardEntity: React.FC<BillboardEntityProps> = ({
   const rightClickHandler = useRef<ScreenSpaceEventHandler | null>(null);
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewer.cesiumWidget) return;
 
     const billboardGraphics = new BillboardGraphics({
       show: new ConstantProperty(show),
@@ -115,7 +115,7 @@ export const BillboardEntity: React.FC<BillboardEntityProps> = ({
     }
 
     return () => {
-      if (viewer && entity) {
+      if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
         if (onLeftClick && leftClickHandler.current) {

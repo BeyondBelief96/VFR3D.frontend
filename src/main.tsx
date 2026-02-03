@@ -22,7 +22,7 @@ Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_API_KEY;
 const router = createRouter({
   routeTree,
   defaultPendingComponent: () => (
-    <LoadingScreen title="Loading" message="Get ready to Plan, Fly, Repeat..." />
+    <LoadingScreen message="Get ready to Plan, Fly, Repeat..." />
   ),
   defaultPendingMs: 200,
 });

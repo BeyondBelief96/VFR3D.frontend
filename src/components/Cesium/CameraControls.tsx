@@ -2,13 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useCesium } from 'resium';
 import { ActionIcon, Divider, Group, Paper, Tooltip } from '@mantine/core';
 import { FiPlus, FiMinus } from 'react-icons/fi';
-import {
-  TbArrowRight,
-  TbArrowLeft,
-  TbArrowUp,
-  TbArrowDown,
-  TbTarget,
-} from 'react-icons/tb';
+import { TbArrowRight, TbArrowLeft, TbArrowUp, TbArrowDown, TbTarget } from 'react-icons/tb';
 import { Math as CesiumMath, Cartographic } from 'cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { FlightDisplayMode } from '@/utility/enums';
@@ -140,12 +134,7 @@ export function CameraControls() {
   ]);
 
   return (
-    <Paper
-      shadow="lg"
-      radius="md"
-      p={4}
-      className={classes.container}
-    >
+    <Paper shadow="lg" radius="md" p={4} className={classes.container}>
       <Group gap={4}>
         <Tooltip label="Zoom In" position="bottom">
           <ActionIcon

@@ -33,8 +33,8 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
   const handlerRef = useRef<ScreenSpaceEventHandler | null>(null);
 
   useEffect(() => {
-    if (!viewer) return;
-    
+    if (!viewer || !viewer.cesiumWidget) return;
+
     const polylineGraphics = new PolylineGraphics({
       positions: new ConstantProperty(positions),
       material: color,
@@ -61,7 +61,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
     }
 
     return () => {
-      if (viewer && entity) {
+      if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
         if (handlerRef.current) {
