@@ -13,7 +13,6 @@ import {
 } from '@mantine/core';
 import { FiTrash2, FiNavigation, FiMapPin, FiMap, FiMenu } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   DndContext,
   closestCenter,
@@ -75,28 +74,26 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
     isDragging,
   } = useSortable({ id: waypoint.id || `waypoint-${index}`, disabled });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+    position: 'relative' as const,
   };
 
   return (
-    <motion.div
-      ref={setNodeRef}
-      style={style}
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 10 }}
-      transition={{ duration: 0.2 }}
-    >
+    <div ref={setNodeRef} style={style}>
       <Paper
         p="sm"
         radius="md"
         withBorder
         style={{
-          cursor: disabled ? 'default' : 'grab',
+          cursor: disabled ? 'default' : isDragging ? 'grabbing' : 'grab',
           borderColor: isDragging ? 'var(--mantine-color-blue-5)' : undefined,
+          borderWidth: isDragging ? 2 : 1,
+          boxShadow: isDragging ? '0 8px 25px rgba(0, 0, 0, 0.4)' : undefined,
+          backgroundColor: isDragging ? 'var(--mantine-color-dark-5)' : undefined,
+          transform: isDragging ? 'scale(1.02)' : undefined,
         }}
       >
         <Group justify="space-between" wrap="nowrap">
@@ -237,7 +234,7 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
           </Group>
         )}
       </Paper>
-    </motion.div>
+    </div>
   );
 };
 
@@ -397,21 +394,19 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
               strategy={verticalListSortingStrategy}
             >
               <Stack gap="xs">
-                <AnimatePresence>
-                  {waypoints.map((point: WaypointDto, index: number) => (
-                    <SortableWaypoint
-                      key={point.id || `waypoint-${index}`}
-                      waypoint={point}
-                      index={index}
-                      waypointsLength={waypoints.length}
-                      legData={legData}
-                      waypoints={waypoints}
-                      disabled={disabled}
-                      onRemove={handleRemoveRoutePoint}
-                      dispatch={dispatch}
-                    />
-                  ))}
-                </AnimatePresence>
+                {waypoints.map((point: WaypointDto, index: number) => (
+                  <SortableWaypoint
+                    key={point.id || `waypoint-${index}`}
+                    waypoint={point}
+                    index={index}
+                    waypointsLength={waypoints.length}
+                    legData={legData}
+                    waypoints={waypoints}
+                    disabled={disabled}
+                    onRemove={handleRemoveRoutePoint}
+                    dispatch={dispatch}
+                  />
+                ))}
               </Stack>
             </SortableContext>
           </DndContext>
