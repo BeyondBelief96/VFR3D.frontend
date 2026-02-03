@@ -1,12 +1,13 @@
-import { ArcGisMapServerImageryProvider, ImageryProvider } from 'cesium';
+import { ArcGisMapServerImageryProvider, Credit, ImageryProvider } from 'cesium';
 import { useEffect, useState } from 'react';
 
 /**
  * Hook to load ArcGIS Map Server imagery providers asynchronously.
  * @param imageryUrl - The URL of the ArcGIS Map Server
+ * @param credit - Optional credit to display for the imagery layer
  * @returns An object containing the loaded imagery provider (or null if loading/failed)
  */
-export function useArcGisImageryProviders(imageryUrl: string) {
+export function useArcGisImageryProviders(imageryUrl: string, credit?: Credit) {
   const [imagery, setImagery] = useState<ImageryProvider | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -21,6 +22,7 @@ export function useArcGisImageryProviders(imageryUrl: string) {
       try {
         const imageryProvider = await ArcGisMapServerImageryProvider.fromUrl(imageryUrl, {
           maximumLevel: 23,
+          credit,
         });
 
         if (isMounted) {
@@ -43,7 +45,7 @@ export function useArcGisImageryProviders(imageryUrl: string) {
     return () => {
       isMounted = false;
     };
-  }, [imageryUrl]);
+  }, [imageryUrl, credit]);
 
   return { imagery, isLoading, error };
 }

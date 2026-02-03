@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { ImageryLayer } from 'resium';
-import { TextureMagnificationFilter, TextureMinificationFilter } from 'cesium';
+import { Credit, TextureMagnificationFilter, TextureMinificationFilter } from 'cesium';
 import { useArcGisImageryProviders } from '@/hooks/useArcGisImageryProviders';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -19,11 +20,16 @@ export function ImageryLayers() {
     (state) => state.viewer
   );
 
+  const faaCredit = useMemo(
+    () => new Credit('Federal Aviation Administration, Aeronautical Information Services', true),
+    []
+  );
+
   // Load all imagery providers
-  const { imagery: vfrImagery } = useArcGisImageryProviders(ARCGIS_FAA_VFR_SECTIONAL_URL);
-  const { imagery: vfrTerminal } = useArcGisImageryProviders(ARCGIS_FAA_VFR_TERMINAL_URL);
-  const { imagery: ifrLowImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_LOW_URL);
-  const { imagery: ifrHighImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_HIGH_URL);
+  const { imagery: vfrImagery } = useArcGisImageryProviders(ARCGIS_FAA_VFR_SECTIONAL_URL, faaCredit);
+  const { imagery: vfrTerminal } = useArcGisImageryProviders(ARCGIS_FAA_VFR_TERMINAL_URL, faaCredit);
+  const { imagery: ifrLowImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_LOW_URL, faaCredit);
+  const { imagery: ifrHighImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_HIGH_URL, faaCredit);
 
   const commonImageryLayerProps = {
     alpha: currentImageryAlpha ?? 1,

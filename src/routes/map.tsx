@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState, useMemo } from 'react';
 import { Box } from '@mantine/core';
 import { Viewer as ResiumViewer, Scene } from 'resium';
 import { ArcGisMapServerImageryProvider, ArcGisMapService, ImageryLayer, Credit } from 'cesium';
@@ -50,13 +49,16 @@ function MapContent() {
     true
   );
 
-  const baseMapLayer = ArcGisMapServerImageryProvider.fromUrl(ARCGIS_WORLD_IMAGERY_MAP_SERVER_URL, {
-    credit: esriArcgisWorldImageryCredit,
-  });
+  const baseImageryProvider = ArcGisMapServerImageryProvider.fromUrl(
+    ARCGIS_WORLD_IMAGERY_MAP_SERVER_URL,
+    {
+      credit: esriArcgisWorldImageryCredit,
+    }
+  );
 
-  const baseImageryLayer = ImageryLayer.fromProviderAsync(baseMapLayer);
+  const baseImageryLayer = ImageryLayer.fromProviderAsync(baseImageryProvider);
 
-  const isReady = baseMapLayer;
+  const isReady = baseImageryProvider;
 
   return (
     <Box
