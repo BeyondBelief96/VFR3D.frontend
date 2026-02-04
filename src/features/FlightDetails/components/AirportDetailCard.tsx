@@ -18,9 +18,12 @@ import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
+import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
+import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
 import { RunwayInformation } from '@/features/Airports/InformationPopup/AirportInfo/RunwayInformation';
 import { AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
 import { FrequencyTable } from '@/components/Frequencies';
+import { AirportDocumentsContent } from '@/features/Airports/components';
 
 const hasUniqueBestRunway = (crosswindData?: AirportCrosswindResponseDto): boolean => {
   if (!crosswindData?.runways || !crosswindData.recommendedRunway) return false;
@@ -74,6 +77,14 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
     isFetching: crosswindFetching,
     refetch: refetchCrosswind,
   } = useGetCrosswindForAirportQuery(ident, {
+    skip: !ident,
+  });
+
+  const { data: chartSupplementUrl } = useGetChartSupplementUrlByAirportCodeQuery(ident, {
+    skip: !ident,
+  });
+
+  const { data: airportDiagrams } = useGetAirportDiagramUrlByAirportCodeQuery(ident, {
     skip: !ident,
   });
 
@@ -217,6 +228,7 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
               </Badge>
             )}
           </Tabs.Tab>
+          <Tabs.Tab value="documents">Documents</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="runways">
@@ -246,6 +258,14 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
               showGroupPaper={false}
             />
           )}
+        </Tabs.Panel>
+
+        <Tabs.Panel value="documents">
+          <AirportDocumentsContent
+            chartSupplementUrl={chartSupplementUrl}
+            airportDiagrams={airportDiagrams}
+            compact
+          />
         </Tabs.Panel>
       </Tabs>
     </Paper>

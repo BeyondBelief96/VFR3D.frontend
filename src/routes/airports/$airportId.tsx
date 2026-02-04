@@ -21,7 +21,6 @@ import {
 } from '@mantine/core';
 import {
   FiArrowLeft,
-  FiExternalLink,
   FiMapPin,
   FiCloud,
   FiAlertCircle,
@@ -30,6 +29,7 @@ import {
   FiRefreshCw,
   FiFileText,
   FiAlertTriangle,
+  FiFolder,
 } from 'react-icons/fi';
 import { TbPlane } from 'react-icons/tb';
 import { ProtectedRoute } from '@/components/Auth';
@@ -61,6 +61,7 @@ import {
   RunwaysContent,
   FrequenciesContent,
   AirportInfoContent,
+  AirportDocumentsContent,
 } from '@/features/Airports/components';
 
 export const Route = createFileRoute('/airports/$airportId')({
@@ -250,9 +251,6 @@ function AirportDetailContent() {
     );
   }
 
-  const hasChartSupplement = !!chartSupplementUrl?.pdfUrl;
-  const hasAirportDiagram = !!airportDiagramUrl?.pdfUrl;
-
   return (
     <Box
       style={{
@@ -396,42 +394,6 @@ function AirportDetailContent() {
             </Card>
           )}
 
-          {/* Document Links */}
-          {(hasChartSupplement || hasAirportDiagram) && (
-            <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="sm">
-              {hasChartSupplement && (
-                <Button
-                  component="a"
-                  href={chartSupplementUrl!.pdfUrl}
-                  target="_blank"
-                  color="blue"
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
-                  size="md"
-                  leftSection={<FiExternalLink size={16} />}
-                  fullWidth
-                >
-                  Chart Supplement
-                </Button>
-              )}
-              {hasAirportDiagram && (
-                <Button
-                  component="a"
-                  href={airportDiagramUrl!.pdfUrl}
-                  target="_blank"
-                  color="blue"
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
-                  size="md"
-                  leftSection={<FiExternalLink size={16} />}
-                  fullWidth
-                >
-                  Airport Diagram
-                </Button>
-              )}
-            </SimpleGrid>
-          )}
-
           {/* Tabs */}
           <Card
             padding="lg"
@@ -444,6 +406,9 @@ function AirportDetailContent() {
             <Tabs defaultValue="weather" color="blue">
               {isDesktop ? (
                 <Tabs.List mb="md" grow>
+                  <Tabs.Tab value="info" leftSection={<FiInfo size={14} />}>
+                    Info
+                  </Tabs.Tab>
                   <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
                     Weather
                   </Tabs.Tab>
@@ -470,8 +435,9 @@ function AirportDetailContent() {
                   >
                     NOTAMs
                   </Tabs.Tab>
-                  <Tabs.Tab value="info" leftSection={<FiInfo size={14} />}>
-                    Info
+
+                  <Tabs.Tab value="documents" leftSection={<FiFolder size={14} />}>
+                    Documents
                   </Tabs.Tab>
                 </Tabs.List>
               ) : (
@@ -491,6 +457,7 @@ function AirportDetailContent() {
                     }
                   />
                   <Tabs.Tab value="info" leftSection={<FiInfo size={16} />} />
+                  <Tabs.Tab value="documents" leftSection={<FiFolder size={16} />} />
                 </Tabs.List>
               )}
 
@@ -611,6 +578,14 @@ function AirportDetailContent() {
               {/* Info Tab */}
               <Tabs.Panel value="info">
                 <AirportInfoContent airport={airport} />
+              </Tabs.Panel>
+
+              {/* Documents Tab */}
+              <Tabs.Panel value="documents">
+                <AirportDocumentsContent
+                  chartSupplementUrl={chartSupplementUrl}
+                  airportDiagrams={airportDiagramUrl}
+                />
               </Tabs.Panel>
             </Tabs>
           </Card>

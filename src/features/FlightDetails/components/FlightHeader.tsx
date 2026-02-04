@@ -1,5 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import { Group, ActionIcon, Box, Title, Text, Badge, Button, Loader, Tooltip, Stack } from '@mantine/core';
+import {
+  Group,
+  ActionIcon,
+  Box,
+  Title,
+  Text,
+  Badge,
+  Button,
+  Loader,
+  Tooltip,
+  Stack,
+} from '@mantine/core';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { FiArrowLeft, FiDownload, FiRefreshCw } from 'react-icons/fi';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
@@ -21,13 +32,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
     <Stack gap="sm">
       <Group justify="space-between" align="flex-start" wrap="wrap">
         <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            size="lg"
-            component={Link}
-            to="/flights"
-          >
+          <ActionIcon variant="subtle" color="gray" size="lg" component={Link} to="/flights">
             <FiArrowLeft size={20} />
           </ActionIcon>
           <Box style={{ minWidth: 0, flex: 1 }}>
@@ -72,35 +77,47 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
             </Button>
           </Tooltip>
         )}
-        <PDFDownloadLink
-          document={
-            <FlightLogPdf
-              flightData={flight}
-              airports={pdfData.airports}
-              metars={pdfData.metars}
-              tafs={pdfData.tafs}
-              runways={pdfData.runways}
-              frequencies={pdfData.frequencies}
-              crosswindData={pdfData.crosswindData}
-              weightBalance={pdfData.weightBalance}
-            />
-          }
-          fileName={`${flight.name || 'flight'}-navlog.pdf`}
-          style={{ textDecoration: 'none' }}
-        >
-          {/* @ts-expect-error Known TypeScript issue with react-pdf children render prop */}
-          {({ loading }: { loading: boolean }) => (
-            <Button
-              variant="light"
-              color="green"
-              size={isPhone ? 'sm' : 'md'}
-              leftSection={loading || pdfData.isLoading ? <Loader size="xs" /> : <FiDownload size={16} />}
-              disabled={loading || pdfData.isLoading}
-            >
-              {loading || pdfData.isLoading ? 'Preparing...' : isPhone ? 'PDF' : 'Download PDF'}
-            </Button>
-          )}
-        </PDFDownloadLink>
+        {pdfData.isLoading ? (
+          <Button
+            variant="light"
+            color="green"
+            size={isPhone ? 'sm' : 'md'}
+            leftSection={<Loader size="xs" />}
+            disabled
+          >
+            {isPhone ? 'PDF' : 'Preparing PDF...'}
+          </Button>
+        ) : (
+          <PDFDownloadLink
+            document={
+              <FlightLogPdf
+                flightData={flight}
+                airports={pdfData.airports}
+                metars={pdfData.metars}
+                tafs={pdfData.tafs}
+                runways={pdfData.runways}
+                frequencies={pdfData.frequencies}
+                crosswindData={pdfData.crosswindData}
+                weightBalance={pdfData.weightBalance}
+              />
+            }
+            fileName={`${flight.name || 'flight'}-navlog.pdf`}
+            style={{ textDecoration: 'none' }}
+          >
+            {/* @ts-expect-error - PDFDownloadLink render prop typing issue */}
+            {({ loading }: { loading: boolean }) => (
+              <Button
+                variant="light"
+                color="green"
+                size={isPhone ? 'sm' : 'md'}
+                leftSection={loading ? <Loader size="xs" /> : <FiDownload size={16} />}
+                disabled={loading}
+              >
+                {loading ? 'Preparing...' : isPhone ? 'PDF' : 'Download PDF'}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        )}
       </Group>
     </Stack>
   );

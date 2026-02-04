@@ -10,7 +10,7 @@ import {
   Tabs,
 } from '@mantine/core';
 import { FaBalanceScale, FaRoute, FaPlane } from 'react-icons/fa';
-import { FiFileText, FiClipboard, FiCloud, FiSettings } from 'react-icons/fi';
+import { FiFileText, FiClipboard, FiCloud, FiSettings, FiFolder } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { useIsDesktop } from '@/hooks';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
@@ -29,6 +29,7 @@ import {
   WeatherCard,
   AirportDetailCard,
   NotamsPanel,
+  DocsPanel,
 } from '@/features/FlightDetails';
 
 export const Route = createFileRoute('/flights/$flightId')({
@@ -172,6 +173,9 @@ function FlightDetailsContent() {
                 <Tabs.Tab value="notams" leftSection={<FiFileText size={14} />}>
                   NOTAMs
                 </Tabs.Tab>
+                <Tabs.Tab value="docs" leftSection={<FiFolder size={14} />}>
+                  Docs
+                </Tabs.Tab>
                 <Tabs.Tab value="settings" leftSection={<FiSettings size={14} />}>
                   Settings
                 </Tabs.Tab>
@@ -184,6 +188,7 @@ function FlightDetailsContent() {
                 <Tabs.Tab value="airports" leftSection={<FaPlane size={16} />} />
                 <Tabs.Tab value="weather" leftSection={<FiCloud size={16} />} />
                 <Tabs.Tab value="notams" leftSection={<FiFileText size={16} />} />
+                <Tabs.Tab value="docs" leftSection={<FiFolder size={16} />} />
                 <Tabs.Tab value="settings" leftSection={<FiSettings size={16} />} />
               </Tabs.List>
             )}
@@ -230,6 +235,10 @@ function FlightDetailsContent() {
 
             <Tabs.Panel value="notams">
               <NotamsPanel flight={flight} />
+            </Tabs.Panel>
+
+            <Tabs.Panel value="docs">
+              <DocsPanel airports={airports} />
             </Tabs.Panel>
 
             <Tabs.Panel value="settings">

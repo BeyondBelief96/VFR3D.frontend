@@ -17,6 +17,7 @@ import {
 import { FiExternalLink, FiAlertCircle, FiAlertTriangle } from 'react-icons/fi';
 import AirportInfoHeader from './AirportInfoHeader';
 import AirportInfo from './AirportInfo/AirportInfo';
+import { AirportDocumentsContent } from '@/features/Airports/components';
 import { RunwayInformation } from './AirportInfo/RunwayInformation';
 import { FrequencyInformation } from './AirportInfo/FrequencyInformation';
 import AirportWeather from './Weather/AirportWeather';
@@ -80,10 +81,10 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
       skip: !selectedAirport.arptId,
     });
 
-  const { data: chartSupplementUrl, error: chartSupplementError } =
+  const { data: chartSupplementUrl } =
     useGetChartSupplementUrlByAirportCodeQuery(icaoCodeOrIdent);
 
-  const { data: airportDiagramUrl, error: airportDiagramError } =
+  const { data: airportDiagramUrl } =
     useGetAirportDiagramUrlByAirportCodeQuery(icaoCodeOrIdent);
 
   const { data: densityAltitude, isLoading: isDensityAltitudeLoading } =
@@ -118,10 +119,6 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
         metar={metar}
         metarError={metarError}
         handleClose={onClose}
-        chartSupplementUrl={chartSupplementUrl}
-        chartSupplementError={chartSupplementError}
-        airportDiagramUrl={airportDiagramUrl}
-        airportDiagramError={airportDiagramError}
         densityAltitude={densityAltitude}
         isDensityAltitudeLoading={isDensityAltitudeLoading}
       />
@@ -157,6 +154,9 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
               }
             >
               NOTAMs
+            </Tabs.Tab>
+            <Tabs.Tab value="docs" size="xs">
+              Docs
             </Tabs.Tab>
           </Tabs.List>
         </Tabs>
@@ -259,6 +259,14 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
                 <NotamsList notamsData={notamsData} viewMode={notamViewMode} />
               )}
             </Stack>
+          )}
+
+          {activeTab === 'docs' && (
+            <AirportDocumentsContent
+              chartSupplementUrl={chartSupplementUrl}
+              airportDiagrams={airportDiagramUrl}
+              compact
+            />
           )}
         </Box>
       </ScrollArea>

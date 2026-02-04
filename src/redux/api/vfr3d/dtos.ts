@@ -425,7 +425,15 @@ export enum ControllingObjectMarking {
   MarkedAndLighted = 'MarkedAndLighted',
 }
 
-export interface AirportDiagramUrlDto {
+export interface AirportDiagramsResponseDto {
+  airportName?: string;
+  icaoIdent?: string | undefined;
+  airportIdent?: string | undefined;
+  diagrams?: AirportDiagramDto[];
+}
+
+export interface AirportDiagramDto {
+  chartName?: string;
   pdfUrl?: string;
 }
 
