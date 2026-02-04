@@ -4,9 +4,14 @@ import {
   toggleAirspaceClass,
   toggleSpecialUseAirspaceTypeCode,
   toggleShowRouteAirspaces,
+  addAirspaceAirport,
+  removeAirspaceAirport,
   AirspaceClass,
   SpecialUseAirspaceTypeCode,
 } from '@/redux/slices/airspacesSlice';
+import { AirportSearch } from '@/components/Search';
+import { AirportContextList } from './AirportContextList';
+import { AirportDto } from '@/redux/api/vfr3d/dtos';
 
 interface AirspaceClassInfo {
   class: AirspaceClass;
@@ -54,12 +59,59 @@ const specialUseAirspaceInfo: SpecialUseInfo[] = [
 
 export function AirspaceOptions() {
   const dispatch = useAppDispatch();
-  const { visibleClasses, visibleTypeCodes, showRouteAirspaces } = useAppSelector(
+  const { visibleClasses, visibleTypeCodes, showRouteAirspaces, airspaceAirports } = useAppSelector(
     (state) => state.airspaces
   );
 
+  const handleAirportSelect = (airport: AirportDto) => {
+    const icaoOrIdent = airport.icaoId || airport.arptId || '';
+    const displayName = `${icaoOrIdent} - ${airport.arptName || 'Unknown'}`;
+
+    if (icaoOrIdent && airport.latDecimal && airport.longDecimal) {
+      dispatch(addAirspaceAirport({
+        icaoOrIdent,
+        displayName,
+        lat: airport.latDecimal,
+        lon: airport.longDecimal,
+      }));
+    }
+  };
+
+  const handleRemoveAirport = (icaoOrIdent: string) => {
+    dispatch(removeAirspaceAirport(icaoOrIdent));
+  };
+
   return (
     <Stack gap="md">
+      {/* Airport Context Airspaces */}
+      <Box>
+        <Group justify="space-between" mb={4}>
+          <Text size="sm" fw={500} c="white">
+            Airport Airspaces
+          </Text>
+          <Badge color="blue" variant="light" size="sm">By Airport</Badge>
+        </Group>
+        <Text size="xs" c="dimmed" mb={8}>
+          Search and add airports to view their associated airspaces
+        </Text>
+        <Box mb="sm">
+          <AirportSearch
+            placeholder="Search airports to add..."
+            clearOnSelect={true}
+            setAsSelectedEntity={false}
+            onAirportSelect={handleAirportSelect}
+          />
+        </Box>
+        <AirportContextList
+          airports={airspaceAirports}
+          onRemove={handleRemoveAirport}
+          emptyMessage="No airports added. Search above to view airport airspaces."
+          color="blue"
+        />
+      </Box>
+
+      <Divider color="rgba(148, 163, 184, 0.2)" />
+
       {/* Route Airspaces Toggle */}
       <Box>
         <Group justify="space-between" mb={4}>

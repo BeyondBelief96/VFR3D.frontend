@@ -7,14 +7,19 @@ import { ObstacleDto } from '@/redux/api/vfr3d/dtos';
 
 interface ObstacleEntityProps {
   obstacle: ObstacleDto;
-  isRouteObstacle?: boolean;
   heightExaggeration?: number;
   showLabel?: boolean;
 }
 
+// Cyan color scheme for all obstacles
+const OBSTACLE_COLOR = Color.CYAN.withAlpha(0.85);
+const OBSTACLE_OUTLINE_COLOR = Color.DARKCYAN;
+const LABEL_BG_COLOR = Color.fromCssColorString('rgba(0, 40, 40, 0.95)');
+const LABEL_FILL_COLOR = Color.fromCssColorString('#00FFFF');
+const LABEL_OUTLINE_COLOR = Color.BLACK;
+
 const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
   obstacle,
-  isRouteObstacle = false,
   heightExaggeration = 1,
   showLabel = false,
 }) => {
@@ -26,34 +31,6 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
 
   // Calculate cylinder radius based on exaggerated height - taller obstacles get slightly wider cylinders
   const radius = Math.max(15, Math.min(80, exaggeratedHeight / 10));
-
-  // Colors for route obstacles (orange) vs state obstacles (red)
-  const {
-    color,
-    outlineColor,
-    labelBgColor,
-    labelFillColor,
-    labelOutlineColor,
-  } = useMemo(() => {
-    if (isRouteObstacle) {
-      return {
-        color: Color.ORANGE.withAlpha(0.85),
-        outlineColor: Color.DARKORANGE,
-        // Label colors for route obstacles - orange/amber theme
-        labelBgColor: Color.fromCssColorString('rgba(40, 25, 0, 0.95)'),
-        labelFillColor: Color.fromCssColorString('#FFA500'), // Orange text
-        labelOutlineColor: Color.BLACK,
-      };
-    }
-    return {
-      color: Color.RED.withAlpha(0.85),
-      outlineColor: Color.DARKRED,
-      // Label colors for state obstacles - red theme
-      labelBgColor: Color.fromCssColorString('rgba(40, 0, 0, 0.95)'),
-      labelFillColor: Color.fromCssColorString('#FF6666'), // Light red text
-      labelOutlineColor: Color.BLACK,
-    };
-  }, [isRouteObstacle]);
 
   // Generate label text with obstacle type, AGL and MSL heights
   const labelText = useMemo(() => {
@@ -77,17 +54,17 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
       topRadius={radius}
       bottomRadius={radius}
       heightReference={HeightReference.CLAMP_TO_GROUND}
-      color={color}
-      outlineColor={outlineColor}
+      color={OBSTACLE_COLOR}
+      outlineColor={OBSTACLE_OUTLINE_COLOR}
       outlineWidth={1}
       outline={true}
       fill={true}
       id={getObstacleEntityId(obstacle)}
       labelText={labelText}
       showLabel={showLabel}
-      labelBackgroundColor={labelBgColor}
-      labelFillColor={labelFillColor}
-      labelOutlineColor={labelOutlineColor}
+      labelBackgroundColor={LABEL_BG_COLOR}
+      labelFillColor={LABEL_FILL_COLOR}
+      labelOutlineColor={LABEL_OUTLINE_COLOR}
     />
   );
 });

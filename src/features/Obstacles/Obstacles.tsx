@@ -1,9 +1,8 @@
-import { ScreenSpaceEventHandler, ScreenSpaceEventType } from 'cesium';
-import React, { useEffect, useRef, useMemo } from 'react';
+import { ScreenSpaceEventHandler, ScreenSpaceEventType, Entity } from 'cesium';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch, useSelector } from 'react-redux';
-import ObstacleEntity from './ObstacleEntity';
-import { useGetObstaclesByStateQuery } from '@/redux/api/vfr3d/obstacles.api';
+import AirportContextObstacles from './AirportContextObstacles';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -11,16 +10,29 @@ import { getObstacleEntityId } from '@/utility/entityIdUtils';
 import { FlightDisplayMode } from '@/utility/enums';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { RootState } from '@/redux/store';
+import { ObstacleDto } from '@/redux/api/vfr3d/dtos';
+
+const HOVER_OVERLAY_NAME = '__hover_overlay__';
 
 export const Obstacles: React.FC = () => {
-  const { showObstacles, selectedState, minHeightFilter, heightExaggeration, showObstacleLabels, showRouteObstacles } = useAppSelector(
-    (state) => state.obstacles
-  );
+  const {
+    minHeightFilter,
+    heightExaggeration,
+    showObstacleLabels,
+    showRouteObstacles,
+    airportObstacleRadiusNm,
+    obstacleAirports,
+  } = useAppSelector((state) => state.obstacles);
 
   const { user } = useAuth0();
   const { navlogPreview, displayMode, activeFlightId } = useSelector(
     (state: RootState) => state.flightPlanning
   );
+  const { viewer } = useCesium();
+  const dispatch = useDispatch();
+
+  // Store obstacles from all children for click handling
+  const obstacleMapRef = useRef<Map<string, ObstacleDto>>(new Map());
 
   // Fetch loaded flight for VIEWING mode to get route obstacle IDs
   const { data: loadedFlight } = useGetFlightQuery(
@@ -28,7 +40,7 @@ export const Obstacles: React.FC = () => {
     { skip: !user || !user.sub || !activeFlightId }
   );
 
-  // Get route obstacle OAS numbers to exclude from state-based rendering
+  // Get route obstacle OAS numbers to exclude from airport-based rendering
   const routeObstacleOasNumbers = useMemo(() => {
     if (!showRouteObstacles) return new Set<string>();
 
@@ -41,45 +53,57 @@ export const Obstacles: React.FC = () => {
     return new Set<string>();
   }, [navlogPreview, displayMode, loadedFlight, showRouteObstacles]);
 
-  const { data: obstacles, isSuccess } = useGetObstaclesByStateQuery(
-    { stateCode: selectedState, minHeightAgl: minHeightFilter, limit: 2000 },
-    {
-      skip: !showObstacles || !selectedState,
-    }
-  );
+  // Callback for children to register their obstacles
+  const handleObstaclesLoaded = useCallback((obstacles: ObstacleDto[]) => {
+    obstacles.forEach((obs) => {
+      const entityId = getObstacleEntityId(obs);
+      obstacleMapRef.current.set(entityId, obs);
+    });
+  }, []);
 
-  const { viewer } = useCesium();
-  const dispatch = useDispatch();
-  const handlerRef = useRef<ScreenSpaceEventHandler | null>(null);
-
-  // Filter out route obstacles to prevent duplicates
-  const filteredObstacles = useMemo(() => {
-    if (!obstacles) return [];
-    return obstacles.filter((obs) => !routeObstacleOasNumbers.has(obs.oasNumber || ''));
-  }, [obstacles, routeObstacleOasNumbers]);
-
-  // Create a map for quick obstacle lookup by entity ID
-  const obstacleMap = useMemo(() => {
-    if (!filteredObstacles) return new Map();
-    return new Map(filteredObstacles.map((obs) => [getObstacleEntityId(obs), obs]));
-  }, [filteredObstacles]);
-
+  // Click handler for obstacles
   useEffect(() => {
     if (!viewer || viewer.isDestroyed()) return;
 
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
-    handlerRef.current = handler;
+
+    const isEntity = (value: unknown): value is Entity => value instanceof Entity;
+    const hasId = (value: unknown): value is { id: unknown } =>
+      typeof value === 'object' && value !== null && 'id' in (value as object);
+    const getEntityFromPick = (pick: unknown): Entity | null => {
+      if (isEntity(pick)) return pick;
+      if (hasId(pick)) {
+        const candidate = (pick as { id: unknown }).id;
+        if (isEntity(candidate)) return candidate;
+      }
+      return null;
+    };
 
     const handleClick = (movement: ScreenSpaceEventHandler.PositionedEvent) => {
       if (!viewer || viewer.isDestroyed()) return;
 
-      const pickedObject = viewer.scene.pick(movement.position);
+      // Get the picked object, drilling through hover overlays if needed
+      let pickedEntity: Entity | null = getEntityFromPick(viewer.scene.pick(movement.position));
 
-      if (pickedObject && pickedObject.id) {
-        const entityId = pickedObject.id.id;
+      // If we picked a hover overlay, drill through to find the actual entity
+      if (pickedEntity && pickedEntity.name === HOVER_OVERLAY_NAME) {
+        const results = viewer.scene.drillPick(movement.position) as unknown[];
+        pickedEntity = null;
+        for (const r of results) {
+          const ent = getEntityFromPick(r);
+          if (ent && ent.name !== HOVER_OVERLAY_NAME) {
+            pickedEntity = ent;
+            break;
+          }
+        }
+      }
+
+      if (pickedEntity) {
+        const entityId = String(pickedEntity.id);
+
         // Check if this is an obstacle entity
         if (entityId && entityId.startsWith('obstacle-')) {
-          const clickedObstacle = obstacleMap.get(entityId);
+          const clickedObstacle = obstacleMapRef.current.get(entityId);
           if (clickedObstacle) {
             dispatch(setSelectedEntity({ entity: clickedObstacle, type: 'Obstacle' }));
           }
@@ -94,18 +118,30 @@ export const Obstacles: React.FC = () => {
         handler.destroy();
       }
     };
-  }, [viewer, obstacleMap, dispatch]);
+  }, [viewer, dispatch]);
 
-  if (!isSuccess || !showObstacles || !filteredObstacles.length) return null;
+  // Clear obstacle map when airports change
+  useEffect(() => {
+    obstacleMapRef.current.clear();
+  }, [obstacleAirports]);
+
+  const hasObstacleAirports = obstacleAirports.length > 0;
+
+  if (!hasObstacleAirports) return null;
 
   return (
     <>
-      {filteredObstacles.map((obstacle) => (
-        <ObstacleEntity
-          key={obstacle.oasNumber}
-          obstacle={obstacle}
+      {/* Airport context obstacles (cyan) - one component per airport */}
+      {obstacleAirports.map((airport) => (
+        <AirportContextObstacles
+          key={airport.icaoOrIdent}
+          airport={airport}
+          radiusNm={airportObstacleRadiusNm}
+          minHeightFilter={minHeightFilter}
           heightExaggeration={heightExaggeration}
-          showLabel={showObstacleLabels}
+          showLabels={showObstacleLabels}
+          excludeOasNumbers={routeObstacleOasNumbers}
+          onObstaclesLoaded={handleObstaclesLoaded}
         />
       ))}
     </>

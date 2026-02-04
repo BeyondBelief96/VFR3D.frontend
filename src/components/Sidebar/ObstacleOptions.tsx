@@ -1,34 +1,45 @@
-import { Stack, Select, Switch, Text, Group, NumberInput, Slider, Divider, Badge } from '@mantine/core';
+import { Stack, Switch, Text, Group, NumberInput, Slider, Divider, Badge, Box } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
-  toggleShowObstacles,
-  setObstacleState,
   setMinHeightFilter,
   toggleShowRouteObstacles,
   setHeightExaggeration,
   toggleShowObstacleLabels,
+  setAirportObstacleRadius,
+  addObstacleAirport,
+  removeObstacleAirport,
 } from '@/redux/slices/obstaclesSlice';
-import { states } from '@/utility/states';
+import { AirportSearch } from '@/components/Search';
+import { AirportContextList } from './AirportContextList';
+import { AirportDto } from '@/redux/api/vfr3d/dtos';
 
 export function ObstacleOptions() {
   const dispatch = useAppDispatch();
   const {
-    showObstacles,
-    selectedState,
     minHeightFilter,
     showRouteObstacles,
     heightExaggeration,
     showObstacleLabels,
+    airportObstacleRadiusNm,
+    obstacleAirports,
   } = useAppSelector((state) => state.obstacles);
 
-  const stateOptions = states.map((state) => ({ value: state, label: state }));
+  const handleAirportSelect = (airport: AirportDto) => {
+    const icaoOrIdent = airport.icaoId || airport.arptId || '';
+    const displayName = `${icaoOrIdent} - ${airport.arptName || 'Unknown'}`;
 
-  const handleStateChange = (value: string | null) => {
-    const selectedValue = value || '';
-    dispatch(setObstacleState(selectedValue));
-    if (selectedValue) {
-      dispatch(toggleShowObstacles(true));
+    if (icaoOrIdent && airport.latDecimal && airport.longDecimal) {
+      dispatch(addObstacleAirport({
+        icaoOrIdent,
+        displayName,
+        lat: airport.latDecimal,
+        lon: airport.longDecimal,
+      }));
     }
+  };
+
+  const handleRemoveAirport = (icaoOrIdent: string) => {
+    dispatch(removeObstacleAirport(icaoOrIdent));
   };
 
   return (
@@ -37,10 +48,10 @@ export function ObstacleOptions() {
       <div>
         <Group justify="space-between" mb={4}>
           <Text size="sm" fw={500}>Route Obstacles</Text>
-          <Badge color="orange" variant="light" size="sm">Along Route</Badge>
+          <Badge color="cyan" variant="light" size="sm">Along Route</Badge>
         </Group>
         <Text size="xs" c="dimmed" mb={8}>
-          Obstacles along your planned flight route (orange).
+          Obstacles along your planned flight route.
         </Text>
         <Group justify="space-between">
           <Text size="sm" c="dimmed">
@@ -49,7 +60,7 @@ export function ObstacleOptions() {
           <Switch
             checked={showRouteObstacles}
             onChange={() => dispatch(toggleShowRouteObstacles(!showRouteObstacles))}
-            color="orange"
+            color="cyan"
             size="md"
           />
         </Group>
@@ -91,7 +102,7 @@ export function ObstacleOptions() {
             { value: 5, label: '5x' },
             { value: 10, label: '10x' },
           ]}
-          color="orange"
+          color="cyan"
           styles={{
             markLabel: { color: 'var(--mantine-color-dimmed)' },
           }}
@@ -100,43 +111,58 @@ export function ObstacleOptions() {
 
       <Divider />
 
-      {/* State-based Obstacles Section */}
-      <div>
+      {/* Airport Obstacles Section */}
+      <Box>
         <Group justify="space-between" mb={4}>
-          <Text size="sm" fw={500}>State Obstacles</Text>
-          <Badge color="red" variant="light" size="sm">By State</Badge>
+          <Text size="sm" fw={500}>Airport Obstacles</Text>
+          <Badge color="cyan" variant="light" size="sm">Near Airport</Badge>
         </Group>
         <Text size="xs" c="dimmed" mb={8}>
-          All obstacles in a selected state (red).
+          Search and add airports to view nearby obstacles (cyan).
         </Text>
-      </div>
+        <Box mb="sm">
+          <AirportSearch
+            placeholder="Search airports to add..."
+            clearOnSelect={true}
+            setAsSelectedEntity={false}
+            onAirportSelect={handleAirportSelect}
+          />
+        </Box>
+        <AirportContextList
+          airports={obstacleAirports}
+          onRemove={handleRemoveAirport}
+          emptyMessage="No airports added. Search above to view nearby obstacles."
+          color="cyan"
+        />
+      </Box>
 
+      <Divider />
+
+      {/* Radius and Height Settings */}
       <div>
+        <Text size="sm" fw={500} mb={8}>Airport Obstacle Settings</Text>
+
         <Text size="sm" c="dimmed" mb={4}>
-          Select State
+          Search Radius ({airportObstacleRadiusNm} NM)
         </Text>
-        <Select
-          data={stateOptions}
-          value={selectedState || null}
-          onChange={handleStateChange}
-          searchable
-          clearable
-          placeholder="Select a state..."
+        <Slider
+          value={airportObstacleRadiusNm}
+          onChange={(val) => dispatch(setAirportObstacleRadius(val))}
+          min={1}
+          max={20}
+          step={1}
+          mb={16}
+          marks={[
+            { value: 1, label: '1' },
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+          ]}
+          color="cyan"
           styles={{
-            input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
-              color: 'white',
-            },
-            dropdown: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
-            },
+            markLabel: { color: 'var(--mantine-color-dimmed)' },
           }}
         />
-      </div>
 
-      <div>
         <Text size="sm" c="dimmed" mb={4}>
           Minimum Height (ft AGL)
         </Text>
@@ -156,21 +182,11 @@ export function ObstacleOptions() {
         />
       </div>
 
-      <Group justify="space-between">
-        <Text size="sm" c="dimmed">
-          Show State Obstacles
-        </Text>
-        <Switch
-          checked={showObstacles}
-          onChange={() => dispatch(toggleShowObstacles(!showObstacles))}
-          color="red"
-          size="md"
-          disabled={!selectedState}
-        />
-      </Group>
+      <Divider />
 
+      {/* Legend */}
       <Text size="xs" c="dimmed">
-        Red = state obstacles. Orange = route obstacles.
+        All obstacles are shown in cyan.
       </Text>
     </Stack>
   );

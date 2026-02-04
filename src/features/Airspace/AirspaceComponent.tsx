@@ -7,6 +7,7 @@ import {
   useGetSpecialUseAirspacesByTypeCodeQuery,
   useGetAirspacesByGlobalIdsQuery,
   useGetSpecialUseAirspacesByGlobalIdsQuery,
+  useGetAirspacesByIcaoOrIdentQuery,
 } from '@/redux/api/vfr3d/airspaces.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -26,8 +27,15 @@ export const AirspaceComponent: React.FC = () => {
   const visibleClasses = useSelector((state: RootState) => state.airspaces.visibleClasses);
   const visibleTypeCodes = useSelector((state: RootState) => state.airspaces.visibleTypeCodes);
   const showRouteAirspaces = useSelector((state: RootState) => state.airspaces.showRouteAirspaces);
+  const airspaceAirports = useSelector((state: RootState) => state.airspaces.airspaceAirports);
   const { navlogPreview, displayMode } = useSelector((state: RootState) => state.flightPlanning);
   const { activeFlightId } = useSelector((state: RootState) => state.flightPlanning);
+
+  // Get array of ICAO/idents for airports with airspaces
+  const airportIdentifiers = useMemo(
+    () => airspaceAirports.map((a) => a.icaoOrIdent),
+    [airspaceAirports]
+  );
 
   const selectedClasses = useMemo(
     () =>
@@ -97,6 +105,14 @@ export const AirspaceComponent: React.FC = () => {
         !showRouteAirspaces ||
         !(displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING) ||
         routeSpecialUseIds.length === 0,
+    }
+  );
+
+  // Multi-airport context airspaces - query with array of identifiers
+  const { data: airportContextAirspaces } = useGetAirspacesByIcaoOrIdentQuery(
+    airportIdentifiers,
+    {
+      skip: airportIdentifiers.length === 0,
     }
   );
 
@@ -182,6 +198,18 @@ export const AirspaceComponent: React.FC = () => {
     return ids;
   }, [routeAirspaces, routeSpecialUseAirspaces, buildEntityId]);
 
+  // Airport context entity IDs for deduplication
+  // IMPORTANT: Only include airspaces if there are currently airports in the list
+  // This ensures that when an airport is removed, class-based airspaces can show again
+  const airportContextEntityIds = useMemo(() => {
+    const ids = new Set<string>();
+    // Only build the dedup set if we have airports selected
+    if (airportIdentifiers.length > 0 && airportContextAirspaces) {
+      airportContextAirspaces.forEach((a) => ids.add(buildEntityId(a, false)));
+    }
+    return ids;
+  }, [airportIdentifiers.length, airportContextAirspaces, buildEntityId]);
+
   useEffect(() => {
     if (!viewer || viewer.isDestroyed()) return;
 
@@ -222,6 +250,7 @@ export const AirspaceComponent: React.FC = () => {
           ...(specialUseAirspaces || []),
           ...(routeAirspaces || []),
           ...(routeSpecialUseAirspaces || []),
+          ...(airportContextAirspaces || []),
         ];
         const clickedAirspace = allAirspaces.find((a) => {
           const suaId = `sua-${a.globalId}-${(a as SpecialUseAirspaceDto).typeCode}`;
@@ -240,7 +269,7 @@ export const AirspaceComponent: React.FC = () => {
         handler.destroy();
       }
     };
-  }, [viewer, airspacesByClass, specialUseAirspaces, routeAirspaces, routeSpecialUseAirspaces, dispatch]);
+  }, [viewer, airspacesByClass, specialUseAirspaces, routeAirspaces, routeSpecialUseAirspaces, airportContextAirspaces, dispatch]);
 
   const nothingSelectedForGeneralLayers =
     selectedClasses.length === 0 && selectedTypeCodes.length === 0;
@@ -269,6 +298,17 @@ export const AirspaceComponent: React.FC = () => {
         />
       ))}
 
+      {/* Multi-airport context airspaces (filter out route duplicates) */}
+      {airportIdentifiers.length > 0 &&
+        airportContextAirspaces
+          ?.filter((airspace) => !routeEntityIds.has(buildEntityId(airspace, false)))
+          .map((airspace) => (
+            <PolygonEntity
+              key={`airport-context-${airspace.globalId}-${airspace.class}`}
+              {...convertAirspaceToPolygonProps(airspace, false)}
+            />
+          ))}
+
       {/* General class/type layers */}
       {!nothingSelectedForGeneralLayers &&
         airspacesByClass
@@ -278,6 +318,7 @@ export const AirspaceComponent: React.FC = () => {
               index === self.findIndex((t) => t.globalId === airspace.globalId)
           )
           .filter((airspace) => !routeEntityIds.has(buildEntityId(airspace, false)))
+          .filter((airspace) => !airportContextEntityIds.has(buildEntityId(airspace, false)))
           .map((airspace) => (
             <PolygonEntity
               key={`class-${airspace.globalId}-${airspace.class}`}

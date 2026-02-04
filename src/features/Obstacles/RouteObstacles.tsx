@@ -1,4 +1,4 @@
-import { ScreenSpaceEventHandler, ScreenSpaceEventType } from 'cesium';
+import { ScreenSpaceEventHandler, ScreenSpaceEventType, Entity } from 'cesium';
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,8 @@ import { getObstacleEntityId } from '@/utility/entityIdUtils';
 import { FlightDisplayMode } from '@/utility/enums';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { RootState } from '@/redux/store';
+
+const HOVER_OVERLAY_NAME = '__hover_overlay__';
 
 export const RouteObstacles: React.FC = () => {
   const dispatch = useDispatch();
@@ -65,13 +67,39 @@ export const RouteObstacles: React.FC = () => {
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
     handlerRef.current = handler;
 
+    const isEntity = (value: unknown): value is Entity => value instanceof Entity;
+    const hasId = (value: unknown): value is { id: unknown } =>
+      typeof value === 'object' && value !== null && 'id' in (value as object);
+    const getEntityFromPick = (pick: unknown): Entity | null => {
+      if (isEntity(pick)) return pick;
+      if (hasId(pick)) {
+        const candidate = (pick as { id: unknown }).id;
+        if (isEntity(candidate)) return candidate;
+      }
+      return null;
+    };
+
     const handleClick = (movement: ScreenSpaceEventHandler.PositionedEvent) => {
       if (!viewer || viewer.isDestroyed()) return;
 
-      const pickedObject = viewer.scene.pick(movement.position);
+      // Get the picked object, drilling through hover overlays if needed
+      let pickedEntity: Entity | null = getEntityFromPick(viewer.scene.pick(movement.position));
 
-      if (pickedObject && pickedObject.id) {
-        const entityId = pickedObject.id.id;
+      // If we picked a hover overlay, drill through to find the actual entity
+      if (pickedEntity && pickedEntity.name === HOVER_OVERLAY_NAME) {
+        const results = viewer.scene.drillPick(movement.position) as unknown[];
+        pickedEntity = null;
+        for (const r of results) {
+          const ent = getEntityFromPick(r);
+          if (ent && ent.name !== HOVER_OVERLAY_NAME) {
+            pickedEntity = ent;
+            break;
+          }
+        }
+      }
+
+      if (pickedEntity) {
+        const entityId = String(pickedEntity.id);
         // Check if this is an obstacle entity
         if (entityId && entityId.startsWith('obstacle-')) {
           const clickedObstacle = obstacleMap.get(entityId);
@@ -99,7 +127,6 @@ export const RouteObstacles: React.FC = () => {
         <ObstacleEntity
           key={`route-${obstacle.oasNumber}`}
           obstacle={obstacle}
-          isRouteObstacle={true}
           heightExaggeration={heightExaggeration}
           showLabel={showObstacleLabels}
         />

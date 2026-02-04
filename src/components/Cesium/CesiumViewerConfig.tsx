@@ -3,6 +3,7 @@ import { useAppSelector } from '@/hooks';
 import {
   useGlobeQuality,
   usePolygonHoverHighlight,
+  useCylinderHoverHighlight,
   usePointDragInteraction,
 } from './hooks';
 
@@ -26,6 +27,9 @@ export function CesiumViewerConfig() {
 
   // Enable polygon hover highlighting with yellow overlays
   usePolygonHoverHighlight();
+
+  // Enable cylinder (obstacle) hover highlighting with yellow overlays
+  useCylinderHoverHighlight();
 
   // Enable point entity click/drag interactions
   usePointDragInteraction();
