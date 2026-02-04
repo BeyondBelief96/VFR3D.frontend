@@ -24,9 +24,20 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          mantine: ['@mantine/core', '@mantine/hooks', '@mantine/form', '@mantine/dates', '@mantine/notifications'],
-          redux: ['@reduxjs/toolkit', 'react-redux', 'redux-persist'],
+        manualChunks(id) {
+          // Skip cesium - it's handled by vite-plugin-cesium as external
+          if (id.includes('cesium')) {
+            return undefined;
+          }
+          if (id.includes('@mantine/core') || id.includes('@mantine/hooks') ||
+              id.includes('@mantine/form') || id.includes('@mantine/dates') ||
+              id.includes('@mantine/notifications')) {
+            return 'mantine';
+          }
+          if (id.includes('@reduxjs/toolkit') || id.includes('react-redux') ||
+              id.includes('redux-persist')) {
+            return 'redux';
+          }
         },
       },
     },
