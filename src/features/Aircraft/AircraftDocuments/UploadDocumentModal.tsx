@@ -15,7 +15,7 @@ import { FiUpload, FiFile, FiAlertCircle } from 'react-icons/fi';
 import { DocumentCategory } from '@/redux/api/vfr3d/dtos';
 import { useUploadAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess, notifyWarning } from '@/utility/notifications';
 import {
   ACCEPTED_EXTENSIONS,
   MAX_FILE_SIZE_BYTES,
@@ -93,11 +93,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     }
 
     if (!displayName.trim()) {
-      notifications.show({
-        title: 'Validation Error',
-        message: 'Please enter a display name',
-        color: 'red',
-      });
+      notifyWarning('Validation Error', 'Please enter a display name');
       return;
     }
 
@@ -111,21 +107,10 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         description: description.trim() || undefined,
       }).unwrap();
 
-      notifications.show({
-        title: 'Document Uploaded',
-        message: 'Your document has been uploaded successfully.',
-        color: 'green',
-      });
-
+      notifySuccess('Document Uploaded', 'Your document has been uploaded successfully.');
       onClose();
-    } catch (error: unknown) {
-      const err = error as { data?: { title?: string; detail?: string } };
-      const errorMessage = err?.data?.title || err?.data?.detail || 'Upload failed';
-      notifications.show({
-        title: 'Upload Failed',
-        message: errorMessage,
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'upload document' });
     }
   };
 

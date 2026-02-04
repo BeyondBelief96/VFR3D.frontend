@@ -43,11 +43,13 @@ const rootReducer = combineReducers({
 });
 
 // Persist configuration
+// Note: 'auth' is NOT persisted - Auth0 manages its own token cache via cacheLocation="localstorage"
+// This prevents stale tokens from being used on page load
 const persistConfig = {
   key: 'vfr3d-root',
   version: 1,
   storage,
-  whitelist: ['auth', 'flightPlanning', 'viewer', 'routeStyle', 'airport'],
+  whitelist: ['flightPlanning', 'viewer', 'routeStyle', 'airport'],
   blacklist: [baseApi.reducerPath],
 };
 

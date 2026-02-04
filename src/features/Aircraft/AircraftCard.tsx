@@ -14,7 +14,7 @@ import {
   Modal,
   Alert,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { Link } from '@tanstack/react-router';
 import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle, FiExternalLink } from 'react-icons/fi';
 import { FaPlane, FaBalanceScale } from 'react-icons/fa';
@@ -115,30 +115,9 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
 
     try {
       await deleteProfile({ userId, aircraftPerformanceProfileId: profileToDelete }).unwrap();
-      notifications.show({
-        title: 'Profile Deleted',
-        message: 'The performance profile has been deleted.',
-        color: 'green',
-      });
-    } catch (error: unknown) {
-      const err = error as { status?: number; data?: string; message?: string };
-      const status = err?.status;
-      const errorMessage = err?.data || err?.message || '';
-
-      if (status === 409 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('flight'))) {
-        notifications.show({
-          title: 'Cannot Delete Profile',
-          message: 'This profile is being used by one or more flights. Update those flights to use a different profile first.',
-          color: 'orange',
-          autoClose: 8000,
-        });
-      } else {
-        notifications.show({
-          title: 'Delete Failed',
-          message: 'Unable to delete the profile. Please try again.',
-          color: 'red',
-        });
-      }
+      notifySuccess('Profile Deleted', 'The performance profile has been deleted.');
+    } catch (error) {
+      notifyError({ error, operation: 'delete profile' });
     } finally {
       setDeleteProfileModalOpen(false);
       setProfileToDelete(null);
@@ -148,14 +127,12 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   const handleProfileFormSuccess = () => {
     setProfileModalOpen(false);
     setEditingProfile(null);
-    notifications.show({
-      title: profileFormMode === 'create' ? 'Profile Created' : 'Profile Updated',
-      message:
-        profileFormMode === 'create'
-          ? 'Your new performance profile has been created.'
-          : 'Your performance profile has been updated.',
-      color: 'green',
-    });
+    notifySuccess(
+      profileFormMode === 'create' ? 'Profile Created' : 'Profile Updated',
+      profileFormMode === 'create'
+        ? 'Your new performance profile has been created.'
+        : 'Your performance profile has been updated.'
+    );
   };
 
   return (

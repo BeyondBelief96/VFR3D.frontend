@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { setAccessToken, clearAccessToken, selectAccessToken } from '@/redux/slices/authSlice';
+import { registerTokenGetter, unregisterTokenGetter } from '@/utility/auth';
 
 interface AuthContextValue {
   /** Whether the user is authenticated */
@@ -44,11 +45,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getAccessTokenSilently,
   } = useAuth0();
 
+  // Stable callback to get a fresh token - used by both React components and RTK Query
+  const getToken = useCallback(async (): Promise<string> => {
+    try {
+      // Force a fresh token from Auth0 (bypass cache)
+      const token = await getAccessTokenSilently({ cacheMode: 'off' });
+      dispatch(setAccessToken(token));
+      return token;
+    } catch (error) {
+      console.error('[AuthProvider] Error getting token:', error);
+      dispatch(clearAccessToken());
+      throw error;
+    }
+  }, [getAccessTokenSilently, dispatch]);
+
+  // Register token getter for use outside React (RTK Query baseQuery)
+  useEffect(() => {
+    registerTokenGetter(getToken);
+    return () => {
+      unregisterTokenGetter();
+    };
+  }, [getToken]);
+
   // Initialize token on mount when authenticated
   useEffect(() => {
     const initializeToken = async () => {
       if (!auth0IsLoading && auth0IsAuthenticated) {
         try {
+          // Get token from Auth0's cache first (faster), then store in Redux
           const token = await getAccessTokenSilently();
           dispatch(setAccessToken(token));
         } catch (error) {
@@ -79,18 +103,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URI,
       },
     });
-  };
-
-  const getToken = async (): Promise<string> => {
-    try {
-      const token = await getAccessTokenSilently();
-      dispatch(setAccessToken(token));
-      return token;
-    } catch (error) {
-      console.error('[AuthProvider] Error getting token:', error);
-      dispatch(clearAccessToken());
-      throw error;
-    }
   };
 
   const value: AuthContextValue = {

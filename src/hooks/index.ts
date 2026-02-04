@@ -12,3 +12,4 @@ export {
   NAV_BREAKPOINTS,
   type DeviceType,
 } from './useDeviceType';
+export { useApiError } from './useApiError';

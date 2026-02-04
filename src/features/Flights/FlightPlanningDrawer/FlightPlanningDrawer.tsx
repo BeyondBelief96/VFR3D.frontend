@@ -15,7 +15,7 @@ import {
   Badge,
   Divider,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import {
   FiMapPin,
@@ -234,10 +234,9 @@ export const FlightPlanningDrawer: React.FC = () => {
   // Calculate Route Handler
   const handleCalculateRoute = async () => {
     if (!selectedPerformanceProfileId) {
-      notifications.show({
+      notifyError({
+        error: { status: 400, data: { message: 'Please select an aircraft performance profile first.' } },
         title: 'Missing Profile',
-        message: 'Please select an aircraft performance profile first.',
-        color: 'red',
       });
       return;
     }
@@ -272,27 +271,18 @@ export const FlightPlanningDrawer: React.FC = () => {
       dispatch(updateDraftPlanSettings({ currentStep: FlightPlannerStep.NAVLOG_PREVIEW }));
       dispatch(setDisplayMode(FlightDisplayMode.PREVIEW));
 
-      notifications.show({
-        title: 'Route Calculated',
-        message: 'Your navigation log has been calculated successfully.',
-        color: 'green',
-      });
+      notifySuccess('Route Calculated', 'Your navigation log has been calculated successfully.');
     } catch (error) {
-      notifications.show({
-        title: 'Calculation Failed',
-        message: 'Unable to calculate navigation log. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'calculate navigation log' });
     }
   };
 
   // Save Flight Handler
   const handleSaveFlight = async () => {
     if (!userId) {
-      notifications.show({
+      notifyError({
+        error: { status: 401, data: { message: 'Please log in to save your flight.' } },
         title: 'Not Authenticated',
-        message: 'Please log in to save your flight.',
-        color: 'red',
       });
       return;
     }
@@ -312,11 +302,7 @@ export const FlightPlanningDrawer: React.FC = () => {
 
         const result = await createRoundTripFlight({ userId, request }).unwrap();
 
-        notifications.show({
-          title: 'Round Trip Saved',
-          message: 'Your outbound and return flights have been saved.',
-          color: 'green',
-        });
+        notifySuccess('Round Trip Saved', 'Your outbound and return flights have been saved.');
 
         // Store saved flight info for post-save options
         if (result.outbound?.id) {
@@ -338,11 +324,7 @@ export const FlightPlanningDrawer: React.FC = () => {
 
         const result = await createFlight({ userId, flight: request }).unwrap();
 
-        notifications.show({
-          title: 'Flight Saved',
-          message: 'Your flight has been saved successfully.',
-          color: 'green',
-        });
+        notifySuccess('Flight Saved', 'Your flight has been saved successfully.');
 
         // Store saved flight info for post-save options
         if (result.id) {
@@ -354,11 +336,7 @@ export const FlightPlanningDrawer: React.FC = () => {
         }
       }
     } catch (error) {
-      notifications.show({
-        title: 'Save Failed',
-        message: 'Unable to save flight. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'save flight' });
     }
   };
 
@@ -393,19 +371,10 @@ export const FlightPlanningDrawer: React.FC = () => {
 
       await updateFlight({ userId, flightId: activeFlightId, flight: request }).unwrap();
 
-      notifications.show({
-        title: 'Flight Updated',
-        message: 'Your flight has been updated successfully.',
-        color: 'green',
-      });
-
+      notifySuccess('Flight Updated', 'Your flight has been updated successfully.');
       dispatch(finishEditingFlight());
     } catch (error) {
-      notifications.show({
-        title: 'Update Failed',
-        message: 'Unable to update flight. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'update flight' });
     }
   };
 
