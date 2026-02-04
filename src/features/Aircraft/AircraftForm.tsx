@@ -33,6 +33,7 @@ import {
 } from '@/redux/api/vfr3d/aircraft.api';
 import { useAuth } from '@/components/Auth';
 import { useIsPhone, useIsTablet } from '@/hooks';
+import { notifyError } from '@/utility/notifications';
 
 const inputStyles = {
   input: {
@@ -240,8 +241,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       }
       onSuccess?.();
       handleClose();
-    } catch {
-      // Error is handled by RTK Query isError state
+    } catch (error) {
+      notifyError({ error, operation: mode === 'create' ? 'create aircraft' : 'update aircraft' });
     }
   };
 

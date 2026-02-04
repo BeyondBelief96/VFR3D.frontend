@@ -4,7 +4,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import { useDeleteAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { formatFileSize, getFileIcon, getCategoryColor, getCategoryLabel, formatDate } from './utils';
 
 interface DeleteDocumentModalProps {
@@ -37,21 +37,10 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
         documentId: document.id,
       }).unwrap();
 
-      notifications.show({
-        title: 'Document Deleted',
-        message: 'The document has been deleted.',
-        color: 'green',
-      });
-
+      notifySuccess('Document Deleted', 'The document has been deleted.');
       onClose();
-    } catch (error: unknown) {
-      const err = error as { data?: { title?: string; detail?: string } };
-      const errorMessage = err?.data?.title || err?.data?.detail || 'Delete failed';
-      notifications.show({
-        title: 'Delete Failed',
-        message: errorMessage,
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'delete document' });
     }
   };
 

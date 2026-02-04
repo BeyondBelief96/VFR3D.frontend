@@ -21,7 +21,7 @@ import {
   useReplaceAircraftDocumentMutation,
 } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess, notifyWarning } from '@/utility/notifications';
 import {
   getCategoryLabel,
   ACCEPTED_EXTENSIONS,
@@ -114,11 +114,7 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
     if (!document?.id) return;
 
     if (!displayName.trim()) {
-      notifications.show({
-        title: 'Validation Error',
-        message: 'Please enter a display name',
-        color: 'red',
-      });
+      notifyWarning('Validation Error', 'Please enter a display name');
       return;
     }
 
@@ -145,23 +141,15 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         },
       }).unwrap();
 
-      notifications.show({
-        title: 'Document Updated',
-        message: file
+      notifySuccess(
+        'Document Updated',
+        file
           ? 'Document file and metadata have been updated.'
-          : 'Document metadata has been updated.',
-        color: 'green',
-      });
-
+          : 'Document metadata has been updated.'
+      );
       onClose();
-    } catch (error: unknown) {
-      const err = error as { data?: { title?: string; detail?: string } };
-      const errorMessage = err?.data?.title || err?.data?.detail || 'Update failed';
-      notifications.show({
-        title: 'Update Failed',
-        message: errorMessage,
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'update document' });
     }
   };
 

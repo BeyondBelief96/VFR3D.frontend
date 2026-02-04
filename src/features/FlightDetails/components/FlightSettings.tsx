@@ -10,7 +10,7 @@ import {
   Loader,
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiSave } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { useIsPhone } from '@/hooks';
@@ -83,20 +83,10 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
       };
 
       await updateFlight({ userId, flightId: flight.id, flight: flightUpdate }).unwrap();
-
-      notifications.show({
-        title: 'Flight Updated',
-        message: 'Flight settings saved and navigation log regenerated.',
-        color: 'green',
-      });
-
+      notifySuccess('Flight Updated', 'Flight settings saved and navigation log regenerated.');
       setHasChanges(false);
-    } catch {
-      notifications.show({
-        title: 'Update Failed',
-        message: 'Unable to update flight settings.',
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'update flight settings' });
     }
   };
 

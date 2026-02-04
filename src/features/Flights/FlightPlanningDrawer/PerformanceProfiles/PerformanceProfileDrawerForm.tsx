@@ -25,6 +25,7 @@ import {
 } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { useAuth } from '@/components/Auth';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
+import { notifyError } from '@/utility/notifications';
 import classes from './PerformanceProfileDrawerForm.module.css';
 
 interface PerformanceProfileDrawerFormProps {
@@ -164,8 +165,8 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
         await updateProfile({ id: existingProfile.id, request }).unwrap();
       }
       onSuccess();
-    } catch {
-      // Error is handled by RTK Query isError state
+    } catch (error) {
+      notifyError({ error, operation: mode === 'create' ? 'create profile' : 'update profile' });
     }
   };
 

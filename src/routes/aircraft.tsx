@@ -17,7 +17,7 @@ import {
   List,
   ThemeIcon,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { ProtectedRoute, useAuth } from '@/components/Auth';
@@ -97,54 +97,24 @@ function AircraftContent() {
 
     try {
       await deleteAircraft({ userId, aircraftId: aircraftToDelete }).unwrap();
-      notifications.show({
-        title: 'Aircraft Deleted',
-        message: 'The aircraft and all associated profiles have been deleted.',
-        color: 'green',
-      });
+      notifySuccess('Aircraft Deleted', 'The aircraft and all associated profiles have been deleted.');
       setDeleteModalOpen(false);
       setAircraftToDelete(null);
-    } catch (error: unknown) {
-      // Check if it's a conflict error (409) - aircraft has flights
-      const err = error as { status?: number; data?: string; message?: string };
-      const status = err?.status;
-      const errorMessage = err?.data || err?.message || '';
-
-      if (status === 409) {
-        notifications.show({
-          title: 'Cannot Delete Aircraft',
-          message: 'This aircraft has flights associated with it. Delete or reassign those flights before deleting this aircraft.',
-          color: 'orange',
-          autoClose: 8000,
-        });
-      } else if (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('flight')) {
-        notifications.show({
-          title: 'Cannot Delete Aircraft',
-          message: errorMessage,
-          color: 'orange',
-          autoClose: 8000,
-        });
-      } else {
-        notifications.show({
-          title: 'Delete Failed',
-          message: 'Unable to delete the aircraft. Please try again.',
-          color: 'red',
-        });
-      }
+    } catch (error) {
+      // notifyError handles conflict (409) and other errors with appropriate messages
+      notifyError({ error, operation: 'delete aircraft' });
       setDeleteModalOpen(false);
       setAircraftToDelete(null);
     }
   };
 
   const handleFormSuccess = () => {
-    notifications.show({
-      title: formMode === 'create' ? 'Aircraft Added' : 'Aircraft Updated',
-      message:
-        formMode === 'create'
-          ? 'Your new aircraft has been added.'
-          : 'Your aircraft has been updated.',
-      color: 'green',
-    });
+    notifySuccess(
+      formMode === 'create' ? 'Aircraft Added' : 'Aircraft Updated',
+      formMode === 'create'
+        ? 'Your new aircraft has been added.'
+        : 'Your aircraft has been updated.'
+    );
   };
 
   return (

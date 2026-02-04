@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Paper, Box, Alert, LoadingOverlay, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifyWarning } from '@/utility/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
 import { useAuth0 } from '@auth0/auth0-react';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
@@ -75,12 +75,7 @@ export function WeightBalanceWizard({
     setSubmitError(null);
 
     if (!validateAll()) {
-      notifications.show({
-        title: 'Validation Error',
-        message: 'Please fix the errors before saving.',
-        color: 'red',
-        icon: <FiAlertCircle size={16} />,
-      });
+      notifyWarning('Validation Error', 'Please fix the errors before saving.');
       return;
     }
 
@@ -101,17 +96,11 @@ export function WeightBalanceWizard({
       }
 
       onSuccess();
-    } catch (error: unknown) {
-      console.error('Failed to save profile:', error);
-      const err = error as { data?: { title?: string }; message?: string };
-      const errorMessage = err?.data?.title || err?.message || 'Failed to save profile. Please try again.';
-      setSubmitError(errorMessage);
-      notifications.show({
-        title: 'Error',
-        message: errorMessage,
-        color: 'red',
-        icon: <FiAlertCircle size={16} />,
-      });
+    } catch (error) {
+      const operation = isEditMode ? 'update weight & balance profile' : 'create weight & balance profile';
+      notifyError({ error, operation });
+      // Set local error state for inline display as well
+      setSubmitError('Failed to save profile. Please check your input and try again.');
     }
   };
 
