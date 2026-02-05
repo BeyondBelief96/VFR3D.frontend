@@ -21,6 +21,7 @@ import {
   SigmetHazardType,
   GAirmetHazardType,
 } from '@/redux/slices/airsigmetsSlice';
+import { SURFACE, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 
 const airspaceClasses: AirspaceClass[] = ['B', 'C', 'D'];
 
@@ -53,10 +54,10 @@ const gairmetToggles: GairmetToggle[] = [
 
 const buttonStyles = {
   root: {
-    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+    backgroundColor: SURFACE.GLASS,
     border: 'none',
     '&:hover': {
-      backgroundColor: 'rgba(59, 130, 246, 0.3)',
+      backgroundColor: HIGHLIGHT.STRONG,
     },
   },
 };
@@ -81,15 +82,15 @@ export function LayerTogglePopover() {
       shadow="lg"
       styles={{
         dropdown: {
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          backgroundColor: SURFACE.POPOVER,
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(148, 163, 184, 0.2)',
+          border: `1px solid ${BORDER.DEFAULT}`,
           maxWidth: 320,
           zIndex: 100,
         },
         arrow: {
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          border: '1px solid rgba(148, 163, 184, 0.2)',
+          backgroundColor: SURFACE.POPOVER,
+          border: `1px solid ${BORDER.DEFAULT}`,
         },
       }}
     >
@@ -113,19 +114,19 @@ export function LayerTogglePopover() {
           styles={{
             root: { width: '100%' },
             list: {
-              borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
+              borderBottom: `1px solid ${BORDER.DEFAULT}`,
               gap: 0,
             },
             tab: {
-              color: 'var(--mantine-color-white-5)',
+              color: THEME_COLORS.TEXT_MUTED,
               padding: '6px 8px',
               fontSize: 11,
               '&[data-active]': {
                 color: 'var(--mantine-color-blue-4)',
-                borderColor: 'var(--mantine-color-blue-5)',
+                borderColor: THEME_COLORS.PRIMARY,
               },
               '&:hover': {
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                backgroundColor: HIGHLIGHT.LIGHT,
               },
             },
             panel: {
@@ -171,8 +172,8 @@ export function LayerTogglePopover() {
                       padding: '2px 8px',
                       borderRadius: 4,
                       cursor: 'pointer',
-                      backgroundColor: sigmetHazards[type] ? color : 'rgba(148, 163, 184, 0.2)',
-                      border: sigmetHazards[type] ? 'none' : '1px solid rgba(148, 163, 184, 0.3)',
+                      backgroundColor: sigmetHazards[type] ? color : ICON_BG.NEUTRAL,
+                      border: sigmetHazards[type] ? 'none' : `1px solid ${BORDER.STRONG}`,
                     }}
                   >
                     <Text size="xs" c="white">
@@ -195,8 +196,8 @@ export function LayerTogglePopover() {
                       padding: '2px 8px',
                       borderRadius: 4,
                       cursor: 'pointer',
-                      backgroundColor: gairmetHazards[hazard] ? color : 'rgba(148, 163, 184, 0.2)',
-                      border: gairmetHazards[hazard] ? 'none' : '1px solid rgba(148, 163, 184, 0.3)',
+                      backgroundColor: gairmetHazards[hazard] ? color : ICON_BG.NEUTRAL,
+                      border: gairmetHazards[hazard] ? 'none' : `1px solid ${BORDER.STRONG}`,
                     }}
                   >
                     <Text size="xs" c="white">
@@ -284,11 +285,11 @@ export function LayerTogglePopover() {
                     borderRadius: 4,
                     cursor: 'pointer',
                     backgroundColor: visibleClasses[airspaceClass]
-                      ? 'var(--mantine-color-blue-6)'
-                      : 'rgba(148, 163, 184, 0.2)',
+                      ? THEME_COLORS.PRIMARY_DARK
+                      : ICON_BG.NEUTRAL,
                     border: visibleClasses[airspaceClass]
                       ? 'none'
-                      : '1px solid rgba(148, 163, 184, 0.3)',
+                      : `1px solid ${BORDER.STRONG}`,
                   }}
                 >
                   <Text size="xs" c="white">

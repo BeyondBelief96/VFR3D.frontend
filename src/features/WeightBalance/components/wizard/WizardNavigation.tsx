@@ -1,6 +1,7 @@
 import { Group, Button, Stack } from '@mantine/core';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiSave } from 'react-icons/fi';
 import { useIsPhone } from '@/hooks';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 
 interface WizardNavigationProps {
   currentStep: number;
@@ -36,8 +37,8 @@ export function WizardNavigation({
         <Group grow gap="xs">
           {!isFirstStep && (
             <Button
-              variant="light"
-              color="gray"
+              variant="subtle"
+              color={BUTTON_COLORS.BACK}
               leftSection={<FiArrowLeft size={14} />}
               onClick={onBack}
               size="sm"
@@ -49,7 +50,7 @@ export function WizardNavigation({
           {isLastStep ? (
             <Button
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan' }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               leftSection={<FiCheck size={14} />}
               onClick={onSubmit}
               loading={isSubmitting}
@@ -59,8 +60,8 @@ export function WizardNavigation({
             </Button>
           ) : (
             <Button
-              variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan' }}
+              variant="filled"
+              color={BUTTON_COLORS.NEXT}
               rightSection={<FiArrowRight size={14} />}
               onClick={onNext}
               size="sm"
@@ -72,13 +73,13 @@ export function WizardNavigation({
 
         {/* Secondary actions */}
         <Group grow gap="xs">
-          <Button variant="subtle" color="gray" onClick={onCancel} size="sm">
+          <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onCancel} size="sm">
             Cancel
           </Button>
           {isEditMode && !isLastStep && onGoToReview && (
             <Button
               variant="light"
-              color="teal"
+              color={BUTTON_COLORS.CONFIRM}
               leftSection={<FiSave size={14} />}
               onClick={onGoToReview}
               size="sm"
@@ -94,7 +95,7 @@ export function WizardNavigation({
   return (
     <Group justify="space-between" mt="xl" pt="md" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
       <Group>
-        <Button variant="subtle" color="gray" onClick={onCancel}>
+        <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onCancel}>
           Cancel
         </Button>
       </Group>
@@ -102,8 +103,8 @@ export function WizardNavigation({
       <Group>
         {!isFirstStep && (
           <Button
-            variant="light"
-            color="gray"
+            variant="subtle"
+            color={BUTTON_COLORS.BACK}
             leftSection={<FiArrowLeft size={16} />}
             onClick={onBack}
           >
@@ -115,7 +116,7 @@ export function WizardNavigation({
         {isEditMode && !isLastStep && onGoToReview && (
           <Button
             variant="light"
-            color="teal"
+            color={BUTTON_COLORS.CONFIRM}
             leftSection={<FiSave size={16} />}
             onClick={onGoToReview}
           >
@@ -126,7 +127,7 @@ export function WizardNavigation({
         {isLastStep ? (
           <Button
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan' }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
             leftSection={<FiCheck size={16} />}
             onClick={onSubmit}
             loading={isSubmitting}
@@ -135,8 +136,8 @@ export function WizardNavigation({
           </Button>
         ) : (
           <Button
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan' }}
+            variant="filled"
+            color={BUTTON_COLORS.NEXT}
             rightSection={<FiArrowRight size={16} />}
             onClick={onNext}
           >

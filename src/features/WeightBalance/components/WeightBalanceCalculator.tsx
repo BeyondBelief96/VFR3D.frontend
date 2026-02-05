@@ -21,6 +21,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertTriangle, FiActivity, FiRefreshCw, FiUsers, FiInfo, FiDroplet, FiBox, FiClock, FiSave } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import { FaGasPump, FaOilCan, FaPlane } from 'react-icons/fa';
 import {
   WeightBalanceProfileDto,
@@ -333,6 +334,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
               </Group>
               <Button
                 variant="subtle"
+                color={BUTTON_COLORS.SECONDARY}
                 size="xs"
                 leftSection={<FiRefreshCw size={12} />}
                 onClick={clearInputs}
@@ -615,7 +617,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
 
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 size="md"
                 leftSection={persistCalculations ? <FiSave size={18} /> : <FiActivity size={18} />}
                 onClick={handleCalculate}

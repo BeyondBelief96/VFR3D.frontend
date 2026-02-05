@@ -19,6 +19,7 @@ import {
 } from '@mantine/core';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import { FaPlane } from 'react-icons/fa';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProtectedRoute } from '@/components/Auth';
@@ -133,7 +134,7 @@ function AircraftContent() {
           <Button
             leftSection={<FiPlus />}
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
             onClick={handleCreateClick}
             size={isPhone ? 'sm' : 'md'}
             fullWidth={isPhone}
@@ -190,7 +191,7 @@ function AircraftContent() {
               </Text>
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
                 size={isPhone ? 'sm' : 'md'}
@@ -324,14 +325,15 @@ function AircraftContent() {
           <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.SECONDARY}
               onClick={() => setDeleteModalOpen(false)}
               size={isPhone ? 'sm' : 'md'}
             >
               Cancel
             </Button>
             <Button
-              color="red"
+              variant="light"
+              color={BUTTON_COLORS.DESTRUCTIVE}
               onClick={handleDeleteConfirm}
               loading={isDeleting}
               size={isPhone ? 'sm' : 'md'}

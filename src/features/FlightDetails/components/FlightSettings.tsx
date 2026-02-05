@@ -12,6 +12,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiSave } from 'react-icons/fi';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { FaPlane } from 'react-icons/fa';
 import { useIsPhone } from '@/hooks';
 import { FlightDto, UpdateFlightRequestDto } from '@/redux/api/vfr3d/dtos';
@@ -216,6 +217,8 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
 
           <Group justify={isPhone ? 'center' : 'flex-end'} mt="md">
             <Button
+              variant="filled"
+              color={BUTTON_COLORS.PRIMARY}
               leftSection={<FiSave size={isPhone ? 14 : 16} />}
               onClick={handleSave}
               loading={isUpdating}

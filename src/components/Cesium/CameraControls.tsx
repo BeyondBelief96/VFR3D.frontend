@@ -3,6 +3,7 @@ import { useCesium } from 'resium';
 import { ActionIcon, Divider, Group, Paper, Tooltip } from '@mantine/core';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import { TbArrowRight, TbArrowLeft, TbArrowUp, TbArrowDown, TbTarget } from 'react-icons/tb';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 import { Math as CesiumMath, Cartographic } from 'cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { FlightDisplayMode } from '@/utility/enums';
@@ -139,7 +140,7 @@ export function CameraControls() {
         <Tooltip label="Zoom In" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.ZOOM}
             size="lg"
             onClick={zoomIn}
             classNames={{ root: classes.actionButton }}
@@ -151,7 +152,7 @@ export function CameraControls() {
         <Tooltip label="Zoom Out" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.ZOOM}
             size="lg"
             onClick={zoomOut}
             classNames={{ root: classes.actionButton }}
@@ -163,7 +164,7 @@ export function CameraControls() {
         <Tooltip label="Rotate Left" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.NAVIGATE}
             size="lg"
             onMouseDown={() => setIsRotatingLeft(true)}
             onMouseUp={() => setIsRotatingLeft(false)}
@@ -179,7 +180,7 @@ export function CameraControls() {
         <Tooltip label="Rotate Right" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.NAVIGATE}
             size="lg"
             onMouseDown={() => setIsRotatingRight(true)}
             onMouseUp={() => setIsRotatingRight(false)}
@@ -195,7 +196,7 @@ export function CameraControls() {
         <Tooltip label="Look Up" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.NAVIGATE}
             size="lg"
             onMouseDown={() => setIsRotatingUp(true)}
             onMouseUp={() => setIsRotatingUp(false)}
@@ -211,7 +212,7 @@ export function CameraControls() {
         <Tooltip label="Look Down" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.NAVIGATE}
             size="lg"
             onMouseDown={() => setIsRotatingDown(true)}
             onMouseUp={() => setIsRotatingDown(false)}
@@ -227,7 +228,7 @@ export function CameraControls() {
         <Tooltip label="Recenter Camera" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.LOCATION}
             size="lg"
             onClick={recenterCamera}
             classNames={{ root: classes.actionButton }}

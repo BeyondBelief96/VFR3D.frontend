@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { FiArrowLeft, FiDownload, FiRefreshCw } from 'react-icons/fi';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { FlightLogPdf } from '@/features/Flights';
 import { FlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
@@ -32,7 +33,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
     <Stack gap="sm">
       <Group justify="space-between" align="flex-start" wrap="wrap">
         <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
-          <ActionIcon variant="subtle" color="gray" size="lg" component={Link} to="/flights">
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.NAVIGATE} size="lg" component={Link} to="/flights">
             <FiArrowLeft size={20} />
           </ActionIcon>
           <Box style={{ minWidth: 0, flex: 1 }}>
@@ -67,7 +68,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
           <Tooltip label="Refresh all flight data (weather, NOTAMs, navlog, etc.)">
             <Button
               variant="light"
-              color="orange"
+              color={BUTTON_COLORS.REFRESH}
               size={isPhone ? 'sm' : 'md'}
               leftSection={isRefreshing ? <Loader size="xs" /> : <FiRefreshCw size={16} />}
               onClick={onRefreshAll}
@@ -80,7 +81,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
         {pdfData.isLoading ? (
           <Button
             variant="light"
-            color="green"
+            color={BUTTON_COLORS.CONFIRM}
             size={isPhone ? 'sm' : 'md'}
             leftSection={<Loader size="xs" />}
             disabled
@@ -107,7 +108,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
             {({ loading }: { loading: boolean }) => (
               <Button
                 variant="light"
-                color="green"
+                color={BUTTON_COLORS.CONFIRM}
                 size={isPhone ? 'sm' : 'md'}
                 leftSection={loading ? <Loader size="xs" /> : <FiDownload size={16} />}
                 disabled={loading}

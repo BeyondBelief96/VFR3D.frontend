@@ -141,6 +141,160 @@ export const WEIGHT_BALANCE_COLORS = {
 } as const;
 
 // =============================================================================
+// INTERACTIVE ELEMENTS - Buttons, ActionIcons, clickable elements
+// =============================================================================
+
+/**
+ * Button colors by intent
+ * Use with Button color prop. Combine with appropriate variant for full styling.
+ *
+ * Usage patterns:
+ * - Primary CTA: variant="gradient" gradient={BUTTON_GRADIENTS.PRIMARY}
+ * - Standard primary: variant="filled" color={BUTTON_COLORS.PRIMARY}
+ * - Secondary: variant="subtle" color={BUTTON_COLORS.SECONDARY}
+ * - Back: variant="subtle" color={BUTTON_COLORS.BACK}
+ * - Next: variant="filled" color={BUTTON_COLORS.NEXT}
+ * - Destructive: variant="light" color={BUTTON_COLORS.DESTRUCTIVE}
+ */
+export const BUTTON_COLORS = {
+  /** Primary actions - "Save", "Create", "Submit", "Apply" */
+  PRIMARY: 'vfr3dBlue',
+
+  /** Secondary/dismiss - "Cancel", "Close", "Dismiss", "Skip" */
+  SECONDARY: 'gray',
+
+  /** Forward navigation - "Next", "Continue", "Proceed" */
+  NEXT: 'vfr3dBlue',
+
+  /** Back navigation - "Back", "Previous", "Return" */
+  BACK: 'gray',
+
+  /** Destructive actions - "Delete", "Remove", "Clear", "Reset" */
+  DESTRUCTIVE: 'ifrRed',
+
+  /** Confirmation - "Confirm", "Accept", "Yes", "Approve" */
+  CONFIRM: 'vfrGreen',
+
+  /** Refresh/update - "Refresh", "Reload", "Update", "Sync" */
+  REFRESH: 'cyan',
+} as const;
+
+/**
+ * Button gradients for hero/CTA buttons
+ * Use with variant="gradient" and gradient prop
+ */
+export const BUTTON_GRADIENTS = {
+  /** Primary CTA gradient - hero buttons, main CTAs */
+  PRIMARY: { from: 'blue', to: 'cyan', deg: 90 },
+
+  /** Success/go gradient - for major confirmations */
+  SUCCESS: { from: 'teal', to: 'green', deg: 90 },
+} as const;
+
+/**
+ * Recommended button variant by intent
+ * Combine with BUTTON_COLORS for complete styling
+ */
+export const BUTTON_VARIANTS = {
+  /** Primary CTA: use gradient variant with BUTTON_GRADIENTS.PRIMARY */
+  PRIMARY_CTA: 'gradient',
+
+  /** Standard primary: filled for emphasis */
+  PRIMARY: 'filled',
+
+  /** Secondary actions: subtle to de-emphasize */
+  SECONDARY: 'subtle',
+
+  /** Back navigation: subtle, clearly secondary */
+  BACK: 'subtle',
+
+  /** Next navigation: filled, emphasizes forward progress */
+  NEXT: 'filled',
+
+  /** Destructive: light variant (visible but not overwhelming) */
+  DESTRUCTIVE: 'light',
+
+  /** Destructive emphasized: filled when action is primary */
+  DESTRUCTIVE_FILLED: 'filled',
+
+  /** Confirm: filled to stand out */
+  CONFIRM: 'filled',
+
+  /** Refresh: light, action but not primary */
+  REFRESH: 'light',
+} as const;
+
+/**
+ * ActionIcon colors by purpose
+ * Use with ActionIcon color prop
+ *
+ * Standard variants:
+ * - Close/dismiss: variant="subtle"
+ * - Actions (edit, delete, etc.): variant="light"
+ * - Toggle states: variant="filled" when active, "light" when inactive
+ */
+export const ACTION_ICON_COLORS = {
+  /** Close/dismiss - X buttons, close modals, collapse panels */
+  CLOSE: 'gray',
+
+  /** Edit/modify - pencil icons, edit mode toggles */
+  EDIT: 'vfr3dBlue',
+
+  /** Delete/remove - trash icons, remove items */
+  DELETE: 'ifrRed',
+
+  /** Refresh/reload - refresh icons, sync buttons */
+  REFRESH: 'cyan',
+
+  /** Add/create - plus icons, add new items */
+  ADD: 'vfrGreen',
+
+  /** Settings/configure - gear icons, preferences */
+  SETTINGS: 'gray',
+
+  /** Info/help - info icons, help buttons, tooltips trigger */
+  INFO: 'vfr3dBlue',
+
+  /** Expand/collapse - chevrons, expand icons */
+  EXPAND: 'gray',
+
+  /** Navigation arrows - left/right, up/down navigation */
+  NAVIGATE: 'gray',
+
+  /** Copy/clipboard - copy to clipboard actions */
+  COPY: 'cyan',
+
+  /** Download/export - download, export actions */
+  DOWNLOAD: 'vfr3dBlue',
+
+  /** Favorite/bookmark - star, heart, bookmark icons */
+  FAVORITE: 'warningYellow',
+
+  /** Map/location - map pins, location actions */
+  LOCATION: 'vfr3dBlue',
+
+  /** Zoom controls - zoom in/out */
+  ZOOM: 'gray',
+} as const;
+
+/**
+ * Recommended ActionIcon variant by purpose
+ */
+export const ACTION_ICON_VARIANTS = {
+  /** Close/dismiss: subtle, unobtrusive */
+  CLOSE: 'subtle',
+
+  /** Standard actions: light, visible but not dominant */
+  DEFAULT: 'light',
+
+  /** Active/selected state: filled */
+  ACTIVE: 'filled',
+
+  /** Disabled appearance: transparent with low opacity (use disabled prop) */
+  DISABLED: 'transparent',
+} as const;
+
+// =============================================================================
 // CATEGORY COLORS - Use for categorizing/grouping items
 // =============================================================================
 

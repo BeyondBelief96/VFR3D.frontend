@@ -23,6 +23,7 @@ import {
   WeightUnits,
   LoadingGraphFormat,
 } from '@/redux/api/vfr3d/dtos';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 import {
   WEIGHT_UNIT_LABELS,
   DEFAULT_FUEL_WEIGHT,
@@ -238,7 +239,7 @@ export function LoadingStationsTable({
         <Table.Td w={40}>
           <ActionIcon
             variant="subtle"
-            color="red"
+            color={ACTION_ICON_COLORS.DELETE}
             size="sm"
             onClick={() => handleRemoveStation(index)}
           >
@@ -267,7 +268,7 @@ export function LoadingStationsTable({
           {getStationTypeBadge(station)}
           <ActionIcon
             variant="subtle"
-            color="red"
+            color={ACTION_ICON_COLORS.DELETE}
             size="lg"
             onClick={() => handleRemoveStation(index)}
           >

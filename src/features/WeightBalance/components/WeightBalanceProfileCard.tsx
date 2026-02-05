@@ -12,6 +12,7 @@ import { FiEdit2, FiTrash2, FiActivity } from 'react-icons/fi';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import { useIsPhone } from '@/hooks';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface WeightBalanceProfileCardProps {
   profile: WeightBalanceProfileDto;
@@ -60,7 +61,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="green"
+              color={ACTION_ICON_COLORS.ADD}
               onClick={() => onCalculate(profile)}
               title="Calculate W&B"
             >
@@ -69,7 +70,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="blue"
+              color={ACTION_ICON_COLORS.EDIT}
               onClick={() => onEdit(profile)}
             >
               <FiEdit2 size={isPhone ? 18 : 14} />
@@ -77,7 +78,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="red"
+              color={ACTION_ICON_COLORS.DELETE}
               onClick={() => profile.id && onDelete(profile.id)}
               loading={isDeleting}
             >

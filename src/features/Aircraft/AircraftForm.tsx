@@ -19,6 +19,7 @@ import {
 } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaPlane, FaPalette, FaTachometerAlt, FaCog } from 'react-icons/fa';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import {
   AircraftDto,
   AircraftCategory,
@@ -656,7 +657,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
             <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
               <Button
                 variant="subtle"
-                color="gray"
+                color={BUTTON_COLORS.SECONDARY}
                 onClick={handleClose}
                 disabled={isLoading}
                 size={isPhone ? 'sm' : 'md'}
@@ -667,7 +668,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                 type="submit"
                 disabled={!isValid || isLoading}
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 size={isPhone ? 'sm' : 'md'}
               >
                 {isLoading ? (

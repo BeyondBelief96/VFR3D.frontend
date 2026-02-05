@@ -14,6 +14,7 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { notifyError, notifySuccess } from '@/utility/notifications';
+import { BUTTON_GRADIENTS } from '@/constants/colors';
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,
@@ -118,7 +119,7 @@ function ContactPage() {
                   type="submit"
                   loading={isSubmitting}
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   fullWidth
                   size="md"
                 >

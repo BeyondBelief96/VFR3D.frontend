@@ -14,6 +14,7 @@ import {
   Divider,
 } from '@mantine/core';
 import { FiSave, FiFile } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import { DocumentCategory, AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import {
   useGetAircraftDocumentQuery,
@@ -351,12 +352,12 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         </Text>
 
         <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone} mt="sm">
-          <Button variant="subtle" color="gray" onClick={onClose} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onClose} size={isPhone ? 'md' : 'sm'}>
             Cancel
           </Button>
           <Button
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
             onClick={handleSubmit}
             loading={isLoading}
             leftSection={<FiSave size={isPhone ? 16 : 14} />}

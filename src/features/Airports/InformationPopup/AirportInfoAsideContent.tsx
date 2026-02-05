@@ -27,6 +27,7 @@ import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
 } from '@/redux/api/vfr3d/weather.api';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
@@ -283,7 +284,7 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
           component={Link}
           to={`/airports/${icaoCodeOrIdent}`}
           variant="light"
-          color="blue"
+          color={BUTTON_COLORS.PRIMARY}
           fullWidth
           leftSection={<FiExternalLink size={14} />}
         >

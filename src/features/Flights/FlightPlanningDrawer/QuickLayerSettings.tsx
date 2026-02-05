@@ -4,6 +4,7 @@ import { GiRadioTower } from 'react-icons/gi';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { useIsPhone } from '@/hooks';
+import { SURFACE, BORDER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   toggleShowRouteObstacles,
   toggleShowObstacleLabels,
@@ -71,9 +72,9 @@ export function QuickLayerSettings() {
       p="sm"
       mb="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+        backgroundColor: SURFACE.CARD_HOVER,
         borderRadius: 'var(--mantine-radius-md)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       <Group gap={4} mb="xs">
@@ -136,10 +137,10 @@ export function QuickLayerSettings() {
                         cursor: 'pointer',
                         backgroundColor: sigmetHazards[type]
                           ? color
-                          : 'rgba(148, 163, 184, 0.2)',
+                          : ICON_BG.NEUTRAL,
                         border: sigmetHazards[type]
                           ? 'none'
-                          : '1px solid rgba(148, 163, 184, 0.3)',
+                          : `1px solid ${BORDER.STRONG}`,
                         minHeight: isPhone ? 36 : undefined,
                         display: 'flex',
                         alignItems: 'center',
@@ -168,10 +169,10 @@ export function QuickLayerSettings() {
                         cursor: 'pointer',
                         backgroundColor: gairmetHazards[hazard]
                           ? color
-                          : 'rgba(148, 163, 184, 0.2)',
+                          : ICON_BG.NEUTRAL,
                         border: gairmetHazards[hazard]
                           ? 'none'
-                          : '1px solid rgba(148, 163, 184, 0.3)',
+                          : `1px solid ${BORDER.STRONG}`,
                         minHeight: isPhone ? 36 : undefined,
                         display: 'flex',
                         alignItems: 'center',
@@ -288,11 +289,11 @@ export function QuickLayerSettings() {
                       borderRadius: 4,
                       cursor: 'pointer',
                       backgroundColor: visibleClasses[airspaceClass]
-                        ? 'var(--mantine-color-blue-6)'
-                        : 'rgba(148, 163, 184, 0.2)',
+                        ? THEME_COLORS.PRIMARY_DARK
+                        : ICON_BG.NEUTRAL,
                       border: visibleClasses[airspaceClass]
                         ? 'none'
-                        : '1px solid rgba(148, 163, 184, 0.3)',
+                        : `1px solid ${BORDER.STRONG}`,
                       minHeight: isPhone ? 36 : undefined,
                       display: 'flex',
                       alignItems: 'center',

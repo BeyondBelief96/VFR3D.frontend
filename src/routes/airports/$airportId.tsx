@@ -63,6 +63,7 @@ import {
   AirportInfoContent,
   AirportDocumentsContent,
 } from '@/features/Airports/components';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 export const Route = createFileRoute('/airports/$airportId')({
   component: AirportDetailPage,
@@ -234,7 +235,7 @@ function AirportDetailContent() {
             component={Link}
             to="/airports"
             variant="subtle"
-            color="gray"
+            color={BUTTON_COLORS.BACK}
             leftSection={<FiArrowLeft size={16} />}
           >
             Back to Search
@@ -283,7 +284,7 @@ function AirportDetailContent() {
               <Group gap="sm">
                 <Tooltip label="Refresh all data">
                   <Button
-                    color="teal"
+                    color={BUTTON_COLORS.REFRESH}
                     size={isPhone ? 'xs' : 'sm'}
                     leftSection={<FiRefreshCw size={14} />}
                     onClick={handleRefreshAll}

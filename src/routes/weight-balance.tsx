@@ -37,6 +37,7 @@ import {
   WeightBalanceCalculator,
 } from '@/features/WeightBalance';
 import { WeightBalanceWizard } from '@/features/WeightBalance/components/wizard/WeightBalanceWizard';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 
 export const Route = createFileRoute('/weight-balance')({
   component: WeightBalancePage,
@@ -200,7 +201,7 @@ function WeightBalanceContent() {
             <Group gap="sm" wrap={isPhone ? 'wrap' : 'nowrap'}>
               <Button
                 variant="subtle"
-                color="gray"
+                color={BUTTON_COLORS.BACK}
                 leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
                 onClick={handleCancel}
                 size={isPhone ? 'sm' : 'md'}
@@ -237,7 +238,7 @@ function WeightBalanceContent() {
           <Group justify="space-between" align="center">
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.BACK}
               leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
               onClick={handleCancel}
               size={isPhone ? 'sm' : 'md'}
@@ -279,7 +280,7 @@ function WeightBalanceContent() {
         <Group justify="space-between" align="flex-start" wrap="wrap" gap={isPhone ? 'xs' : 'md'}>
           <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
             {!isPhone && (
-              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={BUTTON_GRADIENTS.PRIMARY}>
                 <FaBalanceScale size={24} />
               </ThemeIcon>
             )}
@@ -297,8 +298,7 @@ function WeightBalanceContent() {
           <Group gap={isPhone ? 'xs' : 'sm'} wrap="wrap" grow={isPhone} style={isPhone ? { width: '100%' } : undefined}>
             <Button
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-              color="blue"
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               size={isPhone ? 'sm' : 'md'}
               leftSection={<FaBalanceScale size={isPhone ? 12 : 14} />}
               onClick={() => {
@@ -313,7 +313,7 @@ function WeightBalanceContent() {
               leftSection={<FiPlus size={isPhone ? 14 : 16} />}
               size={isPhone ? 'sm' : 'md'}
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               onClick={handleCreateClick}
             >
               New Profile
@@ -369,7 +369,7 @@ function WeightBalanceContent() {
               </Text>
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
                 size={isPhone ? 'sm' : 'md'}
@@ -541,14 +541,14 @@ function WeightBalanceContent() {
           <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.SECONDARY}
               onClick={() => setDeleteModalOpen(false)}
               size={isPhone ? 'sm' : 'md'}
             >
               Cancel
             </Button>
             <Button
-              color="red"
+              color={BUTTON_COLORS.DESTRUCTIVE}
               onClick={handleDeleteConfirm}
               loading={isDeleting}
               size={isPhone ? 'sm' : 'md'}

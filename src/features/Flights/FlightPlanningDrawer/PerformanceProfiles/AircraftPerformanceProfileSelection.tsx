@@ -13,6 +13,7 @@ import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { AircraftPerformanceProfileDto, AirspeedUnits } from '@/redux/api/vfr3d/dtos';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface AircraftPerformanceProfileSelectionProps {
   profiles: AircraftPerformanceProfileDto[];
@@ -129,7 +130,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
                     <ActionIcon
                       size="sm"
                       variant="subtle"
-                      color="blue"
+                      color={ACTION_ICON_COLORS.EDIT}
                       onClick={(e) => {
                         e.stopPropagation();
                         profile.id && onEdit(profile.id);
@@ -141,7 +142,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
                     <ActionIcon
                       size="sm"
                       variant="subtle"
-                      color="red"
+                      color={ACTION_ICON_COLORS.DELETE}
                       onClick={(e) => {
                         e.stopPropagation();
                         profile.id && onDelete(profile.id);

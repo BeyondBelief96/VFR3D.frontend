@@ -38,6 +38,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CgEnvelopeDto, CgEnvelopePointDto, ArmUnits, WeightUnits, CgEnvelopeFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
+import { ACTION_ICON_COLORS, BUTTON_COLORS } from '@/constants/colors';
 
 interface CgEnvelopeEditorProps {
   envelopes: CgEnvelopeDto[];
@@ -133,7 +134,7 @@ function SortablePointRow({
         <ActionIcon
           size="sm"
           variant="subtle"
-          color="red"
+          color={ACTION_ICON_COLORS.DELETE}
           onClick={onRemove}
         >
           <FiTrash2 size={12} />
@@ -382,7 +383,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
             </ActionIcon>
             <ActionIcon
               variant="subtle"
-              color="red"
+              color={ACTION_ICON_COLORS.DELETE}
               size="lg"
               onClick={() => handleRemovePoint(envelopeIndex, pointIndex)}
             >
@@ -484,7 +485,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                         </Box>
                         <Button
                           variant="subtle"
-                          color="red"
+                          color={BUTTON_COLORS.DESTRUCTIVE}
                           size="sm"
                           fullWidth
                           leftSection={<FiTrash2 size={14} />}
@@ -520,7 +521,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
                         </Group>
                         <Button
                           variant="subtle"
-                          color="red"
+                          color={BUTTON_COLORS.DESTRUCTIVE}
                           size="xs"
                           leftSection={<FiTrash2 size={12} />}
                           onClick={() => handleRemoveEnvelope(envelopeIndex)}

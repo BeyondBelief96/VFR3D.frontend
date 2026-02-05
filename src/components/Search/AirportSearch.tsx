@@ -8,6 +8,7 @@ import { setSearchAirportQuery, triggerSearch } from '@/redux/slices/searchSlice
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { setSearchedAirportState } from '@/redux/slices/airportsSlice';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 interface AirportSearchProps {
   onAirportSelect?: (airport: AirportDto) => void;
@@ -164,8 +165,8 @@ export function AirportSearch({
         rightSection={isFetching ? <Loader size="xs" /> : null}
         styles={{
           input: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            borderColor: 'rgba(148, 163, 184, 0.3)',
+            backgroundColor: THEME_COLORS.SURFACE_8,
+            borderColor: BORDER.STRONG,
             color: 'white',
           },
         }}
@@ -182,8 +183,8 @@ export function AirportSearch({
               left: dropdownPosition.left,
               width: dropdownPosition.width,
               zIndex: 10000,
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              border: '1px solid rgba(148, 163, 184, 0.2)',
+              backgroundColor: THEME_COLORS.SURFACE_8,
+              border: `1px solid ${BORDER.DEFAULT}`,
               maxHeight: 400,
               overflow: 'auto',
             }}
@@ -204,21 +205,21 @@ export function AirportSearch({
                   onMouseEnter={() => setHighlightedIndex(index)}
                   style={{
                     padding: '10px 12px',
-                    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+                    borderBottom: `1px solid ${BORDER.SUBTLE}`,
                     transition: 'background-color 150ms',
-                    backgroundColor: index === highlightedIndex ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                    backgroundColor: index === highlightedIndex ? HIGHLIGHT.SUBTLE : 'transparent',
                   }}
                   styles={{
                     root: {
                       '&:hover': {
-                        backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                        backgroundColor: HIGHLIGHT.SUBTLE,
                       },
                     },
                   }}
                 >
                   <Group justify="space-between" wrap="nowrap">
                     <Group gap="sm" wrap="nowrap">
-                      <FiMapPin size={16} color="var(--mantine-color-vfr3dBlue-5)" />
+                      <FiMapPin size={16} color={THEME_COLORS.PRIMARY} />
                       <Box>
                         <Group gap="xs">
                           <Text size="sm" fw={600} c="white">

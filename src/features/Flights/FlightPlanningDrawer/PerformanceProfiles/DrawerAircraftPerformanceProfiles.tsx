@@ -15,6 +15,8 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { useAuth0 } from '@auth0/auth0-react';
 import { RootState, AppDispatch } from '@/redux/store';
@@ -211,13 +213,13 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
             width: 80,
             height: 80,
             borderRadius: '50%',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            backgroundColor: ICON_BG.BLUE,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+          <FaPlane size={32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
         </Box>
         <Text size="lg" fw={500} c="white">
           No Aircraft Configured
@@ -229,7 +231,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
           component={Link}
           to="/aircraft"
           variant="gradient"
-          gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+          gradient={BUTTON_GRADIENTS.PRIMARY}
         >
           Go to Aircraft Page
         </Button>
@@ -255,11 +257,11 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                 onClick={() => !disabled && aircraft.id && handleSelectAircraft(aircraft.id)}
                 style={{
                   backgroundColor: isSelected
-                    ? 'rgba(59, 130, 246, 0.15)'
-                    : 'rgba(30, 41, 59, 0.8)',
+                    ? HIGHLIGHT.SUBTLE
+                    : SURFACE.CARD,
                   border: isSelected
-                    ? '2px solid var(--mantine-color-vfr3dBlue-5)'
-                    : '1px solid rgba(148, 163, 184, 0.1)',
+                    ? `2px solid ${THEME_COLORS.PRIMARY}`
+                    : `1px solid ${BORDER.SUBTLE}`,
                   borderRadius: 'var(--mantine-radius-md)',
                   padding: 'var(--mantine-spacing-sm)',
                   cursor: disabled ? 'not-allowed' : 'pointer',
@@ -274,8 +276,8 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                       height: 32,
                       borderRadius: '50%',
                       backgroundColor: isSelected
-                        ? 'rgba(59, 130, 246, 0.3)'
-                        : 'rgba(148, 163, 184, 0.1)',
+                        ? HIGHLIGHT.STRONG
+                        : ICON_BG.NEUTRAL,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -284,7 +286,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                   >
                     <FaPlane
                       size={14}
-                      color={isSelected ? 'var(--mantine-color-vfr3dBlue-5)' : 'var(--mantine-color-gray-5)'}
+                      color={isSelected ? THEME_COLORS.PRIMARY : THEME_COLORS.TEXT_MUTED}
                     />
                   </Box>
                   <Box style={{ minWidth: 0 }}>
@@ -329,8 +331,8 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
           {profiles.length === 0 ? (
             <Box
               style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD,
+                border: `1px solid ${BORDER.SUBTLE}`,
                 borderRadius: 'var(--mantine-radius-md)',
                 padding: 'var(--mantine-spacing-lg)',
               }}
@@ -354,11 +356,11 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                     onClick={() => !disabled && profile.id && handleSelectProfile(profile.id)}
                     style={{
                       backgroundColor: isSelected
-                        ? 'rgba(59, 130, 246, 0.15)'
-                        : 'rgba(30, 41, 59, 0.8)',
+                        ? HIGHLIGHT.SUBTLE
+                        : SURFACE.CARD,
                       border: isSelected
-                        ? '2px solid var(--mantine-color-vfr3dBlue-5)'
-                        : '1px solid rgba(148, 163, 184, 0.1)',
+                        ? `2px solid ${THEME_COLORS.PRIMARY}`
+                        : `1px solid ${BORDER.SUBTLE}`,
                       borderRadius: 'var(--mantine-radius-md)',
                       padding: 'var(--mantine-spacing-sm)',
                       cursor: disabled ? 'not-allowed' : 'pointer',
@@ -385,7 +387,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                           <Button
                             size="compact-xs"
                             variant="subtle"
-                            color="blue"
+                            color={BUTTON_COLORS.PRIMARY}
                             onClick={(e) => {
                               e.stopPropagation();
                               profile.id && handleEditProfile(profile.id);
@@ -397,7 +399,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
                           <Button
                             size="compact-xs"
                             variant="subtle"
-                            color="red"
+                            color={BUTTON_COLORS.DESTRUCTIVE}
                             onClick={(e) => {
                               e.stopPropagation();
                               profile.id && handleDeleteProfile(profile.id);

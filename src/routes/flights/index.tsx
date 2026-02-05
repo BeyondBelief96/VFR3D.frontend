@@ -18,6 +18,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -119,8 +120,8 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
             </Group>
           </Link>
           <ActionIcon
-            variant="subtle"
-            color="red"
+            variant="light"
+            color={ACTION_ICON_COLORS.DELETE}
             size="lg"
             onClick={(e) => {
               e.preventDefault();
@@ -269,7 +270,7 @@ function FlightsContent() {
             <Button
               leftSection={<TbMapPin size={18} />}
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               component={Link}
               to="/airports"
             >
@@ -279,7 +280,7 @@ function FlightsContent() {
             <Button
               leftSection={<FiPlus />}
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               component={Link}
               to="/map"
             >
@@ -337,7 +338,7 @@ function FlightsContent() {
               {isPhone ? (
                 <Button
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   component={Link}
                   to="/airports"
                   leftSection={<TbMapPin size={18} />}
@@ -347,7 +348,7 @@ function FlightsContent() {
               ) : (
                 <Button
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   component={Link}
                   to="/map"
                   leftSection={<FiPlus />}
@@ -389,10 +390,10 @@ function FlightsContent() {
             Are you sure you want to delete this flight? This action cannot be undone.
           </Text>
           <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+            <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={() => setDeleteModalOpen(false)}>
               Cancel
             </Button>
-            <Button color="red" onClick={handleDeleteConfirm} loading={isDeleting}>
+            <Button variant="light" color={BUTTON_COLORS.DESTRUCTIVE} onClick={handleDeleteConfirm} loading={isDeleting}>
               Delete Flight
             </Button>
           </Group>

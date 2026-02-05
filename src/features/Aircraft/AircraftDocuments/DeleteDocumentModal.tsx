@@ -6,6 +6,7 @@ import { useDeleteAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDoc
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { formatFileSize, getFileIcon, getCategoryColor, getCategoryLabel, formatDate } from './utils';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 interface DeleteDocumentModalProps {
   opened: boolean;
@@ -138,10 +139,10 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
         </Text>
 
         <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone} mt="sm">
-          <Button variant="subtle" color="gray" onClick={onClose} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onClose} size={isPhone ? 'md' : 'sm'}>
             Cancel
           </Button>
-          <Button color="red" onClick={handleDelete} loading={isLoading} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="light" color={BUTTON_COLORS.DESTRUCTIVE} onClick={handleDelete} loading={isLoading} size={isPhone ? 'md' : 'sm'}>
             Delete Document
           </Button>
         </Group>

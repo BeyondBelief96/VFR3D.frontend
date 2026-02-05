@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Center, Stack, Text, Button, Paper, Image, Loader, Box } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
+import { BUTTON_GRADIENTS } from '@/constants/colors';
 
 export const Route = createFileRoute('/redirect')({
   component: RedirectPage,
@@ -88,7 +89,7 @@ function RedirectPage() {
               fullWidth
               size="md"
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               onClick={() => navigate({ to: '/' })}
             >
               Return to Home

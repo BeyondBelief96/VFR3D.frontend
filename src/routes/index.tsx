@@ -29,6 +29,7 @@ import {
   FiArrowRight,
   FiCompass,
 } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import { FaPlane } from 'react-icons/fa';
 import { GiRadioTower, GiAirplaneDeparture } from 'react-icons/gi';
 import { TbPlane, TbRoute, TbMapPin } from 'react-icons/tb';
@@ -109,7 +110,7 @@ function HomePage() {
                   size="xl"
                   radius="md"
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   loading={isLoading}
                   onClick={() => loginWithRedirect()}
                   rightSection={<FiArrowRight size={20} />}
@@ -124,7 +125,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    gradient={BUTTON_GRADIENTS.PRIMARY}
                     component={Link}
                     to="/airports"
                     leftSection={<TbMapPin size={20} />}
@@ -136,7 +137,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="light"
-                    color="blue"
+                    color={BUTTON_COLORS.PRIMARY}
                     component={Link}
                     to="/flights"
                     leftSection={<FaPlane size={18} />}
@@ -150,7 +151,7 @@ function HomePage() {
                   size="xl"
                   radius="md"
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   component={Link}
                   to="/map"
                   rightSection={<FiArrowRight size={20} />}
@@ -163,7 +164,7 @@ function HomePage() {
                 size="xl"
                 radius="md"
                 variant="outline"
-                color="gray"
+                color={BUTTON_COLORS.SECONDARY}
                 component="a"
                 href="#features"
                 className={classes.heroExploreButton}

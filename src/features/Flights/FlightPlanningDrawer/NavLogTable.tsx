@@ -26,6 +26,7 @@ import {
 import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
 import { NavlogResponseDto, NavigationLegDto } from '@/redux/api/vfr3d/dtos';
 import { METRIC_COLORS, getIconBgColor } from '@/constants/colors';
+import { SURFACE, BORDER, ERROR_BG, WARNING_BG } from '@/constants/surfaces';
 import classes from './NavLogTable.module.css';
 
 interface NavLogTableProps {
@@ -287,9 +288,9 @@ const LegTable: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
             const fuelSeverity = getLegFuelSeverity(leg.remainingFuelGals);
             const rowStyle =
               fuelSeverity === 'critical'
-                ? { backgroundColor: 'rgba(239, 68, 68, 0.25)', borderLeft: '3px solid #ef4444' }
+                ? { backgroundColor: ERROR_BG.DEFAULT, borderLeft: '3px solid var(--mantine-color-ifrRed-5)' }
                 : fuelSeverity === 'warning'
-                  ? { backgroundColor: 'rgba(251, 191, 36, 0.15)', borderLeft: '3px solid #fbbf24' }
+                  ? { backgroundColor: WARNING_BG.DEFAULT, borderLeft: '3px solid var(--mantine-color-warningYellow-5)' }
                   : undefined;
 
             return (
@@ -371,17 +372,17 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
         const cardStyle =
           fuelSeverity === 'critical'
             ? {
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                border: '2px solid #ef4444',
+                backgroundColor: ERROR_BG.SUBTLE,
+                border: '2px solid var(--mantine-color-ifrRed-5)',
               }
             : fuelSeverity === 'warning'
               ? {
-                  backgroundColor: 'rgba(251, 191, 36, 0.15)',
-                  border: '2px solid #fbbf24',
+                  backgroundColor: WARNING_BG.DEFAULT,
+                  border: '2px solid var(--mantine-color-warningYellow-5)',
                 }
               : {
-                  backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  backgroundColor: SURFACE.CARD_HOVER,
+                  border: `1px solid ${BORDER.SUBTLE}`,
                 };
 
         return (

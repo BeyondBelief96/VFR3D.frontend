@@ -1,6 +1,7 @@
 import { Stack, ScrollArea, Text, Box, ActionIcon, Group } from '@mantine/core';
 import { Accordion } from '@mantine/core';
 import { FiMap, FiNavigation, FiCloud, FiLayers, FiAlertTriangle, FiX } from 'react-icons/fi';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 import { FaPlaneArrival } from 'react-icons/fa';
 import { GiRadioTower } from 'react-icons/gi';
 import MapOptions from './MapOptions';
@@ -29,7 +30,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             Layers, overlays, and styling
           </Text>
         </Box>
-        <ActionIcon variant="subtle" color="gray" onClick={onClose} aria-label="Close sidebar">
+        <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} aria-label="Close sidebar">
           <FiX size={20} />
         </ActionIcon>
       </Group>
