@@ -13,7 +13,8 @@ import { FaBalanceScale, FaRoute, FaPlane } from 'react-icons/fa';
 import { FiFileText, FiClipboard, FiCloud, FiSettings, FiFolder } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { useIsDesktop } from '@/hooks';
-import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/vfr3d/airports.api';
@@ -46,7 +47,7 @@ function FlightDetailsPage() {
 
 function FlightDetailsContent() {
   const { flightId } = Route.useParams();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const dispatch = useDispatch();
   const [isRefreshingAll, setIsRefreshingAll] = useState(false);

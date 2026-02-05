@@ -16,7 +16,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { RootState, AppDispatch } from '@/redux/store';
 import { updateDraftPlanSettings } from '@/redux/slices/flightPlanningSlice';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
@@ -38,7 +38,7 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
   onEditingStateChange,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
 
   const [viewMode, setViewMode] = useState<ViewMode>('selection');

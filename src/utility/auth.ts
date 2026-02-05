@@ -1,48 +1,49 @@
 /**
- * Auth utility module for accessing Auth0 token refresh outside of React components.
- * This is necessary for RTK Query's baseQuery to handle 401 errors.
+ * Simple auth utility for accessing Auth0's getAccessTokenSilently outside of React.
+ * This is the bridge between Auth0 (React hooks) and RTK Query (non-React).
  */
 
-type TokenGetter = () => Promise<string>;
+type GetTokenFn = () => Promise<string>;
 
-let tokenGetter: TokenGetter | null = null;
+let getTokenSilently: GetTokenFn | null = null;
 
 /**
- * Register the token getter function from AuthProvider.
- * This should be called once when AuthProvider mounts.
+ * Register the getAccessTokenSilently function from Auth0.
+ * Called once when the Auth0 hook is available.
  */
-export function registerTokenGetter(getter: TokenGetter): void {
-  tokenGetter = getter;
+export function registerAuth0TokenGetter(getter: GetTokenFn): void {
+  getTokenSilently = getter;
 }
 
 /**
- * Unregister the token getter (called on AuthProvider unmount).
+ * Unregister the token getter (called on unmount).
  */
-export function unregisterTokenGetter(): void {
-  tokenGetter = null;
+export function unregisterAuth0TokenGetter(): void {
+  getTokenSilently = null;
 }
 
 /**
- * Get a fresh access token from Auth0.
- * Returns null if no token getter is registered or if token fetch fails.
+ * Get an access token for API calls.
+ * Auth0 handles caching and refresh automatically.
+ * Returns null if Auth0 isn't initialized yet.
  */
-export async function getFreshToken(): Promise<string | null> {
-  if (!tokenGetter) {
-    console.warn('[Auth] Token getter not registered');
+export async function getAccessToken(): Promise<string | null> {
+  if (!getTokenSilently) {
+    console.warn('[Auth] Token getter not registered yet');
     return null;
   }
 
   try {
-    return await tokenGetter();
+    return await getTokenSilently();
   } catch (error) {
-    console.error('[Auth] Failed to get fresh token:', error);
+    console.error('[Auth] Failed to get access token:', error);
     return null;
   }
 }
 
 /**
- * Check if the auth system is ready (token getter is registered).
+ * Check if auth is ready (token getter is registered).
  */
 export function isAuthReady(): boolean {
-  return tokenGetter !== null;
+  return getTokenSilently !== null;
 }

@@ -22,7 +22,7 @@ import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBal
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
 import { AircraftDocumentsSection } from './AircraftDocuments';
@@ -63,7 +63,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   onDelete,
   isDeleting,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();

@@ -1,8 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch } from '@/hooks/reduxHooks';
-import { setAccessToken } from '@/redux/slices/authSlice';
 import { Center, Stack, Text, Button, Paper, Image, Loader, Box } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
@@ -12,61 +10,35 @@ export const Route = createFileRoute('/redirect')({
 });
 
 function RedirectPage() {
-  const { isAuthenticated, isLoading, getAccessTokenSilently, error } = useAuth0();
+  const { isAuthenticated, isLoading, error } = useAuth0();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const handleRedirect = async () => {
-      // Wait for Auth0 to finish loading
-      if (isLoading) return;
+    // Wait for Auth0 to finish loading
+    if (isLoading) return;
 
-      // Handle authentication errors
-      if (error) {
-        console.error('[Redirect] Auth0 error:', error);
-        setAuthError(error.message);
-        return;
-      }
+    // Handle authentication errors
+    if (error) {
+      console.error('[Redirect] Auth0 error:', error);
+      setAuthError(error.message);
+      return;
+    }
 
-      // If not authenticated, redirect to home
-      if (!isAuthenticated) {
-        console.log('[Redirect] Not authenticated, redirecting to home');
-        navigate({ to: '/' });
-        return;
-      }
+    // If not authenticated, redirect to home
+    if (!isAuthenticated) {
+      console.log('[Redirect] Not authenticated, redirecting to home');
+      navigate({ to: '/' });
+      return;
+    }
 
-      // Already processing
-      if (isProcessing) return;
-      setIsProcessing(true);
+    // Authenticated - redirect to intended destination
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo') || '/map';
 
-      try {
-        // Get and store the access token
-        console.log('[Redirect] Getting access token...');
-        const token = await getAccessTokenSilently();
-        dispatch(setAccessToken(token));
-        console.log('[Redirect] Token stored successfully');
-
-        // Check if there's a return URL in the app state
-        // This would be set by loginWithRedirect({ appState: { returnTo: ... } })
-        const params = new URLSearchParams(window.location.search);
-        const returnTo = params.get('returnTo') || '/map';
-
-        console.log('[Redirect] Redirecting to:', returnTo);
-        navigate({ to: returnTo });
-      } catch (err) {
-        console.error('[Redirect] Error getting access token:', err);
-        setAuthError(
-          err instanceof Error ? err.message : 'Failed to complete authentication'
-        );
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-
-    handleRedirect();
-  }, [isAuthenticated, isLoading, error, getAccessTokenSilently, navigate, dispatch, isProcessing]);
+    console.log('[Redirect] Authenticated, redirecting to:', returnTo);
+    navigate({ to: returnTo });
+  }, [isAuthenticated, isLoading, error, navigate]);
 
   // Show error state
   if (authError) {

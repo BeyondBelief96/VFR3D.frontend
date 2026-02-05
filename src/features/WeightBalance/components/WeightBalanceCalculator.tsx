@@ -29,7 +29,7 @@ import {
   CgEnvelopeFormat,
   StandaloneCalculationStateDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone } from '@/hooks';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
@@ -56,7 +56,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   standaloneState,
   persistCalculations = false,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isCompact = compact || isPhone;

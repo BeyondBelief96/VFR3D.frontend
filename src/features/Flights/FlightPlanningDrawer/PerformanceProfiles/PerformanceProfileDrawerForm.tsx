@@ -23,7 +23,7 @@ import {
   useSaveAircraftPerformanceProfileMutation,
   useUpdateAircraftPerformanceProfileMutation,
 } from '@/redux/api/vfr3d/performanceProfiles.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { notifyError } from '@/utility/notifications';
 import classes from './PerformanceProfileDrawerForm.module.css';
@@ -75,7 +75,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
   onSuccess,
   isModal = false,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
 
   // Get the unit label for airspeed fields

@@ -20,8 +20,8 @@ import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
+import { useAuth0 } from '@auth0/auth0-react';
 import { ProtectedRoute } from '@/components/Auth';
-import { useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone } from '@/hooks';
 import { useGetFlightsQuery, useDeleteFlightMutation } from '@/redux/api/vfr3d/flights.api';
@@ -214,7 +214,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
 }
 
 function FlightsContent() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
 

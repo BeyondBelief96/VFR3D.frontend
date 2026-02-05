@@ -20,7 +20,8 @@ import {
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
-import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { useGetAircraftQuery, useDeleteAircraftMutation } from '@/redux/api/vfr3d/aircraft.api';
@@ -42,7 +43,7 @@ function AircraftPage() {
 }
 
 function AircraftContent() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();

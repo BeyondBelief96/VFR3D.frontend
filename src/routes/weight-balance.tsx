@@ -21,7 +21,8 @@ import {
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
-import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import {
@@ -52,7 +53,7 @@ function WeightBalancePage() {
 type ViewMode = 'list' | 'create' | 'edit' | 'calculator';
 
 function WeightBalanceContent() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();

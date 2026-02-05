@@ -61,7 +61,7 @@ import {
   CreateRoundTripFlightRequestDto,
   UpdateFlightRequestDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useCalculateNavLogMutation } from '@/redux/api/vfr3d/navlog.api';
 import {
   useCreateFlightMutation,
@@ -90,7 +90,7 @@ enum FlightPlannerStep {
 export const FlightPlanningDrawer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();

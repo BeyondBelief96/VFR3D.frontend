@@ -29,7 +29,7 @@ import {
   updateSelectedWaypointPosition,
 } from '@/redux/slices/selectedEntitySlice';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import AirportWaypointEntity from '@/features/Airports/AirportWaypointEntity';
 
 // Fuel warning threshold (gallons)
@@ -87,7 +87,7 @@ const getWaypointColor = (
 const RouteComponent: React.FC = () => {
   const dispatch = useDispatch();
   const { viewer, camera, scene } = useCesium();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
 
   const { lineColor, pointColor: endPointColor } = useSelector(

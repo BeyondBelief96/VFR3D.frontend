@@ -31,7 +31,7 @@ import {
   useCreateAircraftMutation,
   useUpdateAircraftMutation,
 } from '@/redux/api/vfr3d/aircraft.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { notifyError } from '@/utility/notifications';
 
@@ -150,7 +150,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
   existingAircraft,
   onSuccess,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();

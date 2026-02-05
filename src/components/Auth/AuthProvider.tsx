@@ -1,134 +1,30 @@
-import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
-import { setAccessToken, clearAccessToken, selectAccessToken } from '@/redux/slices/authSlice';
-import { registerTokenGetter, unregisterTokenGetter } from '@/utility/auth';
-
-interface AuthContextValue {
-  /** Whether the user is authenticated */
-  isAuthenticated: boolean;
-  /** Whether authentication is being loaded */
-  isLoading: boolean;
-  /** The current access token (from Redux) */
-  accessToken: string | null;
-  /** The authenticated user object */
-  user: ReturnType<typeof useAuth0>['user'];
-  /** Login function */
-  login: () => Promise<void>;
-  /** Logout function */
-  logout: () => Promise<void>;
-  /** Get a fresh access token */
-  getToken: () => Promise<string>;
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null);
+import { registerAuth0TokenGetter, unregisterAuth0TokenGetter } from '@/utility/auth';
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 /**
- * Provides authentication context to the application.
- * Wraps Auth0 functionality and syncs tokens to Redux.
+ * Registers Auth0's getAccessTokenSilently for use by RTK Query.
+ * This is the bridge between Auth0 (React) and RTK Query (non-React).
  */
 export function AuthProvider({ children }: AuthProviderProps) {
-  const dispatch = useAppDispatch();
-  const storedToken = useAppSelector(selectAccessToken);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { getAccessTokenSilently, isLoading } = useAuth0();
 
-  const {
-    isAuthenticated: auth0IsAuthenticated,
-    isLoading: auth0IsLoading,
-    user,
-    loginWithRedirect,
-    logout: auth0Logout,
-    getAccessTokenSilently,
-  } = useAuth0();
-
-  // Stable callback to get a fresh token - used by both React components and RTK Query
-  const getToken = useCallback(async (): Promise<string> => {
-    try {
-      // Force a fresh token from Auth0 (bypass cache)
-      const token = await getAccessTokenSilently({ cacheMode: 'off' });
-      dispatch(setAccessToken(token));
-      return token;
-    } catch (error) {
-      console.error('[AuthProvider] Error getting token:', error);
-      dispatch(clearAccessToken());
-      throw error;
+  // Register the token getter once Auth0 is ready
+  useEffect(() => {
+    if (!isLoading) {
+      registerAuth0TokenGetter(getAccessTokenSilently);
     }
-  }, [getAccessTokenSilently, dispatch]);
 
-  // Register token getter for use outside React (RTK Query baseQuery)
-  useEffect(() => {
-    registerTokenGetter(getToken);
     return () => {
-      unregisterTokenGetter();
+      unregisterAuth0TokenGetter();
     };
-  }, [getToken]);
+  }, [getAccessTokenSilently, isLoading]);
 
-  // Initialize token on mount when authenticated
-  useEffect(() => {
-    const initializeToken = async () => {
-      if (!auth0IsLoading && auth0IsAuthenticated) {
-        try {
-          // Get token from Auth0's cache first (faster), then store in Redux
-          const token = await getAccessTokenSilently();
-          dispatch(setAccessToken(token));
-        } catch (error) {
-          console.error('[AuthProvider] Error getting initial token:', error);
-          dispatch(clearAccessToken());
-        }
-      } else if (!auth0IsLoading && !auth0IsAuthenticated) {
-        dispatch(clearAccessToken());
-      }
-      setIsInitialized(true);
-    };
-
-    initializeToken();
-  }, [auth0IsLoading, auth0IsAuthenticated, getAccessTokenSilently, dispatch]);
-
-  const login = async () => {
-    await loginWithRedirect({
-      appState: {
-        returnTo: window.location.pathname,
-      },
-    });
-  };
-
-  const logout = async () => {
-    dispatch(clearAccessToken());
-    await auth0Logout({
-      logoutParams: {
-        returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URI,
-      },
-    });
-  };
-
-  const value: AuthContextValue = {
-    isAuthenticated: auth0IsAuthenticated,
-    isLoading: auth0IsLoading || !isInitialized,
-    accessToken: storedToken,
-    user,
-    login,
-    logout,
-    getToken,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-/**
- * Hook to access authentication context.
- * Must be used within an AuthProvider.
- */
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return <>{children}</>;
 }
 
 export default AuthProvider;
