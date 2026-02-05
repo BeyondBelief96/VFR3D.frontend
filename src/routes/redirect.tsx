@@ -5,6 +5,7 @@ import { Center, Stack, Text, Button, Paper, Image, Loader, Box } from '@mantine
 import { FiAlertCircle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
 import { BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, BORDER, ERROR_BG, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/redirect')({
   component: RedirectPage,
@@ -47,16 +48,16 @@ function RedirectPage() {
       <Center
         h="100vh"
         style={{
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-          background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
+          backgroundColor: THEME_COLORS.SURFACE_9,
+          background: `radial-gradient(ellipse at top, ${HIGHLIGHT.LIGHT} 0%, transparent 50%), ${THEME_COLORS.SURFACE_9}`,
         }}
       >
         <Paper
           p="xl"
           radius="lg"
           style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            border: '1px solid rgba(148, 163, 184, 0.15)',
+            backgroundColor: SURFACE.BASE,
+            border: `1px solid ${BORDER.CARD}`,
             width: '100%',
             maxWidth: 400,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
@@ -68,14 +69,14 @@ function RedirectPage() {
             <Box
               p="md"
               style={{
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                backgroundColor: ERROR_BG.LIGHT,
                 borderRadius: 'var(--mantine-radius-md)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
+                border: `1px solid ${ERROR_BG.SUBTLE}`,
                 width: '100%',
               }}
             >
               <Stack align="center" gap="xs">
-                <FiAlertCircle size={32} color="var(--mantine-color-ifrRed-5)" />
+                <FiAlertCircle size={32} color={THEME_COLORS.ERROR} />
                 <Text c="white" size="md" fw={600} ta="center">
                   Authentication Error
                 </Text>
@@ -105,16 +106,16 @@ function RedirectPage() {
     <Center
       h="100vh"
       style={{
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-        background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
+        backgroundColor: THEME_COLORS.SURFACE_9,
+        background: `radial-gradient(ellipse at top, ${HIGHLIGHT.SUBTLE} 0%, transparent 50%), ${THEME_COLORS.SURFACE_9}`,
       }}
     >
       <Paper
         p="xl"
         radius="lg"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          border: '1px solid rgba(148, 163, 184, 0.15)',
+          backgroundColor: SURFACE.BASE,
+          border: `1px solid ${BORDER.CARD}`,
           width: '100%',
           maxWidth: 400,
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',

@@ -14,6 +14,7 @@ import {
 import { AirportSearch } from '@/components/Search';
 import { AirportContextList } from './AirportContextList';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 
 const DEBOUNCE_MS = 300;
 
@@ -207,8 +208,8 @@ export function ObstacleOptions() {
           step={50}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE.INPUT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
             },
           }}

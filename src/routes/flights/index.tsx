@@ -19,6 +19,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
 import { BUTTON_COLORS, BUTTON_GRADIENTS, ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -82,8 +83,8 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
       padding="lg"
       radius="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(148, 163, 184, 0.15)',
+        backgroundColor: SURFACE.CARD,
+        border: `1px solid ${BORDER.CARD}`,
         transition: 'all 0.2s ease',
       }}
     >
@@ -101,13 +102,13 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={18} color="var(--mantine-color-vfr3dBlue-5)" />
+                <FaPlane size={18} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box>
                 <Text c="white" fw={600} size="lg" lineClamp={1}>
@@ -137,7 +138,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         {/* Route Display */}
         <Box
           style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            backgroundColor: SURFACE_INNER.DEFAULT,
             borderRadius: 'var(--mantine-radius-md)',
             padding: 'var(--mantine-spacing-sm)',
           }}
@@ -259,7 +260,7 @@ function FlightsContent() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">
@@ -310,8 +311,8 @@ function FlightsContent() {
             padding="xl"
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Stack align="center" gap="lg" py="xl">
@@ -320,13 +321,13 @@ function FlightsContent() {
                   width: 80,
                   height: 80,
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaPlane size={32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
               </Box>
               <Text c="white" size="lg" fw={500}>
                 No Flights Yet
@@ -381,8 +382,9 @@ function FlightsContent() {
         title="Delete Flight"
         centered
         styles={{
-          header: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
-          body: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
+          header: MODAL_STYLES.header,
+          body: MODAL_STYLES.body,
+          content: MODAL_STYLES.content,
         }}
       >
         <Stack gap="md">

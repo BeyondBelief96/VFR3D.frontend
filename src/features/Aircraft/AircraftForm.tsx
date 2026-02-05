@@ -20,6 +20,7 @@ import {
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaPlane, FaPalette, FaTachometerAlt, FaCog } from 'react-icons/fa';
 import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { INPUT_STYLES, SELECT_STYLES, MODAL_STYLES, SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import {
   AircraftDto,
   AircraftCategory,
@@ -37,16 +38,9 @@ import { useIsPhone, useIsTablet } from '@/hooks';
 import { notifyError } from '@/utility/notifications';
 
 const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
+  ...INPUT_STYLES,
   label: {
-    color: 'var(--mantine-color-gray-4)',
+    ...INPUT_STYLES.label,
     marginBottom: 4,
   },
   description: {
@@ -55,19 +49,13 @@ const inputStyles = {
 };
 
 const selectStyles = {
-  ...inputStyles,
-  dropdown: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
+  ...SELECT_STYLES,
+  label: {
+    ...INPUT_STYLES.label,
+    marginBottom: 4,
   },
-  option: {
-    color: 'white',
-    '&[data-selected]': {
-      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-    '&[data-hovered]': {
-      backgroundColor: 'rgba(59, 130, 246, 0.2)',
-    },
+  description: {
+    color: 'var(--mantine-color-gray-6)',
   },
 };
 
@@ -269,8 +257,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -279,18 +266,11 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: 0,
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -310,8 +290,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
             <Paper
               p={isPhone ? 'sm' : 'md'}
               style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD_HOVER,
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="xs" mb={isPhone ? 'sm' : 'md'}>
@@ -320,13 +300,13 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     width: isPhone ? 24 : 28,
                     height: isPhone ? 24 : 28,
                     borderRadius: '50%',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    backgroundColor: HIGHLIGHT.DEFAULT,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
                 >
-                  <FaPlane size={isPhone ? 10 : 12} color="var(--mantine-color-vfr3dBlue-5)" />
+                  <FaPlane size={isPhone ? 10 : 12} color={THEME_COLORS.PRIMARY} />
                 </Box>
                 <Text size={isPhone ? 'xs' : 'sm'} fw={600} c="white">
                   Basic Information
@@ -384,16 +364,16 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               radius="md"
               styles={{
                 item: {
-                  backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  backgroundColor: SURFACE.CARD_HOVER,
+                  border: `1px solid ${BORDER.SUBTLE}`,
                   '&[data-active]': {
-                    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+                    backgroundColor: SURFACE.CARD,
                   },
                 },
                 control: {
                   padding: isPhone ? 'var(--mantine-spacing-xs) var(--mantine-spacing-sm)' : undefined,
                   '&:hover': {
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    backgroundColor: HIGHLIGHT.LIGHT,
                   },
                 },
                 content: {
@@ -645,7 +625,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
         <Box
           p={isPhone ? 'md' : 'lg'}
           style={{
-            borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+            borderTop: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Stack gap={isPhone ? 'sm' : 'xs'}>

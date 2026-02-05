@@ -64,6 +64,7 @@ import {
   AirportDocumentsContent,
 } from '@/features/Airports/components';
 import { BUTTON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/airports/$airportId')({
   component: AirportDetailPage,
@@ -256,7 +257,7 @@ function AirportDetailContent() {
     <Box
       style={{
         minHeight: 'calc(100vh - 60px)',
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+        backgroundColor: THEME_COLORS.SURFACE_9,
       }}
     >
       {/* Header */}
@@ -362,7 +363,7 @@ function AirportDetailContent() {
         <Stack gap="lg">
           {/* Quick Stats Card - Mobile only */}
           {isPhone && (
-            <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
+            <Card padding="md" radius="md" style={{ backgroundColor: SURFACE.CARD }}>
               <SimpleGrid cols={3} spacing="xs">
                 <StatBox
                   label="Elevation"
@@ -400,8 +401,8 @@ function AirportDetailContent() {
             padding="lg"
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Tabs defaultValue="weather" color="blue">

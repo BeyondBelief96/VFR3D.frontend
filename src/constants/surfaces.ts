@@ -218,6 +218,37 @@ export const ICON_BG = {
   AMBER: `rgba(${COLOR_RGB.AMBER_500}, 0.15)`,
   /** Neutral/gray icon background */
   NEUTRAL: `rgba(${COLOR_RGB.SLATE_400}, 0.1)`,
+  /** Icon background at 10% opacity (for larger containers) */
+  BLUE_LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.1)`,
+} as const;
+
+// =============================================================================
+// GLOW COLORS - Card hover/accent glow effects
+// =============================================================================
+
+/**
+ * Glow effect colors for card hover states and accent highlights
+ * Used with CSS custom properties: style={{ '--card-glow-color': GLOW.BLUE }}
+ */
+export const GLOW = {
+  /** Blue glow */
+  BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.4)`,
+  /** Violet glow */
+  VIOLET: 'rgba(139, 92, 246, 0.4)',
+  /** Cyan glow */
+  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.4)`,
+  /** Orange glow */
+  ORANGE: 'rgba(249, 115, 22, 0.4)',
+  /** Green glow */
+  GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.4)`,
+  /** Pink glow */
+  PINK: 'rgba(236, 72, 153, 0.4)',
+  /** Red glow */
+  RED: `rgba(${COLOR_RGB.RED_500}, 0.4)`,
+  /** Grape glow */
+  GRAPE: 'rgba(190, 75, 219, 0.4)',
+  /** Teal glow */
+  TEAL: 'rgba(20, 184, 166, 0.4)',
 } as const;
 
 // =============================================================================

@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { FiUpload, FiFile, FiAlertCircle } from 'react-icons/fi';
 import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { MODAL_STYLES, SURFACE_INNER, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import { DocumentCategory } from '@/redux/api/vfr3d/dtos';
 import { useUploadAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
@@ -125,8 +126,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -135,18 +135,11 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: isPhone ? '16px' : '20px',
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -162,15 +155,15 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: fileError ? 'var(--mantine-color-red-6)' : 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: fileError ? THEME_COLORS.ERROR : BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
           }}
         />
@@ -189,15 +182,15 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
           }}
         />
@@ -212,23 +205,23 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
             dropdown: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: THEME_COLORS.SURFACE_8,
+              borderColor: BORDER.DEFAULT,
             },
             option: {
               '&[data-selected]': {
-                backgroundColor: 'var(--mantine-color-blue-9)',
+                backgroundColor: THEME_COLORS.PRIMARY,
               },
               '&[data-hovered]': {
-                backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                backgroundColor: HIGHLIGHT.LIGHT,
               },
             },
           }}
@@ -243,15 +236,15 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
           }}
         />

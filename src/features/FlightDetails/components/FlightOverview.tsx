@@ -95,8 +95,8 @@ export function FlightOverview({ flight }: FlightOverviewProps) {
           <Paper
             p="lg"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Group gap="sm" mb="sm">
@@ -119,8 +119,8 @@ export function FlightOverview({ flight }: FlightOverviewProps) {
           <Paper
             p="lg"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Group gap="sm" mb="sm">

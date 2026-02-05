@@ -22,6 +22,7 @@ import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
 import { WaypointType } from '@/redux/api/vfr3d/dtos';
 import { baseApi } from '@/redux/api/vfr3d/vfr3dSlice';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 import {
   FlightHeader,
   FlightOverview,
@@ -111,7 +112,7 @@ function FlightDetailsContent() {
 
   if (isLoading) {
     return (
-      <Center h="calc(100vh - 60px)" bg="var(--mantine-color-vfr3dSurface-9)">
+      <Center h="calc(100vh - 60px)" bg={THEME_COLORS.SURFACE_9}>
         <Loader size="xl" color="blue" />
       </Center>
     );
@@ -133,7 +134,7 @@ function FlightDetailsContent() {
     <Container
       size="xl"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap="lg">
         {/* Header */}
@@ -149,8 +150,8 @@ function FlightDetailsContent() {
           padding="lg"
           radius="md"
           style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.8)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
+            backgroundColor: SURFACE.CARD,
+            border: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Tabs defaultValue="overview" color="blue">

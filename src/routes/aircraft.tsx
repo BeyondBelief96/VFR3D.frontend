@@ -20,6 +20,7 @@ import {
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProtectedRoute } from '@/components/Auth';
@@ -124,7 +125,7 @@ function AircraftContent() {
       size="lg"
       py={isPhone ? 'md' : 'xl'}
       px={isPhone ? 'sm' : undefined}
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap={isPhone ? 'md' : 'lg'}>
         <Group justify="space-between" align="center" wrap="wrap" gap="sm">
@@ -164,8 +165,8 @@ function AircraftContent() {
             padding={isPhone ? 'md' : 'xl'}
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Stack align="center" gap={isPhone ? 'md' : 'lg'} py={isPhone ? 'md' : 'xl'}>
@@ -174,13 +175,13 @@ function AircraftContent() {
                   width: isPhone ? 64 : 80,
                   height: isPhone ? 64 : 80,
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaPlane size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
               </Box>
               <Text c="white" size={isPhone ? 'md' : 'lg'} fw={500}>
                 No Aircraft Configured
@@ -237,8 +238,7 @@ function AircraftContent() {
         fullScreen={isPhone}
         styles={{
           header: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            ...MODAL_STYLES.header,
             padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
@@ -247,18 +247,11 @@ function AircraftContent() {
             fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+            ...MODAL_STYLES.body,
             padding: isPhone ? '16px' : '20px',
           },
-          content: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          },
-          close: {
-            color: 'var(--mantine-color-gray-4)',
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.1)',
-            },
-          },
+          content: MODAL_STYLES.content,
+          close: MODAL_STYLES.close,
         }}
       >
         <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -266,9 +259,9 @@ function AircraftContent() {
             <Box
               p={isPhone ? 'sm' : 'md'}
               style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                backgroundColor: SURFACE_INNER.DEFAULT,
                 borderRadius: 'var(--mantine-radius-md)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="sm" wrap="nowrap">

@@ -7,6 +7,7 @@ import { useIsPhone, useIsTablet } from '@/hooks';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { formatFileSize, getFileIcon, getCategoryColor, getCategoryLabel, formatDate } from './utils';
 import { BUTTON_COLORS } from '@/constants/colors';
+import { MODAL_STYLES, SURFACE_INNER, BORDER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 
 interface DeleteDocumentModalProps {
   opened: boolean;
@@ -58,8 +59,7 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -68,18 +68,11 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: isPhone ? '16px' : '20px',
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -88,9 +81,9 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
           <Box
             p={isPhone ? 'sm' : 'md'}
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
               borderRadius: 'var(--mantine-radius-md)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Group gap="sm" wrap="nowrap">
@@ -100,13 +93,13 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
                   height: 36,
                   minWidth: 36,
                   borderRadius: 'var(--mantine-radius-sm)',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FileIcon size={18} color="var(--mantine-color-blue-5)" />
+                <FileIcon size={18} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box style={{ minWidth: 0, flex: 1 }}>
                 <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'} lineClamp={1}>

@@ -7,6 +7,7 @@ import {
   SigmetHazardType,
   GAirmetHazardType,
 } from '@/redux/slices/airsigmetsSlice';
+import { BORDER } from '@/constants/surfaces';
 
 interface HazardTypeInfo {
   type: SigmetHazardType;
@@ -196,7 +197,7 @@ export function AirsigmetOptions() {
         </Group>
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* G-AIRMETs Section */}
       <Box>
@@ -273,7 +274,7 @@ export function AirsigmetOptions() {
         </Group>
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* Legend Section */}
       <Box>

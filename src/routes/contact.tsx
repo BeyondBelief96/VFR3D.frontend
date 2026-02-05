@@ -15,6 +15,7 @@ import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,
@@ -81,8 +82,8 @@ function ContactPage() {
             padding="xl"
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <form onSubmit={form.onSubmit(handleSubmit)}>
