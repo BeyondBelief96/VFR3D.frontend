@@ -482,11 +482,8 @@ export function LoadingStationsTable({
             </Button>
           </Menu.Target>
           <Menu.Dropdown className={classes.menuDropdown}>
-            <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Pilot', { maxWeight: 300 })}>
-              Pilot
-            </Menu.Item>
-            <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Front Passenger', { maxWeight: 300 })}>
-              Front Passenger
+            <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Front Seats', { maxWeight: 400 })}>
+              Front Seats
             </Menu.Item>
             <Menu.Item onClick={() => handleAddStation(LoadingStationType.Standard, 'Rear Passengers', { maxWeight: 400 })}>
               Rear Passengers
