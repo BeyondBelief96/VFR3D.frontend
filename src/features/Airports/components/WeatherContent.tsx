@@ -20,6 +20,7 @@ import { MetarDto, TafDto } from '@/redux/api/vfr3d/dtos';
 import { getWeatherErrorMessage } from '@/features/Weather';
 import { WeatherFlightCategories } from '@/utility/enums';
 import { SURFACE_INNER } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 const getFlightCategoryColor = (category?: string): string => {
   switch (category) {
@@ -106,7 +107,7 @@ export function WeatherContent({
               </Badge>
             )}
             <Tooltip label="Refresh METAR">
-              <ActionIcon variant="light" color="orange" onClick={onRefreshMetar} loading={isMetarRefreshing}>
+              <ActionIcon variant="light" color={ACTION_ICON_COLORS.REFRESH} onClick={onRefreshMetar} loading={isMetarRefreshing}>
                 <FiRefreshCw size={14} />
               </ActionIcon>
             </Tooltip>
@@ -207,7 +208,7 @@ export function WeatherContent({
             </Text>
           </Group>
           <Tooltip label="Refresh TAF">
-            <ActionIcon variant="light" color="orange" onClick={onRefreshTaf} loading={isTafRefreshing}>
+            <ActionIcon variant="light" color={ACTION_ICON_COLORS.REFRESH} onClick={onRefreshTaf} loading={isTafRefreshing}>
               <FiRefreshCw size={14} />
             </ActionIcon>
           </Tooltip>

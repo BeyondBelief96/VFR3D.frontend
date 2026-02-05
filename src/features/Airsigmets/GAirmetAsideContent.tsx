@@ -3,6 +3,7 @@ import { FiX, FiInfo } from 'react-icons/fi';
 import { GAirmetDto, GAirmetHazardType } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
 import { THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper to get G-AIRMET hazard description
 const getGAirmetHazardDescription = (hazard?: GAirmetHazardType): { name: string; description: string; category: string } => {
@@ -131,7 +132,7 @@ const GAirmetAsideContent: React.FC<GAirmetAsideContentProps> = ({ gairmet, onCl
               </Badge>
             )}
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>

@@ -63,7 +63,7 @@ import {
   AirportInfoContent,
   AirportDocumentsContent,
 } from '@/features/Airports/components';
-import { BUTTON_COLORS } from '@/constants/colors';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/airports/$airportId')({
@@ -529,7 +529,7 @@ function AirportDetailContent() {
                       <Tooltip label="Refresh NOTAMs">
                         <ActionIcon
                           variant="light"
-                          color="orange"
+                          color={ACTION_ICON_COLORS.REFRESH}
                           onClick={() => refetchNotams()}
                           loading={isNotamsFetching}
                         >

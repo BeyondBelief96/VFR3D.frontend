@@ -3,6 +3,7 @@ import { FiX, FiInfo } from 'react-icons/fi';
 import { AirspaceDto, SpecialUseAirspaceDto } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
 import { THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper to get airspace class info (based on FAA definitions)
 const getAirspaceClassInfo = (airspaceClass: string | undefined): { color: string; description: string; requirements: string } => {
@@ -139,7 +140,7 @@ const AirspaceAsideContent: React.FC<AirspaceAsideContentProps> = ({ airspace, o
             </Group>
             <Text fw={600} lineClamp={2}>{airspace.name}</Text>
           </Box>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>

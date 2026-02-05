@@ -2,6 +2,7 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, ScrollArea, Divider } from 
 import { FiX } from 'react-icons/fi';
 import { ObstacleDto, ObstacleLighting, ObstacleMarking } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper functions for obstacle display
 const formatLighting = (lighting?: ObstacleLighting): string => {
@@ -76,7 +77,7 @@ const ObstacleAsideContent: React.FC<ObstacleAsideContentProps> = ({ obstacle, o
               </Badge>
             )}
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>

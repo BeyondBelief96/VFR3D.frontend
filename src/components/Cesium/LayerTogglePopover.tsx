@@ -22,6 +22,7 @@ import {
   GAirmetHazardType,
 } from '@/redux/slices/airsigmetsSlice';
 import { SURFACE, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 const airspaceClasses: AirspaceClass[] = ['B', 'C', 'D'];
 
@@ -98,7 +99,7 @@ export function LayerTogglePopover() {
         <Tooltip label="Layer Settings" position="bottom">
           <ActionIcon
             variant="subtle"
-            color="gray"
+            color={ACTION_ICON_COLORS.SETTINGS}
             size="lg"
             onClick={toggle}
             styles={buttonStyles}

@@ -15,6 +15,7 @@ import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, Loading
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import type { DragHandleProps } from './PayloadStationInput';
 import { STATION_INPUT_STYLES, SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface OilStationInputProps {
   station: LoadingStationDto;
@@ -84,7 +85,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
           <ActionIcon
             size="sm"
             variant="subtle"
-            color="red"
+            color={ACTION_ICON_COLORS.DELETE}
             onClick={() => onRemove(index)}
           >
             <FiTrash2 size={14} />

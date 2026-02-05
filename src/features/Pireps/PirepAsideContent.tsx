@@ -2,6 +2,7 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, Code, ScrollArea } from '@m
 import { FiX } from 'react-icons/fi';
 import { PirepDto } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface PirepAsideContentProps {
   pirep: PirepDto;
@@ -15,7 +16,7 @@ const PirepAsideContent: React.FC<PirepAsideContentProps> = ({ pirep, onClose })
       <Box className={classes.header}>
         <Group justify="space-between" wrap="nowrap">
           <Badge color="violet">PIREP</Badge>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>

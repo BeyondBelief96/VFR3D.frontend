@@ -12,6 +12,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, LoadingGraphFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import { STATION_INPUT_STYLES, SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 export interface DragHandleProps {
   attributes: DraggableAttributes;
@@ -141,7 +142,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
         <ActionIcon
           size="lg"
           variant="subtle"
-          color="red"
+          color={ACTION_ICON_COLORS.DELETE}
           onClick={() => onRemove(index)}
           mt={24}
         >
