@@ -3,6 +3,7 @@ import { Paper, Box, Alert, LoadingOverlay, Text } from '@mantine/core';
 import { notifyError, notifyWarning } from '@/utility/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
 import { useAuth0 } from '@auth0/auth0-react';
+import { SURFACE_INNER, BORDER } from '@/constants/surfaces';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { useIsPhone } from '@/hooks';
 import {
@@ -165,8 +166,8 @@ export function WeightBalanceWizard({
       p={isPhone ? 'sm' : 'lg'}
       radius={isPhone ? 'md' : 'lg'}
       style={{
-        background: 'rgba(15, 23, 42, 0.6)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
+        background: SURFACE_INNER.SECTION,
+        border: `1px solid ${BORDER.DEFAULT}`,
         position: 'relative',
       }}
     >

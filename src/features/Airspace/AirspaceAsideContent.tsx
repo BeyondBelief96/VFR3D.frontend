@@ -2,6 +2,7 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, ScrollArea, Divider } from 
 import { FiX, FiInfo } from 'react-icons/fi';
 import { AirspaceDto, SpecialUseAirspaceDto } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
 
 // Helper to get airspace class info (based on FAA definitions)
 const getAirspaceClassInfo = (airspaceClass: string | undefined): { color: string; description: string; requirements: string } => {
@@ -195,7 +196,7 @@ const AirspaceAsideContent: React.FC<AirspaceAsideContentProps> = ({ airspace, o
           {/* Educational Section */}
           <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
-              <FiInfo size={12} color="var(--mantine-color-blue-5)" />
+              <FiInfo size={12} color={THEME_COLORS.ICON_BLUE} />
               <Text size="xs" fw={500} c="blue.4">
                 What is this?
               </Text>

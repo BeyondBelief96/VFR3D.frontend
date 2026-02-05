@@ -24,6 +24,7 @@ import {
   LoadingGraphFormat,
 } from '@/redux/api/vfr3d/dtos';
 import { ACTION_ICON_COLORS } from '@/constants/colors';
+import { BORDER, HIGHLIGHT, CYAN_BG, YELLOW_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   WEIGHT_UNIT_LABELS,
   DEFAULT_FUEL_WEIGHT,
@@ -262,7 +263,7 @@ export function LoadingStationsTable({
         p="sm"
         mb="xs"
         withBorder
-        style={{ borderColor: 'rgba(148, 163, 184, 0.3)' }}
+        style={{ borderColor: BORDER.STRONG }}
       >
         <Group justify="space-between" mb="xs">
           {getStationTypeBadge(station)}
@@ -465,8 +466,8 @@ export function LoadingStationsTable({
       {/* Payload Stations */}
       {renderSection(
         'Payload Stations',
-        <FaUser size={14} color="var(--mantine-color-blue-5)" />,
-        'rgba(59, 130, 246, 0.3)',
+        <FaUser size={14} color={THEME_COLORS.BLUE_5} />,
+        HIGHLIGHT.STRONG,
         payloadStations,
         <Menu shadow="md" width={180}>
           <Menu.Target>
@@ -505,8 +506,8 @@ export function LoadingStationsTable({
       {/* Fuel Tanks */}
       {renderSection(
         'Fuel Tanks',
-        <FaGasPump size={14} color="var(--mantine-color-cyan-5)" />,
-        'rgba(6, 182, 212, 0.3)',
+        <FaGasPump size={14} color={THEME_COLORS.CYAN_5} />,
+        CYAN_BG.STRONG,
         fuelStations,
         <Menu shadow="md" width={180}>
           <Menu.Target>
@@ -542,8 +543,8 @@ export function LoadingStationsTable({
       {/* Oil */}
       {renderSection(
         'Oil',
-        <FaOilCan size={14} color="var(--mantine-color-yellow-5)" />,
-        'rgba(234, 179, 8, 0.3)',
+        <FaOilCan size={14} color={THEME_COLORS.YELLOW_5} />,
+        YELLOW_BG.STRONG,
         oilStations,
         <Menu shadow="md" width={180}>
           <Menu.Target>

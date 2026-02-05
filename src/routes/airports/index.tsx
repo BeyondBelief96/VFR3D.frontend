@@ -193,7 +193,7 @@ function AirportsContent() {
         {showRecent && (
           <Stack gap="sm">
             <Group gap="xs">
-              <FiClock size={16} color="var(--mantine-color-dimmed)" />
+              <FiClock size={16} color={THEME_COLORS.TEXT_DIMMED} />
               <Text size="sm" c="dimmed" fw={500}>
                 Recent Searches
               </Text>
@@ -214,7 +214,7 @@ function AirportsContent() {
               >
                 <Group justify="space-between" wrap="nowrap">
                   <Group gap="sm" wrap="nowrap">
-                    <FiMapPin size={18} color="var(--mantine-color-blue-4)" />
+                    <FiMapPin size={18} color={THEME_COLORS.BLUE_4} />
                     <Box>
                       <Group gap="xs">
                         <Text size="sm" fw={600} c="white">

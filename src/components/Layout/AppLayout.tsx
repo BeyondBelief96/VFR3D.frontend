@@ -9,6 +9,7 @@ import { SidebarProvider } from './SidebarContext';
 import { EntityInfoAside } from '../Popup';
 import { useAppSelector, useAppDispatch, useIsPhone, useIsTablet } from '@/hooks';
 import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 import classes from './AppLayout.module.css';
 
 const SIDEBAR_WIDTH = 320;
@@ -118,9 +119,9 @@ export function AppLayout() {
         }}
         styles={{
           header: {
-            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            backgroundColor: SURFACE.GLASS,
             backdropFilter: 'blur(12px)',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            borderBottom: `1px solid ${BORDER.SUBTLE}`,
           },
         }}
       >

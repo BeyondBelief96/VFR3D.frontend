@@ -3,6 +3,7 @@ import { Paper, Group, Box, Text, Badge, ActionIcon, Stack, Tooltip } from '@man
 import { FiEdit2, FiTrash2, FiExternalLink } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import { useIsPhone } from '@/hooks';
+import { SURFACE_INNER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   formatFileSize,
   formatDate,
@@ -35,7 +36,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
       <Paper
         p="sm"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+          backgroundColor: SURFACE_INNER.DEFAULT,
           borderRadius: 'var(--mantine-radius-md)',
         }}
       >
@@ -48,13 +49,13 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
                 height: 40,
                 minWidth: 40,
                 borderRadius: 'var(--mantine-radius-sm)',
-                backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                backgroundColor: ICON_BG.BLUE,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FileIcon size={20} color="var(--mantine-color-blue-5)" />
+              <FileIcon size={20} color={THEME_COLORS.PRIMARY} />
             </Box>
             <Box style={{ flex: 1, minWidth: 0 }}>
               <Text size="sm" fw={500} c="white" lineClamp={2}>
@@ -117,7 +118,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
     <Paper
       p="md"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
       }}
     >
@@ -130,13 +131,13 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
               height: 44,
               minWidth: 44,
               borderRadius: 'var(--mantine-radius-sm)',
-              backgroundColor: 'rgba(59, 130, 246, 0.15)',
+              backgroundColor: ICON_BG.BLUE,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <FileIcon size={22} color="var(--mantine-color-blue-5)" />
+            <FileIcon size={22} color={THEME_COLORS.PRIMARY} />
           </Box>
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Text size="sm" fw={500} c="white">

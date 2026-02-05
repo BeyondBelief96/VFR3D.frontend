@@ -18,7 +18,7 @@ import {
   getNotamSeverityColor,
   categorizeNotam,
 } from '../utils/notamAbbreviations';
-import { SURFACE, BORDER, HIGHLIGHT, SHADOW } from '@/constants/surfaces';
+import { SURFACE, BORDER, HIGHLIGHT, SHADOW, THEME_COLORS } from '@/constants/surfaces';
 
 export interface FlightTimeWindow {
   start: Date;
@@ -407,7 +407,7 @@ export function NotamsList({ notamsData, viewMode, flightTimeWindow }: NotamsLis
         <Tooltip
           multiline
           w={280}
-          bg={'var(--mantine-color-vfr3dSurface-9)'}
+          bg={THEME_COLORS.SURFACE_9}
           label={
             <Stack gap={4}>
               <Text size="xs" fw={600}>

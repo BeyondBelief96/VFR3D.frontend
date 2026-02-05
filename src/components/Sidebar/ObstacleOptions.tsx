@@ -14,7 +14,7 @@ import {
 import { AirportSearch } from '@/components/Search';
 import { AirportContextList } from './AirportContextList';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
-import { SURFACE, BORDER } from '@/constants/surfaces';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 const DEBOUNCE_MS = 300;
 
@@ -138,7 +138,7 @@ export function ObstacleOptions() {
           ]}
           color="cyan"
           styles={{
-            markLabel: { color: 'var(--mantine-color-dimmed)' },
+            markLabel: { color: THEME_COLORS.TEXT_DIMMED },
           }}
         />
       </div>
@@ -193,7 +193,7 @@ export function ObstacleOptions() {
           ]}
           color="cyan"
           styles={{
-            markLabel: { color: 'var(--mantine-color-dimmed)' },
+            markLabel: { color: THEME_COLORS.TEXT_DIMMED },
           }}
         />
 

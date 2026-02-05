@@ -1,6 +1,7 @@
 import { Stack, Text, SimpleGrid, Paper, Group, Badge, Center } from '@mantine/core';
 import { FiExternalLink, FiFileText } from 'react-icons/fi';
 import { AirportDiagramsResponseDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 interface AirportDocumentsContentProps {
   chartSupplementUrl?: { pdfUrl: string };
@@ -21,7 +22,7 @@ export function AirportDocumentsContent({
     return (
       <Center py="xl">
         <Stack align="center" gap="xs">
-          <FiFileText size={32} color="var(--mantine-color-dimmed)" />
+          <FiFileText size={32} color={THEME_COLORS.TEXT_DIMMED} />
           <Text c="dimmed" size="sm">
             No documents available for this airport
           </Text>
@@ -98,8 +99,8 @@ function DocumentCard({ title, description, url, compact = false, small = false 
       rel="noopener noreferrer"
       p={compact || small ? 'sm' : 'md'}
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.6)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
+        backgroundColor: SURFACE.CARD_HOVER,
+        border: `1px solid ${BORDER.DEFAULT}`,
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
@@ -107,8 +108,8 @@ function DocumentCard({ title, description, url, compact = false, small = false 
       styles={{
         root: {
           '&:hover': {
-            backgroundColor: 'rgba(37, 99, 235, 0.15)',
-            borderColor: 'rgba(37, 99, 235, 0.4)',
+            backgroundColor: HIGHLIGHT.SUBTLE,
+            borderColor: HIGHLIGHT.STRONG,
           },
         },
       }}
@@ -116,7 +117,7 @@ function DocumentCard({ title, description, url, compact = false, small = false 
       <Group justify="space-between" wrap="nowrap">
         <Stack gap={2}>
           <Group gap="xs">
-            <FiFileText size={small ? 14 : 16} color="var(--mantine-color-blue-4)" />
+            <FiFileText size={small ? 14 : 16} color={THEME_COLORS.ICON_BLUE} />
             <Text size={small ? 'sm' : 'md'} fw={500} c="white">
               {title}
             </Text>
@@ -127,7 +128,7 @@ function DocumentCard({ title, description, url, compact = false, small = false 
             </Text>
           )}
         </Stack>
-        <FiExternalLink size={16} color="var(--mantine-color-blue-4)" style={{ flexShrink: 0 }} />
+        <FiExternalLink size={16} color={THEME_COLORS.ICON_BLUE} style={{ flexShrink: 0 }} />
       </Group>
     </Paper>
   );

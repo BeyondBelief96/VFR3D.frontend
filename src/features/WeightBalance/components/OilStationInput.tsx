@@ -14,6 +14,7 @@ import { FaOilCan } from 'react-icons/fa';
 import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, LoadingGraphFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import type { DragHandleProps } from './PayloadStationInput';
+import { STATION_INPUT_STYLES, SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
 
 interface OilStationInputProps {
   station: LoadingStationDto;
@@ -26,21 +27,6 @@ interface OilStationInputProps {
   dragHandleProps?: DragHandleProps;
 }
 
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-    fontSize: '12px',
-  },
-};
 
 export const OilStationInput: React.FC<OilStationInputProps> = ({
   station,
@@ -72,9 +58,9 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
     <Paper
       p="sm"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
-        borderLeft: '3px solid var(--mantine-color-yellow-6)',
+        borderLeft: `3px solid ${THEME_COLORS.YELLOW_6}`,
       }}
     >
       <Stack gap="xs">
@@ -92,7 +78,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
                 <FiMove size={12} />
               </ActionIcon>
             )}
-            <FaOilCan size={14} color="var(--mantine-color-yellow-6)" />
+            <FaOilCan size={14} color={THEME_COLORS.YELLOW_6} />
             <Text size="xs" c="yellow" fw={500}>Oil</Text>
           </Group>
           <ActionIcon
@@ -111,7 +97,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             placeholder="e.g., Engine Oil"
             value={station.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -121,7 +107,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             onChange={(value) => handleChange('oilCapacityQuarts', value)}
             min={0}
             decimalScale={1}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -132,7 +118,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             min={0}
             decimalScale={2}
             step={0.1}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <div /> {/* Spacer for grid alignment */}
@@ -146,7 +132,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             value={station.point1?.weight ?? ''}
             onChange={(value) => handlePointChange('point1', 'weight', value === '' ? '' : Number(value))}
             min={0}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -155,7 +141,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             value={station.point1?.value ?? ''}
             onChange={(value) => handlePointChange('point1', 'value', value === '' ? '' : Number(value))}
             decimalScale={2}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -164,7 +150,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             value={station.point2?.weight ?? ''}
             onChange={(value) => handlePointChange('point2', 'weight', value === '' ? '' : Number(value))}
             min={0}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -173,7 +159,7 @@ export const OilStationInput: React.FC<OilStationInputProps> = ({
             value={station.point2?.value ?? ''}
             onChange={(value) => handlePointChange('point2', 'value', value === '' ? '' : Number(value))}
             decimalScale={2}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
         </SimpleGrid>

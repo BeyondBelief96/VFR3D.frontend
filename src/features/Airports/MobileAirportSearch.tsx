@@ -16,6 +16,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { FiSearch, FiMapPin } from 'react-icons/fi';
 import { useSearchAirportsQuery } from '@/redux/api/vfr3d/airports.api';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 interface MobileAirportSearchProps {
   placeholder?: string;
@@ -65,8 +66,8 @@ export function MobileAirportSearch({
         rightSection={isFetching ? <Loader size="sm" /> : null}
         styles={{
           input: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-7)',
-            borderColor: 'rgba(148, 163, 184, 0.3)',
+            backgroundColor: THEME_COLORS.SURFACE_7,
+            borderColor: BORDER.STRONG,
             color: 'white',
             fontSize: '1rem',
             height: 52,
@@ -82,8 +83,8 @@ export function MobileAirportSearch({
               padding="md"
               radius="md"
               style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD,
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group justify="center" gap="sm">
@@ -104,8 +105,8 @@ export function MobileAirportSearch({
                   padding="md"
                   radius="md"
                   style={{
-                    backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                    border: '1px solid rgba(148, 163, 184, 0.15)',
+                    backgroundColor: SURFACE.CARD,
+                    border: `1px solid ${BORDER.CARD}`,
                     transition: 'all 0.15s ease',
                   }}
                 >
@@ -149,8 +150,8 @@ export function MobileAirportSearch({
               padding="md"
               radius="md"
               style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD,
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Text size="sm" c="dimmed" ta="center">

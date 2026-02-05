@@ -7,7 +7,7 @@ import {
   SigmetHazardType,
   GAirmetHazardType,
 } from '@/redux/slices/airsigmetsSlice';
-import { BORDER } from '@/constants/surfaces';
+import { BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 interface HazardTypeInfo {
   type: SigmetHazardType;
@@ -175,7 +175,7 @@ export function AirsigmetOptions() {
             withArrow
           >
             <Box style={{ display: 'flex', alignItems: 'center', cursor: 'help' }}>
-              <FiInfo size={12} color="var(--mantine-color-dimmed)" />
+              <FiInfo size={12} color={THEME_COLORS.TEXT_DIMMED} />
             </Box>
           </Tooltip>
         </Group>
@@ -211,7 +211,7 @@ export function AirsigmetOptions() {
             withArrow
           >
             <Box style={{ display: 'flex', alignItems: 'center', cursor: 'help' }}>
-              <FiInfo size={12} color="var(--mantine-color-dimmed)" />
+              <FiInfo size={12} color={THEME_COLORS.TEXT_DIMMED} />
             </Box>
           </Tooltip>
         </Group>

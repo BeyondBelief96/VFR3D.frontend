@@ -20,7 +20,7 @@ import {
   useGetTafForAirportQuery,
 } from '@/redux/api/vfr3d/weather.api';
 import { getFlightCategoryColor } from '@/constants/colors';
-import { SURFACE, SURFACE_INNER, BORDER, SHADOW } from '@/constants/surfaces';
+import { SURFACE, SURFACE_INNER, BORDER, SHADOW, THEME_COLORS } from '@/constants/surfaces';
 
 interface WeatherCardProps {
   icaoId: string;
@@ -162,7 +162,7 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                   {(metar.windDirDegrees || metar.windSpeedKt) && (
                     <Box>
                       <Group gap={4}>
-                        <FiWind size={12} color="var(--mantine-color-gray-5)" />
+                        <FiWind size={12} color={THEME_COLORS.TEXT_MUTED} />
                         <Text size="xs" c="dimmed">Wind</Text>
                       </Group>
                       <Text size="sm" c="white" fw={500}>

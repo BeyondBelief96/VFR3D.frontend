@@ -1,6 +1,7 @@
 import { Stack, Text, Paper, Group, Badge, Center, Loader } from '@mantine/core';
 import { FiFileText } from 'react-icons/fi';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
 import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
 import { AirportDocumentsContent } from '@/features/Airports/components';
@@ -14,7 +15,7 @@ export function DocsPanel({ airports }: DocsPanelProps) {
     return (
       <Center py="xl">
         <Stack align="center" gap="xs">
-          <FiFileText size={32} color="var(--mantine-color-dimmed)" />
+          <FiFileText size={32} color={THEME_COLORS.TEXT_DIMMED} />
           <Text c="dimmed" size="sm">
             No airports in route to show documents for
           </Text>
@@ -55,8 +56,8 @@ function AirportDocsCard({ airport, ident }: AirportDocsCardProps) {
     <Paper
       p="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.6)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        backgroundColor: SURFACE.CARD_HOVER,
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       {/* Airport Header */}

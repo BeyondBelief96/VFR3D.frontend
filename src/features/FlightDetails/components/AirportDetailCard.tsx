@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { FiRefreshCw } from 'react-icons/fi';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, OVERLAY, TAB_STYLES } from '@/constants/surfaces';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
@@ -101,14 +102,14 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
     <Paper
       p="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.6)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        backgroundColor: SURFACE.CARD_HOVER,
+        border: `1px solid ${BORDER.SUBTLE}`,
         position: 'relative',
       }}
     >
       {/* Refreshing overlay */}
       {isRefreshing && !isInitialLoading && (
-        <Overlay color="rgba(15, 23, 42, 0.7)" backgroundOpacity={0.7} blur={1} center zIndex={10}>
+        <Overlay color={OVERLAY.DEFAULT} backgroundOpacity={0.7} blur={1} center zIndex={10}>
           <Stack align="center" gap="xs">
             <Loader size="sm" color="blue" />
             <Text size="xs" c="dimmed">
@@ -189,22 +190,7 @@ export function AirportDetailCard({ airport }: AirportDetailCardProps) {
       <Tabs
         defaultValue="runways"
         color="blue"
-        styles={{
-          list: {
-            borderBottomColor: 'rgba(148, 163, 184, 0.2)',
-          },
-          tab: {
-            color: '#94a3b8',
-            fontWeight: 500,
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.08)',
-              color: '#cbd5e1',
-            },
-            '&[data-active]': {
-              color: 'white',
-            },
-          },
-        }}
+        styles={TAB_STYLES}
       >
         <Tabs.List mb="sm">
           <Tabs.Tab value="runways">

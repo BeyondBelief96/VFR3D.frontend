@@ -5,7 +5,7 @@ import { Center, Stack, Text, Button, Paper, Image, Loader, Box } from '@mantine
 import { FiAlertCircle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
 import { BUTTON_GRADIENTS } from '@/constants/colors';
-import { SURFACE, BORDER, ERROR_BG, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
+import { SURFACE, BORDER, ERROR_BG, HIGHLIGHT, THEME_COLORS, SHADOW } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/redirect')({
   component: RedirectPage,
@@ -60,7 +60,7 @@ function RedirectPage() {
             border: `1px solid ${BORDER.CARD}`,
             width: '100%',
             maxWidth: 400,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            boxShadow: SHADOW.BOX,
           }}
         >
           <Stack align="center" gap="lg">
@@ -118,7 +118,7 @@ function RedirectPage() {
           border: `1px solid ${BORDER.CARD}`,
           width: '100%',
           maxWidth: 400,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          boxShadow: SHADOW.BOX,
         }}
       >
         <Stack align="center" gap="xl">

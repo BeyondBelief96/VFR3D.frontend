@@ -76,7 +76,7 @@ export function NavigationDrawer({
         <Group
           justify="space-between"
           p="md"
-          style={{ borderBottom: '1px solid var(--mantine-color-dark-5)' }}
+          style={{ borderBottom: `1px solid ${THEME_COLORS.DARK_5}` }}
         >
           <Text size="lg" fw={600} c="white">
             Menu

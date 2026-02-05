@@ -58,6 +58,8 @@ export const SURFACE = {
   CARD: `rgba(${COLOR_RGB.SLATE_800}, 0.8)`,
   /** Elevated card/hover state (slate-800 @ 60%) */
   CARD_HOVER: `rgba(${COLOR_RGB.SLATE_800}, 0.6)`,
+  /** Very subtle card background (slate-800 @ 30%) */
+  CARD_SUBTLE: `rgba(${COLOR_RGB.SLATE_800}, 0.3)`,
   /** Nested content areas (slate-900 @ 80%) */
   INSET: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
   /** Input field backgrounds (slate-900 @ 80%) */
@@ -80,6 +82,8 @@ export const SURFACE_INNER = {
   LIGHT: `rgba(${COLOR_RGB.SLATE_900}, 0.4)`,
   /** Section dividers within cards (slate-900 @ 60%) */
   SECTION: `rgba(${COLOR_RGB.SLATE_900}, 0.6)`,
+  /** Darker inner surface for hover states (slate-900 @ 80%) */
+  DARK: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
 } as const;
 
 // =============================================================================
@@ -179,6 +183,18 @@ export const CYAN_BG = {
   SUBTLE: `rgba(${COLOR_RGB.CYAN_500}, 0.1)`,
 } as const;
 
+/**
+ * Yellow accent backgrounds (for oil/warning accents)
+ */
+export const YELLOW_BG = {
+  /** Strong yellow background */
+  STRONG: 'rgba(234, 179, 8, 0.3)',
+  /** Standard yellow background */
+  DEFAULT: 'rgba(234, 179, 8, 0.2)',
+  /** Subtle yellow tint */
+  SUBTLE: 'rgba(234, 179, 8, 0.1)',
+} as const;
+
 // =============================================================================
 // SHADOW & OVERLAY COLORS
 // =============================================================================
@@ -195,6 +211,38 @@ export const SHADOW = {
   LIGHT: `rgba(${COLOR_RGB.BLACK}, 0.3)`,
   /** Subtle shadow */
   SUBTLE: `rgba(${COLOR_RGB.BLACK}, 0.2)`,
+  /** Box shadow for elevated cards */
+  BOX: `0 25px 50px -12px rgba(${COLOR_RGB.BLACK}, 0.5)`,
+  /** Smaller box shadow for hover states */
+  BOX_HOVER: `0 8px 25px rgba(${COLOR_RGB.BLACK}, 0.4)`,
+} as const;
+
+/**
+ * Loading overlay backgrounds
+ */
+export const OVERLAY = {
+  /** Standard loading overlay */
+  DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.7)`,
+  /** Light overlay for busy states */
+  LIGHT: `rgba(${COLOR_RGB.SLATE_900}, 0.5)`,
+  /** Dark overlay for modals */
+  DARK: `rgba(${COLOR_RGB.BLACK}, 0.7)`,
+} as const;
+
+/**
+ * White-based backgrounds (for dark theme contrasts)
+ */
+export const WHITE_BG = {
+  /** Barely visible white overlay */
+  MINIMAL: `rgba(${COLOR_RGB.WHITE}, 0.02)`,
+  /** Very faint white overlay */
+  FAINT: `rgba(${COLOR_RGB.WHITE}, 0.03)`,
+  /** Very subtle white overlay */
+  SUBTLE: `rgba(${COLOR_RGB.WHITE}, 0.1)`,
+  /** Light white overlay */
+  LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.2)`,
+  /** Medium white overlay */
+  MEDIUM: `rgba(${COLOR_RGB.WHITE}, 0.3)`,
 } as const;
 
 // =============================================================================
@@ -363,6 +411,126 @@ export const THEME_COLORS = {
   WARNING: 'var(--mantine-color-warningYellow-5)',
   /** Text colors */
   TEXT: 'var(--mantine-color-gray-3)',
+  TEXT_LIGHT: 'var(--mantine-color-gray-4)',
   TEXT_MUTED: 'var(--mantine-color-gray-5)',
   TEXT_DIMMED: 'var(--mantine-color-dimmed)',
+  TEXT_ERROR: 'var(--mantine-color-red-5)',
+  /** Blue shades */
+  BLUE_4: 'var(--mantine-color-blue-4)',
+  /** Icon accent colors */
+  ICON_PINK: 'var(--mantine-color-pink-5)',
+  ICON_ORANGE: 'var(--mantine-color-orange-5)',
+  ICON_GRAPE: 'var(--mantine-color-grape-5)',
+  ICON_BLUE: 'var(--mantine-color-blue-5)',
+  /** Accent colors for borders */
+  BLUE_5: 'var(--mantine-color-blue-5)',
+  BLUE_6: 'var(--mantine-color-blue-6)',
+  CYAN_5: 'var(--mantine-color-cyan-5)',
+  CYAN_6: 'var(--mantine-color-cyan-6)',
+  YELLOW_5: 'var(--mantine-color-yellow-5)',
+  YELLOW_6: 'var(--mantine-color-yellow-6)',
+  GREEN_6: 'var(--mantine-color-green-6)',
+  RED_6: 'var(--mantine-color-red-6)',
+  DARK_4: 'var(--mantine-color-dark-4)',
+  DARK_5: 'var(--mantine-color-dark-5)',
+  /** Additional shades */
+  BLUE_3: 'var(--mantine-color-blue-3)',
+  CYAN_4: 'var(--mantine-color-cyan-4)',
+  TEAL_4: 'var(--mantine-color-teal-4)',
+  GRAPE_4: 'var(--mantine-color-grape-4)',
+  ORANGE_4: 'var(--mantine-color-orange-4)',
+  GRAY_6: 'var(--mantine-color-gray-6)',
+  IFR_RED: 'var(--mantine-color-ifrRed-5)',
+  LIFR_PURPLE: 'var(--mantine-color-lifrPurple-5)',
+} as const;
+
+/**
+ * Common tab component styles
+ */
+export const TAB_STYLES = {
+  list: {
+    borderBottomColor: BORDER.DEFAULT,
+  },
+  tab: {
+    color: '#94a3b8',
+    fontWeight: 500,
+    '&:hover': {
+      backgroundColor: HIGHLIGHT.LIGHT,
+      color: '#cbd5e1',
+    },
+    '&[data-active]': {
+      color: 'white',
+    },
+  },
+} as const;
+
+/**
+ * Extended input styles with description and error states
+ * For wizard forms and complex input components
+ */
+export const WIZARD_INPUT_STYLES = {
+  input: {
+    backgroundColor: SURFACE.INPUT,
+    borderColor: BORDER.DEFAULT,
+    color: 'white',
+    '&:focus': {
+      borderColor: BORDER.INPUT_FOCUS,
+    },
+  },
+  label: {
+    color: THEME_COLORS.TEXT,
+    marginBottom: 4,
+  },
+  description: {
+    color: THEME_COLORS.TEXT_MUTED,
+    fontSize: '11px',
+  },
+  error: {
+    color: THEME_COLORS.TEXT_ERROR,
+  },
+} as const;
+
+/**
+ * SegmentedControl component styles
+ */
+export const SEGMENTED_CONTROL_STYLES = {
+  root: {
+    backgroundColor: SURFACE.INPUT,
+    border: `1px solid ${BORDER.DEFAULT}`,
+  },
+  label: {
+    color: THEME_COLORS.TEXT_LIGHT,
+    '&[data-active]': {
+      color: 'white',
+    },
+  },
+} as const;
+
+/**
+ * Gradient backgrounds
+ */
+export const GRADIENT = {
+  /** Blue to cyan tip/info gradient */
+  TIP: `linear-gradient(135deg, ${HIGHLIGHT.LIGHT}, ${CYAN_BG.SUBTLE})`,
+  /** Blue to cyan icon background gradient */
+  ICON: `linear-gradient(135deg, ${HIGHLIGHT.DEFAULT} 0%, ${CYAN_BG.DEFAULT} 100%)`,
+} as const;
+
+/**
+ * Compact input styles for loading station inputs
+ */
+export const STATION_INPUT_STYLES = {
+  input: {
+    backgroundColor: SURFACE.INPUT,
+    borderColor: BORDER.DEFAULT,
+    color: 'white',
+    '&:focus': {
+      borderColor: BORDER.INPUT_FOCUS,
+    },
+  },
+  label: {
+    color: THEME_COLORS.TEXT_LIGHT,
+    marginBottom: 4,
+    fontSize: '12px',
+  },
 } as const;

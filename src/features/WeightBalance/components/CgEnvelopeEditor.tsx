@@ -39,6 +39,7 @@ import { CgEnvelopeDto, CgEnvelopePointDto, ArmUnits, WeightUnits, CgEnvelopeFor
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
 import { ACTION_ICON_COLORS, BUTTON_COLORS } from '@/constants/colors';
+import { BORDER } from '@/constants/surfaces';
 
 interface CgEnvelopeEditorProps {
   envelopes: CgEnvelopeDto[];
@@ -356,7 +357,7 @@ export const CgEnvelopeEditor: React.FC<CgEnvelopeEditorProps> = ({
         p="sm"
         mb="xs"
         withBorder
-        style={{ borderColor: 'rgba(148, 163, 184, 0.3)' }}
+        style={{ borderColor: BORDER.STRONG }}
       >
         <Group justify="space-between" mb="xs">
           <Badge size="sm" variant="light" color="gray">

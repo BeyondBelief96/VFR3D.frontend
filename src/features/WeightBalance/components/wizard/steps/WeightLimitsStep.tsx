@@ -4,6 +4,7 @@ import { StepContainer } from '../shared/StepContainer';
 import { EDUCATIONAL_TIPS, FIELD_DESCRIPTIONS } from '../../../constants/wizardContent';
 import { WizardFormState, WizardValidationErrors } from '../../../hooks/useWizardForm';
 import { WEIGHT_UNIT_LABELS, ARM_UNIT_LABELS } from '../../../constants/defaults';
+import { WIZARD_INPUT_STYLES, SURFACE_INNER, BORDER, HIGHLIGHT } from '@/constants/surfaces';
 
 interface WeightLimitsStepProps {
   formState: WizardFormState;
@@ -11,27 +12,6 @@ interface WeightLimitsStepProps {
   onFieldChange: <K extends keyof WizardFormState>(field: K, value: WizardFormState[K]) => void;
 }
 
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-3)',
-    marginBottom: 4,
-  },
-  description: {
-    color: 'var(--mantine-color-gray-5)',
-    fontSize: '11px',
-  },
-  error: {
-    color: 'var(--mantine-color-red-5)',
-  },
-};
 
 export function WeightLimitsStep({
   formState,
@@ -53,8 +33,8 @@ export function WeightLimitsStep({
           p="md"
           radius="md"
           style={{
-            background: 'rgba(15, 23, 42, 0.4)',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            background: SURFACE_INNER.LIGHT,
+            border: `1px solid ${HIGHLIGHT.STRONG}`,
           }}
         >
           <Group gap="sm" mb="md">
@@ -77,7 +57,7 @@ export function WeightLimitsStep({
               required
               min={0}
               rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
 
             <NumberInput
@@ -90,7 +70,7 @@ export function WeightLimitsStep({
               required
               decimalScale={2}
               rightSection={<Text size="xs" c="dimmed">{armLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
           </SimpleGrid>
         </Paper>
@@ -100,8 +80,8 @@ export function WeightLimitsStep({
           p="md"
           radius="md"
           style={{
-            background: 'rgba(15, 23, 42, 0.4)',
-            border: '1px solid rgba(148, 163, 184, 0.2)',
+            background: SURFACE_INNER.LIGHT,
+            border: `1px solid ${BORDER.DEFAULT}`,
           }}
         >
           <Group gap="sm" mb="md">
@@ -122,7 +102,7 @@ export function WeightLimitsStep({
               onChange={(value) => onFieldChange('maxRampWeight', value === '' ? '' : Number(value))}
               min={0}
               rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
 
             <NumberInput
@@ -135,7 +115,7 @@ export function WeightLimitsStep({
               required
               min={0}
               rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
 
             <NumberInput
@@ -146,7 +126,7 @@ export function WeightLimitsStep({
               onChange={(value) => onFieldChange('maxLandingWeight', value === '' ? '' : Number(value))}
               min={0}
               rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
 
             <NumberInput
@@ -157,7 +137,7 @@ export function WeightLimitsStep({
               onChange={(value) => onFieldChange('maxZeroFuelWeight', value === '' ? '' : Number(value))}
               min={0}
               rightSection={<Text size="xs" c="dimmed">{weightLabel}</Text>}
-              styles={inputStyles}
+              styles={WIZARD_INPUT_STYLES}
             />
           </SimpleGrid>
         </Paper>

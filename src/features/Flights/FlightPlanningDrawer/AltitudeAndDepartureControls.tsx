@@ -202,7 +202,7 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
           disabled={disabled}
           styles={{
             label: { color: 'white' },
-            description: { color: 'var(--mantine-color-gray-5)' },
+            description: { color: THEME_COLORS.TEXT_MUTED },
           }}
         />
       </Paper>

@@ -152,7 +152,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiNavigation size={14} color="var(--mantine-color-blue-4)" />
+              <FiNavigation size={14} color={THEME_COLORS.BLUE_4} />
               <Text size="xs" c="dimmed">
                 Distance
               </Text>
@@ -163,7 +163,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiClock size={14} color="var(--mantine-color-cyan-4)" />
+              <FiClock size={14} color={THEME_COLORS.CYAN_4} />
               <Text size="xs" c="dimmed">
                 Time
               </Text>
@@ -174,7 +174,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiDroplet size={14} color="var(--mantine-color-teal-4)" />
+              <FiDroplet size={14} color={THEME_COLORS.TEAL_4} />
               <Text size="xs" c="dimmed">
                 Fuel
               </Text>
@@ -185,7 +185,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiWind size={14} color="var(--mantine-color-grape-4)" />
+              <FiWind size={14} color={THEME_COLORS.GRAPE_4} />
               <Text size="xs" c="dimmed">
                 Wind
               </Text>

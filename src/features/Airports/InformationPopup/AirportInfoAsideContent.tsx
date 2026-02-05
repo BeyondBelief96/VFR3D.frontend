@@ -28,6 +28,7 @@ import {
   useGetTafForAirportQuery,
 } from '@/redux/api/vfr3d/weather.api';
 import { BUTTON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
@@ -276,8 +277,8 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
       <Box
         p="sm"
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          backgroundColor: 'rgba(26, 27, 30, 0.6)',
+          borderTop: `1px solid ${BORDER.LIGHT}`,
+          backgroundColor: SURFACE.CARD_HOVER,
         }}
       >
         <Button

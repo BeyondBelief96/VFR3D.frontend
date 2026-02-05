@@ -16,6 +16,7 @@ import { StepContainer } from '../shared/StepContainer';
 import { EDUCATIONAL_TIPS } from '../../../constants/wizardContent';
 import { WizardFormState, WizardValidationErrors } from '../../../hooks/useWizardForm';
 import { WEIGHT_UNIT_LABELS, ARM_UNIT_LABELS } from '../../../constants/defaults';
+import { SURFACE_INNER, BORDER } from '@/constants/surfaces';
 
 interface ReviewStepProps {
   formState: WizardFormState;
@@ -37,8 +38,8 @@ function Section({ title, icon, onEdit, children }: SectionProps) {
       p="md"
       radius="md"
       style={{
-        background: 'rgba(15, 23, 42, 0.4)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
+        background: SURFACE_INNER.LIGHT,
+        border: `1px solid ${BORDER.DEFAULT}`,
       }}
     >
       <Group justify="space-between" mb="sm">

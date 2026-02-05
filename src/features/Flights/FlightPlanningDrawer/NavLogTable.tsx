@@ -26,7 +26,7 @@ import {
 import { FaPlane, FaGasPump, FaRoute } from 'react-icons/fa';
 import { NavlogResponseDto, NavigationLegDto } from '@/redux/api/vfr3d/dtos';
 import { METRIC_COLORS, getIconBgColor } from '@/constants/colors';
-import { SURFACE, BORDER, ERROR_BG, WARNING_BG } from '@/constants/surfaces';
+import { SURFACE, BORDER, ERROR_BG, WARNING_BG, THEME_COLORS } from '@/constants/surfaces';
 import classes from './NavLogTable.module.css';
 
 interface NavLogTableProps {
@@ -288,9 +288,9 @@ const LegTable: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
             const fuelSeverity = getLegFuelSeverity(leg.remainingFuelGals);
             const rowStyle =
               fuelSeverity === 'critical'
-                ? { backgroundColor: ERROR_BG.DEFAULT, borderLeft: '3px solid var(--mantine-color-ifrRed-5)' }
+                ? { backgroundColor: ERROR_BG.DEFAULT, borderLeft: `3px solid ${THEME_COLORS.ERROR}` }
                 : fuelSeverity === 'warning'
-                  ? { backgroundColor: WARNING_BG.DEFAULT, borderLeft: '3px solid var(--mantine-color-warningYellow-5)' }
+                  ? { backgroundColor: WARNING_BG.DEFAULT, borderLeft: `3px solid ${THEME_COLORS.WARNING}` }
                   : undefined;
 
             return (
@@ -298,7 +298,7 @@ const LegTable: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
                 <Table.Td>
                   <Group gap="xs" wrap="nowrap">
                     {fuelSeverity === 'critical' && (
-                      <FiAlertTriangle size={14} color="var(--mantine-color-ifrRed-5)" />
+                      <FiAlertTriangle size={14} color={THEME_COLORS.ERROR} />
                     )}
                     <Text size="sm" fw={500} c={fuelSeverity === 'critical' ? 'red.4' : 'white'}>
                       {leg.legStartPoint?.name ?? '?'} → {leg.legEndPoint?.name ?? '?'}
@@ -373,12 +373,12 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
           fuelSeverity === 'critical'
             ? {
                 backgroundColor: ERROR_BG.SUBTLE,
-                border: '2px solid var(--mantine-color-ifrRed-5)',
+                border: `2px solid ${THEME_COLORS.ERROR}`,
               }
             : fuelSeverity === 'warning'
               ? {
                   backgroundColor: WARNING_BG.DEFAULT,
-                  border: '2px solid var(--mantine-color-warningYellow-5)',
+                  border: `2px solid ${THEME_COLORS.WARNING}`,
                 }
               : {
                   backgroundColor: SURFACE.CARD_HOVER,
@@ -399,7 +399,7 @@ const LegCards: React.FC<{ legs?: NavigationLegDto[] }> = ({ legs }) => {
             {/* Leg Header */}
             <Group justify="space-between" mb="xs">
               <Group gap="xs">
-                <FaPlane size={12} color={fuelSeverity === 'critical' ? '#ef4444' : 'var(--mantine-color-vfr3dBlue-5)'} />
+                <FaPlane size={12} color={fuelSeverity === 'critical' ? '#ef4444' : THEME_COLORS.PRIMARY} />
                 <Text size="sm" fw={600} c={fuelSeverity === 'critical' ? 'red.4' : 'white'}>
                   {leg.legStartPoint?.name ?? '?'} → {leg.legEndPoint?.name ?? '?'}
                 </Text>

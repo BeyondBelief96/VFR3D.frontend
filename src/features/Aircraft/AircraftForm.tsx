@@ -44,7 +44,7 @@ const inputStyles = {
     marginBottom: 4,
   },
   description: {
-    color: 'var(--mantine-color-gray-6)',
+    color: THEME_COLORS.GRAY_6,
   },
 };
 
@@ -55,7 +55,7 @@ const selectStyles = {
     marginBottom: 4,
   },
   description: {
-    color: 'var(--mantine-color-gray-6)',
+    color: THEME_COLORS.GRAY_6,
   },
 };
 
@@ -385,7 +385,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="identification">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPlane size={isPhone ? 12 : 14} color="var(--mantine-color-cyan-4)" />
+                    <FaPlane size={isPhone ? 12 : 14} color={THEME_COLORS.CYAN_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Identification
                     </Text>
@@ -435,7 +435,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="appearance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPalette size={isPhone ? 12 : 14} color="var(--mantine-color-grape-4)" />
+                    <FaPalette size={isPhone ? 12 : 14} color={THEME_COLORS.GRAPE_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Appearance (Colors)
                     </Text>
@@ -493,7 +493,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="performance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaTachometerAlt size={isPhone ? 12 : 14} color="var(--mantine-color-teal-4)" />
+                    <FaTachometerAlt size={isPhone ? 12 : 14} color={THEME_COLORS.TEAL_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Performance Defaults
                     </Text>
@@ -577,7 +577,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="preferences">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaCog size={isPhone ? 12 : 14} color="var(--mantine-color-orange-4)" />
+                    <FaCog size={isPhone ? 12 : 14} color={THEME_COLORS.ORANGE_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Unit Preferences
                     </Text>

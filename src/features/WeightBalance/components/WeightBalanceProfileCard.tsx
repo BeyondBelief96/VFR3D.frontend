@@ -13,6 +13,7 @@ import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import { useIsPhone } from '@/hooks';
 import { ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE_INNER, BORDER } from '@/constants/surfaces';
 
 interface WeightBalanceProfileCardProps {
   profile: WeightBalanceProfileDto;
@@ -40,9 +41,9 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
     <Paper
       p={isPhone ? 'xs' : 'sm'}
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       <Stack gap="xs">

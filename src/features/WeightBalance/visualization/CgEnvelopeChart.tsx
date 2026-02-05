@@ -17,6 +17,7 @@ import {
   CgEnvelopeFormat,
 } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
+import { SURFACE, SURFACE_INNER, BORDER, COLOR_RGB } from '@/constants/surfaces';
 
 interface CgEnvelopeChartProps {
   envelopePoints: CgEnvelopePointDto[];
@@ -145,8 +146,8 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
         <Box
           p="xs"
           style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            border: '1px solid rgba(148, 163, 184, 0.2)',
+            backgroundColor: SURFACE.POPOVER,
+            border: `1px solid ${BORDER.DEFAULT}`,
             borderRadius: 'var(--mantine-radius-sm)',
           }}
         >
@@ -177,7 +178,7 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
       <Box
         h={height}
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+          backgroundColor: SURFACE_INNER.DEFAULT,
           borderRadius: 'var(--mantine-radius-md)',
           display: 'flex',
           alignItems: 'center',
@@ -250,8 +251,8 @@ export const CgEnvelopeChart: React.FC<CgEnvelopeChartProps> = ({
           <Scatter
             name="Envelope"
             data={[...sortedEnvelopePoints, sortedEnvelopePoints[0]]}
-            line={{ stroke: 'rgba(59, 130, 246, 0.6)', strokeWidth: 2 }}
-            fill="rgba(59, 130, 246, 0.8)"
+            line={{ stroke: `rgba(${COLOR_RGB.BLUE_500}, 0.6)`, strokeWidth: 2 }}
+            fill={`rgba(${COLOR_RGB.BLUE_500}, 0.8)`}
             shape="circle"
             legendType="rect"
           />

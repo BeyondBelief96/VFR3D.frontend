@@ -78,7 +78,7 @@ export function QuickLayerSettings() {
       }}
     >
       <Group gap={4} mb="xs">
-        <FiLayers size={14} color="var(--mantine-color-blue-5)" />
+        <FiLayers size={14} color={THEME_COLORS.ICON_BLUE} />
         <Text size="xs" fw={600} c="white">
           Quick Layer Settings
         </Text>
@@ -106,7 +106,7 @@ export function QuickLayerSettings() {
             padding: '8px 0 16px 0',
           },
           chevron: {
-            color: 'var(--mantine-color-gray-5)',
+            color: THEME_COLORS.TEXT_MUTED,
           },
         }}
       >
@@ -114,7 +114,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="advisories">
           <Accordion.Control>
             <Group gap="xs">
-              <TbAlertTriangle size={14} color="var(--mantine-color-warningYellow-5)" />
+              <TbAlertTriangle size={14} color={THEME_COLORS.WARNING} />
               <Text size="sm" c="white">
                 Weather Advisories
               </Text>
@@ -193,7 +193,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="obstacles">
           <Accordion.Control>
             <Group gap="xs">
-              <GiRadioTower size={14} color="var(--mantine-color-ifrRed-5)" />
+              <GiRadioTower size={14} color={THEME_COLORS.ERROR} />
               <Text size="sm" c="white">
                 Obstacles
               </Text>
@@ -245,7 +245,7 @@ export function QuickLayerSettings() {
                   { value: 10, label: '10x' },
                 ]}
                 styles={{
-                  markLabel: { fontSize: 10, color: 'var(--mantine-color-dimmed)' },
+                  markLabel: { fontSize: 10, color: THEME_COLORS.TEXT_DIMMED },
                 }}
               />
             </Box>
@@ -256,7 +256,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="airspaces">
           <Accordion.Control>
             <Group gap="xs">
-              <FiAlertTriangle size={14} color="var(--mantine-color-pink-5)" />
+              <FiAlertTriangle size={14} color={THEME_COLORS.ICON_PINK} />
               <Text size="sm" c="white">
                 Airspaces
               </Text>
@@ -313,7 +313,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="weather">
           <Accordion.Control>
             <Group gap="xs">
-              <FiCloud size={14} color="var(--mantine-color-vfr3dBlue-5)" />
+              <FiCloud size={14} color={THEME_COLORS.PRIMARY} />
               <Text size="sm" c="white">
                 Weather
               </Text>

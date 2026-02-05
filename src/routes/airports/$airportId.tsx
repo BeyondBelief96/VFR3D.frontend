@@ -314,7 +314,7 @@ function AirportDetailContent() {
                   {airport.arptName}
                 </Text>
                 <Group gap="xs" mt={4}>
-                  <FiMapPin size={14} color="var(--mantine-color-blue-3)" />
+                  <FiMapPin size={14} color={THEME_COLORS.BLUE_3} />
                   <Text c="blue.2" size="sm">
                     {airport.city}, {airport.stateCode}
                   </Text>

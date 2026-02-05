@@ -60,7 +60,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
       </Box>
@@ -82,7 +82,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
       </Box>
@@ -104,7 +104,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
         <Text size="xs" c="white" mt={10}>

@@ -2,6 +2,7 @@ import { Group, Button, Stack } from '@mantine/core';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiSave } from 'react-icons/fi';
 import { useIsPhone } from '@/hooks';
 import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BORDER } from '@/constants/surfaces';
 
 interface WizardNavigationProps {
   currentStep: number;
@@ -32,7 +33,7 @@ export function WizardNavigation({
 
   if (isPhone) {
     return (
-      <Stack gap="xs" mt="md" pt="md" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
+      <Stack gap="xs" mt="md" pt="md" style={{ borderTop: `1px solid ${BORDER.DEFAULT}` }}>
         {/* Primary action buttons */}
         <Group grow gap="xs">
           {!isFirstStep && (
@@ -93,7 +94,7 @@ export function WizardNavigation({
   }
 
   return (
-    <Group justify="space-between" mt="xl" pt="md" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
+    <Group justify="space-between" mt="xl" pt="md" style={{ borderTop: `1px solid ${BORDER.DEFAULT}` }}>
       <Group>
         <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onCancel}>
           Cancel

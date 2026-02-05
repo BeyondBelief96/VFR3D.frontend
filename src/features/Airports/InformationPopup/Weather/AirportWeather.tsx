@@ -6,6 +6,7 @@ import { MetarDto, TafDto } from '@/redux/api/vfr3d/dtos';
 import { FiAlertCircle, FiCloud, FiWind, FiEye, FiThermometer } from 'react-icons/fi';
 import { WeatherFlightCategories } from '@/utility/enums';
 import { getWeatherErrorMessage } from '@/features/Weather';
+import { WHITE_BG, BORDER } from '@/constants/surfaces';
 
 const getFlightCategoryColor = (category?: string): string => {
   switch (category) {
@@ -30,8 +31,8 @@ const MetarSection: React.FC<{ metar: MetarDto }> = ({ metar }) => {
       p="md"
       radius="md"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        backgroundColor: WHITE_BG.FAINT,
+        border: `1px solid ${BORDER.LIGHT}`,
       }}
     >
       <Group justify="space-between" mb="sm">
@@ -139,8 +140,8 @@ const TafSection: React.FC<{ taf: TafDto }> = ({ taf }) => {
       p="md"
       radius="md"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        backgroundColor: WHITE_BG.FAINT,
+        border: `1px solid ${BORDER.LIGHT}`,
       }}
     >
       <Title order={5} mb="sm">TAF (Forecast)</Title>

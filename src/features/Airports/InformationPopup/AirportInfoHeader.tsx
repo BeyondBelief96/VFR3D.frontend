@@ -3,6 +3,7 @@ import { FiX } from 'react-icons/fi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import { AirportDto, DensityAltitudeResponseDto, MetarDto } from '@/redux/api/vfr3d/dtos';
+import { BORDER } from '@/constants/surfaces';
 import { WeatherFlightCategories } from '@/utility/enums';
 
 /**
@@ -64,7 +65,7 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
       p="md"
       style={{
         background: 'linear-gradient(135deg, #1a365d 0%, #2563eb 100%)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: `1px solid ${BORDER.LIGHT}`,
       }}
     >
       <Group justify="space-between" align="flex-start" wrap="nowrap">

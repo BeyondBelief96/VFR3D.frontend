@@ -122,7 +122,7 @@ export function LayerTogglePopover() {
               padding: '6px 8px',
               fontSize: 11,
               '&[data-active]': {
-                color: 'var(--mantine-color-blue-4)',
+                color: THEME_COLORS.BLUE_4,
                 borderColor: THEME_COLORS.PRIMARY,
               },
               '&:hover': {
@@ -252,7 +252,7 @@ export function LayerTogglePopover() {
                 { value: 10, label: '10x' },
               ]}
               styles={{
-                markLabel: { fontSize: 9, color: 'var(--mantine-color-gray-4)' },
+                markLabel: { fontSize: 9, color: THEME_COLORS.TEXT_LIGHT },
               }}
               mb={16}
             />

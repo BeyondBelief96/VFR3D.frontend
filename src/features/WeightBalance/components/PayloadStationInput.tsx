@@ -11,6 +11,7 @@ import { DraggableAttributes } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, LoadingGraphFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
+import { STATION_INPUT_STYLES, SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
 
 export interface DragHandleProps {
   attributes: DraggableAttributes;
@@ -28,21 +29,6 @@ interface PayloadStationInputProps {
   dragHandleProps?: DragHandleProps;
 }
 
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-    fontSize: '12px',
-  },
-};
 
 export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
   station,
@@ -74,9 +60,9 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
     <Paper
       p="sm"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
-        borderLeft: '3px solid var(--mantine-color-blue-6)',
+        borderLeft: `3px solid ${THEME_COLORS.BLUE_6}`,
       }}
     >
       <Group gap="xs" align="flex-start" wrap="nowrap">
@@ -98,7 +84,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           placeholder="e.g., Pilot"
           value={station.name || ''}
           onChange={(e) => handleChange('name', e.target.value)}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1.5, minWidth: 80 }}
         />
@@ -108,7 +94,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           value={station.maxWeight ?? ''}
           onChange={(value) => handleChange('maxWeight', value)}
           min={0}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1, minWidth: 60 }}
         />
@@ -118,7 +104,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           value={station.point1?.weight ?? ''}
           onChange={(value) => handlePointChange('point1', 'weight', value === '' ? '' : Number(value))}
           min={0}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1, minWidth: 60 }}
         />
@@ -128,7 +114,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           value={station.point1?.value ?? ''}
           onChange={(value) => handlePointChange('point1', 'value', value === '' ? '' : Number(value))}
           decimalScale={2}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1, minWidth: 60 }}
         />
@@ -138,7 +124,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           value={station.point2?.weight ?? ''}
           onChange={(value) => handlePointChange('point2', 'weight', value === '' ? '' : Number(value))}
           min={0}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1, minWidth: 60 }}
         />
@@ -148,7 +134,7 @@ export const PayloadStationInput: React.FC<PayloadStationInputProps> = ({
           value={station.point2?.value ?? ''}
           onChange={(value) => handlePointChange('point2', 'value', value === '' ? '' : Number(value))}
           decimalScale={2}
-          styles={inputStyles}
+          styles={STATION_INPUT_STYLES}
           size="xs"
           style={{ flex: 1, minWidth: 60 }}
         />

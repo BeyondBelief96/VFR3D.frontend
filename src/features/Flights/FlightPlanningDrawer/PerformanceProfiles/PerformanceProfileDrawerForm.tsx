@@ -27,6 +27,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { notifyError } from '@/utility/notifications';
 import classes from './PerformanceProfileDrawerForm.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
 
 interface PerformanceProfileDrawerFormProps {
   mode: 'create' | 'edit';
@@ -215,7 +216,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
         <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
             <Box className={classes.iconCircleBlue}>
-              <FaPlane size={12} color="var(--mantine-color-vfr3dBlue-5)" />
+              <FaPlane size={12} color={THEME_COLORS.PRIMARY} />
             </Box>
             <Text size="sm" fw={500} c="white">
               Cruise Performance
@@ -248,10 +249,10 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
         <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
             <Box className={classes.iconCircleGreen}>
-              <FaPlane size={12} color="var(--mantine-color-vfrGreen-5)" />
+              <FaPlane size={12} color={THEME_COLORS.SUCCESS} />
               <FaArrowUp
                 size={8}
-                color="var(--mantine-color-vfrGreen-5)"
+                color={THEME_COLORS.SUCCESS}
                 className={classes.arrowIconUp}
               />
             </Box>
@@ -297,10 +298,10 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
         <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
             <Box className={classes.iconCircleOrange}>
-              <FaPlane size={12} color="var(--mantine-color-orange-5)" />
+              <FaPlane size={12} color={THEME_COLORS.ICON_ORANGE} />
               <FaArrowDown
                 size={8}
-                color="var(--mantine-color-orange-5)"
+                color={THEME_COLORS.ICON_ORANGE}
                 className={classes.arrowIconDown}
               />
             </Box>
@@ -346,7 +347,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
         <Paper p="md" className={classes.sectionPaper}>
           <Group gap="xs" mb="sm">
             <Box className={classes.iconCirclePurple}>
-              <FaGasPump size={12} color="var(--mantine-color-lifrPurple-5)" />
+              <FaGasPump size={12} color={THEME_COLORS.LIFR_PURPLE} />
             </Box>
             <Text size="sm" fw={500} c="white">
               Fuel Planning
