@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate, useLocation } from '@tanstack/react-router';
 import { Center, Loader, Stack, Text } from '@mantine/core';
 import { useTokenRefresh } from '@/hooks/useTokenRefresh';
+import { useAuth } from './AuthProvider';
 import classes from './ProtectedRoute.module.css';
 
 interface ProtectedRouteProps {
@@ -25,7 +26,9 @@ export function ProtectedRoute({
   loadingComponent,
   fallback,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  // Use our custom AuthProvider context which waits for token initialization
+  const { isAuthenticated, isLoading } = useAuth();
+  const { loginWithRedirect } = useAuth0();
   const location = useLocation();
 
   // Initialize token refresh for authenticated users

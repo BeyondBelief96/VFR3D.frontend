@@ -104,7 +104,6 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
             fileName={`${flight.name || 'flight'}-navlog.pdf`}
             style={{ textDecoration: 'none' }}
           >
-            {/* @ts-expect-error - PDFDownloadLink render prop typing issue */}
             {({ loading }: { loading: boolean }) => (
               <Button
                 variant="light"
