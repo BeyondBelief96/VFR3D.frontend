@@ -40,21 +40,6 @@ export const METRIC_COLORS = {
 } as const;
 
 /**
- * Colors for status indicators
- * Use with Mantine props: <Badge color={STATUS_COLORS.SUCCESS}>
- */
-export const STATUS_COLORS = {
-  /** Success, within limits, favorable conditions */
-  SUCCESS: 'vfrGreen.5',
-  /** Warning, caution, approaching limits */
-  WARNING: 'warningYellow.5',
-  /** Error, critical, outside limits */
-  ERROR: 'ifrRed.5',
-  /** Informational, neutral */
-  INFO: 'vfr3dBlue.5',
-} as const;
-
-/**
  * Colors for flight phases/points
  */
 export const FLIGHT_POINT_COLORS = {
@@ -71,7 +56,7 @@ export const FLIGHT_POINT_COLORS = {
 /**
  * Colors for wind conditions (contextual - based on favorability)
  */
-export const WIND_CONDITION_COLORS = {
+const WIND_CONDITION_COLORS = {
   /** Favorable wind (headwind for landing, tailwind for cruise efficiency awareness) */
   FAVORABLE: 'vfrGreen.5',
   /** Unfavorable wind */
@@ -84,7 +69,7 @@ export const WIND_CONDITION_COLORS = {
  * Colors for crosswind severity
  * These are Mantine color names for use with color prop
  */
-export const CROSSWIND_COLORS = {
+const CROSSWIND_COLORS = {
   /** Safe crosswind (≤10 knots) */
   SAFE: 'green',
   /** Caution crosswind (10-15 knots) */
@@ -96,7 +81,7 @@ export const CROSSWIND_COLORS = {
 /**
  * Colors for fuel status
  */
-export const FUEL_STATUS_COLORS = {
+const FUEL_STATUS_COLORS = {
   /** Normal fuel levels */
   NORMAL: 'white',
   /** Low fuel warning */
@@ -109,7 +94,7 @@ export const FUEL_STATUS_COLORS = {
  * Colors for flight categories (VFR, MVFR, IFR, LIFR)
  * These use custom theme colors for proper Mantine integration
  */
-export const FLIGHT_CATEGORY_COLORS = {
+const FLIGHT_CATEGORY_COLORS = {
   VFR: 'vfrGreen',
   MVFR: 'blue',
   IFR: 'ifrRed',
@@ -119,25 +104,11 @@ export const FLIGHT_CATEGORY_COLORS = {
 /**
  * Flight category colors with shade (for more specific usage)
  */
-export const FLIGHT_CATEGORY_COLORS_SHADED = {
+const FLIGHT_CATEGORY_COLORS_SHADED = {
   VFR: 'vfrGreen.5',
   MVFR: 'blue.5',
   IFR: 'ifrRed.5',
   LIFR: 'lifrPurple.5',
-} as const;
-
-/**
- * Colors for Weight & Balance status
- */
-export const WEIGHT_BALANCE_COLORS = {
-  /** Within CG envelope */
-  WITHIN_ENVELOPE: 'vfrGreen.5',
-  /** Outside CG envelope */
-  OUTSIDE_ENVELOPE: 'ifrRed.5',
-  /** Takeoff condition indicator */
-  TAKEOFF: 'vfrGreen.5',
-  /** Landing condition indicator */
-  LANDING: 'vfr3dBlue.5',
 } as const;
 
 // =============================================================================
@@ -189,39 +160,6 @@ export const BUTTON_GRADIENTS = {
 
   /** Success/go gradient - for major confirmations */
   SUCCESS: { from: 'teal', to: 'green', deg: 90 },
-} as const;
-
-/**
- * Recommended button variant by intent
- * Combine with BUTTON_COLORS for complete styling
- */
-export const BUTTON_VARIANTS = {
-  /** Primary CTA: use gradient variant with BUTTON_GRADIENTS.PRIMARY */
-  PRIMARY_CTA: 'gradient',
-
-  /** Standard primary: filled for emphasis */
-  PRIMARY: 'filled',
-
-  /** Secondary actions: subtle to de-emphasize */
-  SECONDARY: 'subtle',
-
-  /** Back navigation: subtle, clearly secondary */
-  BACK: 'subtle',
-
-  /** Next navigation: filled, emphasizes forward progress */
-  NEXT: 'filled',
-
-  /** Destructive: light variant (visible but not overwhelming) */
-  DESTRUCTIVE: 'light',
-
-  /** Destructive emphasized: filled when action is primary */
-  DESTRUCTIVE_FILLED: 'filled',
-
-  /** Confirm: filled to stand out */
-  CONFIRM: 'filled',
-
-  /** Refresh: light, action but not primary */
-  REFRESH: 'light',
 } as const;
 
 /**
@@ -277,40 +215,6 @@ export const ACTION_ICON_COLORS = {
   ZOOM: 'gray',
 } as const;
 
-/**
- * Recommended ActionIcon variant by purpose
- */
-export const ACTION_ICON_VARIANTS = {
-  /** Close/dismiss: subtle, unobtrusive */
-  CLOSE: 'subtle',
-
-  /** Standard actions: light, visible but not dominant */
-  DEFAULT: 'light',
-
-  /** Active/selected state: filled */
-  ACTIVE: 'filled',
-
-  /** Disabled appearance: transparent with low opacity (use disabled prop) */
-  DISABLED: 'transparent',
-} as const;
-
-// =============================================================================
-// CATEGORY COLORS - Use for categorizing/grouping items
-// =============================================================================
-
-export const CATEGORY_COLORS = {
-  /** Aircraft-related items */
-  AIRCRAFT: 'blue',
-  /** Performance-related items */
-  PERFORMANCE: 'teal',
-  /** Appearance/visual items */
-  APPEARANCE: 'grape',
-  /** Settings/configuration items */
-  SETTINGS: 'gray',
-  /** Weather-related items */
-  WEATHER: 'cyan',
-} as const;
-
 // =============================================================================
 // ICON BACKGROUND COLORS - For circular icon containers
 // =============================================================================
@@ -318,7 +222,7 @@ export const CATEGORY_COLORS = {
 /**
  * Standard opacity for icon backgrounds
  */
-export const ICON_BG_OPACITY = 0.15;
+const ICON_BG_OPACITY = 0.15;
 
 /**
  * Get a Mantine CSS variable for icon background with alpha

@@ -37,6 +37,18 @@ export const COLOR_RGB = {
   AMBER_500: '251, 191, 36',
   /** Success green (#22c55e) */
   GREEN_500: '34, 197, 94',
+  /** Violet accent (#8b5cf6) */
+  VIOLET_500: '139, 92, 246',
+  /** Orange accent (#f97316) */
+  ORANGE_500: '249, 115, 22',
+  /** Pink accent (#ec4899) */
+  PINK_500: '236, 72, 153',
+  /** Grape accent (#be4bdb) */
+  GRAPE_500: '190, 75, 219',
+  /** Teal accent (#14b8a6) */
+  TEAL_500: '20, 184, 166',
+  /** Warning yellow (#eab308) */
+  YELLOW_500: '234, 179, 8',
   /** White for light borders */
   WHITE: '255, 255, 255',
   /** Black for shadows */
@@ -68,8 +80,6 @@ export const SURFACE = {
   POPOVER: `rgba(${COLOR_RGB.SLATE_900}, 0.95)`,
   /** Glass/frosted panel effect (slate-900 @ 85%) */
   GLASS: `rgba(${COLOR_RGB.SLATE_900}, 0.85)`,
-  /** Modal backdrop overlay */
-  MODAL_BACKDROP: `rgba(${COLOR_RGB.BLACK}, 0.5)`,
 } as const;
 
 /**
@@ -129,8 +139,6 @@ export const HIGHLIGHT = {
   SUBTLE: `rgba(${COLOR_RGB.BLUE_500}, 0.15)`,
   /** Very light highlight */
   LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.1)`,
-  /** Icon background circle */
-  ICON_BG: `rgba(${COLOR_RGB.BLUE_500}, 0.15)`,
 } as const;
 
 // =============================================================================
@@ -157,8 +165,6 @@ export const ERROR_BG = {
 export const WARNING_BG = {
   /** Standard warning highlight */
   DEFAULT: `rgba(${COLOR_RGB.AMBER_500}, 0.15)`,
-  /** Subtle warning tint */
-  SUBTLE: `rgba(${COLOR_RGB.AMBER_500}, 0.1)`,
 } as const;
 
 /**
@@ -167,8 +173,6 @@ export const WARNING_BG = {
 export const SUCCESS_BG = {
   /** Standard success background */
   DEFAULT: `rgba(${COLOR_RGB.GREEN_500}, 0.15)`,
-  /** Subtle success tint */
-  SUBTLE: `rgba(${COLOR_RGB.GREEN_500}, 0.1)`,
 } as const;
 
 /**
@@ -188,11 +192,7 @@ export const CYAN_BG = {
  */
 export const YELLOW_BG = {
   /** Strong yellow background */
-  STRONG: 'rgba(234, 179, 8, 0.3)',
-  /** Standard yellow background */
-  DEFAULT: 'rgba(234, 179, 8, 0.2)',
-  /** Subtle yellow tint */
-  SUBTLE: 'rgba(234, 179, 8, 0.1)',
+  STRONG: `rgba(${COLOR_RGB.YELLOW_500}, 0.3)`,
 } as const;
 
 // =============================================================================
@@ -203,10 +203,6 @@ export const YELLOW_BG = {
  * Shadow and dark overlay colors
  */
 export const SHADOW = {
-  /** Heavy shadow/overlay */
-  HEAVY: `rgba(${COLOR_RGB.BLACK}, 0.5)`,
-  /** Medium shadow */
-  MEDIUM: `rgba(${COLOR_RGB.BLACK}, 0.4)`,
   /** Light shadow */
   LIGHT: `rgba(${COLOR_RGB.BLACK}, 0.3)`,
   /** Subtle shadow */
@@ -223,10 +219,6 @@ export const SHADOW = {
 export const OVERLAY = {
   /** Standard loading overlay */
   DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.7)`,
-  /** Light overlay for busy states */
-  LIGHT: `rgba(${COLOR_RGB.SLATE_900}, 0.5)`,
-  /** Dark overlay for modals */
-  DARK: `rgba(${COLOR_RGB.BLACK}, 0.7)`,
 } as const;
 
 /**
@@ -237,12 +229,8 @@ export const WHITE_BG = {
   MINIMAL: `rgba(${COLOR_RGB.WHITE}, 0.02)`,
   /** Very faint white overlay */
   FAINT: `rgba(${COLOR_RGB.WHITE}, 0.03)`,
-  /** Very subtle white overlay */
-  SUBTLE: `rgba(${COLOR_RGB.WHITE}, 0.1)`,
   /** Light white overlay */
   LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.2)`,
-  /** Medium white overlay */
-  MEDIUM: `rgba(${COLOR_RGB.WHITE}, 0.3)`,
 } as const;
 
 // =============================================================================
@@ -260,10 +248,6 @@ export const ICON_BG = {
   RED: `rgba(${COLOR_RGB.RED_500}, 0.15)`,
   /** Green icon background */
   GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.15)`,
-  /** Cyan icon background */
-  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.15)`,
-  /** Amber icon background */
-  AMBER: `rgba(${COLOR_RGB.AMBER_500}, 0.15)`,
   /** Neutral/gray icon background */
   NEUTRAL: `rgba(${COLOR_RGB.SLATE_400}, 0.1)`,
   /** Icon background at 10% opacity (for larger containers) */
@@ -282,53 +266,88 @@ export const GLOW = {
   /** Blue glow */
   BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.4)`,
   /** Violet glow */
-  VIOLET: 'rgba(139, 92, 246, 0.4)',
+  VIOLET: `rgba(${COLOR_RGB.VIOLET_500}, 0.4)`,
   /** Cyan glow */
   CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.4)`,
   /** Orange glow */
-  ORANGE: 'rgba(249, 115, 22, 0.4)',
+  ORANGE: `rgba(${COLOR_RGB.ORANGE_500}, 0.4)`,
   /** Green glow */
   GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.4)`,
   /** Pink glow */
-  PINK: 'rgba(236, 72, 153, 0.4)',
+  PINK: `rgba(${COLOR_RGB.PINK_500}, 0.4)`,
   /** Red glow */
   RED: `rgba(${COLOR_RGB.RED_500}, 0.4)`,
   /** Grape glow */
-  GRAPE: 'rgba(190, 75, 219, 0.4)',
+  GRAPE: `rgba(${COLOR_RGB.GRAPE_500}, 0.4)`,
   /** Teal glow */
-  TEAL: 'rgba(20, 184, 166, 0.4)',
+  TEAL: `rgba(${COLOR_RGB.TEAL_500}, 0.4)`,
+} as const;
+
+// =============================================================================
+// CSS VARIABLE REFERENCES - For use in Mantine style props
+// =============================================================================
+
+/**
+ * Theme color CSS variable references
+ * Use these when you need a CSS variable string (not rgba)
+ */
+export const THEME_COLORS = {
+  // --- Primary ---
+  PRIMARY: 'var(--mantine-color-vfr3dBlue-5)',
+  PRIMARY_DARK: 'var(--mantine-color-vfr3dBlue-6)',
+
+  // --- Status ---
+  SUCCESS: 'var(--mantine-color-vfrGreen-5)',
+  ERROR: 'var(--mantine-color-ifrRed-5)',
+  WARNING: 'var(--mantine-color-warningYellow-5)',
+  LIFR_PURPLE: 'var(--mantine-color-lifrPurple-5)',
+
+  // --- Surfaces ---
+  SURFACE_3: 'var(--mantine-color-vfr3dSurface-3)',
+  SURFACE_4: 'var(--mantine-color-vfr3dSurface-4)',
+  SURFACE_7: 'var(--mantine-color-vfr3dSurface-7)',
+  SURFACE_8: 'var(--mantine-color-vfr3dSurface-8)',
+  SURFACE_9: 'var(--mantine-color-vfr3dSurface-9)',
+
+  // --- Text ---
+  TEXT: 'var(--mantine-color-gray-3)',
+  TEXT_LIGHT: 'var(--mantine-color-gray-4)',
+  TEXT_MUTED: 'var(--mantine-color-gray-5)',
+  TEXT_DIMMED: 'var(--mantine-color-dimmed)',
+  TEXT_ERROR: 'var(--mantine-color-red-5)',
+
+  // --- Accent Shades ---
+  BLUE_3: 'var(--mantine-color-blue-3)',
+  BLUE_4: 'var(--mantine-color-blue-4)',
+  BLUE_5: 'var(--mantine-color-blue-5)',
+  BLUE_6: 'var(--mantine-color-blue-6)',
+  CYAN_4: 'var(--mantine-color-cyan-4)',
+  CYAN_5: 'var(--mantine-color-cyan-5)',
+  CYAN_6: 'var(--mantine-color-cyan-6)',
+  TEAL_4: 'var(--mantine-color-teal-4)',
+  GRAPE_4: 'var(--mantine-color-grape-4)',
+  ORANGE_4: 'var(--mantine-color-orange-4)',
+  YELLOW_5: 'var(--mantine-color-yellow-5)',
+  YELLOW_6: 'var(--mantine-color-yellow-6)',
+  GREEN_6: 'var(--mantine-color-green-6)',
+  RED_6: 'var(--mantine-color-red-6)',
+  GRAY_6: 'var(--mantine-color-gray-6)',
+  DARK_4: 'var(--mantine-color-dark-4)',
+  DARK_5: 'var(--mantine-color-dark-5)',
+
+  // --- Sidebar Icon Accents ---
+  ICON_PINK: 'var(--mantine-color-pink-5)',
+  ICON_ORANGE: 'var(--mantine-color-orange-5)',
+  ICON_GRAPE: 'var(--mantine-color-grape-5)',
+  ICON_BLUE: 'var(--mantine-color-blue-5)',
+
+  /** @deprecated Use ERROR instead */
+  IFR_RED: 'var(--mantine-color-ifrRed-5)',
 } as const;
 
 // =============================================================================
 // COMPONENT-SPECIFIC STYLES - Common style patterns
 // =============================================================================
-
-/**
- * Common card styles - use spread operator: { ...CARD_STYLES.DEFAULT }
- */
-export const CARD_STYLES = {
-  /** Standard card with background and border */
-  DEFAULT: {
-    backgroundColor: SURFACE.CARD,
-    border: `1px solid ${BORDER.CARD}`,
-  },
-  /** Card with hover interaction */
-  INTERACTIVE: {
-    backgroundColor: SURFACE.CARD,
-    border: `1px solid ${BORDER.CARD}`,
-    transition: 'all 0.2s ease',
-  },
-  /** Inset/nested card */
-  INSET: {
-    backgroundColor: SURFACE_INNER.DEFAULT,
-    borderRadius: 'var(--mantine-radius-md)',
-  },
-  /** Selected/highlighted card */
-  SELECTED: {
-    backgroundColor: HIGHLIGHT.SUBTLE,
-    border: `2px solid var(--mantine-color-vfr3dBlue-5)`,
-  },
-} as const;
 
 /**
  * Common input field styles
@@ -343,7 +362,7 @@ export const INPUT_STYLES = {
     },
   },
   label: {
-    color: 'var(--mantine-color-gray-4)',
+    color: THEME_COLORS.TEXT_LIGHT,
   },
 } as const;
 
@@ -352,17 +371,17 @@ export const INPUT_STYLES = {
  */
 export const MODAL_STYLES = {
   header: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+    backgroundColor: THEME_COLORS.SURFACE_8,
     borderBottom: `1px solid ${BORDER.SUBTLE}`,
   },
   body: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+    backgroundColor: THEME_COLORS.SURFACE_8,
   },
   content: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+    backgroundColor: THEME_COLORS.SURFACE_8,
   },
   close: {
-    color: 'var(--mantine-color-gray-4)',
+    color: THEME_COLORS.TEXT_LIGHT,
     '&:hover': {
       backgroundColor: HIGHLIGHT.LIGHT,
     },
@@ -375,73 +394,18 @@ export const MODAL_STYLES = {
 export const SELECT_STYLES = {
   ...INPUT_STYLES,
   dropdown: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+    backgroundColor: THEME_COLORS.SURFACE_8,
     borderColor: BORDER.DEFAULT,
   },
   option: {
     color: 'white',
     '&[data-selected]': {
-      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
+      backgroundColor: THEME_COLORS.PRIMARY,
     },
     '&[data-hovered]': {
       backgroundColor: HIGHLIGHT.DEFAULT,
     },
   },
-} as const;
-
-// =============================================================================
-// CSS VARIABLE REFERENCES - For use in Mantine style props
-// =============================================================================
-
-/**
- * Theme color CSS variable references
- * Use these when you need a CSS variable string (not rgba)
- */
-export const THEME_COLORS = {
-  /** Primary blue */
-  PRIMARY: 'var(--mantine-color-vfr3dBlue-5)',
-  PRIMARY_DARK: 'var(--mantine-color-vfr3dBlue-6)',
-  /** Surface colors from theme */
-  SURFACE_7: 'var(--mantine-color-vfr3dSurface-7)',
-  SURFACE_8: 'var(--mantine-color-vfr3dSurface-8)',
-  SURFACE_9: 'var(--mantine-color-vfr3dSurface-9)',
-  /** Status colors */
-  SUCCESS: 'var(--mantine-color-vfrGreen-5)',
-  ERROR: 'var(--mantine-color-ifrRed-5)',
-  WARNING: 'var(--mantine-color-warningYellow-5)',
-  /** Text colors */
-  TEXT: 'var(--mantine-color-gray-3)',
-  TEXT_LIGHT: 'var(--mantine-color-gray-4)',
-  TEXT_MUTED: 'var(--mantine-color-gray-5)',
-  TEXT_DIMMED: 'var(--mantine-color-dimmed)',
-  TEXT_ERROR: 'var(--mantine-color-red-5)',
-  /** Blue shades */
-  BLUE_4: 'var(--mantine-color-blue-4)',
-  /** Icon accent colors */
-  ICON_PINK: 'var(--mantine-color-pink-5)',
-  ICON_ORANGE: 'var(--mantine-color-orange-5)',
-  ICON_GRAPE: 'var(--mantine-color-grape-5)',
-  ICON_BLUE: 'var(--mantine-color-blue-5)',
-  /** Accent colors for borders */
-  BLUE_5: 'var(--mantine-color-blue-5)',
-  BLUE_6: 'var(--mantine-color-blue-6)',
-  CYAN_5: 'var(--mantine-color-cyan-5)',
-  CYAN_6: 'var(--mantine-color-cyan-6)',
-  YELLOW_5: 'var(--mantine-color-yellow-5)',
-  YELLOW_6: 'var(--mantine-color-yellow-6)',
-  GREEN_6: 'var(--mantine-color-green-6)',
-  RED_6: 'var(--mantine-color-red-6)',
-  DARK_4: 'var(--mantine-color-dark-4)',
-  DARK_5: 'var(--mantine-color-dark-5)',
-  /** Additional shades */
-  BLUE_3: 'var(--mantine-color-blue-3)',
-  CYAN_4: 'var(--mantine-color-cyan-4)',
-  TEAL_4: 'var(--mantine-color-teal-4)',
-  GRAPE_4: 'var(--mantine-color-grape-4)',
-  ORANGE_4: 'var(--mantine-color-orange-4)',
-  GRAY_6: 'var(--mantine-color-gray-6)',
-  IFR_RED: 'var(--mantine-color-ifrRed-5)',
-  LIFR_PURPLE: 'var(--mantine-color-lifrPurple-5)',
 } as const;
 
 /**
@@ -452,11 +416,11 @@ export const TAB_STYLES = {
     borderBottomColor: BORDER.DEFAULT,
   },
   tab: {
-    color: '#94a3b8',
+    color: THEME_COLORS.SURFACE_4,
     fontWeight: 500,
     '&:hover': {
       backgroundColor: HIGHLIGHT.LIGHT,
-      color: '#cbd5e1',
+      color: THEME_COLORS.SURFACE_3,
     },
     '&[data-active]': {
       color: 'white',

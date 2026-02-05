@@ -22,7 +22,8 @@
       "WebSearch",
       "WebFetch(domain:vite.dev)",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(npx vite --version)"
+      "Bash(npx vite --version)",
+      "Bash(comm:*)"
     ]
   }
 }
