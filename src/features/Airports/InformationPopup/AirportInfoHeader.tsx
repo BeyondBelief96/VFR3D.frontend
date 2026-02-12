@@ -1,8 +1,9 @@
-import { Box, Group, Stack, Text, Title, Badge, ActionIcon, Button, Loader } from '@mantine/core';
-import { FiX, FiExternalLink } from 'react-icons/fi';
+import { Box, Group, Stack, Text, Title, Badge, ActionIcon, Loader } from '@mantine/core';
+import { FiX } from 'react-icons/fi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import { AirportDto, DensityAltitudeResponseDto, MetarDto } from '@/redux/api/vfr3d/dtos';
+import { BORDER } from '@/constants/surfaces';
 import { WeatherFlightCategories } from '@/utility/enums';
 
 /**
@@ -36,10 +37,6 @@ interface AirportHeaderProps {
   metar?: MetarDto;
   metarError: FetchBaseQueryError | SerializedError | undefined;
   handleClose: () => void;
-  chartSupplementUrl?: { pdfUrl: string };
-  chartSupplementError?: FetchBaseQueryError | SerializedError;
-  airportDiagramUrl?: { pdfUrl: string | undefined };
-  airportDiagramError?: FetchBaseQueryError | SerializedError;
   densityAltitude?: DensityAltitudeResponseDto;
   isDensityAltitudeLoading?: boolean;
 }
@@ -49,17 +46,10 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
   metar,
   metarError,
   handleClose,
-  chartSupplementUrl,
-  chartSupplementError,
-  airportDiagramUrl,
-  airportDiagramError,
   densityAltitude,
   isDensityAltitudeLoading,
 }) => {
   const hasValidMetar = metar && !metarError;
-  const hasChartSupplement = chartSupplementUrl?.pdfUrl && !chartSupplementError;
-  const hasAirportDiagram = airportDiagramUrl?.pdfUrl && !airportDiagramError;
-  const hasDocuments = hasChartSupplement || hasAirportDiagram;
 
   // Determine if density altitude is concerning - use bright colors for visibility on dark background
   const getDensityAltitudeColor = () => {
@@ -75,7 +65,7 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
       p="md"
       style={{
         background: 'linear-gradient(135deg, #1a365d 0%, #2563eb 100%)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: `1px solid ${BORDER.LIGHT}`,
       }}
     >
       <Group justify="space-between" align="flex-start" wrap="nowrap">
@@ -155,38 +145,6 @@ const AirportInfoHeader: React.FC<AirportHeaderProps> = ({
           <FiX size={20} />
         </ActionIcon>
       </Group>
-
-      {/* Document buttons */}
-      {hasDocuments && (
-        <Group gap="xs" mt="md" pt="md" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
-          {hasChartSupplement && (
-            <Button
-              component="a"
-              href={chartSupplementUrl.pdfUrl}
-              target="_blank"
-              size="xs"
-              variant="white"
-              color="dark"
-              leftSection={<FiExternalLink size={14} />}
-            >
-              Chart Supplement
-            </Button>
-          )}
-          {hasAirportDiagram && airportDiagramUrl.pdfUrl && (
-            <Button
-              component="a"
-              href={airportDiagramUrl.pdfUrl}
-              target="_blank"
-              size="xs"
-              variant="white"
-              color="dark"
-              leftSection={<FiExternalLink size={14} />}
-            >
-              Airport Diagram
-            </Button>
-          )}
-        </Group>
-      )}
     </Box>
   );
 };

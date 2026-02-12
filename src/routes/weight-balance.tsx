@@ -21,7 +21,8 @@ import {
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiArrowLeft, FiAlertTriangle } from 'react-icons/fi';
 import { FaBalanceScale, FaPlane } from 'react-icons/fa';
-import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import {
@@ -36,6 +37,8 @@ import {
   WeightBalanceCalculator,
 } from '@/features/WeightBalance';
 import { WeightBalanceWizard } from '@/features/WeightBalance/components/wizard/WeightBalanceWizard';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/weight-balance')({
   component: WeightBalancePage,
@@ -52,7 +55,7 @@ function WeightBalancePage() {
 type ViewMode = 'list' | 'create' | 'edit' | 'calculator';
 
 function WeightBalanceContent() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();
@@ -192,14 +195,14 @@ function WeightBalanceContent() {
         size="xl"
         py={isPhone ? 'md' : 'xl'}
         px={isPhone ? 'sm' : undefined}
-        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
       >
         <Stack gap={isPhone ? 'md' : 'lg'}>
           <Group justify="space-between" align="center" wrap="wrap" gap="sm">
             <Group gap="sm" wrap={isPhone ? 'wrap' : 'nowrap'}>
               <Button
                 variant="subtle"
-                color="gray"
+                color={BUTTON_COLORS.BACK}
                 leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
                 onClick={handleCancel}
                 size={isPhone ? 'sm' : 'md'}
@@ -230,13 +233,13 @@ function WeightBalanceContent() {
         size="xl"
         py={isPhone ? 'md' : 'xl'}
         px={isPhone ? 'sm' : undefined}
-        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+        style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
       >
         <Stack gap={isPhone ? 'md' : 'lg'}>
           <Group justify="space-between" align="center">
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.BACK}
               leftSection={<FiArrowLeft size={isPhone ? 14 : 16} />}
               onClick={handleCancel}
               size={isPhone ? 'sm' : 'md'}
@@ -249,8 +252,8 @@ function WeightBalanceContent() {
             padding={isPhone ? 'sm' : 'xl'}
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <WeightBalanceCalculator
@@ -272,13 +275,13 @@ function WeightBalanceContent() {
       size="xl"
       py={isPhone ? 'md' : 'xl'}
       px={isPhone ? 'sm' : undefined}
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap={isPhone ? 'md' : 'lg'}>
         <Group justify="space-between" align="flex-start" wrap="wrap" gap={isPhone ? 'xs' : 'md'}>
           <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
             {!isPhone && (
-              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={BUTTON_GRADIENTS.PRIMARY}>
                 <FaBalanceScale size={24} />
               </ThemeIcon>
             )}
@@ -296,8 +299,7 @@ function WeightBalanceContent() {
           <Group gap={isPhone ? 'xs' : 'sm'} wrap="wrap" grow={isPhone} style={isPhone ? { width: '100%' } : undefined}>
             <Button
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
-              color="blue"
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               size={isPhone ? 'sm' : 'md'}
               leftSection={<FaBalanceScale size={isPhone ? 12 : 14} />}
               onClick={() => {
@@ -312,7 +314,7 @@ function WeightBalanceContent() {
               leftSection={<FiPlus size={isPhone ? 14 : 16} />}
               size={isPhone ? 'sm' : 'md'}
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               onClick={handleCreateClick}
             >
               New Profile
@@ -341,8 +343,8 @@ function WeightBalanceContent() {
             padding={isPhone ? 'md' : 'xl'}
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Stack align="center" gap={isPhone ? 'md' : 'lg'} py={isPhone ? 'md' : 'xl'}>
@@ -351,13 +353,13 @@ function WeightBalanceContent() {
                   width: isPhone ? 64 : 80,
                   height: isPhone ? 64 : 80,
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaBalanceScale size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaBalanceScale size={isPhone ? 24 : 32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
               </Box>
               <Text c="white" size={isPhone ? 'md' : 'lg'} fw={500}>
                 No Weight & Balance Profiles
@@ -368,7 +370,7 @@ function WeightBalanceContent() {
               </Text>
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
                 size={isPhone ? 'sm' : 'md'}
@@ -388,21 +390,21 @@ function WeightBalanceContent() {
             multiple
             styles={{
               item: {
-                backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD,
+                border: `1px solid ${BORDER.SUBTLE}`,
                 borderRadius: 'var(--mantine-radius-md)',
                 '&[data-active]': {
-                  backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                  backgroundColor: SURFACE.INSET,
                 },
               },
               control: {
                 padding: isPhone ? 'var(--mantine-spacing-xs) var(--mantine-spacing-sm)' : undefined,
                 '&:hover': {
-                  backgroundColor: 'rgba(148, 163, 184, 0.05)',
+                  backgroundColor: BORDER.MINIMAL,
                 },
               },
               chevron: {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
               content: {
                 padding: isPhone ? 'var(--mantine-spacing-xs)' : undefined,
@@ -467,8 +469,7 @@ function WeightBalanceContent() {
         fullScreen={isPhone}
         styles={{
           header: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            ...MODAL_STYLES.header,
             padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
@@ -477,18 +478,11 @@ function WeightBalanceContent() {
             fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+            ...MODAL_STYLES.body,
             padding: isPhone ? '16px' : '20px',
           },
-          content: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          },
-          close: {
-            color: 'var(--mantine-color-gray-4)',
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.1)',
-            },
-          },
+          content: MODAL_STYLES.content,
+          close: MODAL_STYLES.close,
         }}
       >
         <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -496,9 +490,9 @@ function WeightBalanceContent() {
             <Box
               p={isPhone ? 'sm' : 'md'}
               style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                backgroundColor: SURFACE_INNER.DEFAULT,
                 borderRadius: 'var(--mantine-radius-md)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="sm" wrap="nowrap">
@@ -540,14 +534,14 @@ function WeightBalanceContent() {
           <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.SECONDARY}
               onClick={() => setDeleteModalOpen(false)}
               size={isPhone ? 'sm' : 'md'}
             >
               Cancel
             </Button>
             <Button
-              color="red"
+              color={BUTTON_COLORS.DESTRUCTIVE}
               onClick={handleDeleteConfirm}
               loading={isDeleting}
               size={isPhone ? 'sm' : 'md'}

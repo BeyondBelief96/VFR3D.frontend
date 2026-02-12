@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { FiAlertTriangle, FiInfo, FiClock, FiRefreshCw } from 'react-icons/fi';
 import { useIsPhone } from '@/hooks';
+import { SURFACE, BORDER, WHITE_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   FlightDto,
   WaypointType,
@@ -262,7 +263,7 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
             </Group>
             {flightTimeDisplay && (
               <Group gap="xs">
-                <FiClock size={12} color="var(--mantine-color-blue-5)" />
+                <FiClock size={12} color={THEME_COLORS.PRIMARY} />
                 <Text size="xs" c="blue.4">
                   {isPhone ? flightTimeDisplay : `Flight window: ${flightTimeDisplay}`}
                 </Text>
@@ -391,13 +392,13 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
                         styles={{
                           root: {
                             backgroundColor: isActive
-                              ? 'var(--mantine-color-blue-6)'
-                              : 'rgba(30, 41, 59, 0.6)',
+                              ? THEME_COLORS.PRIMARY_DARK
+                              : SURFACE.CARD_HOVER,
                             borderColor: isActive
-                              ? 'var(--mantine-color-blue-5)'
-                              : 'rgba(148, 163, 184, 0.3)',
+                              ? THEME_COLORS.PRIMARY
+                              : BORDER.STRONG,
                             borderWidth: isActive ? '2px' : '1px',
-                            color: isActive ? 'white' : 'var(--mantine-color-gray-4)',
+                            color: isActive ? 'white' : THEME_COLORS.TEXT_LIGHT,
                             fontWeight: isActive ? 700 : 500,
                             flexShrink: 0,
                           },
@@ -409,7 +410,7 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
                             color={counts?.critical > 0 ? 'red' : isActive ? 'blue' : 'gray'}
                             styles={{
                               root: isActive ? {
-                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                backgroundColor: WHITE_BG.LIGHT,
                                 color: 'white',
                               } : {},
                             }}

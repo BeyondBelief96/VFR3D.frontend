@@ -14,6 +14,8 @@ import {
   Divider,
 } from '@mantine/core';
 import { FiSave, FiFile } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { MODAL_STYLES, SURFACE_INNER, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import { DocumentCategory, AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import {
   useGetAircraftDocumentQuery,
@@ -21,7 +23,7 @@ import {
   useReplaceAircraftDocumentMutation,
 } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess, notifyWarning } from '@/utility/notifications';
 import {
   getCategoryLabel,
   ACCEPTED_EXTENSIONS,
@@ -114,11 +116,7 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
     if (!document?.id) return;
 
     if (!displayName.trim()) {
-      notifications.show({
-        title: 'Validation Error',
-        message: 'Please enter a display name',
-        color: 'red',
-      });
+      notifyWarning('Validation Error', 'Please enter a display name');
       return;
     }
 
@@ -145,23 +143,15 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         },
       }).unwrap();
 
-      notifications.show({
-        title: 'Document Updated',
-        message: file
+      notifySuccess(
+        'Document Updated',
+        file
           ? 'Document file and metadata have been updated.'
-          : 'Document metadata has been updated.',
-        color: 'green',
-      });
-
+          : 'Document metadata has been updated.'
+      );
       onClose();
-    } catch (error: unknown) {
-      const err = error as { data?: { title?: string; detail?: string } };
-      const errorMessage = err?.data?.title || err?.data?.detail || 'Update failed';
-      notifications.show({
-        title: 'Update Failed',
-        message: errorMessage,
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'update document' });
     }
   };
 
@@ -178,8 +168,7 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -188,18 +177,11 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: isPhone ? '16px' : '20px',
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -208,9 +190,9 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           <Box
             p={isPhone ? 'sm' : 'md'}
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
               borderRadius: 'var(--mantine-radius-md)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Group gap="sm" wrap="nowrap">
@@ -220,13 +202,13 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
                   height: 36,
                   minWidth: 36,
                   borderRadius: 'var(--mantine-radius-sm)',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FileIcon size={18} color="var(--mantine-color-blue-5)" />
+                <FileIcon size={18} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box style={{ minWidth: 0, flex: 1 }}>
                 <Text c="dimmed" size="xs">
@@ -257,15 +239,15 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
           }}
         />
@@ -280,23 +262,23 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
             dropdown: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: THEME_COLORS.SURFACE_8,
+              borderColor: BORDER.DEFAULT,
             },
             option: {
               '&[data-selected]': {
-                backgroundColor: 'var(--mantine-color-blue-9)',
+                backgroundColor: THEME_COLORS.PRIMARY,
               },
               '&[data-hovered]': {
-                backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                backgroundColor: HIGHLIGHT.LIGHT,
               },
             },
           }}
@@ -311,15 +293,15 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           size={isPhone ? 'md' : 'sm'}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
             label: {
-              color: 'var(--mantine-color-gray-3)',
+              color: THEME_COLORS.TEXT,
             },
           }}
         />
@@ -327,10 +309,10 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         <Divider
           label="Replace File (Optional)"
           labelPosition="center"
-          color="rgba(148, 163, 184, 0.2)"
+          color={BORDER.DEFAULT}
           styles={{
             label: {
-              color: 'var(--mantine-color-gray-5)',
+              color: THEME_COLORS.TEXT_MUTED,
               fontSize: isPhone ? '0.75rem' : '0.8rem',
             },
           }}
@@ -347,11 +329,11 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
           clearable
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              borderColor: fileError ? 'var(--mantine-color-red-6)' : 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
+              borderColor: fileError ? THEME_COLORS.ERROR : BORDER.DEFAULT,
               color: 'white',
               '&::placeholder': {
-                color: 'var(--mantine-color-gray-5)',
+                color: THEME_COLORS.TEXT_MUTED,
               },
             },
           }}
@@ -363,12 +345,12 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         </Text>
 
         <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone} mt="sm">
-          <Button variant="subtle" color="gray" onClick={onClose} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onClose} size={isPhone ? 'md' : 'sm'}>
             Cancel
           </Button>
           <Button
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
             onClick={handleSubmit}
             loading={isLoading}
             leftSection={<FiSave size={isPhone ? 16 : 14} />}

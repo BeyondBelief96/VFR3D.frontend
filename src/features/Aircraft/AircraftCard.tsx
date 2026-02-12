@@ -14,15 +14,17 @@ import {
   Modal,
   Alert,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { Link } from '@tanstack/react-router';
 import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiPlus, FiAlertTriangle, FiExternalLink } from 'react-icons/fi';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, THEME_COLORS, MODAL_STYLES } from '@/constants/surfaces';
 import { FaPlane, FaBalanceScale } from 'react-icons/fa';
 import { AircraftDto, AircraftCategory, AircraftPerformanceProfileDto, WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { useDeleteAircraftPerformanceProfileMutation } from '@/redux/api/vfr3d/performanceProfiles.api';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { useGetWeightBalanceProfilesForAircraftQuery } from '@/redux/api/vfr3d/weightBalance.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import { PerformanceProfileDrawerForm } from '@/features/Flights/FlightPlanningDrawer/PerformanceProfiles/PerformanceProfileDrawerForm';
 import { AircraftDocumentsSection } from './AircraftDocuments';
@@ -63,7 +65,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   onDelete,
   isDeleting,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();
@@ -115,30 +117,9 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
 
     try {
       await deleteProfile({ userId, aircraftPerformanceProfileId: profileToDelete }).unwrap();
-      notifications.show({
-        title: 'Profile Deleted',
-        message: 'The performance profile has been deleted.',
-        color: 'green',
-      });
-    } catch (error: unknown) {
-      const err = error as { status?: number; data?: string; message?: string };
-      const status = err?.status;
-      const errorMessage = err?.data || err?.message || '';
-
-      if (status === 409 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('flight'))) {
-        notifications.show({
-          title: 'Cannot Delete Profile',
-          message: 'This profile is being used by one or more flights. Update those flights to use a different profile first.',
-          color: 'orange',
-          autoClose: 8000,
-        });
-      } else {
-        notifications.show({
-          title: 'Delete Failed',
-          message: 'Unable to delete the profile. Please try again.',
-          color: 'red',
-        });
-      }
+      notifySuccess('Profile Deleted', 'The performance profile has been deleted.');
+    } catch (error) {
+      notifyError({ error, operation: 'delete profile' });
     } finally {
       setDeleteProfileModalOpen(false);
       setProfileToDelete(null);
@@ -148,14 +129,12 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
   const handleProfileFormSuccess = () => {
     setProfileModalOpen(false);
     setEditingProfile(null);
-    notifications.show({
-      title: profileFormMode === 'create' ? 'Profile Created' : 'Profile Updated',
-      message:
-        profileFormMode === 'create'
-          ? 'Your new performance profile has been created.'
-          : 'Your performance profile has been updated.',
-      color: 'green',
-    });
+    notifySuccess(
+      profileFormMode === 'create' ? 'Profile Created' : 'Profile Updated',
+      profileFormMode === 'create'
+        ? 'Your new performance profile has been created.'
+        : 'Your performance profile has been updated.'
+    );
   };
 
   return (
@@ -164,8 +143,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         padding={isPhone ? 'md' : 'lg'}
         radius="md"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.15)',
+          backgroundColor: SURFACE.CARD,
+          border: `1px solid ${BORDER.CARD}`,
           transition: 'all 0.2s ease',
         }}
       >
@@ -179,13 +158,13 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                   height: isPhone ? 40 : 48,
                   minWidth: isPhone ? 40 : 48,
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={isPhone ? 16 : 20} color="var(--mantine-color-vfr3dBlue-5)" />
+                <FaPlane size={isPhone ? 16 : 20} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box style={{ minWidth: 0, flex: 1 }}>
                 <Text c="white" fw={600} size={isPhone ? 'md' : 'lg'} lineClamp={1}>
@@ -200,16 +179,16 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             </Group>
             <Group gap="sm" wrap="nowrap">
               <ActionIcon
-                variant="subtle"
-                color="blue"
+                variant="light"
+                color={ACTION_ICON_COLORS.EDIT}
                 size={isPhone ? 'xl' : 'lg'}
                 onClick={() => onEdit(aircraft)}
               >
                 <FiEdit2 size={isPhone ? 20 : 18} />
               </ActionIcon>
               <ActionIcon
-                variant="subtle"
-                color="red"
+                variant="light"
+                color={ACTION_ICON_COLORS.DELETE}
                 size={isPhone ? 'xl' : 'lg'}
                 onClick={() => aircraft.id && onDelete(aircraft.id)}
                 loading={isDeleting}
@@ -238,10 +217,10 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
               onClick={() => setExpanded(!expanded)}
               styles={{
                 root: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  backgroundColor: SURFACE_INNER.DEFAULT,
                   padding: isPhone ? '8px 12px' : undefined,
                   '&:hover': {
-                    backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                    backgroundColor: SURFACE.INPUT,
                   },
                 },
               }}
@@ -264,7 +243,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                         key={profile.id}
                         p={isPhone ? 'xs' : 'sm'}
                         style={{
-                          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                          backgroundColor: SURFACE_INNER.DEFAULT,
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
@@ -286,7 +265,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                             <ActionIcon
                               size={isPhone ? 'xl' : 'lg'}
                               variant="light"
-                              color="blue"
+                              color={ACTION_ICON_COLORS.EDIT}
                               onClick={() => handleEditProfile(profile)}
                             >
                               <FiEdit2 size={isPhone ? 20 : 18} />
@@ -294,7 +273,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                             <ActionIcon
                               size={isPhone ? 'xl' : 'lg'}
                               variant="light"
-                              color="red"
+                              color={ACTION_ICON_COLORS.DELETE}
                               onClick={() => profile.id && handleDeleteProfileClick(profile.id)}
                               loading={isDeletingProfile && profileToDelete === profile.id}
                             >
@@ -308,8 +287,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
 
                 <Button
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="light"
+                  color={ACTION_ICON_COLORS.ADD}
                   size="xs"
                   leftSection={<FiPlus size={isPhone ? 12 : 14} />}
                   onClick={handleAddProfile}
@@ -333,10 +312,10 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
               onClick={() => setWbExpanded(!wbExpanded)}
               styles={{
                 root: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  backgroundColor: SURFACE_INNER.DEFAULT,
                   padding: isPhone ? '8px 12px' : undefined,
                   '&:hover': {
-                    backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                    backgroundColor: SURFACE.INPUT,
                   },
                 },
               }}
@@ -362,7 +341,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                         key={profile.id}
                         p={isPhone ? 'xs' : 'sm'}
                         style={{
-                          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                          backgroundColor: SURFACE_INNER.DEFAULT,
                           borderRadius: 'var(--mantine-radius-md)',
                         }}
                       >
@@ -387,8 +366,8 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
                 )}
 
                 <Button
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="filled"
+                  color={BUTTON_COLORS.PRIMARY}
                   component={Link}
                   to="/weight-balance"
                   size="xs"
@@ -423,8 +402,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         fullScreen={isPhone}
         styles={{
           header: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            ...MODAL_STYLES.header,
             padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
@@ -433,20 +411,13 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+            ...MODAL_STYLES.body,
             padding: isPhone ? '16px' : '20px',
             maxHeight: isPhone ? undefined : 'calc(100vh - 200px)',
             overflowY: 'auto',
           },
-          content: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          },
-          close: {
-            color: 'var(--mantine-color-gray-4)',
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.1)',
-            },
-          },
+          content: MODAL_STYLES.content,
+          close: MODAL_STYLES.close,
         }}
       >
         <PerformanceProfileDrawerForm
@@ -470,8 +441,7 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
         fullScreen={isPhone}
         styles={{
           header: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+            ...MODAL_STYLES.header,
             padding: isPhone ? '12px 16px' : '16px 20px',
           },
           title: {
@@ -480,18 +450,11 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             fontSize: isPhone ? '1rem' : undefined,
           },
           body: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+            ...MODAL_STYLES.body,
             padding: isPhone ? '16px' : '20px',
           },
-          content: {
-            backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          },
-          close: {
-            color: 'var(--mantine-color-gray-4)',
-            '&:hover': {
-              backgroundColor: 'rgba(148, 163, 184, 0.1)',
-            },
-          },
+          content: MODAL_STYLES.content,
+          close: MODAL_STYLES.close,
         }}
       >
         <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -499,9 +462,9 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
             <Box
               p={isPhone ? 'sm' : 'md'}
               style={{
-                backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                backgroundColor: SURFACE_INNER.DEFAULT,
                 borderRadius: 'var(--mantine-radius-md)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'}>
@@ -536,14 +499,15 @@ export const AircraftCard: React.FC<AircraftCardProps> = ({
           <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
             <Button
               variant="subtle"
-              color="gray"
+              color={BUTTON_COLORS.SECONDARY}
               onClick={() => setDeleteProfileModalOpen(false)}
               size={isPhone ? 'sm' : 'md'}
             >
               Cancel
             </Button>
             <Button
-              color="red"
+              variant="light"
+              color={BUTTON_COLORS.DESTRUCTIVE}
               onClick={handleDeleteProfileConfirm}
               loading={isDeletingProfile}
               size={isPhone ? 'sm' : 'md'}

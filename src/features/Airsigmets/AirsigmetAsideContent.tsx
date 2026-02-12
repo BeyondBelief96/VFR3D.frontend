@@ -2,6 +2,8 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, Code, ScrollArea, Divider }
 import { FiX, FiInfo } from 'react-icons/fi';
 import { AirsigmetDto } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper to get hazard description for SIGMETs
 const getHazardDescription = (hazardType?: string): string => {
@@ -57,7 +59,7 @@ const AirsigmetAsideContent: React.FC<AirsigmetAsideContentProps> = ({ airsigmet
               </Badge>
             )}
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>
@@ -117,7 +119,7 @@ const AirsigmetAsideContent: React.FC<AirsigmetAsideContentProps> = ({ airsigmet
           {/* Educational Section */}
           <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
-              <FiInfo size={12} color="var(--mantine-color-blue-5)" />
+              <FiInfo size={12} color={THEME_COLORS.ICON_BLUE} />
               <Text size="xs" fw={500} c="blue.4">
                 What is this?
               </Text>

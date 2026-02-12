@@ -2,6 +2,7 @@ import { Component, ReactNode } from 'react';
 import { Container, Title, Text, Button, Stack, Card, Code } from '@mantine/core';
 import { FiHome, FiRefreshCw } from 'react-icons/fi';
 import classes from './ErrorBoundary.module.css';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 
 interface Props {
   children: ReactNode;
@@ -68,7 +69,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <Button
                   fullWidth
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   leftSection={<FiHome size={16} />}
                   onClick={this.handleGoHome}
                 >
@@ -76,8 +77,8 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Button>
                 <Button
                   fullWidth
-                  variant="outline"
-                  color="gray"
+                  variant="light"
+                  color={BUTTON_COLORS.REFRESH}
                   leftSection={<FiRefreshCw size={16} />}
                   onClick={this.handleRefresh}
                 >

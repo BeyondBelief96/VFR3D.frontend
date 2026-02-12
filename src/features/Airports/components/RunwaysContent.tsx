@@ -1,6 +1,7 @@
 import { Stack, Paper, Group, Text, Badge, Center, Loader, SimpleGrid, Box, Tooltip } from '@mantine/core';
 import { FiWind } from 'react-icons/fi';
 import { RunwayDto, AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE_INNER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 const getCrosswindColor = (crosswindKt: number): string => {
   if (crosswindKt > 15) return 'red';
@@ -20,7 +21,7 @@ function RunwayCard({ runway, crosswindData }: RunwayCardProps) {
   };
 
   return (
-    <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+    <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
       <Stack gap="sm">
         <Group justify="space-between" wrap="nowrap">
           <Text fw={600} size="lg" c="white">
@@ -115,10 +116,10 @@ export function RunwaysContent({ runways, isLoading, crosswindData }: RunwaysCon
     <Stack gap="md">
       {/* Current Wind Banner */}
       {crosswindData && (crosswindData.windDirectionDegrees || crosswindData.isVariableWind) && (
-        <Paper p="md" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+        <Paper p="md" style={{ backgroundColor: HIGHLIGHT.LIGHT, border: `1px solid ${HIGHLIGHT.STRONG}` }}>
           <Group justify="space-between" wrap="wrap">
             <Group gap="sm">
-              <FiWind size={18} color="var(--mantine-color-blue-4)" />
+              <FiWind size={18} color={THEME_COLORS.ICON_BLUE} />
               <Text size="sm" c="white">
                 <Text span c="dimmed">
                   Current Wind:{' '}

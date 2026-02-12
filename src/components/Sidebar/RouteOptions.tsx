@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { setLineColor, setEndPointColor } from '@/redux/slices/routeStyleSlice';
 import { rgbaToHex } from '@/utility/utils';
 import { Color } from 'cesium';
+import { BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function RouteOptions() {
   const dispatch = useAppDispatch();
@@ -44,12 +45,12 @@ export function RouteOptions() {
               <ColorSwatch
                 color={lineColor}
                 onClick={() => setLinePickerOpen((o) => !o)}
-                style={{ cursor: 'pointer', border: '2px solid rgba(255,255,255,0.2)' }}
+                style={{ cursor: 'pointer', border: `2px solid ${BORDER.LIGHT}` }}
                 size={28}
               />
             </Popover.Target>
             <Popover.Dropdown
-              style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+              style={{ backgroundColor: THEME_COLORS.SURFACE_8, border: `1px solid ${BORDER.DEFAULT}` }}
             >
               <Stack gap="sm">
                 <HexColorPicker color={rgbaToHex(lineColor)} onChange={handleLineColorChange} />
@@ -80,12 +81,12 @@ export function RouteOptions() {
               <ColorSwatch
                 color={pointColor}
                 onClick={() => setPointPickerOpen((o) => !o)}
-                style={{ cursor: 'pointer', border: '2px solid rgba(255,255,255,0.2)' }}
+                style={{ cursor: 'pointer', border: `2px solid ${BORDER.LIGHT}` }}
                 size={28}
               />
             </Popover.Target>
             <Popover.Dropdown
-              style={{ backgroundColor: 'var(--mantine-color-vfr3dSurface-8)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+              style={{ backgroundColor: THEME_COLORS.SURFACE_8, border: `1px solid ${BORDER.DEFAULT}` }}
             >
               <Stack gap="sm">
                 <HexColorPicker color={rgbaToHex(pointColor)} onChange={handlePointColorChange} />

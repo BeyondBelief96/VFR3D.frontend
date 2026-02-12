@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { RootState } from '../../store';
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { getAccessToken } from '@/utility/auth';
 
 // Tag types for cache invalidation
 export const tagTypes = [
@@ -20,24 +21,37 @@ export const tagTypes = [
   'aircraftDocuments',
 ] as const;
 
-// Base API configuration
-export const baseApi = createApi({
-  reducerPath: 'baseApi',
-  baseQuery: fetchBaseQuery({
+/**
+ * Base query that gets a fresh token from Auth0 for each request.
+ * Auth0 handles caching internally - it returns the cached token instantly if valid,
+ * or refreshes it automatically if expired.
+ */
+const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
+  // Get token from Auth0 (cached or refreshed automatically)
+  const token = await getAccessToken();
+
+  // Create the base query with the token
+  const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_VFR3D_BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      // Get the token from the auth slice
-      const token = (getState() as RootState).auth.accessToken;
-      
+    prepareHeaders: (headers) => {
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
-
-      // Don't set Content-Type here - let endpoints handle it
-      // FormData uploads need browser to set boundary automatically
       return headers;
     },
-  }),
+  });
+
+  return baseQuery(args, api, extraOptions);
+};
+
+// Base API configuration
+export const baseApi = createApi({
+  reducerPath: 'baseApi',
+  baseQuery: baseQueryWithAuth,
   tagTypes,
   keepUnusedDataFor: 180, // Cache for 3 minutes
   endpoints: () => ({}), // Endpoints will be injected from separate files

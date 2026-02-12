@@ -21,7 +21,6 @@ import {
 } from '@mantine/core';
 import {
   FiArrowLeft,
-  FiExternalLink,
   FiMapPin,
   FiCloud,
   FiAlertCircle,
@@ -30,6 +29,7 @@ import {
   FiRefreshCw,
   FiFileText,
   FiAlertTriangle,
+  FiFolder,
 } from 'react-icons/fi';
 import { TbPlane } from 'react-icons/tb';
 import { ProtectedRoute } from '@/components/Auth';
@@ -61,7 +61,10 @@ import {
   RunwaysContent,
   FrequenciesContent,
   AirportInfoContent,
+  AirportDocumentsContent,
 } from '@/features/Airports/components';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/airports/$airportId')({
   component: AirportDetailPage,
@@ -233,7 +236,7 @@ function AirportDetailContent() {
             component={Link}
             to="/airports"
             variant="subtle"
-            color="gray"
+            color={BUTTON_COLORS.BACK}
             leftSection={<FiArrowLeft size={16} />}
           >
             Back to Search
@@ -250,14 +253,11 @@ function AirportDetailContent() {
     );
   }
 
-  const hasChartSupplement = !!chartSupplementUrl?.pdfUrl;
-  const hasAirportDiagram = !!airportDiagramUrl?.pdfUrl;
-
   return (
     <Box
       style={{
         minHeight: 'calc(100vh - 60px)',
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+        backgroundColor: THEME_COLORS.SURFACE_9,
       }}
     >
       {/* Header */}
@@ -285,7 +285,7 @@ function AirportDetailContent() {
               <Group gap="sm">
                 <Tooltip label="Refresh all data">
                   <Button
-                    color="teal"
+                    color={BUTTON_COLORS.REFRESH}
                     size={isPhone ? 'xs' : 'sm'}
                     leftSection={<FiRefreshCw size={14} />}
                     onClick={handleRefreshAll}
@@ -314,7 +314,7 @@ function AirportDetailContent() {
                   {airport.arptName}
                 </Text>
                 <Group gap="xs" mt={4}>
-                  <FiMapPin size={14} color="var(--mantine-color-blue-3)" />
+                  <FiMapPin size={14} color={THEME_COLORS.BLUE_3} />
                   <Text c="blue.2" size="sm">
                     {airport.city}, {airport.stateCode}
                   </Text>
@@ -363,7 +363,7 @@ function AirportDetailContent() {
         <Stack gap="lg">
           {/* Quick Stats Card - Mobile only */}
           {isPhone && (
-            <Card padding="md" radius="md" style={{ backgroundColor: 'rgba(30, 41, 59, 0.8)' }}>
+            <Card padding="md" radius="md" style={{ backgroundColor: SURFACE.CARD }}>
               <SimpleGrid cols={3} spacing="xs">
                 <StatBox
                   label="Elevation"
@@ -396,54 +396,21 @@ function AirportDetailContent() {
             </Card>
           )}
 
-          {/* Document Links */}
-          {(hasChartSupplement || hasAirportDiagram) && (
-            <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="sm">
-              {hasChartSupplement && (
-                <Button
-                  component="a"
-                  href={chartSupplementUrl!.pdfUrl}
-                  target="_blank"
-                  color="blue"
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
-                  size="md"
-                  leftSection={<FiExternalLink size={16} />}
-                  fullWidth
-                >
-                  Chart Supplement
-                </Button>
-              )}
-              {hasAirportDiagram && (
-                <Button
-                  component="a"
-                  href={airportDiagramUrl!.pdfUrl}
-                  target="_blank"
-                  color="blue"
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'indigo', deg: 45 }}
-                  size="md"
-                  leftSection={<FiExternalLink size={16} />}
-                  fullWidth
-                >
-                  Airport Diagram
-                </Button>
-              )}
-            </SimpleGrid>
-          )}
-
           {/* Tabs */}
           <Card
             padding="lg"
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Tabs defaultValue="weather" color="blue">
               {isDesktop ? (
                 <Tabs.List mb="md" grow>
+                  <Tabs.Tab value="info" leftSection={<FiInfo size={14} />}>
+                    Info
+                  </Tabs.Tab>
                   <Tabs.Tab value="weather" leftSection={<FiCloud size={14} />}>
                     Weather
                   </Tabs.Tab>
@@ -470,8 +437,9 @@ function AirportDetailContent() {
                   >
                     NOTAMs
                   </Tabs.Tab>
-                  <Tabs.Tab value="info" leftSection={<FiInfo size={14} />}>
-                    Info
+
+                  <Tabs.Tab value="documents" leftSection={<FiFolder size={14} />}>
+                    Documents
                   </Tabs.Tab>
                 </Tabs.List>
               ) : (
@@ -491,6 +459,7 @@ function AirportDetailContent() {
                     }
                   />
                   <Tabs.Tab value="info" leftSection={<FiInfo size={16} />} />
+                  <Tabs.Tab value="documents" leftSection={<FiFolder size={16} />} />
                 </Tabs.List>
               )}
 
@@ -560,7 +529,7 @@ function AirportDetailContent() {
                       <Tooltip label="Refresh NOTAMs">
                         <ActionIcon
                           variant="light"
-                          color="orange"
+                          color={ACTION_ICON_COLORS.REFRESH}
                           onClick={() => refetchNotams()}
                           loading={isNotamsFetching}
                         >
@@ -611,6 +580,14 @@ function AirportDetailContent() {
               {/* Info Tab */}
               <Tabs.Panel value="info">
                 <AirportInfoContent airport={airport} />
+              </Tabs.Panel>
+
+              {/* Documents Tab */}
+              <Tabs.Panel value="documents">
+                <AirportDocumentsContent
+                  chartSupplementUrl={chartSupplementUrl}
+                  airportDiagrams={airportDiagramUrl}
+                />
               </Tabs.Panel>
             </Tabs>
           </Card>

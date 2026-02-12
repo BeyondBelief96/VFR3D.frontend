@@ -7,8 +7,6 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-
-
 export interface AircraftDto {
   id?: string;
   userId?: string;
@@ -32,25 +30,25 @@ export interface AircraftDto {
 }
 
 export enum AircraftCategory {
-  SingleEngine = "SingleEngine",
-  MultiEngine = "MultiEngine",
-  Helicopter = "Helicopter",
-  Glider = "Glider",
-  Balloon = "Balloon",
-  Ultralight = "Ultralight",
-  LightSport = "LightSport",
-  Gyroplane = "Gyroplane",
+  SingleEngine = 'SingleEngine',
+  MultiEngine = 'MultiEngine',
+  Helicopter = 'Helicopter',
+  Glider = 'Glider',
+  Balloon = 'Balloon',
+  Ultralight = 'Ultralight',
+  LightSport = 'LightSport',
+  Gyroplane = 'Gyroplane',
 }
 
 export enum AirspeedUnits {
-  Knots = "Knots",
-  MPH = "MPH",
-  KPH = "KPH",
+  Knots = 'Knots',
+  MPH = 'MPH',
+  KPH = 'KPH',
 }
 
 export enum LengthUnits {
-  Feet = "Feet",
-  Meters = "Meters",
+  Feet = 'Feet',
+  Meters = 'Meters',
 }
 
 export interface AircraftPerformanceProfileDto {
@@ -72,14 +70,14 @@ export interface AircraftPerformanceProfileDto {
   lengthUnits?: LengthUnits;
 }
 
-export interface ProblemDetails {
-  type?: string | undefined;
-  title?: string | undefined;
-  status?: number | undefined;
-  detail?: string | undefined;
-  instance?: string | undefined;
-
-  [key: string]: any;
+export interface ApiErrorResponse {
+  code?: string;
+  message?: string;
+  details?: string | undefined;
+  validationErrors?: { [key: string]: string[] } | undefined;
+  timestamp?: string;
+  traceId?: string | undefined;
+  path?: string | undefined;
 }
 
 export interface CreateAircraftRequestDto {
@@ -135,13 +133,13 @@ export interface AircraftDocumentDto {
 }
 
 export enum DocumentCategory {
-  POH = "POH",
-  Manual = "Manual",
-  Checklist = "Checklist",
-  Maintenance = "Maintenance",
-  Insurance = "Insurance",
-  Registration = "Registration",
-  Other = "Other",
+  POH = 'POH',
+  Manual = 'Manual',
+  Checklist = 'Checklist',
+  Maintenance = 'Maintenance',
+  Insurance = 'Insurance',
+  Registration = 'Registration',
+  Other = 'Other',
 }
 
 export interface AircraftDocumentListDto {
@@ -250,55 +248,55 @@ export interface RunwayDto {
 }
 
 export enum RunwaySurfaceType {
-  Unknown = "Unknown",
-  Concrete = "Concrete",
-  Asphalt = "Asphalt",
-  Snow = "Snow",
-  Ice = "Ice",
-  Mats = "Mats",
-  Treated = "Treated",
-  Gravel = "Gravel",
-  Turf = "Turf",
-  Dirt = "Dirt",
-  PartiallyPaved = "PartiallyPaved",
-  Rooftop = "Rooftop",
-  Water = "Water",
-  Aluminum = "Aluminum",
-  Brick = "Brick",
-  Caliche = "Caliche",
-  Coral = "Coral",
-  Deck = "Deck",
-  Grass = "Grass",
-  Metal = "Metal",
-  NonStandard = "NonStandard",
-  OilChip = "OilChip",
-  Psp = "Psp",
-  Sand = "Sand",
-  Sod = "Sod",
-  Steel = "Steel",
-  Wood = "Wood",
+  Unknown = 'Unknown',
+  Concrete = 'Concrete',
+  Asphalt = 'Asphalt',
+  Snow = 'Snow',
+  Ice = 'Ice',
+  Mats = 'Mats',
+  Treated = 'Treated',
+  Gravel = 'Gravel',
+  Turf = 'Turf',
+  Dirt = 'Dirt',
+  PartiallyPaved = 'PartiallyPaved',
+  Rooftop = 'Rooftop',
+  Water = 'Water',
+  Aluminum = 'Aluminum',
+  Brick = 'Brick',
+  Caliche = 'Caliche',
+  Coral = 'Coral',
+  Deck = 'Deck',
+  Grass = 'Grass',
+  Metal = 'Metal',
+  NonStandard = 'NonStandard',
+  OilChip = 'OilChip',
+  Psp = 'Psp',
+  Sand = 'Sand',
+  Sod = 'Sod',
+  Steel = 'Steel',
+  Wood = 'Wood',
 }
 
 export enum RunwaySurfaceTreatment {
-  Unknown = "Unknown",
-  None = "None",
-  Grooved = "Grooved",
-  PorousFrictionCourse = "PorousFrictionCourse",
-  AggregateFrictionSealCoat = "AggregateFrictionSealCoat",
-  RubberizedFrictionSealCoat = "RubberizedFrictionSealCoat",
-  WireComb = "WireComb",
+  Unknown = 'Unknown',
+  None = 'None',
+  Grooved = 'Grooved',
+  PorousFrictionCourse = 'PorousFrictionCourse',
+  AggregateFrictionSealCoat = 'AggregateFrictionSealCoat',
+  RubberizedFrictionSealCoat = 'RubberizedFrictionSealCoat',
+  WireComb = 'WireComb',
 }
 
 export enum RunwayEdgeLightIntensity {
-  Unknown = "Unknown",
-  None = "None",
-  High = "High",
-  Medium = "Medium",
-  Low = "Low",
-  Flood = "Flood",
-  NonStandard = "NonStandard",
-  Perimeter = "Perimeter",
-  Strobe = "Strobe",
+  Unknown = 'Unknown',
+  None = 'None',
+  High = 'High',
+  Medium = 'Medium',
+  Low = 'Low',
+  Flood = 'Flood',
+  NonStandard = 'NonStandard',
+  Perimeter = 'Perimeter',
+  Strobe = 'Strobe',
 }
 
 export interface RunwayEndDto {
@@ -335,99 +333,107 @@ export interface RunwayEndDto {
 }
 
 export enum InstrumentApproachType {
-  Unknown = "Unknown",
-  None = "None",
-  Ils = "Ils",
-  Mls = "Mls",
-  Sdf = "Sdf",
-  Localizer = "Localizer",
-  Lda = "Lda",
-  Ismls = "Ismls",
-  IlsDme = "IlsDme",
-  SdfDme = "SdfDme",
-  LocDme = "LocDme",
-  LocGs = "LocGs",
-  LdaDme = "LdaDme",
+  Unknown = 'Unknown',
+  None = 'None',
+  Ils = 'Ils',
+  Mls = 'Mls',
+  Sdf = 'Sdf',
+  Localizer = 'Localizer',
+  Lda = 'Lda',
+  Ismls = 'Ismls',
+  IlsDme = 'IlsDme',
+  SdfDme = 'SdfDme',
+  LocDme = 'LocDme',
+  LocGs = 'LocGs',
+  LdaDme = 'LdaDme',
 }
 
 export enum RunwayMarkingsType {
-  Unknown = "Unknown",
-  None = "None",
-  PrecisionInstrument = "PrecisionInstrument",
-  NonPrecisionInstrument = "NonPrecisionInstrument",
-  Basic = "Basic",
-  NumbersOnly = "NumbersOnly",
-  NonStandard = "NonStandard",
-  Buoys = "Buoys",
-  Stol = "Stol",
+  Unknown = 'Unknown',
+  None = 'None',
+  PrecisionInstrument = 'PrecisionInstrument',
+  NonPrecisionInstrument = 'NonPrecisionInstrument',
+  Basic = 'Basic',
+  NumbersOnly = 'NumbersOnly',
+  NonStandard = 'NonStandard',
+  Buoys = 'Buoys',
+  Stol = 'Stol',
 }
 
 export enum RunwayMarkingsCondition {
-  Unknown = "Unknown",
-  Good = "Good",
-  Fair = "Fair",
-  Poor = "Poor",
+  Unknown = 'Unknown',
+  Good = 'Good',
+  Fair = 'Fair',
+  Poor = 'Poor',
 }
 
 export enum VisualGlideSlopeIndicatorType {
-  Unknown = "Unknown",
-  None = "None",
-  Savasi2BoxLeft = "Savasi2BoxLeft",
-  Savasi2BoxRight = "Savasi2BoxRight",
-  Vasi2BoxLeft = "Vasi2BoxLeft",
-  Vasi2BoxRight = "Vasi2BoxRight",
-  Vasi4BoxLeft = "Vasi4BoxLeft",
-  Vasi4BoxRight = "Vasi4BoxRight",
-  Vasi6BoxLeft = "Vasi6BoxLeft",
-  Vasi6BoxRight = "Vasi6BoxRight",
-  Vasi12Box = "Vasi12Box",
-  Vasi16Box = "Vasi16Box",
-  Papi2LightLeft = "Papi2LightLeft",
-  Papi2LightRight = "Papi2LightRight",
-  Papi4LightLeft = "Papi4LightLeft",
-  Papi4LightRight = "Papi4LightRight",
-  TriColorLeft = "TriColorLeft",
-  TriColorRight = "TriColorRight",
-  PulsatingLeft = "PulsatingLeft",
-  PulsatingRight = "PulsatingRight",
-  PanelLeft = "PanelLeft",
-  PanelRight = "PanelRight",
-  NonStandard = "NonStandard",
-  PrivateUse = "PrivateUse",
-  NonSpecificVasi = "NonSpecificVasi",
+  Unknown = 'Unknown',
+  None = 'None',
+  Savasi2BoxLeft = 'Savasi2BoxLeft',
+  Savasi2BoxRight = 'Savasi2BoxRight',
+  Vasi2BoxLeft = 'Vasi2BoxLeft',
+  Vasi2BoxRight = 'Vasi2BoxRight',
+  Vasi4BoxLeft = 'Vasi4BoxLeft',
+  Vasi4BoxRight = 'Vasi4BoxRight',
+  Vasi6BoxLeft = 'Vasi6BoxLeft',
+  Vasi6BoxRight = 'Vasi6BoxRight',
+  Vasi12Box = 'Vasi12Box',
+  Vasi16Box = 'Vasi16Box',
+  Papi2LightLeft = 'Papi2LightLeft',
+  Papi2LightRight = 'Papi2LightRight',
+  Papi4LightLeft = 'Papi4LightLeft',
+  Papi4LightRight = 'Papi4LightRight',
+  TriColorLeft = 'TriColorLeft',
+  TriColorRight = 'TriColorRight',
+  PulsatingLeft = 'PulsatingLeft',
+  PulsatingRight = 'PulsatingRight',
+  PanelLeft = 'PanelLeft',
+  PanelRight = 'PanelRight',
+  NonStandard = 'NonStandard',
+  PrivateUse = 'PrivateUse',
+  NonSpecificVasi = 'NonSpecificVasi',
 }
 
 export enum ApproachLightSystemType {
-  Unknown = "Unknown",
-  None = "None",
-  AirForceOverrun = "AirForceOverrun",
-  Alsaf = "Alsaf",
-  Alsf1 = "Alsf1",
-  Alsf2 = "Alsf2",
-  Mals = "Mals",
-  Malsf = "Malsf",
-  Malsr = "Malsr",
-  Rail = "Rail",
-  Sals = "Sals",
-  Salsf = "Salsf",
-  Ssals = "Ssals",
-  Ssalf = "Ssalf",
-  Ssalr = "Ssalr",
-  Odals = "Odals",
-  Rlls = "Rlls",
-  MilitaryOverrun = "MilitaryOverrun",
-  NonStandard = "NonStandard",
+  Unknown = 'Unknown',
+  None = 'None',
+  AirForceOverrun = 'AirForceOverrun',
+  Alsaf = 'Alsaf',
+  Alsf1 = 'Alsf1',
+  Alsf2 = 'Alsf2',
+  Mals = 'Mals',
+  Malsf = 'Malsf',
+  Malsr = 'Malsr',
+  Rail = 'Rail',
+  Sals = 'Sals',
+  Salsf = 'Salsf',
+  Ssals = 'Ssals',
+  Ssalf = 'Ssalf',
+  Ssalr = 'Ssalr',
+  Odals = 'Odals',
+  Rlls = 'Rlls',
+  MilitaryOverrun = 'MilitaryOverrun',
+  NonStandard = 'NonStandard',
 }
 
 export enum ControllingObjectMarking {
-  Unknown = "Unknown",
-  None = "None",
-  Marked = "Marked",
-  Lighted = "Lighted",
-  MarkedAndLighted = "MarkedAndLighted",
+  Unknown = 'Unknown',
+  None = 'None',
+  Marked = 'Marked',
+  Lighted = 'Lighted',
+  MarkedAndLighted = 'MarkedAndLighted',
 }
 
-export interface AirportDiagramUrlDto {
+export interface AirportDiagramsResponseDto {
+  airportName?: string;
+  icaoIdent?: string | undefined;
+  airportIdent?: string | undefined;
+  diagrams?: AirportDiagramDto[];
+}
+
+export interface AirportDiagramDto {
+  chartName?: string;
   pdfUrl?: string;
 }
 
@@ -605,10 +611,10 @@ export interface WaypointDto {
 }
 
 export enum WaypointType {
-  Airport = "Airport",
-  Custom = "Custom",
-  CalculatedPoint = "CalculatedPoint",
-  Navaid = "Navaid",
+  Airport = 'Airport',
+  Custom = 'Custom',
+  CalculatedPoint = 'CalculatedPoint',
+  Navaid = 'Navaid',
 }
 
 export interface NavigationLegDto {
@@ -639,8 +645,7 @@ export interface CreateFlightRequestDto {
   aircraftId?: string | undefined;
 }
 
-export interface ValueTupleOfFlightDtoAndFlightDto {
-}
+export interface ValueTupleOfFlightDtoAndFlightDto {}
 
 export interface CreateRoundTripFlightRequestDto {
   outboundName?: string;
@@ -796,7 +801,7 @@ export interface WindsAloftSiteDto {
   id?: string;
   lat?: number;
   lon?: number;
-  windTemp?: { [key: string]: WindTempDto; };
+  windTemp?: { [key: string]: WindTempDto };
 }
 
 export interface WindTempDto {
@@ -913,57 +918,57 @@ export interface ObstacleDto {
 }
 
 export enum ObstacleLighting {
-  Unknown = "Unknown",
-  Red = "Red",
-  DualMediumWhiteStrobeRed = "DualMediumWhiteStrobeRed",
-  HighIntensityWhiteStrobeRed = "HighIntensityWhiteStrobeRed",
-  MediumIntensityWhiteStrobe = "MediumIntensityWhiteStrobe",
-  HighIntensityWhiteStrobe = "HighIntensityWhiteStrobe",
-  Flood = "Flood",
-  DualMediumCatenary = "DualMediumCatenary",
-  SynchronizedRedLighting = "SynchronizedRedLighting",
-  Lighted = "Lighted",
-  None = "None",
+  Unknown = 'Unknown',
+  Red = 'Red',
+  DualMediumWhiteStrobeRed = 'DualMediumWhiteStrobeRed',
+  HighIntensityWhiteStrobeRed = 'HighIntensityWhiteStrobeRed',
+  MediumIntensityWhiteStrobe = 'MediumIntensityWhiteStrobe',
+  HighIntensityWhiteStrobe = 'HighIntensityWhiteStrobe',
+  Flood = 'Flood',
+  DualMediumCatenary = 'DualMediumCatenary',
+  SynchronizedRedLighting = 'SynchronizedRedLighting',
+  Lighted = 'Lighted',
+  None = 'None',
 }
 
 export enum HorizontalAccuracy {
-  Unknown = "Unknown",
-  Within20Feet = "Within20Feet",
-  Within50Feet = "Within50Feet",
-  Within100Feet = "Within100Feet",
-  Within250Feet = "Within250Feet",
-  Within500Feet = "Within500Feet",
-  Within1000Feet = "Within1000Feet",
-  WithinHalfNauticalMile = "WithinHalfNauticalMile",
-  Within1NauticalMile = "Within1NauticalMile",
+  Unknown = 'Unknown',
+  Within20Feet = 'Within20Feet',
+  Within50Feet = 'Within50Feet',
+  Within100Feet = 'Within100Feet',
+  Within250Feet = 'Within250Feet',
+  Within500Feet = 'Within500Feet',
+  Within1000Feet = 'Within1000Feet',
+  WithinHalfNauticalMile = 'WithinHalfNauticalMile',
+  Within1NauticalMile = 'Within1NauticalMile',
 }
 
 export enum VerticalAccuracy {
-  Unknown = "Unknown",
-  Within3Feet = "Within3Feet",
-  Within10Feet = "Within10Feet",
-  Within20Feet = "Within20Feet",
-  Within50Feet = "Within50Feet",
-  Within125Feet = "Within125Feet",
-  Within250Feet = "Within250Feet",
-  Within500Feet = "Within500Feet",
-  Within1000Feet = "Within1000Feet",
+  Unknown = 'Unknown',
+  Within3Feet = 'Within3Feet',
+  Within10Feet = 'Within10Feet',
+  Within20Feet = 'Within20Feet',
+  Within50Feet = 'Within50Feet',
+  Within125Feet = 'Within125Feet',
+  Within250Feet = 'Within250Feet',
+  Within500Feet = 'Within500Feet',
+  Within1000Feet = 'Within1000Feet',
 }
 
 export enum ObstacleMarking {
-  Unknown = "Unknown",
-  OrangeOrOrangeWhitePaint = "OrangeOrOrangeWhitePaint",
-  WhitePaintOnly = "WhitePaintOnly",
-  Marked = "Marked",
-  FlagMarker = "FlagMarker",
-  SphericalMarker = "SphericalMarker",
-  None = "None",
+  Unknown = 'Unknown',
+  OrangeOrOrangeWhitePaint = 'OrangeOrOrangeWhitePaint',
+  WhitePaintOnly = 'WhitePaintOnly',
+  Marked = 'Marked',
+  FlagMarker = 'FlagMarker',
+  SphericalMarker = 'SphericalMarker',
+  None = 'None',
 }
 
 export enum VerificationStatus {
-  Unknown = "Unknown",
-  Verified = "Verified",
-  Unverified = "Unverified",
+  Unknown = 'Unknown',
+  Verified = 'Verified',
+  Unverified = 'Unverified',
 }
 
 export interface AirportCrosswindResponseDto {
@@ -1079,49 +1084,6 @@ export interface PirepIcingCondition {
   icingTopFtMsl?: number | undefined;
 }
 
-export interface StripeSessionResponseDto {
-  clientSecret?: string;
-}
-
-export interface SubscriptionSessionRequestDto {
-  auth0UserId?: string;
-  email?: string;
-}
-
-export interface StripeUrlResponseDto {
-  url?: string;
-}
-
-export interface CreatePortalSessionRequestDto {
-  auth0UserId?: string;
-  email?: string;
-}
-
-export interface StripeSubscriptionDto {
-  id?: string;
-  status?: StripeSubscriptionStatus;
-  currentPeriodEnd?: Date;
-  cancelAtPeriodEnd?: boolean;
-  trialEnd?: Date | undefined;
-}
-
-export enum StripeSubscriptionStatus {
-  Active = 0,
-  Trialing = 1,
-  Canceled = 2,
-  PastDue = 3,
-  Unpaid = 4,
-  Paused = 5,
-  Incomplete = 6,
-  IncompleteExpired = 7,
-}
-
-export interface StripeReactivateSubscriptionResponseDto {
-  status?: StripeSubscriptionStatus;
-  currentPeriodEnd?: Date;
-  requiresPayment?: boolean;
-}
-
 export interface TafDto {
   rawText?: string | undefined;
   stationId?: string | undefined;
@@ -1204,18 +1166,18 @@ export interface WeightBalanceProfileDto {
 }
 
 export enum WeightUnits {
-  Pounds = "Pounds",
-  Kilograms = "Kilograms",
+  Pounds = 'Pounds',
+  Kilograms = 'Kilograms',
 }
 
 export enum ArmUnits {
-  Inches = "Inches",
-  Centimeters = "Centimeters",
+  Inches = 'Inches',
+  Centimeters = 'Centimeters',
 }
 
 export enum LoadingGraphFormat {
-  Arm = "Arm",
-  MomentDividedBy1000 = "MomentDividedBy1000",
+  Arm = 'Arm',
+  MomentDividedBy1000 = 'MomentDividedBy1000',
 }
 
 export interface LoadingStationDto {
@@ -1237,9 +1199,9 @@ export interface LoadingGraphPointDto {
 }
 
 export enum LoadingStationType {
-  Standard = "Standard",
-  Fuel = "Fuel",
-  Oil = "Oil",
+  Standard = 'Standard',
+  Fuel = 'Fuel',
+  Oil = 'Oil',
 }
 
 export interface CgEnvelopeDto {
@@ -1250,8 +1212,8 @@ export interface CgEnvelopeDto {
 }
 
 export enum CgEnvelopeFormat {
-  Arm = "Arm",
-  MomentDividedBy1000 = "MomentDividedBy1000",
+  Arm = 'Arm',
+  MomentDividedBy1000 = 'MomentDividedBy1000',
 }
 
 export interface CgEnvelopePointDto {

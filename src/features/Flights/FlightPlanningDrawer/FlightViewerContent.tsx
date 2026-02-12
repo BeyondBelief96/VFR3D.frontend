@@ -22,6 +22,7 @@ import { FaPlane } from 'react-icons/fa';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { NavLogTable } from './NavLogTable';
 import classes from './FlightViewerContent.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
 
 interface FlightViewerContentProps {
   flight?: FlightDto;
@@ -104,7 +105,7 @@ export const FlightViewerContent: React.FC<FlightViewerContentProps> = ({
       <Paper p="md" radius="md" className={classes.headerPaper}>
         <Group justify="space-between" mb="xs">
           <Group gap="xs">
-            <FaPlane size={18} color="var(--mantine-color-blue-4)" />
+            <FaPlane size={18} color={THEME_COLORS.BLUE_4} />
             <Text size="lg" fw={600} c="white">
               {flight.name || 'Unnamed Flight'}
             </Text>

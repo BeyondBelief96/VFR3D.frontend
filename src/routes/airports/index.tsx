@@ -20,6 +20,7 @@ import {
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { FiSearch, FiMapPin, FiClock, FiX } from 'react-icons/fi';
 import { TbPlane } from 'react-icons/tb';
+import { SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import { ProtectedRoute } from '@/components/Auth';
 import { useSearchAirportsQuery } from '@/redux/api/vfr3d/airports.api';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
@@ -92,7 +93,7 @@ function AirportsContent() {
       py="xl"
       style={{
         minHeight: 'calc(100vh - 60px)',
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+        backgroundColor: THEME_COLORS.SURFACE_9,
       }}
     >
       <Stack gap="xl">
@@ -119,8 +120,8 @@ function AirportsContent() {
           rightSection={isFetching ? <Loader size="sm" /> : null}
           styles={{
             input: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-7)',
-              borderColor: 'rgba(148, 163, 184, 0.3)',
+              backgroundColor: THEME_COLORS.SURFACE_7,
+              borderColor: BORDER.STRONG,
               color: 'white',
               fontSize: '1.1rem',
               height: 60,
@@ -168,8 +169,8 @@ function AirportsContent() {
                 padding="xl"
                 radius="md"
                 style={{
-                  backgroundColor: 'rgba(30, 41, 59, 0.8)',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  backgroundColor: SURFACE.CARD,
+                  border: `1px solid ${BORDER.SUBTLE}`,
                 }}
               >
                 <Stack align="center" gap="md">
@@ -192,7 +193,7 @@ function AirportsContent() {
         {showRecent && (
           <Stack gap="sm">
             <Group gap="xs">
-              <FiClock size={16} color="var(--mantine-color-dimmed)" />
+              <FiClock size={16} color={THEME_COLORS.TEXT_DIMMED} />
               <Text size="sm" c="dimmed" fw={500}>
                 Recent Searches
               </Text>
@@ -203,8 +204,8 @@ function AirportsContent() {
                 p="md"
                 radius="md"
                 style={{
-                  backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  backgroundColor: SURFACE.CARD_HOVER,
+                  border: `1px solid ${BORDER.SUBTLE}`,
                   cursor: 'pointer',
                 }}
                 onClick={() =>
@@ -213,7 +214,7 @@ function AirportsContent() {
               >
                 <Group justify="space-between" wrap="nowrap">
                   <Group gap="sm" wrap="nowrap">
-                    <FiMapPin size={18} color="var(--mantine-color-blue-4)" />
+                    <FiMapPin size={18} color={THEME_COLORS.BLUE_4} />
                     <Box>
                       <Group gap="xs">
                         <Text size="sm" fw={600} c="white">
@@ -245,8 +246,8 @@ function AirportsContent() {
             padding="xl"
             radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.6)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD_HOVER,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Stack align="center" gap="md">
@@ -279,15 +280,15 @@ function AirportCard({ airport, onClick }: AirportCardProps) {
         padding="md"
         radius="md"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.15)',
+          backgroundColor: SURFACE.CARD,
+          border: `1px solid ${BORDER.CARD}`,
           transition: 'all 0.2s ease',
         }}
         styles={{
           root: {
             '&:hover': {
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              borderColor: 'rgba(59, 130, 246, 0.3)',
+              backgroundColor: HIGHLIGHT.LIGHT,
+              borderColor: HIGHLIGHT.STRONG,
             },
           },
         }}

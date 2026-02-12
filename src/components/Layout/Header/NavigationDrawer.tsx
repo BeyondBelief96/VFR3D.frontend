@@ -11,6 +11,8 @@ import { TbMapPin } from 'react-icons/tb';
 import { NavLinkItem } from './NavLinkItem';
 import { DrawerUserSection } from './DrawerUserSection';
 import classes from './Header.module.css';
+import { BORDER, THEME_COLORS } from '@/constants/surfaces';
+import { BUTTON_GRADIENTS, BUTTON_COLORS } from '@/constants/colors';
 
 interface NavigationDrawerProps {
   opened: boolean;
@@ -59,13 +61,13 @@ export function NavigationDrawer({
       withCloseButton={false}
       styles={{
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
+          backgroundColor: THEME_COLORS.SURFACE_9,
           height: '100%',
           padding: 0,
         },
         content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-          borderLeft: isPhone ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+          backgroundColor: THEME_COLORS.SURFACE_9,
+          borderLeft: isPhone ? 'none' : `1px solid ${BORDER.LIGHT}`,
         },
       }}
     >
@@ -74,7 +76,7 @@ export function NavigationDrawer({
         <Group
           justify="space-between"
           p="md"
-          style={{ borderBottom: '1px solid var(--mantine-color-dark-5)' }}
+          style={{ borderBottom: `1px solid ${THEME_COLORS.DARK_5}` }}
         >
           <Text size="lg" fw={600} c="white">
             Menu
@@ -134,7 +136,7 @@ export function NavigationDrawer({
           {!isAuthenticated ? (
             <Button
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               fullWidth
               onClick={handleLogin}
             >
@@ -143,7 +145,7 @@ export function NavigationDrawer({
           ) : (
             <Button
               variant="subtle"
-              color="red"
+              color={BUTTON_COLORS.DESTRUCTIVE}
               fullWidth
               leftSection={<FiLogOut size={16} />}
               onClick={handleLogout}

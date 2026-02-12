@@ -17,6 +17,7 @@ import {
 import { FiExternalLink, FiAlertCircle, FiAlertTriangle } from 'react-icons/fi';
 import AirportInfoHeader from './AirportInfoHeader';
 import AirportInfo from './AirportInfo/AirportInfo';
+import { AirportDocumentsContent } from '@/features/Airports/components';
 import { RunwayInformation } from './AirportInfo/RunwayInformation';
 import { FrequencyInformation } from './AirportInfo/FrequencyInformation';
 import AirportWeather from './Weather/AirportWeather';
@@ -26,6 +27,8 @@ import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
 } from '@/redux/api/vfr3d/weather.api';
+import { BUTTON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
 import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
 import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
@@ -80,10 +83,10 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
       skip: !selectedAirport.arptId,
     });
 
-  const { data: chartSupplementUrl, error: chartSupplementError } =
+  const { data: chartSupplementUrl } =
     useGetChartSupplementUrlByAirportCodeQuery(icaoCodeOrIdent);
 
-  const { data: airportDiagramUrl, error: airportDiagramError } =
+  const { data: airportDiagramUrl } =
     useGetAirportDiagramUrlByAirportCodeQuery(icaoCodeOrIdent);
 
   const { data: densityAltitude, isLoading: isDensityAltitudeLoading } =
@@ -118,10 +121,6 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
         metar={metar}
         metarError={metarError}
         handleClose={onClose}
-        chartSupplementUrl={chartSupplementUrl}
-        chartSupplementError={chartSupplementError}
-        airportDiagramUrl={airportDiagramUrl}
-        airportDiagramError={airportDiagramError}
         densityAltitude={densityAltitude}
         isDensityAltitudeLoading={isDensityAltitudeLoading}
       />
@@ -157,6 +156,9 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
               }
             >
               NOTAMs
+            </Tabs.Tab>
+            <Tabs.Tab value="docs" size="xs">
+              Docs
             </Tabs.Tab>
           </Tabs.List>
         </Tabs>
@@ -260,6 +262,14 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
               )}
             </Stack>
           )}
+
+          {activeTab === 'docs' && (
+            <AirportDocumentsContent
+              chartSupplementUrl={chartSupplementUrl}
+              airportDiagrams={airportDiagramUrl}
+              compact
+            />
+          )}
         </Box>
       </ScrollArea>
 
@@ -267,15 +277,15 @@ const AirportInfoAsideContent: React.FC<AirportInfoAsideContentProps> = ({
       <Box
         p="sm"
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          backgroundColor: 'rgba(26, 27, 30, 0.6)',
+          borderTop: `1px solid ${BORDER.LIGHT}`,
+          backgroundColor: SURFACE.CARD_HOVER,
         }}
       >
         <Button
           component={Link}
           to={`/airports/${icaoCodeOrIdent}`}
           variant="light"
-          color="blue"
+          color={BUTTON_COLORS.PRIMARY}
           fullWidth
           leftSection={<FiExternalLink size={14} />}
         >

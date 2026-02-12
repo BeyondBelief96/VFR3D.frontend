@@ -21,6 +21,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertTriangle, FiActivity, FiRefreshCw, FiUsers, FiInfo, FiDroplet, FiBox, FiClock, FiSave } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
 import { FaGasPump, FaOilCan, FaPlane } from 'react-icons/fa';
 import {
   WeightBalanceProfileDto,
@@ -29,7 +30,7 @@ import {
   CgEnvelopeFormat,
   StandaloneCalculationStateDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone } from '@/hooks';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
@@ -56,7 +57,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
   standaloneState,
   persistCalculations = false,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isCompact = compact || isPhone;
@@ -333,6 +334,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
               </Group>
               <Button
                 variant="subtle"
+                color={BUTTON_COLORS.SECONDARY}
                 size="xs"
                 leftSection={<FiRefreshCw size={12} />}
                 onClick={clearInputs}
@@ -615,7 +617,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
 
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 size="md"
                 leftSection={persistCalculations ? <FiSave size={18} /> : <FiActivity size={18} />}
                 onClick={handleCalculate}

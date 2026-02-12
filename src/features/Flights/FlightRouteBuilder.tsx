@@ -37,6 +37,7 @@ import { setShowSelectedStateAirports, setSearchedAirportState } from '@/redux/s
 import AirportSearch from '@/components/Search/AirportSearch';
 import { AirportDto, BearingAndDistanceResponseDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
 import { setWaypointRefuel } from '@/redux/slices/flightPlanningSlice';
+import { SUCCESS_BG, ERROR_BG, HIGHLIGHT, THEME_COLORS, SHADOW } from '@/constants/surfaces';
 
 interface FlightRouteBuilderProps {
   routePoints: WaypointDto[];
@@ -89,10 +90,10 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
         withBorder
         style={{
           cursor: disabled ? 'default' : isDragging ? 'grabbing' : 'grab',
-          borderColor: isDragging ? 'var(--mantine-color-blue-5)' : undefined,
+          borderColor: isDragging ? THEME_COLORS.PRIMARY : undefined,
           borderWidth: isDragging ? 2 : 1,
-          boxShadow: isDragging ? '0 8px 25px rgba(0, 0, 0, 0.4)' : undefined,
-          backgroundColor: isDragging ? 'var(--mantine-color-dark-5)' : undefined,
+          boxShadow: isDragging ? SHADOW.BOX_HOVER : undefined,
+          backgroundColor: isDragging ? THEME_COLORS.DARK_5 : undefined,
           transform: isDragging ? 'scale(1.02)' : undefined,
         }}
       >
@@ -110,7 +111,7 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
                 padding: '4px',
               }}
             >
-              <FiMenu size={16} color="var(--mantine-color-gray-5)" />
+              <FiMenu size={16} color={THEME_COLORS.TEXT_MUTED} />
             </Box>
             <Box
               style={{
@@ -123,16 +124,16 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
                 flexShrink: 0,
                 backgroundColor:
                   index === 0
-                    ? 'rgba(34, 197, 94, 0.2)'
+                    ? SUCCESS_BG.DEFAULT
                     : index === waypointsLength - 1
-                    ? 'rgba(239, 68, 68, 0.2)'
-                    : 'rgba(59, 130, 246, 0.2)',
+                    ? ERROR_BG.SUBTLE
+                    : HIGHLIGHT.DEFAULT,
                 color:
                   index === 0
-                    ? 'var(--mantine-color-green-6)'
+                    ? THEME_COLORS.GREEN_6
                     : index === waypointsLength - 1
-                    ? 'var(--mantine-color-red-6)'
-                    : 'var(--mantine-color-blue-6)',
+                    ? THEME_COLORS.RED_6
+                    : THEME_COLORS.BLUE_6,
               }}
             >
               {index === 0 ? (
@@ -165,7 +166,7 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
 
         {/* Refueling option for intermediate airports */}
         {waypoint.waypointType === WaypointType.Airport && index > 0 && index < waypointsLength - 1 && (
-          <Box mt="sm" pt="sm" style={{ borderTop: '1px solid var(--mantine-color-dark-4)' }}>
+          <Box mt="sm" pt="sm" style={{ borderTop: `1px solid ${THEME_COLORS.DARK_4}` }}>
             <Switch
               size="sm"
               label="Refueling stop"

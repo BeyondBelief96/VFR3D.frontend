@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Collapse, Stack, Text, SimpleGrid, Loader, Center } from '@mantine/core';
 import { FiChevronDown, FiChevronUp, FiPlus, FiFileText } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE_INNER } from '@/constants/surfaces';
 import {
   useGetAircraftDocumentsQuery,
   useLazyGetAircraftDocumentUrlQuery,
@@ -98,10 +99,10 @@ export const AircraftDocumentsSection: React.FC<AircraftDocumentsSectionProps> =
           onClick={onToggle}
           styles={{
             root: {
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
               padding: isPhone ? '8px 12px' : undefined,
               '&:hover': {
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                backgroundColor: SURFACE_INNER.DARK,
               },
             },
           }}

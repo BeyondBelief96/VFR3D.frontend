@@ -10,8 +10,10 @@ import {
   Loader,
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiSave } from 'react-icons/fi';
+import { BUTTON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { useIsPhone } from '@/hooks';
 import { FlightDto, UpdateFlightRequestDto } from '@/redux/api/vfr3d/dtos';
@@ -83,20 +85,10 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
       };
 
       await updateFlight({ userId, flightId: flight.id, flight: flightUpdate }).unwrap();
-
-      notifications.show({
-        title: 'Flight Updated',
-        message: 'Flight settings saved and navigation log regenerated.',
-        color: 'green',
-      });
-
+      notifySuccess('Flight Updated', 'Flight settings saved and navigation log regenerated.');
       setHasChanges(false);
-    } catch {
-      notifications.show({
-        title: 'Update Failed',
-        message: 'Unable to update flight settings.',
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'update flight settings' });
     }
   };
 
@@ -121,8 +113,8 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
 
   const inputStyles = {
     input: {
-      backgroundColor: 'rgba(15, 23, 42, 0.8)',
-      borderColor: 'rgba(148, 163, 184, 0.2)',
+      backgroundColor: SURFACE.INPUT,
+      borderColor: BORDER.DEFAULT,
       color: 'white',
     },
   };
@@ -133,12 +125,12 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
       <Paper
         p="lg"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
+          backgroundColor: SURFACE.CARD,
+          border: `1px solid ${BORDER.SUBTLE}`,
         }}
       >
         <Group gap="sm" mb="md">
-          <FaPlane size={18} color="var(--mantine-color-vfr3dBlue-5)" />
+          <FaPlane size={18} color={THEME_COLORS.PRIMARY} />
           <Text fw={600} c="white">
             Aircraft & Performance
           </Text>
@@ -191,8 +183,8 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
       <Paper
         p="lg"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
+          backgroundColor: SURFACE.CARD,
+          border: `1px solid ${BORDER.SUBTLE}`,
         }}
       >
         <Text fw={600} c="white" mb="md">
@@ -226,6 +218,8 @@ export function FlightSettings({ flight, userId }: FlightSettingsProps) {
 
           <Group justify={isPhone ? 'center' : 'flex-end'} mt="md">
             <Button
+              variant="filled"
+              color={BUTTON_COLORS.PRIMARY}
               leftSection={<FiSave size={isPhone ? 14 : 16} />}
               onClick={handleSave}
               loading={isUpdating}

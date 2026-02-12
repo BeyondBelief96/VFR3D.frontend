@@ -10,10 +10,11 @@ import {
   Tabs,
 } from '@mantine/core';
 import { FaBalanceScale, FaRoute, FaPlane } from 'react-icons/fa';
-import { FiFileText, FiClipboard, FiCloud, FiSettings } from 'react-icons/fi';
+import { FiFileText, FiClipboard, FiCloud, FiSettings, FiFolder } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { useIsDesktop } from '@/hooks';
-import { ProtectedRoute, useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/vfr3d/airports.api';
@@ -21,6 +22,7 @@ import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
 import { WaypointType } from '@/redux/api/vfr3d/dtos';
 import { baseApi } from '@/redux/api/vfr3d/vfr3dSlice';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 import {
   FlightHeader,
   FlightOverview,
@@ -29,6 +31,7 @@ import {
   WeatherCard,
   AirportDetailCard,
   NotamsPanel,
+  DocsPanel,
 } from '@/features/FlightDetails';
 
 export const Route = createFileRoute('/flights/$flightId')({
@@ -45,7 +48,7 @@ function FlightDetailsPage() {
 
 function FlightDetailsContent() {
   const { flightId } = Route.useParams();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const dispatch = useDispatch();
   const [isRefreshingAll, setIsRefreshingAll] = useState(false);
@@ -109,7 +112,7 @@ function FlightDetailsContent() {
 
   if (isLoading) {
     return (
-      <Center h="calc(100vh - 60px)" bg="var(--mantine-color-vfr3dSurface-9)">
+      <Center h="calc(100vh - 60px)" bg={THEME_COLORS.SURFACE_9}>
         <Loader size="xl" color="blue" />
       </Center>
     );
@@ -131,7 +134,7 @@ function FlightDetailsContent() {
     <Container
       size="xl"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap="lg">
         {/* Header */}
@@ -147,8 +150,8 @@ function FlightDetailsContent() {
           padding="lg"
           radius="md"
           style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.8)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
+            backgroundColor: SURFACE.CARD,
+            border: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Tabs defaultValue="overview" color="blue">
@@ -172,6 +175,9 @@ function FlightDetailsContent() {
                 <Tabs.Tab value="notams" leftSection={<FiFileText size={14} />}>
                   NOTAMs
                 </Tabs.Tab>
+                <Tabs.Tab value="docs" leftSection={<FiFolder size={14} />}>
+                  Docs
+                </Tabs.Tab>
                 <Tabs.Tab value="settings" leftSection={<FiSettings size={14} />}>
                   Settings
                 </Tabs.Tab>
@@ -184,6 +190,7 @@ function FlightDetailsContent() {
                 <Tabs.Tab value="airports" leftSection={<FaPlane size={16} />} />
                 <Tabs.Tab value="weather" leftSection={<FiCloud size={16} />} />
                 <Tabs.Tab value="notams" leftSection={<FiFileText size={16} />} />
+                <Tabs.Tab value="docs" leftSection={<FiFolder size={16} />} />
                 <Tabs.Tab value="settings" leftSection={<FiSettings size={16} />} />
               </Tabs.List>
             )}
@@ -230,6 +237,10 @@ function FlightDetailsContent() {
 
             <Tabs.Panel value="notams">
               <NotamsPanel flight={flight} />
+            </Tabs.Panel>
+
+            <Tabs.Panel value="docs">
+              <DocsPanel airports={airports} />
             </Tabs.Panel>
 
             <Tabs.Panel value="settings">

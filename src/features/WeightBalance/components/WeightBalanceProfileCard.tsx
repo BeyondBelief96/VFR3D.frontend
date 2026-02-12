@@ -12,6 +12,8 @@ import { FiEdit2, FiTrash2, FiActivity } from 'react-icons/fi';
 import { WeightBalanceProfileDto } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import { useIsPhone } from '@/hooks';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE_INNER, BORDER } from '@/constants/surfaces';
 
 interface WeightBalanceProfileCardProps {
   profile: WeightBalanceProfileDto;
@@ -39,9 +41,9 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
     <Paper
       p={isPhone ? 'xs' : 'sm'}
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       <Stack gap="xs">
@@ -60,7 +62,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="green"
+              color={ACTION_ICON_COLORS.ADD}
               onClick={() => onCalculate(profile)}
               title="Calculate W&B"
             >
@@ -69,7 +71,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="blue"
+              color={ACTION_ICON_COLORS.EDIT}
               onClick={() => onEdit(profile)}
             >
               <FiEdit2 size={isPhone ? 18 : 14} />
@@ -77,7 +79,7 @@ export const WeightBalanceProfileCard: React.FC<WeightBalanceProfileCardProps> =
             <ActionIcon
               size={isPhone ? 'lg' : 'sm'}
               variant="subtle"
-              color="red"
+              color={ACTION_ICON_COLORS.DELETE}
               onClick={() => profile.id && onDelete(profile.id)}
               loading={isDeleting}
             >

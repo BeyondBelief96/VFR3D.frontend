@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, Stack, Text, Button } from '@mantine/core';
 import { FiAlertCircle, FiRefreshCw } from 'react-icons/fi';
+import { ERROR_BG } from '@/constants/surfaces';
 
 interface AircraftPerformanceProfileErrorsProps {
   onRetry: () => void;
@@ -16,8 +17,8 @@ export const AircraftPerformanceProfileErrors: React.FC<AircraftPerformanceProfi
       icon={<FiAlertCircle size={20} />}
       styles={{
         root: {
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
+          backgroundColor: ERROR_BG.LIGHT,
+          border: `1px solid ${ERROR_BG.STRONG}`,
         },
       }}
     >

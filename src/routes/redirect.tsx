@@ -1,72 +1,46 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useAppDispatch } from '@/hooks/reduxHooks';
-import { setAccessToken } from '@/redux/slices/authSlice';
 import { Center, Stack, Text, Button, Paper, Image, Loader, Box } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
+import { BUTTON_GRADIENTS } from '@/constants/colors';
+import { SURFACE, BORDER, ERROR_BG, HIGHLIGHT, THEME_COLORS, SHADOW } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/redirect')({
   component: RedirectPage,
 });
 
 function RedirectPage() {
-  const { isAuthenticated, isLoading, getAccessTokenSilently, error } = useAuth0();
+  const { isAuthenticated, isLoading, error } = useAuth0();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const handleRedirect = async () => {
-      // Wait for Auth0 to finish loading
-      if (isLoading) return;
+    // Wait for Auth0 to finish loading
+    if (isLoading) return;
 
-      // Handle authentication errors
-      if (error) {
-        console.error('[Redirect] Auth0 error:', error);
-        setAuthError(error.message);
-        return;
-      }
+    // Handle authentication errors
+    if (error) {
+      console.error('[Redirect] Auth0 error:', error);
+      setAuthError(error.message);
+      return;
+    }
 
-      // If not authenticated, redirect to home
-      if (!isAuthenticated) {
-        console.log('[Redirect] Not authenticated, redirecting to home');
-        navigate({ to: '/' });
-        return;
-      }
+    // If not authenticated, redirect to home
+    if (!isAuthenticated) {
+      console.log('[Redirect] Not authenticated, redirecting to home');
+      navigate({ to: '/' });
+      return;
+    }
 
-      // Already processing
-      if (isProcessing) return;
-      setIsProcessing(true);
+    // Authenticated - redirect to intended destination
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo') || '/map';
 
-      try {
-        // Get and store the access token
-        console.log('[Redirect] Getting access token...');
-        const token = await getAccessTokenSilently();
-        dispatch(setAccessToken(token));
-        console.log('[Redirect] Token stored successfully');
-
-        // Check if there's a return URL in the app state
-        // This would be set by loginWithRedirect({ appState: { returnTo: ... } })
-        const params = new URLSearchParams(window.location.search);
-        const returnTo = params.get('returnTo') || '/map';
-
-        console.log('[Redirect] Redirecting to:', returnTo);
-        navigate({ to: returnTo });
-      } catch (err) {
-        console.error('[Redirect] Error getting access token:', err);
-        setAuthError(
-          err instanceof Error ? err.message : 'Failed to complete authentication'
-        );
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-
-    handleRedirect();
-  }, [isAuthenticated, isLoading, error, getAccessTokenSilently, navigate, dispatch, isProcessing]);
+    console.log('[Redirect] Authenticated, redirecting to:', returnTo);
+    navigate({ to: returnTo });
+  }, [isAuthenticated, isLoading, error, navigate]);
 
   // Show error state
   if (authError) {
@@ -74,19 +48,19 @@ function RedirectPage() {
       <Center
         h="100vh"
         style={{
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-          background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
+          backgroundColor: THEME_COLORS.SURFACE_9,
+          background: `radial-gradient(ellipse at top, ${HIGHLIGHT.LIGHT} 0%, transparent 50%), ${THEME_COLORS.SURFACE_9}`,
         }}
       >
         <Paper
           p="xl"
           radius="lg"
           style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            border: '1px solid rgba(148, 163, 184, 0.15)',
+            backgroundColor: SURFACE.BASE,
+            border: `1px solid ${BORDER.CARD}`,
             width: '100%',
             maxWidth: 400,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            boxShadow: SHADOW.BOX,
           }}
         >
           <Stack align="center" gap="lg">
@@ -95,14 +69,14 @@ function RedirectPage() {
             <Box
               p="md"
               style={{
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                backgroundColor: ERROR_BG.LIGHT,
                 borderRadius: 'var(--mantine-radius-md)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
+                border: `1px solid ${ERROR_BG.SUBTLE}`,
                 width: '100%',
               }}
             >
               <Stack align="center" gap="xs">
-                <FiAlertCircle size={32} color="var(--mantine-color-ifrRed-5)" />
+                <FiAlertCircle size={32} color={THEME_COLORS.ERROR} />
                 <Text c="white" size="md" fw={600} ta="center">
                   Authentication Error
                 </Text>
@@ -116,7 +90,7 @@ function RedirectPage() {
               fullWidth
               size="md"
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={BUTTON_GRADIENTS.PRIMARY}
               onClick={() => navigate({ to: '/' })}
             >
               Return to Home
@@ -132,19 +106,19 @@ function RedirectPage() {
     <Center
       h="100vh"
       style={{
-        backgroundColor: 'var(--mantine-color-vfr3dSurface-9)',
-        background: 'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%), var(--mantine-color-vfr3dSurface-9)',
+        backgroundColor: THEME_COLORS.SURFACE_9,
+        background: `radial-gradient(ellipse at top, ${HIGHLIGHT.SUBTLE} 0%, transparent 50%), ${THEME_COLORS.SURFACE_9}`,
       }}
     >
       <Paper
         p="xl"
         radius="lg"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          border: '1px solid rgba(148, 163, 184, 0.15)',
+          backgroundColor: SURFACE.BASE,
+          border: `1px solid ${BORDER.CARD}`,
           width: '100%',
           maxWidth: 400,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          boxShadow: SHADOW.BOX,
         }}
       >
         <Stack align="center" gap="xl">

@@ -29,6 +29,8 @@ import {
   FiArrowRight,
   FiCompass,
 } from 'react-icons/fi';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { GLOW, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { GiRadioTower, GiAirplaneDeparture } from 'react-icons/gi';
 import { TbPlane, TbRoute, TbMapPin } from 'react-icons/tb';
@@ -109,7 +111,7 @@ function HomePage() {
                   size="xl"
                   radius="md"
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   loading={isLoading}
                   onClick={() => loginWithRedirect()}
                   rightSection={<FiArrowRight size={20} />}
@@ -124,7 +126,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    gradient={BUTTON_GRADIENTS.PRIMARY}
                     component={Link}
                     to="/airports"
                     leftSection={<TbMapPin size={20} />}
@@ -136,7 +138,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="light"
-                    color="blue"
+                    color={BUTTON_COLORS.PRIMARY}
                     component={Link}
                     to="/flights"
                     leftSection={<FaPlane size={18} />}
@@ -150,7 +152,7 @@ function HomePage() {
                   size="xl"
                   radius="md"
                   variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  gradient={BUTTON_GRADIENTS.PRIMARY}
                   component={Link}
                   to="/map"
                   rightSection={<FiArrowRight size={20} />}
@@ -163,7 +165,7 @@ function HomePage() {
                 size="xl"
                 radius="md"
                 variant="outline"
-                color="gray"
+                color={BUTTON_COLORS.SECONDARY}
                 component="a"
                 href="#features"
                 className={classes.heroExploreButton}
@@ -533,7 +535,7 @@ function HomePage() {
         <Container size="md">
           <Paper radius="xl" p={60} className={classes.ctaPaper}>
             <Stack align="center" gap="xl">
-              <TbPlane size={60} color="var(--mantine-color-vfr3dBlue-5)" />
+              <TbPlane size={60} color={THEME_COLORS.PRIMARY} />
               <Title order={2} c="white" fz={rem(32)}>
                 Ready to Plan, Fly, Repeat?
               </Title>
@@ -626,17 +628,17 @@ interface FeatureCardProps {
   features: string[];
 }
 
-// Map Mantine color names to CSS color values for the glow effect
+// Map Mantine color names to glow colors for the hover effect
 const glowColorMap: Record<string, string> = {
-  blue: 'rgba(59, 130, 246, 0.4)',
-  violet: 'rgba(139, 92, 246, 0.4)',
-  cyan: 'rgba(6, 182, 212, 0.4)',
-  orange: 'rgba(249, 115, 22, 0.4)',
-  green: 'rgba(34, 197, 94, 0.4)',
-  pink: 'rgba(236, 72, 153, 0.4)',
-  red: 'rgba(239, 68, 68, 0.4)',
-  grape: 'rgba(190, 75, 219, 0.4)',
-  teal: 'rgba(20, 184, 166, 0.4)',
+  blue: GLOW.BLUE,
+  violet: GLOW.VIOLET,
+  cyan: GLOW.CYAN,
+  orange: GLOW.ORANGE,
+  green: GLOW.GREEN,
+  pink: GLOW.PINK,
+  red: GLOW.RED,
+  grape: GLOW.GRAPE,
+  teal: GLOW.TEAL,
 };
 
 function FeatureCard({ icon, color, title, description, features }: FeatureCardProps) {
@@ -665,7 +667,7 @@ function FeatureCard({ icon, color, title, description, features }: FeatureCardP
             <Group key={index} gap="xs" wrap="nowrap">
               <FiCheckCircle
                 size={14}
-                color="var(--mantine-color-green-5)"
+                color={THEME_COLORS.SUCCESS}
                 className={classes.featureListIcon}
               />
               <Text size="xs" c="dimmed">

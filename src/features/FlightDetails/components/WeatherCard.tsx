@@ -20,6 +20,7 @@ import {
   useGetTafForAirportQuery,
 } from '@/redux/api/vfr3d/weather.api';
 import { getFlightCategoryColor } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, SHADOW, THEME_COLORS } from '@/constants/surfaces';
 
 interface WeatherCardProps {
   icaoId: string;
@@ -72,15 +73,15 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
     <Paper
       p="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        backgroundColor: SURFACE.CARD,
+        border: `1px solid ${BORDER.SUBTLE}`,
         position: 'relative',
       }}
     >
       {/* Refreshing overlay */}
       {isRefreshing && !isInitialLoading && (
         <Overlay
-          color="rgba(15, 23, 42, 0.7)"
+          color={SURFACE.GLASS}
           backgroundOpacity={0.7}
           blur={1}
           center
@@ -146,7 +147,7 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                   c="gray.4"
                   style={{
                     fontFamily: 'monospace',
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: SHADOW.LIGHT,
                     padding: '8px',
                     borderRadius: '4px',
                     wordBreak: 'break-word',
@@ -161,7 +162,7 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                   {(metar.windDirDegrees || metar.windSpeedKt) && (
                     <Box>
                       <Group gap={4}>
-                        <FiWind size={12} color="var(--mantine-color-gray-5)" />
+                        <FiWind size={12} color={THEME_COLORS.TEXT_MUTED} />
                         <Text size="xs" c="dimmed">Wind</Text>
                       </Group>
                       <Text size="sm" c="white" fw={500}>
@@ -256,7 +257,7 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                   c="gray.4"
                   style={{
                     fontFamily: 'monospace',
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: SHADOW.LIGHT,
                     padding: '8px',
                     borderRadius: '4px',
                     wordBreak: 'break-word',
@@ -281,8 +282,8 @@ export function WeatherCard({ icaoId }: WeatherCardProps) {
                     radius="md"
                     styles={{
                       item: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                        border: '1px solid rgba(148, 163, 184, 0.1)',
+                        backgroundColor: SURFACE_INNER.DEFAULT,
+                        border: `1px solid ${BORDER.SUBTLE}`,
                       },
                       control: {
                         padding: '8px 12px',

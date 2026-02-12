@@ -1,6 +1,7 @@
 import { Stack, Text, Box } from '@mantine/core';
 import { FiMapPin } from 'react-icons/fi';
 import { AirportContextChip } from './AirportContextChip';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 
 interface AirportEntry {
   icaoOrIdent: string;
@@ -25,9 +26,9 @@ export function AirportContextList({
       <Box
         p="md"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.3)',
+          backgroundColor: SURFACE.CARD_SUBTLE,
           borderRadius: 'var(--mantine-radius-sm)',
-          border: '1px dashed rgba(148, 163, 184, 0.2)',
+          border: `1px dashed ${BORDER.DEFAULT}`,
         }}
       >
         <Stack align="center" gap="xs">

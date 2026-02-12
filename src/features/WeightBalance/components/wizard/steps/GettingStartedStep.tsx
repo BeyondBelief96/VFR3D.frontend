@@ -3,6 +3,13 @@ import { WeightUnits, ArmUnits, LoadingGraphFormat, AircraftDto } from '@/redux/
 import { StepContainer } from '../shared/StepContainer';
 import { EDUCATIONAL_TIPS, FIELD_DESCRIPTIONS } from '../../../constants/wizardContent';
 import { WizardFormState, WizardValidationErrors } from '../../../hooks/useWizardForm';
+import {
+  WIZARD_INPUT_STYLES,
+  SEGMENTED_CONTROL_STYLES,
+  THEME_COLORS,
+  BORDER,
+  HIGHLIGHT,
+} from '@/constants/surfaces';
 
 interface GettingStartedStepProps {
   formState: WizardFormState;
@@ -12,27 +19,6 @@ interface GettingStartedStepProps {
   onAircraftChange: (aircraftId: string | null, aircraft?: AircraftDto) => void;
 }
 
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-3)',
-    marginBottom: 4,
-  },
-  description: {
-    color: 'var(--mantine-color-gray-5)',
-    fontSize: '11px',
-  },
-  error: {
-    color: 'var(--mantine-color-red-5)',
-  },
-};
 
 export function GettingStartedStep({
   formState,
@@ -70,17 +56,17 @@ export function GettingStartedStep({
             required
             searchable
             styles={{
-              ...inputStyles,
+              ...WIZARD_INPUT_STYLES,
               dropdown: {
-                backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
+                backgroundColor: THEME_COLORS.SURFACE_8,
+                border: `1px solid ${BORDER.DEFAULT}`,
               },
               option: {
                 '&[data-selected]': {
-                  backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
+                  backgroundColor: THEME_COLORS.PRIMARY,
                 },
                 '&[data-hovered]': {
-                  backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                  backgroundColor: HIGHLIGHT.DEFAULT,
                 },
               },
             }}
@@ -94,7 +80,7 @@ export function GettingStartedStep({
             onChange={(e) => onFieldChange('profileName', e.target.value)}
             error={errors.profileName}
             required
-            styles={inputStyles}
+            styles={WIZARD_INPUT_STYLES}
           />
         </SimpleGrid>
 
@@ -104,7 +90,7 @@ export function GettingStartedStep({
           description={FIELD_DESCRIPTIONS.datumDescription}
           value={formState.datumDescription}
           onChange={(e) => onFieldChange('datumDescription', e.target.value)}
-          styles={inputStyles}
+          styles={WIZARD_INPUT_STYLES}
         />
 
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
@@ -123,18 +109,7 @@ export function GettingStartedStep({
                 { label: 'Pounds (lbs)', value: WeightUnits.Pounds },
                 { label: 'Kilograms (kg)', value: WeightUnits.Kilograms },
               ]}
-              styles={{
-                root: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
-                },
-                label: {
-                  color: 'var(--mantine-color-gray-4)',
-                  '&[data-active]': {
-                    color: 'white',
-                  },
-                },
-              }}
+              styles={SEGMENTED_CONTROL_STYLES}
             />
           </Box>
 
@@ -153,18 +128,7 @@ export function GettingStartedStep({
                 { label: 'Inches (in)', value: ArmUnits.Inches },
                 { label: 'Centimeters (cm)', value: ArmUnits.Centimeters },
               ]}
-              styles={{
-                root: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
-                },
-                label: {
-                  color: 'var(--mantine-color-gray-4)',
-                  '&[data-active]': {
-                    color: 'white',
-                  },
-                },
-              }}
+              styles={SEGMENTED_CONTROL_STYLES}
             />
           </Box>
 
@@ -183,18 +147,7 @@ export function GettingStartedStep({
                 { label: 'Arm', value: LoadingGraphFormat.Arm },
                 { label: 'Moment/1000', value: LoadingGraphFormat.MomentDividedBy1000 },
               ]}
-              styles={{
-                root: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
-                },
-                label: {
-                  color: 'var(--mantine-color-gray-4)',
-                  '&[data-active]': {
-                    color: 'white',
-                  },
-                },
-              }}
+              styles={SEGMENTED_CONTROL_STYLES}
             />
           </Box>
         </SimpleGrid>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Center, Stack, Loader, Text, Box } from '@mantine/core';
 import { motion } from 'framer-motion';
 import { FaPlane } from 'react-icons/fa';
+import { THEME_COLORS, GRADIENT } from '@/constants/surfaces';
 
 export const FlightPlanCalculationLoading: React.FC = () => {
   return (
@@ -17,7 +18,7 @@ export const FlightPlanCalculationLoading: React.FC = () => {
               width: 80,
               height: 80,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%)',
+              background: GRADIENT.ICON,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -35,7 +36,7 @@ export const FlightPlanCalculationLoading: React.FC = () => {
                 ease: 'easeInOut',
               }}
             >
-              <FaPlane size={32} color="var(--mantine-color-vfr3dBlue-5)" />
+              <FaPlane size={32} color={THEME_COLORS.PRIMARY} />
             </motion.div>
           </Box>
         </motion.div>

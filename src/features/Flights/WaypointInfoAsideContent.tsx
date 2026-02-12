@@ -9,6 +9,8 @@ import { clearSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { FiX } from 'react-icons/fi';
 import { FaPlane, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import classes from './WaypointInfoAsideContent.module.css';
+import { ACTION_ICON_COLORS, BUTTON_COLORS } from '@/constants/colors';
+import { THEME_COLORS } from '@/constants/surfaces';
 
 interface WaypointInfoAsideContentProps {
   selectedWaypoint: WaypointDto;
@@ -129,14 +131,14 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
       <Box className={classes.header}>
         <Group justify="space-between">
           <Group gap="xs">
-            {isToc && <FaArrowUp size={14} color="var(--mantine-color-vfrGreen-5)" />}
-            {isTod && <FaArrowDown size={14} color="var(--mantine-color-orange-5)" />}
-            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color="var(--mantine-color-cyan-5)" />}
+            {isToc && <FaArrowUp size={14} color={THEME_COLORS.SUCCESS} />}
+            {isTod && <FaArrowDown size={14} color={THEME_COLORS.ICON_ORANGE} />}
+            {!isToc && !isTod && isCalculatedPoint && <FaPlane size={14} color={THEME_COLORS.CYAN_5} />}
             <Text fw={600}>
               {isToc ? 'Top of Climb' : isTod ? 'Top of Descent' : 'Waypoint'}
             </Text>
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose}>
             <FiX size={18} />
           </ActionIcon>
         </Group>
@@ -211,7 +213,7 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
                 <Button size="xs" onClick={saveEdit} disabled={!hasNameChanged}>
                   Save
                 </Button>
-                <Button size="xs" color="red" variant="light" onClick={deleteExisting}>
+                <Button size="xs" color={BUTTON_COLORS.DESTRUCTIVE} variant="light" onClick={deleteExisting}>
                   Delete
                 </Button>
               </Group>

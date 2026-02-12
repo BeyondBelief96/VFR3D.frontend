@@ -1,6 +1,7 @@
 import React from 'react';
 import { Accordion, Text, Stack, Group, Badge } from '@mantine/core';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 interface AirportInfoProps {
   airport: AirportDto;
@@ -25,26 +26,26 @@ const InfoItem: React.FC<{ label: string; value: string | number | null | undefi
 
 const accordionStyles = {
   item: {
-    backgroundColor: 'rgba(45, 50, 60, 0.8)',
-    border: '1px solid rgba(148, 163, 184, 0.25)',
+    backgroundColor: SURFACE.CARD,
+    border: `1px solid ${BORDER.STRONG}`,
     borderRadius: '8px',
     marginBottom: '8px',
     '&[data-active]': {
-      backgroundColor: 'rgba(45, 50, 60, 0.9)',
+      backgroundColor: SURFACE.CARD,
     },
   },
   control: {
-    backgroundColor: 'rgba(55, 60, 72, 0.6)',
+    backgroundColor: SURFACE.CARD_HOVER,
     borderRadius: '8px',
     '&:hover': {
-      backgroundColor: 'rgba(65, 70, 85, 0.7)',
+      backgroundColor: HIGHLIGHT.LIGHT,
     },
     '&[data-active]': {
       borderRadius: '8px 8px 0 0',
     },
   },
   chevron: {
-    color: 'rgba(148, 163, 184, 0.8)',
+    color: THEME_COLORS.TEXT_MUTED,
   },
   panel: {
     backgroundColor: 'transparent',

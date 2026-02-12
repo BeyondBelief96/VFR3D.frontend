@@ -52,6 +52,7 @@ import { CgEnvelopeChart } from '../visualization/CgEnvelopeChart';
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
+import { BUTTON_GRADIENTS } from '@/constants/colors';
 
 interface FlightWeightBalancePanelProps {
   flight: FlightDto;
@@ -268,7 +269,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
             to="/weight-balance"
             leftSection={<FiPlus size={16} />}
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
           >
             Create W&B Profile
           </Button>
@@ -286,7 +287,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
             size="lg"
             radius="md"
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            gradient={BUTTON_GRADIENTS.PRIMARY}
           >
             <FiActivity size={18} />
           </ThemeIcon>
@@ -662,7 +663,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
 
               <Button
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 size="md"
                 leftSection={<FiSave size={18} />}
                 onClick={handleCalculateAndSave}

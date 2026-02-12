@@ -19,6 +19,8 @@ import {
 } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaPlane, FaPalette, FaTachometerAlt, FaCog } from 'react-icons/fa';
+import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { INPUT_STYLES, SELECT_STYLES, MODAL_STYLES, SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import {
   AircraftDto,
   AircraftCategory,
@@ -31,41 +33,29 @@ import {
   useCreateAircraftMutation,
   useUpdateAircraftMutation,
 } from '@/redux/api/vfr3d/aircraft.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useIsPhone, useIsTablet } from '@/hooks';
+import { notifyError } from '@/utility/notifications';
 
 const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
+  ...INPUT_STYLES,
   label: {
-    color: 'var(--mantine-color-gray-4)',
+    ...INPUT_STYLES.label,
     marginBottom: 4,
   },
   description: {
-    color: 'var(--mantine-color-gray-6)',
+    color: THEME_COLORS.GRAY_6,
   },
 };
 
 const selectStyles = {
-  ...inputStyles,
-  dropdown: {
-    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
+  ...SELECT_STYLES,
+  label: {
+    ...INPUT_STYLES.label,
+    marginBottom: 4,
   },
-  option: {
-    color: 'white',
-    '&[data-selected]': {
-      backgroundColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-    '&[data-hovered]': {
-      backgroundColor: 'rgba(59, 130, 246, 0.2)',
-    },
+  description: {
+    color: THEME_COLORS.GRAY_6,
   },
 };
 
@@ -149,7 +139,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
   existingAircraft,
   onSuccess,
 }) => {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();
@@ -240,8 +230,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       }
       onSuccess?.();
       handleClose();
-    } catch {
-      // Error is handled by RTK Query isError state
+    } catch (error) {
+      notifyError({ error, operation: mode === 'create' ? 'create aircraft' : 'update aircraft' });
     }
   };
 
@@ -267,8 +257,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -277,18 +266,11 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: 0,
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -308,8 +290,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
             <Paper
               p={isPhone ? 'sm' : 'md'}
               style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                border: '1px solid rgba(148, 163, 184, 0.1)',
+                backgroundColor: SURFACE.CARD_HOVER,
+                border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="xs" mb={isPhone ? 'sm' : 'md'}>
@@ -318,13 +300,13 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                     width: isPhone ? 24 : 28,
                     height: isPhone ? 24 : 28,
                     borderRadius: '50%',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    backgroundColor: HIGHLIGHT.DEFAULT,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
                 >
-                  <FaPlane size={isPhone ? 10 : 12} color="var(--mantine-color-vfr3dBlue-5)" />
+                  <FaPlane size={isPhone ? 10 : 12} color={THEME_COLORS.PRIMARY} />
                 </Box>
                 <Text size={isPhone ? 'xs' : 'sm'} fw={600} c="white">
                   Basic Information
@@ -382,16 +364,16 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               radius="md"
               styles={{
                 item: {
-                  backgroundColor: 'rgba(30, 41, 59, 0.6)',
-                  border: '1px solid rgba(148, 163, 184, 0.1)',
+                  backgroundColor: SURFACE.CARD_HOVER,
+                  border: `1px solid ${BORDER.SUBTLE}`,
                   '&[data-active]': {
-                    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+                    backgroundColor: SURFACE.CARD,
                   },
                 },
                 control: {
                   padding: isPhone ? 'var(--mantine-spacing-xs) var(--mantine-spacing-sm)' : undefined,
                   '&:hover': {
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    backgroundColor: HIGHLIGHT.LIGHT,
                   },
                 },
                 content: {
@@ -403,7 +385,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="identification">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPlane size={isPhone ? 12 : 14} color="var(--mantine-color-cyan-4)" />
+                    <FaPlane size={isPhone ? 12 : 14} color={THEME_COLORS.CYAN_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Identification
                     </Text>
@@ -453,7 +435,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="appearance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaPalette size={isPhone ? 12 : 14} color="var(--mantine-color-grape-4)" />
+                    <FaPalette size={isPhone ? 12 : 14} color={THEME_COLORS.GRAPE_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Appearance (Colors)
                     </Text>
@@ -511,7 +493,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="performance">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaTachometerAlt size={isPhone ? 12 : 14} color="var(--mantine-color-teal-4)" />
+                    <FaTachometerAlt size={isPhone ? 12 : 14} color={THEME_COLORS.TEAL_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Performance Defaults
                     </Text>
@@ -595,7 +577,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Accordion.Item value="preferences">
                 <Accordion.Control>
                   <Group gap="xs">
-                    <FaCog size={isPhone ? 12 : 14} color="var(--mantine-color-orange-4)" />
+                    <FaCog size={isPhone ? 12 : 14} color={THEME_COLORS.ORANGE_4} />
                     <Text size={isPhone ? 'xs' : 'sm'} fw={500} c="white">
                       Unit Preferences
                     </Text>
@@ -643,7 +625,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
         <Box
           p={isPhone ? 'md' : 'lg'}
           style={{
-            borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+            borderTop: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Stack gap={isPhone ? 'sm' : 'xs'}>
@@ -655,7 +637,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
             <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone}>
               <Button
                 variant="subtle"
-                color="gray"
+                color={BUTTON_COLORS.SECONDARY}
                 onClick={handleClose}
                 disabled={isLoading}
                 size={isPhone ? 'sm' : 'md'}
@@ -666,7 +648,7 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                 type="submit"
                 disabled={!isValid || isLoading}
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={BUTTON_GRADIENTS.PRIMARY}
                 size={isPhone ? 'sm' : 'md'}
               >
                 {isLoading ? (
