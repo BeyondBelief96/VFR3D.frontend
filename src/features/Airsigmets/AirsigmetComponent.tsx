@@ -8,7 +8,7 @@ import {
   useGetTurbAirsigmetsQuery,
   useGetIfrAirsigmetsQuery,
   useGetMtnObscnAirsigmetsQuery,
-} from '@/redux/api/vfr3d/weather.api';
+} from '@/redux/api/preflight/weather.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';

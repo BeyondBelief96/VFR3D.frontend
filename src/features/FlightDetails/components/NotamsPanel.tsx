@@ -17,11 +17,10 @@ import { useIsPhone } from '@/hooks';
 import { SURFACE, BORDER, WHITE_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   FlightDto,
-  WaypointType,
   NotamQueryByRouteRequest,
   RoutePointDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useGetNotamsByRouteQuery } from '@/redux/api/vfr3d/notams.api';
+import { useGetNotamsByRouteQuery } from '@/redux/api/preflight/notams.api';
 import { NotamsList, FlightTimeWindow } from './NotamsCard';
 import { isCriticalNotam } from '../utils/notamAbbreviations';
 
@@ -70,28 +69,26 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
     const routePoints: RoutePointDto[] = [];
 
     flight.waypoints.forEach((wp) => {
-      if (wp.waypointType === WaypointType.Airport && wp.name) {
+      if (wp.waypointType === 'Airport' && wp.name) {
         // Add airport identifier for airport-specific NOTAMs
         if (!airportIdentifiers.includes(wp.name)) {
           airportIdentifiers.push(wp.name);
         }
-        // Also add as route point
+        // Also add as route point (airport points are matched by identifier)
         routePoints.push({
           airportIdentifier: wp.name,
           name: wp.name,
           latitude: wp.latitude,
           longitude: wp.longitude,
           radiusNm: AIRPORT_RADIUS_NM,
-          isAirport: true,
         });
       } else if (wp.latitude !== undefined && wp.longitude !== undefined) {
-        // Add non-airport waypoint for corridor NOTAMs
+        // Add non-airport waypoint for corridor NOTAMs (spatial search)
         routePoints.push({
           name: wp.name || 'Waypoint',
           latitude: wp.latitude,
           longitude: wp.longitude,
           radiusNm: CORRIDOR_RADIUS_NM,
-          isAirport: false,
         });
       }
     });
@@ -100,7 +97,6 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
       airportIdentifiers,
       routePoints,
       corridorRadiusNm: CORRIDOR_RADIUS_NM,
-      includeCorridorNotams: true,
     };
   }, [flight?.waypoints]);
 
@@ -119,7 +115,7 @@ export function NotamsPanel({ flight }: NotamsPanelProps) {
   const airportIdents = useMemo(() => {
     if (!flight?.waypoints) return [];
     return flight.waypoints
-      .filter((wp) => wp.waypointType === WaypointType.Airport && wp.name)
+      .filter((wp) => wp.waypointType === 'Airport' && wp.name)
       .map((wp) => wp.name!)
       .filter((name, index, self) => self.indexOf(name) === index);
   }, [flight?.waypoints]);

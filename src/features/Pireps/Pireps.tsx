@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch } from 'react-redux';
 import { PirepEntity } from './PirepEntity';
-import { useGetAllPirepsQuery } from '@/redux/api/vfr3d/weather.api';
+import { useGetAllPirepsQuery } from '@/redux/api/preflight/weather.api';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 

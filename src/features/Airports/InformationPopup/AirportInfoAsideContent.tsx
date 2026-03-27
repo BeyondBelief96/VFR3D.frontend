@@ -26,18 +26,18 @@ import { isCriticalNotam } from '@/features/FlightDetails/utils/notamAbbreviatio
 import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
-} from '@/redux/api/vfr3d/weather.api';
+} from '@/redux/api/preflight/weather.api';
 import { BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, BORDER } from '@/constants/surfaces';
-import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
-import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
-import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
-import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
+import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/preflight/airports.api';
+import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/preflight/frequency.api';
+import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/preflight/terminalProcedures.api';
+import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/preflight/chartSupplements.api';
 import {
   useGetCrosswindForAirportQuery,
   useGetDensityAltitudeForAirportQuery,
-} from '@/redux/api/vfr3d/performance.api';
-import { useGetNotamsForAirportQuery } from '@/redux/api/vfr3d/notams.api';
+} from '@/redux/api/preflight/e6b.api';
+import { useGetNotamsForAirportQuery } from '@/redux/api/preflight/notams.api';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import classes from './AirportInfoAsideContent.module.css';
 

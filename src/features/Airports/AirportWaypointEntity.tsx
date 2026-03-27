@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { Cartesian2, Cartesian3, NearFarScalar } from 'cesium';
 import { PointEntity } from '@/components/Cesium/PointEntity';
-import { useGetMetarForAirportQuery } from '@/redux/api/vfr3d/weather.api';
-import { useGetAirportByIcaoCodeOrIdentQuery } from '@/redux/api/vfr3d/airports.api';
+import { useGetMetarForAirportQuery } from '@/redux/api/preflight/weather.api';
+import { useGetAirportByIcaoCodeOrIdentQuery } from '@/redux/api/preflight/airports.api';
 import { getColorForMetar, buildAirportLabel, getLabelTextColor, getLabelBackgroundColor } from '@/utility/weatherColors';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';

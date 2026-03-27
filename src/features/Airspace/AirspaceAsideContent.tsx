@@ -117,8 +117,8 @@ const AirspaceAsideContent: React.FC<AirspaceAsideContentProps> = ({ airspace, o
   const typeCode = isSpecialUse ? (airspace as SpecialUseAirspaceDto).typeCode : undefined;
   const airspaceClass = airspace.class;
 
-  const classInfo = !isSpecialUse ? getAirspaceClassInfo(airspaceClass) : null;
-  const specialUseInfo = isSpecialUse ? getSpecialUseAirspaceInfo(typeCode) : null;
+  const classInfo = !isSpecialUse ? getAirspaceClassInfo(airspaceClass ?? undefined) : null;
+  const specialUseInfo = isSpecialUse ? getSpecialUseAirspaceInfo(typeCode ?? undefined) : null;
 
   const badgeColor = isSpecialUse ? (specialUseInfo?.color || 'orange') : (classInfo?.color || 'blue');
 

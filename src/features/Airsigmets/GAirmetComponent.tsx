@@ -12,7 +12,7 @@ import {
   useGetIceGAirmetsQuery,
   useGetFzlvlGAirmetsQuery,
   useGetMFzlvlGAirmetsQuery,
-} from '@/redux/api/vfr3d/weather.api';
+} from '@/redux/api/preflight/weather.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -135,30 +135,30 @@ export const GAirmetComponent: React.FC = () => {
     (gairmetHazards.M_FZLVL && (isFetchingMFzlvl || isLoadingMFzlvl));
 
   // Get color based on hazard type
-  const getColorForHazard = useCallback((hazard?: GAirmetHazardType): Color => {
+  const getColorForHazard = useCallback((hazard?: GAirmetHazardType | null): Color => {
     switch (hazard) {
       // SIERRA hazards (gray tones)
-      case GAirmetHazardType.MT_OBSC:
+      case 'MT_OBSC':
         return Color.fromCssColorString('#6b7280').withAlpha(0.25); // Gray
-      case GAirmetHazardType.IFR:
+      case 'IFR':
         return Color.fromCssColorString('#10b981').withAlpha(0.25); // Green
 
       // TANGO hazards (orange/yellow tones)
-      case GAirmetHazardType.TURB_LO:
+      case 'TURB_LO':
         return Color.fromCssColorString('#f97316').withAlpha(0.25); // Orange
-      case GAirmetHazardType.TURB_HI:
+      case 'TURB_HI':
         return Color.fromCssColorString('#ef4444').withAlpha(0.25); // Red-orange
-      case GAirmetHazardType.LLWS:
+      case 'LLWS':
         return Color.fromCssColorString('#eab308').withAlpha(0.25); // Yellow
-      case GAirmetHazardType.SFC_WIND:
+      case 'SFC_WIND':
         return Color.fromCssColorString('#a855f7').withAlpha(0.25); // Purple
 
       // ZULU hazards (blue/cyan tones)
-      case GAirmetHazardType.ICE:
+      case 'ICE':
         return Color.fromCssColorString('#22d3ee').withAlpha(0.25); // Cyan
-      case GAirmetHazardType.FZLVL:
+      case 'FZLVL':
         return Color.fromCssColorString('#3b82f6').withAlpha(0.25); // Blue
-      case GAirmetHazardType.M_FZLVL:
+      case 'M_FZLVL':
         return Color.fromCssColorString('#6366f1').withAlpha(0.25); // Indigo
 
       default:
@@ -192,7 +192,7 @@ export const GAirmetComponent: React.FC = () => {
   const THIN_LAYER_THICKNESS_FT = 1000;
 
   // Parse altitude string value - handles special cases like "FZL", "SFC00", etc.
-  const parseAltitudeValue = (value: string | undefined): number | null => {
+  const parseAltitudeValue = (value: string | null | undefined): number | null => {
     if (!value) return null;
 
     // Handle surface values (SFC, SFC00, etc.)

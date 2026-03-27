@@ -50,7 +50,7 @@ interface ParsedNotam {
  * Parse a NOTAM date string into a Date object
  * Handles formats like "2401151200" (YYMMDDHHMM) and ISO strings
  */
-function parseNotamDateString(dateStr?: string): Date | undefined {
+function parseNotamDateString(dateStr?: string | null): Date | undefined {
   if (!dateStr) return undefined;
 
   try {
@@ -122,11 +122,11 @@ function parseNotam(notam: NotamDto): ParsedNotam | null {
     id: detail?.id || notam.id || `notam-${Math.random()}`,
     rawText: rawText,
     translatedText: translatedText,
-    effectiveStart: detail?.effectiveStart,
-    effectiveEnd: detail?.effectiveEnd,
+    effectiveStart: detail?.effectiveStart ?? undefined,
+    effectiveEnd: detail?.effectiveEnd ?? undefined,
     effectiveStartDate,
     effectiveEndDate,
-    location: detail?.location || detail?.icaoLocation,
+    location: detail?.location ?? detail?.icaoLocation ?? undefined,
     category: categorizeNotam(rawText),
     severityColor: getNotamSeverityColor(rawText),
   };

@@ -88,7 +88,7 @@ const formatTime = (hours?: number): string => {
   return `${h}h ${m}m`;
 };
 
-const formatLegTime = (start?: Date, end?: Date): string => {
+const formatLegTime = (start?: string, end?: string): string => {
   if (!start || !end) return '--';
   const startTime = dayjs(start).format('HH:mm');
   const endTime = dayjs(end).format('HH:mm');

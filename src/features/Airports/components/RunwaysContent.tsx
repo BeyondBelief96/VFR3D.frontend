@@ -38,7 +38,7 @@ function RunwayCard({ runway, crosswindData }: RunwayCardProps) {
               Surface
             </Text>
             <Text size="sm" c="white">
-              {formatSurface(runway.surfaceType)}
+              {formatSurface(runway.surfaceType ?? undefined)}
             </Text>
           </Box>
           {runway.edgeLightIntensity && runway.edgeLightIntensity !== 'None' && (

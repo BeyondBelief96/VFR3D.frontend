@@ -180,8 +180,8 @@ export function getAirspacePolygonHeights(airspace: AirspaceDto | SpecialUseAirs
   minHeight: number;
   maxHeight: number;
 } {
-  const lowerHeight = getAirspaceHeight(airspace.lowerVal, airspace.lowerCode, airspace.lowerUom);
-  const upperHeight = getAirspaceHeight(airspace.upperVal, airspace.upperCode, airspace.upperUom);
+  const lowerHeight = getAirspaceHeight(airspace.lowerVal ?? undefined, airspace.lowerCode ?? undefined, airspace.lowerUom ?? undefined);
+  const upperHeight = getAirspaceHeight(airspace.upperVal ?? undefined, airspace.upperCode ?? undefined, airspace.upperUom ?? undefined);
 
   // If lower height is greater than upper height, swap them
   if (lowerHeight > upperHeight) {

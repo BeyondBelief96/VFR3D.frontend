@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch, useSelector } from 'react-redux';
 import ObstacleEntity from './ObstacleEntity';
-import { useGetObstaclesByOasNumbersQuery } from '@/redux/api/vfr3d/obstacles.api';
+import { useGetObstaclesByOasNumbersQuery } from '@/redux/api/preflight/obstacles.api';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { getObstacleEntityId } from '@/utility/entityIdUtils';

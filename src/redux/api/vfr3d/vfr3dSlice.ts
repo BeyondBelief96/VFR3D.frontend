@@ -2,22 +2,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { getAccessToken } from '@/utility/auth';
 
-// Tag types for cache invalidation
+// Tag types for cache invalidation (user-specific endpoints only)
 export const tagTypes = [
   'flights',
   'aircraft',
   'aircraftPerformanceProfile',
-  'airports',
-  'airspaces',
-  'weather',
-  'pireps',
-  'airsigmets',
   'weightBalance',
   'weightBalanceCalculation',
-  'notams',
-  'performance',
-  'frequencies',
-  'runways',
   'aircraftDocuments',
 ] as const;
 

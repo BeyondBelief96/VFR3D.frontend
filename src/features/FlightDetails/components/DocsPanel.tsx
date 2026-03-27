@@ -2,8 +2,8 @@ import { Stack, Text, Paper, Group, Badge, Center, Loader } from '@mantine/core'
 import { FiFileText } from 'react-icons/fi';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
-import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
-import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
+import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/preflight/terminalProcedures.api';
+import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/preflight/chartSupplements.api';
 import { AirportDocumentsContent } from '@/features/Airports/components';
 
 interface DocsPanelProps {

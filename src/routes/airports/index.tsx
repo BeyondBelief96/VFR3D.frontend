@@ -22,7 +22,7 @@ import { FiSearch, FiMapPin, FiClock, FiX } from 'react-icons/fi';
 import { TbPlane } from 'react-icons/tb';
 import { SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import { ProtectedRoute } from '@/components/Auth';
-import { useSearchAirportsQuery } from '@/redux/api/vfr3d/airports.api';
+import { useSearchAirportsQuery } from '@/redux/api/preflight/airports.api';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 
 export const Route = createFileRoute('/airports/')({

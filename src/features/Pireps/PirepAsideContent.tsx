@@ -35,7 +35,7 @@ const PirepAsideContent: React.FC<PirepAsideContentProps> = ({ pirep, onClose })
           {pirep.reportType && (
             <Text size="sm">
               <Text span c="dimmed">Type: </Text>
-              <Badge size="xs" color={pirep.reportType === 'URGENT' ? 'red' : 'blue'}>
+              <Badge size="xs" color={pirep.reportType === 'UUA' ? 'red' : 'blue'}>
                 {pirep.reportType}
               </Badge>
             </Text>

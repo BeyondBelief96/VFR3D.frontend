@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Box, TextInput, Text, Group, Button, Stack, ActionIcon, Badge, ScrollArea } from '@mantine/core';
-import { WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
+import { WaypointDto } from '@/redux/api/vfr3d/dtos';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { FlightDisplayMode } from '@/utility/enums';
@@ -22,7 +22,7 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
   const { draftFlightPlan, displayMode } = useSelector((s: RootState) => s.flightPlanning);
   const selectedContext = useSelector((s: RootState) => s.selectedEntity.context);
   const isExisting = selectedContext?.mode === 'existing';
-  const isCalculatedPoint = selectedContext?.isCalculatedPoint || selectedWaypoint.waypointType === WaypointType.CalculatedPoint;
+  const isCalculatedPoint = selectedContext?.isCalculatedPoint || selectedWaypoint.waypointType === 'CalculatedPoint';
   const isPreviewMode = displayMode === FlightDisplayMode.PREVIEW;
   const canEdit = (displayMode === FlightDisplayMode.PLANNING || displayMode === FlightDisplayMode.EDITING) && !isCalculatedPoint;
 
@@ -66,7 +66,7 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
     if (!draftFlightPlan.waypoints || draftFlightPlan.waypoints.length === 0) {
       dispatch(
         addWaypoint({
-          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
+          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: 'Custom' },
           index: 0,
         })
       );
@@ -77,7 +77,7 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
     if (typeof selectedContext?.insertIndex === 'number') {
       dispatch(
         addWaypoint({
-          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
+          waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: 'Custom' },
           index: Math.max(0, Math.min(selectedContext.insertIndex, draftFlightPlan.waypoints.length)),
         })
       );
@@ -100,7 +100,7 @@ const WaypointInfoAsideContent: React.FC<WaypointInfoAsideContentProps> = ({ sel
 
     dispatch(
       addWaypoint({
-        waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: WaypointType.Custom },
+        waypoint: { ...selectedWaypoint, id: `wp-${Date.now()}`, name, waypointType: 'Custom' },
         index: bestIndex,
       })
     );

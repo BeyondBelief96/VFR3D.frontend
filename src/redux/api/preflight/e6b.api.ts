@@ -1,21 +1,21 @@
-import {
+import type {
   AirportCrosswindResponseDto,
   CrosswindCalculationRequestDto,
   CrosswindCalculationResponseDto,
   DensityAltitudeRequestDto,
   DensityAltitudeResponseDto,
-} from './dtos';
-import { baseApi } from './vfr3dSlice';
+} from './types';
+import { preflightApi } from './preflightApiSlice';
 
 export interface AirportDensityAltitudeRequestDto {
   temperatureCelsius?: number;
   altimeterInHg?: number;
 }
 
-export const performanceApi = baseApi.injectEndpoints({
+export const e6bApi = preflightApi.injectEndpoints({
   endpoints: (builder) => ({
     getCrosswindForAirport: builder.query<AirportCrosswindResponseDto, string>({
-      query: (icaoCodeOrIdent) => `/Performance/crosswind/${icaoCodeOrIdent}`,
+      query: (icaoCodeOrIdent) => `/e6b/crosswind/${icaoCodeOrIdent}`,
       providesTags: (_result, _error, icaoCodeOrIdent) => [
         { type: 'performance', id: `crosswind-${icaoCodeOrIdent}` },
         { type: 'performance', id: 'LIST' },
@@ -26,7 +26,7 @@ export const performanceApi = baseApi.injectEndpoints({
       CrosswindCalculationRequestDto
     >({
       query: (request) => ({
-        url: `/Performance/crosswind/calculate`,
+        url: `/e6b/crosswind/calculate`,
         method: 'POST',
         body: request,
       }),
@@ -38,13 +38,13 @@ export const performanceApi = baseApi.injectEndpoints({
       query: ({ icaoCodeOrIdent, request }) => {
         const params = new URLSearchParams();
         if (request?.temperatureCelsius !== undefined) {
-          params.append('temperatureCelsius', request.temperatureCelsius.toString());
+          params.append('temperatureCelsiusOverride', request.temperatureCelsius.toString());
         }
         if (request?.altimeterInHg !== undefined) {
-          params.append('altimeterInHg', request.altimeterInHg.toString());
+          params.append('altimeterInHgOverride', request.altimeterInHg.toString());
         }
         const queryString = params.toString();
-        return `/Performance/density-altitude/${icaoCodeOrIdent}${queryString ? `?${queryString}` : ''}`;
+        return `/e6b/density-altitude/${icaoCodeOrIdent}${queryString ? `?${queryString}` : ''}`;
       },
       providesTags: (_result, _error, { icaoCodeOrIdent }) => [
         { type: 'performance', id: `density-${icaoCodeOrIdent}` },
@@ -54,7 +54,7 @@ export const performanceApi = baseApi.injectEndpoints({
     calculateDensityAltitude: builder.mutation<DensityAltitudeResponseDto, DensityAltitudeRequestDto>(
       {
         query: (request) => ({
-          url: `/Performance/density-altitude/calculate`,
+          url: `/e6b/density-altitude/calculate`,
           method: 'POST',
           body: request,
         }),
@@ -68,4 +68,4 @@ export const {
   useCalculateCrosswindMutation,
   useGetDensityAltitudeForAirportQuery,
   useCalculateDensityAltitudeMutation,
-} = performanceApi;
+} = e6bApi;

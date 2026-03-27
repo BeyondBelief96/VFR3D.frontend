@@ -32,7 +32,7 @@ export function getColorForFlightCategory(flightCategory?: string): Color {
  */
 export function getColorForMetar(metar?: MetarDto): Color {
   if (!metar) return Color.WHITE;
-  return getColorForFlightCategory(metar.flightCategory);
+  return getColorForFlightCategory(metar.flightCategory ?? undefined);
 }
 
 /**
@@ -43,7 +43,7 @@ export function getColorForMetar(metar?: MetarDto): Color {
  */
 export function getLabelBackgroundColor(metar?: MetarDto): Color {
   if (!metar || !metar.flightCategory) return NO_WEATHER_LABEL_COLOR;
-  return getColorForFlightCategory(metar.flightCategory);
+  return getColorForFlightCategory(metar.flightCategory ?? undefined);
 }
 
 /**

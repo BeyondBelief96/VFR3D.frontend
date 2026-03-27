@@ -31,11 +31,11 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { AppDispatch } from '@/redux/store';
-import { useCalcBearingAndDistanceMutation } from '@/redux/api/vfr3d/navlog.api';
+import { useCalcBearingAndDistanceMutation } from '@/redux/api/preflight/navlog.api';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
 import { setShowSelectedStateAirports, setSearchedAirportState } from '@/redux/slices/airportsSlice';
 import AirportSearch from '@/components/Search/AirportSearch';
-import { AirportDto, BearingAndDistanceResponseDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
+import { AirportDto, BearingAndDistanceResponseDto, WaypointDto } from '@/redux/api/vfr3d/dtos';
 import { setWaypointRefuel } from '@/redux/slices/flightPlanningSlice';
 import { SUCCESS_BG, ERROR_BG, HIGHLIGHT, THEME_COLORS, SHADOW } from '@/constants/surfaces';
 
@@ -165,7 +165,7 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
         </Group>
 
         {/* Refueling option for intermediate airports */}
-        {waypoint.waypointType === WaypointType.Airport && index > 0 && index < waypointsLength - 1 && (
+        {waypoint.waypointType === 'Airport' && index > 0 && index < waypointsLength - 1 && (
           <Box mt="sm" pt="sm" style={{ borderTop: `1px solid ${THEME_COLORS.DARK_4}` }}>
             <Switch
               size="sm"
@@ -202,7 +202,7 @@ const SortableWaypoint: React.FC<SortableWaypointProps> = ({
                   <NumberInput
                     size="xs"
                     w={{ base: 70, sm: 80 }}
-                    value={waypoint.refuelGallons}
+                    value={waypoint.refuelGallons ?? undefined}
                     onChange={(v) =>
                       dispatch(
                         setWaypointRefuel({
@@ -337,13 +337,13 @@ const FlightRouteBuilder: React.FC<FlightRouteBuilderProps> = ({
     const dragged = waypoints[oldIndex];
 
     // Rule: Only an Airport can become the first waypoint
-    if (newIndex === 0 && dragged?.waypointType !== WaypointType.Airport) {
+    if (newIndex === 0 && dragged?.waypointType !== 'Airport') {
       return;
     }
     // Rule: If moving the current first away, the next item must be an Airport
     if (oldIndex === 0 && newIndex !== 0) {
       const wouldBeFirst = waypoints[1];
-      if (!wouldBeFirst || wouldBeFirst.waypointType !== WaypointType.Airport) {
+      if (!wouldBeFirst || wouldBeFirst.waypointType !== 'Airport') {
         return;
       }
     }

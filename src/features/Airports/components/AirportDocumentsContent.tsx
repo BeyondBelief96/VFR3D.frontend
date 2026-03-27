@@ -1,10 +1,10 @@
 import { Stack, Text, SimpleGrid, Paper, Group, Badge, Center } from '@mantine/core';
 import { FiExternalLink, FiFileText } from 'react-icons/fi';
-import { AirportDiagramsResponseDto } from '@/redux/api/vfr3d/dtos';
+import { AirportDiagramsResponseDto, ChartSupplementsResponseDto } from '@/redux/api/vfr3d/dtos';
 import { SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 interface AirportDocumentsContentProps {
-  chartSupplementUrl?: { pdfUrl: string };
+  chartSupplementUrl?: ChartSupplementsResponseDto;
   airportDiagrams?: AirportDiagramsResponseDto;
   compact?: boolean;
 }
@@ -14,8 +14,9 @@ export function AirportDocumentsContent({
   airportDiagrams,
   compact = false,
 }: AirportDocumentsContentProps) {
-  const hasChartSupplement = !!chartSupplementUrl?.pdfUrl;
-  const availableDiagrams = airportDiagrams?.diagrams?.filter((d) => d.pdfUrl) || [];
+  const firstSupplementUrl = chartSupplementUrl?.supplements?.[0]?.pdfUrl;
+  const hasChartSupplement = !!firstSupplementUrl;
+  const availableDiagrams = airportDiagrams?.procedures?.filter((d) => d.pdfUrl) || [];
   const hasDocuments = hasChartSupplement || availableDiagrams.length > 0;
 
   if (!hasDocuments) {
@@ -38,7 +39,7 @@ export function AirportDocumentsContent({
         <DocumentCard
           title="Chart Supplement"
           description="Official FAA publication with detailed airport information, procedures, and special notices"
-          url={chartSupplementUrl!.pdfUrl}
+          url={firstSupplementUrl!}
           compact={compact}
         />
       )}

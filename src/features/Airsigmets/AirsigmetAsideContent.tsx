@@ -34,7 +34,7 @@ const AirsigmetAsideContent: React.FC<AirsigmetAsideContentProps> = ({ airsigmet
     ? String(airsigmet.hazard.type)
     : undefined;
 
-  const isSigmet = airsigmet.airsigmetType === 'SIGMET';
+  const isSigmet = airsigmet.sigmetType === 'SIGMET';
 
   return (
     <Stack gap={0} h="100%">
@@ -43,7 +43,7 @@ const AirsigmetAsideContent: React.FC<AirsigmetAsideContentProps> = ({ airsigmet
         <Group justify="space-between" wrap="nowrap">
           <Group gap="xs" wrap="nowrap" className={classes.flexGroup}>
             <Badge color={isSigmet ? 'red' : 'orange'}>
-              {airsigmet.airsigmetType}
+              {airsigmet.sigmetType}
             </Badge>
             {hazardTypeStr && (
               <Badge variant="outline" color={isSigmet ? 'red' : 'orange'}>

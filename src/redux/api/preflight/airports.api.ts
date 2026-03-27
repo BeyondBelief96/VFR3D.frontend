@@ -1,14 +1,18 @@
-import { AirportDto, RunwayDto } from './dtos';
-import { baseApi } from './vfr3dSlice';
+import type { AirportDto, PaginatedResponse, RunwayDto } from './types';
+import { preflightApi } from './preflightApiSlice';
 
-export const airportsApi = baseApi.injectEndpoints({
+export const airportsApi = preflightApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllAirports: builder.query<AirportDto[], string>({
-      query: (icaoIdOrIdent = '') => `/Airport?icaoIdOrIdent=${icaoIdOrIdent}`,
+      query: (searchOrState = '') => {
+        if (!searchOrState) return `/airports?limit=500`;
+        return `/airports?search=${encodeURIComponent(searchOrState)}&limit=500`;
+      },
+      transformResponse: (response: PaginatedResponse<AirportDto>) => response.data ?? [],
       keepUnusedDataFor: 300,
     }),
     getAirportByIcaoCodeOrIdent: builder.query<AirportDto, string>({
-      query: (icaoCodeOrIdent) => `/Airport/${icaoCodeOrIdent}`,
+      query: (icaoCodeOrIdent) => `/airports/${icaoCodeOrIdent}`,
       keepUnusedDataFor: 300,
       transformResponse: (response: AirportDto) => {
         if (!response || Object.keys(response).length === 0) {
@@ -18,29 +22,31 @@ export const airportsApi = baseApi.injectEndpoints({
       },
     }),
     getAirportsByState: builder.query<AirportDto[], string>({
-      query: (stateCode) => `/Airport/state/${stateCode}`,
+      query: (stateCode) => `/airports?state=${stateCode}&limit=500`,
+      transformResponse: (response: PaginatedResponse<AirportDto>) => response.data ?? [],
       keepUnusedDataFor: 300,
     }),
     getAirportsByStates: builder.query<AirportDto[], string[]>({
-      query: (states) =>
-        `/Airport/states/${states.length > 1 ? states.join(',') : states[0] || ''}`,
+      query: (states) => `/airports?state=${states.join(',')}&limit=500`,
+      transformResponse: (response: PaginatedResponse<AirportDto>) => response.data ?? [],
       keepUnusedDataFor: 300,
     }),
     getAirportsByIcaoCodesOrIdents: builder.query<AirportDto[], string[]>({
-      query: (icaoCodesOrIdents) => `/Airport/batch/${icaoCodesOrIdents.join(',')}`,
+      query: (icaoCodesOrIdents) => `/airports/batch?ids=${icaoCodesOrIdents.join(',')}`,
       keepUnusedDataFor: 300,
     }),
     getAirportsByPrefix: builder.query<AirportDto[], string>({
-      query: (icaoCodeOrIdent) => `/Airport/prefix/${icaoCodeOrIdent}`,
+      query: (prefix) => `/airports?search=${encodeURIComponent(prefix)}&limit=20`,
+      transformResponse: (response: PaginatedResponse<AirportDto>) => response.data ?? [],
       keepUnusedDataFor: 300,
     }),
-    // Search airports by query (searches ICAO, FAA ID, name, and city)
     searchAirports: builder.query<AirportDto[], string>({
-      query: (searchQuery) => `/Airport/search?query=${encodeURIComponent(searchQuery)}`,
+      query: (searchQuery) => `/airports?search=${encodeURIComponent(searchQuery)}&limit=50`,
+      transformResponse: (response: PaginatedResponse<AirportDto>) => response.data ?? [],
       keepUnusedDataFor: 300,
     }),
     getRunwaysByAirportCode: builder.query<RunwayDto[], string>({
-      query: (icaoCodeOrIdent) => `/Airport/${icaoCodeOrIdent}/runways`,
+      query: (icaoCodeOrIdent) => `/runways/airport/${icaoCodeOrIdent}`,
       keepUnusedDataFor: 300,
       providesTags: (_result, _error, icaoCodeOrIdent) => [
         { type: 'runways', id: icaoCodeOrIdent },

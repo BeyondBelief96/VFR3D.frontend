@@ -41,7 +41,7 @@ export function AirportInfoContent({ airport }: AirportInfoContentProps) {
         <Stack gap="sm">
           {airport.icaoId && <InfoRow label="ICAO Code" value={airport.icaoId} />}
           {airport.arptId && <InfoRow label="FAA ID" value={airport.arptId} />}
-          {airport.siteTypeCode && <InfoRow label="Type" value={airport.siteTypeCode} />}
+          {airport.siteType && <InfoRow label="Type" value={airport.siteType} />}
           {airport.fuelTypes && <InfoRow label="Fuel Available" value={airport.fuelTypes} />}
           {airport.arptStatus && <InfoRow label="Status" value={airport.arptStatus} />}
         </Stack>

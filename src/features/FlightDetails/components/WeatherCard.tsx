@@ -18,7 +18,7 @@ import { FiChevronDown, FiChevronUp, FiWind, FiRefreshCw } from 'react-icons/fi'
 import {
   useGetMetarForAirportQuery,
   useGetTafForAirportQuery,
-} from '@/redux/api/vfr3d/weather.api';
+} from '@/redux/api/preflight/weather.api';
 import { getFlightCategoryColor } from '@/constants/colors';
 import { SURFACE, SURFACE_INNER, BORDER, SHADOW, THEME_COLORS } from '@/constants/surfaces';
 

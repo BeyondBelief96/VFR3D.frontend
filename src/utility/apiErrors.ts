@@ -217,8 +217,8 @@ export function parseApiError(error: unknown): ParsedApiError {
       code: apiError?.code,
       status: typeof status === 'number' ? status : undefined,
       validationErrors,
-      traceId: apiError?.traceId,
-      details: apiError?.details,
+      traceId: apiError?.traceId ?? undefined,
+      details: apiError?.details ?? undefined,
       isRetryable: isRetryableCategory(category),
     };
   }
@@ -260,8 +260,8 @@ export function parseApiError(error: unknown): ParsedApiError {
       code: apiError?.code,
       status,
       validationErrors,
-      traceId: apiError?.traceId,
-      details: apiError?.details,
+      traceId: apiError?.traceId ?? undefined,
+      details: apiError?.details ?? undefined,
       isRetryable: isRetryableCategory(category),
     };
   }

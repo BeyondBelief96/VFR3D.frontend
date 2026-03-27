@@ -16,11 +16,11 @@ import {
 import { FiRefreshCw } from 'react-icons/fi';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import { SURFACE, BORDER, OVERLAY, TAB_STYLES } from '@/constants/surfaces';
-import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
-import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
-import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
-import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/vfr3d/airportDiagram.api';
-import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/vfr3d/chartSupplements.api';
+import { useGetRunwaysByAirportCodeQuery } from '@/redux/api/preflight/airports.api';
+import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/preflight/frequency.api';
+import { useGetCrosswindForAirportQuery } from '@/redux/api/preflight/e6b.api';
+import { useGetAirportDiagramUrlByAirportCodeQuery } from '@/redux/api/preflight/terminalProcedures.api';
+import { useGetChartSupplementUrlByAirportCodeQuery } from '@/redux/api/preflight/chartSupplements.api';
 import { RunwayInformation } from '@/features/Airports/InformationPopup/AirportInfo/RunwayInformation';
 import { AirportCrosswindResponseDto } from '@/redux/api/vfr3d/dtos';
 import { FrequencyTable } from '@/components/Frequencies';

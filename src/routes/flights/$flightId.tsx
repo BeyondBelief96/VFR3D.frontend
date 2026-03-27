@@ -17,11 +17,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ProtectedRoute } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
-import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/vfr3d/airports.api';
+import { useGetAirportsByIcaoCodesOrIdentsQuery } from '@/redux/api/preflight/airports.api';
 import { useFlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { FlightWeightBalancePanel } from '@/features/WeightBalance';
-import { WaypointType } from '@/redux/api/vfr3d/dtos';
 import { baseApi } from '@/redux/api/vfr3d/vfr3dSlice';
+import { preflightApi } from '@/redux/api/preflight/preflightApiSlice';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 import {
   FlightHeader,
@@ -75,12 +75,16 @@ function FlightDetailsContent() {
       dispatch(
         baseApi.util.invalidateTags([
           'flights',
-          'weather',
-          'airports',
           'aircraft',
-          'notams',
           'weightBalance',
           'weightBalanceCalculation',
+        ])
+      );
+      dispatch(
+        preflightApi.util.invalidateTags([
+          'weather',
+          'airports',
+          'notams',
           'performance',
           'frequencies',
           'runways',
@@ -98,7 +102,7 @@ function FlightDetailsContent() {
   const airportIdents = useMemo(() => {
     if (!flight?.waypoints) return [];
     return flight.waypoints
-      .filter((wp) => wp.waypointType === WaypointType.Airport && wp.name)
+      .filter((wp) => wp.waypointType === 'Airport' && wp.name)
       .map((wp) => wp.name!)
       .filter((name, index, self) => self.indexOf(name) === index);
   }, [flight?.waypoints]);

@@ -8,12 +8,11 @@ import {
   CommunicationFrequencyDto,
   AirportCrosswindResponseDto,
   WeightBalanceCalculationDto,
-  WaypointType,
 } from '@/redux/api/vfr3d/dtos';
-import { useGetAirportsByIcaoCodesOrIdentsQuery, useGetRunwaysByAirportCodeQuery } from '@/redux/api/vfr3d/airports.api';
-import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/vfr3d/frequency.api';
-import { useGetMetarForAirportQuery, useGetTafForAirportQuery } from '@/redux/api/vfr3d/weather.api';
-import { useGetCrosswindForAirportQuery } from '@/redux/api/vfr3d/performance.api';
+import { useGetAirportsByIcaoCodesOrIdentsQuery, useGetRunwaysByAirportCodeQuery } from '@/redux/api/preflight/airports.api';
+import { useGetFrequenciesByServicedFacilityQuery } from '@/redux/api/preflight/frequency.api';
+import { useGetMetarForAirportQuery, useGetTafForAirportQuery } from '@/redux/api/preflight/weather.api';
+import { useGetCrosswindForAirportQuery } from '@/redux/api/preflight/e6b.api';
 import { useGetCalculationForFlightQuery } from '@/redux/api/vfr3d/weightBalance.api';
 
 export interface FlightPdfData {
@@ -40,7 +39,7 @@ export function useFlightPdfData(
   const airportIdents = useMemo(() => {
     if (!flight?.waypoints) return [];
     return flight.waypoints
-      .filter((wp) => wp.waypointType === WaypointType.Airport && wp.name)
+      .filter((wp) => wp.waypointType === 'Airport' && wp.name)
       .map((wp) => wp.name!)
       .filter((name, index, self) => self.indexOf(name) === index);
   }, [flight?.waypoints]);

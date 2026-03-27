@@ -23,7 +23,11 @@
       "WebFetch(domain:vite.dev)",
       "WebFetch(domain:www.npmjs.com)",
       "Bash(npx vite --version)",
-      "Bash(comm:*)"
+      "Bash(comm:*)",
+      "WebFetch(domain:preflightapi.io)",
+      "Bash(grep -E \"\\\\.api\\\\.ts$\")",
+      "Bash(curl -s \"https://preflightapi.io/api/openapi\")",
+      "Bash(npx openapi-typescript:*)"
     ]
   }
 }

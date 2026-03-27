@@ -65,7 +65,7 @@ const AirportInfo: React.FC<AirportInfoProps> = ({ airport }) => {
             <InfoItem label="ICAO Code" value={airport.icaoId} />
             <InfoItem label="FAA ID" value={airport.arptId} />
             <InfoItem label="Airport Name" value={airport.arptName} />
-            <InfoItem label="Site Type" value={airport.siteTypeCode} />
+            <InfoItem label="Site Type" value={airport.siteType} />
             <InfoItem label="Status" value={airport.arptStatus} />
             <InfoItem label="Fuel Types" value={airport.fuelTypes} />
             <InfoItem label="Chart Name" value={airport.chartName} />
@@ -118,13 +118,13 @@ const AirportInfo: React.FC<AirportInfoProps> = ({ airport }) => {
               value={airport.lastInspection ? new Date(airport.lastInspection).toLocaleDateString() : null} 
             />
             <Group gap="xs" wrap="wrap">
-              {airport.customsFlag === 'Y' && (
+              {airport.customsPortOfEntry && (
                 <Badge color="blue" size="sm">Customs</Badge>
               )}
-              {airport.jointUseFlag === 'Y' && (
+              {airport.jointUse && (
                 <Badge color="green" size="sm">Joint Use</Badge>
               )}
-              {airport.milLndgFlag === 'Y' && (
+              {airport.militaryLandingRights && (
                 <Badge color="orange" size="sm">Military Landing</Badge>
               )}
             </Group>

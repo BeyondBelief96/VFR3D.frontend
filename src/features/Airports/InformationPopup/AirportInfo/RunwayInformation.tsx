@@ -132,7 +132,6 @@ const RunwayEndDetails: React.FC<{
         runwayEnd.hasCenterlineLights ||
         runwayEnd.hasTouchdownZoneLights ||
         (runwayEnd.visualGlideSlopeIndicator &&
-          runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
           runwayEnd.visualGlideSlopeIndicator !== 'None')) && (
         <Group gap={4}>
           {runwayEnd.hasRunwayEndLights && (
@@ -151,7 +150,6 @@ const RunwayEndDetails: React.FC<{
             </Badge>
           )}
           {runwayEnd.visualGlideSlopeIndicator &&
-            runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
             runwayEnd.visualGlideSlopeIndicator !== 'None' && (
               <Badge size="xs" color="blue">
                 {runwayEnd.visualGlideSlopeIndicator}
@@ -214,7 +212,7 @@ const RunwayCard: React.FC<{
             <Text span c="dimmed">
               Surface:{' '}
             </Text>
-            {formatSurfaceType(runway.surfaceType)}
+            {formatSurfaceType(runway.surfaceType ?? undefined)}
           </Text>
           {runway.edgeLightIntensity && runway.edgeLightIntensity !== 'None' && (
             <Text size="xs">

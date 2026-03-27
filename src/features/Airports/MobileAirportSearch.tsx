@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { FiSearch, FiMapPin } from 'react-icons/fi';
-import { useSearchAirportsQuery } from '@/redux/api/vfr3d/airports.api';
+import { useSearchAirportsQuery } from '@/redux/api/preflight/airports.api';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 

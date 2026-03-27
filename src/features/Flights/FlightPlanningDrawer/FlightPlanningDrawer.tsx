@@ -57,18 +57,20 @@ import { FlightDisplayMode } from '@/utility/enums';
 import {
   WaypointDto,
   NavlogRequestDto,
+  NavlogPerformanceDataDto,
   CreateFlightRequestDto,
   CreateRoundTripFlightRequestDto,
   UpdateFlightRequestDto,
 } from '@/redux/api/vfr3d/dtos';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useCalculateNavLogMutation } from '@/redux/api/vfr3d/navlog.api';
+import { useCalculateNavLogMutation } from '@/redux/api/preflight/navlog.api';
 import {
   useCreateFlightMutation,
   useCreateRoundTripFlightMutation,
   useGetFlightQuery,
   useUpdateFlightMutation,
 } from '@/redux/api/vfr3d/flights.api';
+import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { DrawerAircraftPerformanceProfiles } from './PerformanceProfiles';
 import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
 import { NavLogTable, analyzeFuelStatus } from './NavLogTable';
@@ -153,6 +155,32 @@ export const FlightPlanningDrawer: React.FC = () => {
     returnDepartureTimeUtc,
     name: flightName,
   } = draftFlightPlan;
+
+  // Fetch aircraft list to resolve selected performance profile data
+  const { data: aircraftList } = useGetAircraftQuery(userId, { skip: !userId });
+
+  // Resolve the selected performance profile into NavlogPerformanceDataDto
+  const selectedPerformanceData: NavlogPerformanceDataDto | undefined = React.useMemo(() => {
+    if (!selectedPerformanceProfileId || !aircraftList) return undefined;
+    for (const aircraft of aircraftList) {
+      const profile = aircraft.performanceProfiles?.find((p) => p.id === selectedPerformanceProfileId);
+      if (profile) {
+        return {
+          climbTrueAirspeed: profile.climbTrueAirspeed,
+          cruiseTrueAirspeed: profile.cruiseTrueAirspeed,
+          descentTrueAirspeed: profile.descentTrueAirspeed,
+          climbFpm: profile.climbFpm,
+          descentFpm: profile.descentFpm,
+          climbFuelBurn: profile.climbFuelBurn,
+          cruiseFuelBurn: profile.cruiseFuelBurn,
+          descentFuelBurn: profile.descentFuelBurn,
+          sttFuelGals: profile.sttFuelGals,
+          fuelOnBoardGals: profile.fuelOnBoardGals,
+        };
+      }
+    }
+    return undefined;
+  }, [selectedPerformanceProfileId, aircraftList]);
 
   // API Mutations
   const [calculateNavLog, { isLoading: isCalculating }] = useCalculateNavLogMutation();
@@ -247,9 +275,9 @@ export const FlightPlanningDrawer: React.FC = () => {
       // Calculate outbound navlog
       const outboundRequest: NavlogRequestDto = {
         waypoints: flightPlanRoute,
-        aircraftPerformanceProfileId: selectedPerformanceProfileId,
+        performanceData: selectedPerformanceData,
         plannedCruisingAltitude,
-        timeOfDeparture: new Date(departureTimeUtc),
+        timeOfDeparture: new Date(departureTimeUtc).toISOString(),
       };
 
       const outboundResult = await calculateNavLog(outboundRequest).unwrap();
@@ -260,9 +288,9 @@ export const FlightPlanningDrawer: React.FC = () => {
         const returnWaypoints = [...flightPlanRoute].reverse();
         const returnRequest: NavlogRequestDto = {
           waypoints: returnWaypoints,
-          aircraftPerformanceProfileId: selectedPerformanceProfileId,
+          performanceData: selectedPerformanceData,
           plannedCruisingAltitude: returnPlannedCruisingAltitude,
-          timeOfDeparture: new Date(returnDepartureTimeUtc),
+          timeOfDeparture: new Date(returnDepartureTimeUtc).toISOString(),
         };
 
         const returnResult = await calculateNavLog(returnRequest).unwrap();

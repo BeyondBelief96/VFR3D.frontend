@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { airportsApi } from '../api/vfr3d/airports.api';
+import { airportsApi } from '../api/preflight/airports.api';
 
 export const fetchAirportByCode = createAsyncThunk(
   'data/fetchAirportByCode',

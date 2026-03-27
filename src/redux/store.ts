@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 import { baseApi } from './api/vfr3d/vfr3dSlice';
+import { preflightApi } from './api/preflight/preflightApiSlice';
 import airportsReducer from './slices/airportsSlice';
 import airspacesReducer from './slices/airspacesSlice';
 import viewerReducer from './slices/viewerSlice';
@@ -27,6 +28,7 @@ import obstaclesReducer from './slices/obstaclesSlice';
 // Combine all reducers
 const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
+  [preflightApi.reducerPath]: preflightApi.reducer,
   airport: airportsReducer,
   airspaces: airspacesReducer,
   viewer: viewerReducer,
@@ -46,7 +48,7 @@ const persistConfig = {
   version: 1,
   storage,
   whitelist: ['flightPlanning', 'viewer', 'routeStyle', 'airport'],
-  blacklist: [baseApi.reducerPath],
+  blacklist: [baseApi.reducerPath, preflightApi.reducerPath],
 };
 
 // Create persisted reducer
@@ -60,7 +62,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseApi.middleware),
+    }).concat(baseApi.middleware, preflightApi.middleware),
   devTools: import.meta.env.DEV,
 });
 
