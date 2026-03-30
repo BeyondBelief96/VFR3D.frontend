@@ -22,7 +22,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   return (
     <Stack gap={0} h="100%" p="md" bg={THEME_COLORS.SURFACE_9}>
       {/* Header */}
-      <Group justify="space-between" pb="md" className={classes.headerBorder}>
+      <Group justify="space-between" pb="md" mb={4} className={classes.headerBorder}>
         <Box>
           <Text size="lg" fw={600} c="white">
             Map Settings
@@ -37,7 +37,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </Group>
 
       {/* Scrollable Content */}
-      <ScrollArea flex={1} pt="md" scrollbarSize={6} offsetScrollbars>
+      <ScrollArea flex={1} pt="md" m={0} p={2} scrollbarSize={6} offsetScrollbars>
         <Accordion
           multiple
           variant="separated"
