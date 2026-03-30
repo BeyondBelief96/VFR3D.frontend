@@ -1,11 +1,12 @@
-import { ScreenSpaceEventHandler, ScreenSpaceEventType } from 'cesium';
-import React, { useEffect, useRef } from 'react';
+import { ScreenSpaceEventHandler, ScreenSpaceEventType, Cartesian3 } from 'cesium';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium } from 'resium';
 import { useDispatch } from 'react-redux';
 import { PirepEntity } from './PirepEntity';
 import { useGetAllPirepsQuery } from '@/redux/api/preflight/weather.api';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
+import { mapPirepToCartesian3, isVisibleFromCamera } from '@/utility/cesiumUtils';
 
 export const Pireps: React.FC = () => {
   const showPireps = useAppSelector((state) => state.pireps.showPireps);
@@ -47,6 +48,48 @@ export const Pireps: React.FC = () => {
       }
     };
   }, [viewer, pireps, dispatch]);
+
+  // Pre-compute Cartesian3 positions for occlusion checks
+  const pirepPositions = useMemo(() => {
+    const map = new Map<string, Cartesian3>();
+    if (!pireps) return map;
+    for (const pirep of pireps) {
+      const id = pirep.id?.toString();
+      if (!id) continue;
+      const pos = mapPirepToCartesian3(pirep);
+      if (pos) map.set(id, pos);
+    }
+    return map;
+  }, [pireps]);
+
+  // Globe occlusion culling — hide PIREPs behind the earth's ellipsoid
+  useEffect(() => {
+    if (!viewer || viewer.isDestroyed() || pirepPositions.size === 0) return;
+
+    const radii = viewer.scene.globe.ellipsoid.radii;
+
+    const updateVisibility = () => {
+      const cam = viewer.camera.positionWC;
+      for (const [id, position] of pirepPositions) {
+        const entity = viewer.entities.getById(id);
+        if (entity) {
+          entity.show = isVisibleFromCamera(cam, position, radii);
+        }
+      }
+    };
+
+    viewer.scene.preRender.addEventListener(updateVisibility);
+
+    return () => {
+      if (!viewer.isDestroyed()) {
+        viewer.scene.preRender.removeEventListener(updateVisibility);
+        for (const [id] of pirepPositions) {
+          const entity = viewer.entities.getById(id);
+          if (entity) entity.show = true;
+        }
+      }
+    };
+  }, [viewer, pirepPositions]);
 
   return isSuccess && showPireps ? (
     <>

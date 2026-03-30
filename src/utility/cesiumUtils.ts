@@ -12,6 +12,34 @@ import {
 export const FEET_TO_METERS = 0.3048;
 const FLIGHT_LEVEL_TO_METERS = 30.48; // 1 flight level = 100 feet
 
+// Scratch variables for horizon culling (avoid per-frame allocations)
+const _camScaled = new Cartesian3();
+const _ptScaled = new Cartesian3();
+const _vt = new Cartesian3();
+
+/**
+ * Horizon culling: checks if a point is visible from the camera
+ * and not occluded by the globe's ellipsoid.
+ * Based on Cesium's EllipsoidalOccluder algorithm.
+ * @see https://cesium.com/blog/2013/04/25/horizon-culling/
+ */
+export function isVisibleFromCamera(cam: Cartesian3, point: Cartesian3, radii: Cartesian3): boolean {
+  _camScaled.x = cam.x / radii.x;
+  _camScaled.y = cam.y / radii.y;
+  _camScaled.z = cam.z / radii.z;
+  _ptScaled.x = point.x / radii.x;
+  _ptScaled.y = point.y / radii.y;
+  _ptScaled.z = point.z / radii.z;
+
+  Cartesian3.subtract(_ptScaled, _camScaled, _vt);
+
+  const vhSq = Cartesian3.dot(_camScaled, _camScaled) - 1.0;
+  const vtDotCam = -Cartesian3.dot(_vt, _camScaled);
+
+  if (vhSq < 0) return vtDotCam <= 0;
+  return !(vtDotCam > vhSq && (vtDotCam * vtDotCam) / Cartesian3.magnitudeSquared(_vt) > vhSq);
+}
+
 /**
  * Flys the camera for the given cesium viewer to the given point.
  * @param viewer The cesium viewer.

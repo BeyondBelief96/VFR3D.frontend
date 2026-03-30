@@ -31,7 +31,8 @@
       "Bash(curl -sI https://preflightapi.io/)",
       "Bash(curl -s https://preflightapi.io/)",
       "Bash(curl -s https://preflightapi.io/assets/styles-BN7W_KvA.css)",
-      "Bash(grep -oP '#[0-9a-fA-F]{3,8}')"
+      "Bash(grep -oP '#[0-9a-fA-F]{3,8}')",
+      "Bash(node:*)"
     ]
   }
 }
