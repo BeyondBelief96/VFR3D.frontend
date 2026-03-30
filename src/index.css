@@ -9,7 +9,7 @@
 /*
  * Custom CSS variables are now defined in the Mantine theme (src/theme/index.ts)
  * Use Mantine color references instead:
- *   - var(--mantine-color-vfr3dBlue-5) for primary blue
+ *   - var(--mantine-color-vfr3dBlue-5) for primary sky blue
  *   - var(--mantine-color-vfrGreen-5) for VFR green
  *   - var(--mantine-color-ifrRed-5) for IFR red
  *   - var(--mantine-color-lifrPurple-5) for LIFR purple
@@ -26,7 +26,7 @@
 
 html {
   font-family:
-    'Inter',
+    'Plus Jakarta Sans',
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',

@@ -34,7 +34,7 @@
   width: 100%;
   max-width: 1024px;
   transition: transform 0.3s ease-in-out;
-  background-color: rgba(26, 27, 30, 0.98);
+  background-color: rgba(20, 24, 68, 0.98);
   backdrop-filter: blur(12px);
   border-top-left-radius: var(--mantine-radius-lg);
   border-top-right-radius: var(--mantine-radius-lg);

@@ -3,7 +3,7 @@
  * These constants use Mantine theme color references for consistency.
  *
  * Color Reference (use with Mantine props like `c="vfrGreen.5"`):
- * - vfr3dBlue: Primary blue (#3b82f6 at shade 5)
+ * - vfr3dBlue: Primary sky blue (#37A4DC at shade 5)
  * - vfrGreen: VFR green (#22c55e at shade 5)
  * - ifrRed: IFR red (#ef4444 at shade 5)
  * - lifrPurple: LIFR purple (#a855f7 at shade 5)
@@ -22,21 +22,21 @@
  */
 export const METRIC_COLORS = {
   /** Distance, navigation, route-related metrics */
-  DISTANCE: 'blue.4',
+  DISTANCE: 'vfr3dBlue.4',
   /** Time, duration, ETA-related metrics */
-  TIME: 'cyan.4',
+  TIME: 'vfr3dBlue.5',
   /** Fuel consumption, fuel levels */
-  FUEL: 'teal.4',
+  FUEL: 'vfr3dBlue.3',
   /** Wind speed, wind component */
-  WIND: 'grape.4',
+  WIND: 'vfr3dBlue.6',
   /** Temperature */
-  TEMPERATURE: 'orange.4',
+  TEMPERATURE: 'vfr3dBlue.4',
   /** Altitude, elevation */
-  ALTITUDE: 'indigo.4',
+  ALTITUDE: 'vfr3dBlue.5',
   /** Heading, course, bearing */
-  HEADING: 'violet.4',
+  HEADING: 'vfr3dBlue.3',
   /** Speed, velocity */
-  SPEED: 'pink.4',
+  SPEED: 'vfr3dBlue.6',
 } as const;
 
 /**
@@ -156,7 +156,7 @@ export const BUTTON_COLORS = {
  */
 export const BUTTON_GRADIENTS = {
   /** Primary CTA gradient - hero buttons, main CTAs */
-  PRIMARY: { from: 'blue', to: 'cyan', deg: 90 },
+  PRIMARY: { from: '#2c8bc5', to: '#37A4DC', deg: 90 },
 
   /** Success/go gradient - for major confirmations */
   SUCCESS: { from: 'teal', to: 'green', deg: 90 },
@@ -182,10 +182,10 @@ export const ACTION_ICON_COLORS = {
   DELETE: 'ifrRed',
 
   /** Refresh/reload - refresh icons, sync buttons */
-  REFRESH: 'cyan',
+  REFRESH: 'vfr3dBlue',
 
   /** Add/create - plus icons, add new items */
-  ADD: 'vfrGreen',
+  ADD: 'vfr3dBlue',
 
   /** Settings/configure - gear icons, preferences */
   SETTINGS: 'gray',
@@ -200,13 +200,13 @@ export const ACTION_ICON_COLORS = {
   NAVIGATE: 'gray',
 
   /** Copy/clipboard - copy to clipboard actions */
-  COPY: 'cyan',
+  COPY: 'vfr3dBlue',
 
   /** Download/export - download, export actions */
   DOWNLOAD: 'vfr3dBlue',
 
   /** Favorite/bookmark - star, heart, bookmark icons */
-  FAVORITE: 'warningYellow',
+  FAVORITE: 'vfr3dBlue',
 
   /** Map/location - map pins, location actions */
   LOCATION: 'vfr3dBlue',

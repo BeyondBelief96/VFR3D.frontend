@@ -73,7 +73,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <Accordion.Item value="route">
             <Accordion.Control
-              icon={<FiNavigation size={18} color={THEME_COLORS.SUCCESS} />}
+              icon={<FiNavigation size={18} color={THEME_COLORS.PRIMARY} />}
             >
               Route Colors
             </Accordion.Control>
@@ -84,7 +84,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <Accordion.Item value="airports">
             <Accordion.Control
-              icon={<FaPlaneArrival size={18} color={THEME_COLORS.WARNING} />}
+              icon={<FaPlaneArrival size={18} color={THEME_COLORS.PRIMARY} />}
             >
               Airports
             </Accordion.Control>
@@ -95,7 +95,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <Accordion.Item value="pireps">
             <Accordion.Control
-              icon={<FiCloud size={18} color={THEME_COLORS.ICON_GRAPE} />}
+              icon={<FiCloud size={18} color={THEME_COLORS.PRIMARY} />}
             >
               PIREPs
             </Accordion.Control>
@@ -105,7 +105,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           </Accordion.Item>
 
           <Accordion.Item value="airspaces">
-            <Accordion.Control icon={<FiLayers size={18} color={THEME_COLORS.ICON_PINK} />}>
+            <Accordion.Control icon={<FiLayers size={18} color={THEME_COLORS.PRIMARY} />}>
               Airspaces
             </Accordion.Control>
             <Accordion.Panel>
@@ -115,7 +115,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <Accordion.Item value="airsigmets">
             <Accordion.Control
-              icon={<FiAlertTriangle size={18} color={THEME_COLORS.ICON_ORANGE} />}
+              icon={<FiAlertTriangle size={18} color={THEME_COLORS.PRIMARY} />}
             >
               AIRMETs / SIGMETs
             </Accordion.Control>
@@ -126,7 +126,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <Accordion.Item value="obstacles">
             <Accordion.Control
-              icon={<GiRadioTower size={18} color={THEME_COLORS.IFR_RED} />}
+              icon={<GiRadioTower size={18} color={THEME_COLORS.PRIMARY} />}
             >
               Obstacles
             </Accordion.Control>

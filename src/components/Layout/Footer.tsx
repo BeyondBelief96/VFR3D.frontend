@@ -17,7 +17,7 @@ export function Footer() {
                 size="lg"
                 fw={700}
                 variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
               >
                 VFR3D
               </Text>

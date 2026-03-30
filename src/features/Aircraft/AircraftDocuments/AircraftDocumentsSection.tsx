@@ -148,7 +148,7 @@ export const AircraftDocumentsSection: React.FC<AircraftDocumentsSectionProps> =
 
             <Button
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
               size="xs"
               leftSection={<FiPlus size={isPhone ? 12 : 14} />}
               onClick={() => setUploadModalOpen(true)}

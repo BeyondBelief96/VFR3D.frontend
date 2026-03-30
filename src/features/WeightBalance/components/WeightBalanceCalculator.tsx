@@ -211,7 +211,7 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
       <Group justify="space-between" align="flex-start" wrap="wrap" gap="xs">
         <Group gap="sm">
           {!isPhone && (
-            <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 45 }}>
+            <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}>
               <FiActivity size={18} />
             </ThemeIcon>
           )}

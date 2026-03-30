@@ -71,12 +71,12 @@ Use the `style` prop sparingly for one-off styles that don't fit the above patte
 ## Theme Colors
 
 This project uses custom theme colors defined in `src/theme/index.ts`:
-- `vfr3dBlue` - Primary blue (#3b82f6)
+- `vfr3dBlue` - Primary sky blue (#37A4DC) — brand accent from PreFlight API
 - `vfrGreen` - VFR flight category / success (#22c55e)
 - `ifrRed` - IFR flight category / error / destructive (#ef4444)
 - `lifrPurple` - LIFR flight category (#a855f7)
 - `warningYellow` - Warnings / caution (#fbbf24)
-- `vfr3dSurface` - Dark slate surfaces (0=light, 9=darkest)
+- `vfr3dSurface` - Dark navy surfaces based on #141844 (0=light, 9=darkest)
 
 Reference in CSS: `var(--mantine-color-{colorName}-{shade})` (shade 0-9, 5 is base)
 

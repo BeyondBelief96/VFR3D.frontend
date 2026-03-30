@@ -6,19 +6,20 @@ import { createTheme, MantineColorsTuple, CSSVariablesResolver } from '@mantine/
 // =============================================================================
 
 /**
- * VFR3D Primary Blue - #3b82f6 at shade 5
+ * VFR3D Primary Sky Blue - #37A4DC at shade 5
+ * Brand accent color from PreFlight API
  */
 const vfr3dBlue: MantineColorsTuple = [
-  '#e7f1ff', // 0 - lightest
-  '#c9ddff', // 1
-  '#a8c7ff', // 2
-  '#84aeff', // 3
-  '#5f94fc', // 4
-  '#3b82f6', // 5 - base (--vfr3d-primary)
-  '#2563eb', // 6 (--vfr3d-primary-dark)
-  '#1d4ed8', // 7
-  '#1e40af', // 8
-  '#1e3a8a', // 9 - darkest
+  '#e6f3fb', // 0 - lightest
+  '#c2e2f5', // 1
+  '#9bcfed', // 2
+  '#73bce5', // 3
+  '#4faade', // 4
+  '#37A4DC', // 5 - base (--vfr3d-primary)
+  '#2c8bc5', // 6 (--vfr3d-primary-dark)
+  '#2374a8', // 7
+  '#1b5d8b', // 8
+  '#14466e', // 9 - darkest
 ];
 
 /**
@@ -86,20 +87,20 @@ const warningYellow: MantineColorsTuple = [
 ];
 
 /**
- * VFR3D Surface colors - dark slate theme
- * Used for backgrounds and surfaces in dark mode
+ * VFR3D Surface colors - dark navy theme
+ * Based on brand navy #141844, used for backgrounds and surfaces in dark mode
  */
 const vfr3dSurface: MantineColorsTuple = [
-  '#f8fafc', // 0 - slate-50
-  '#f1f5f9', // 1 - slate-100 (--vfr3d-text)
-  '#e2e8f0', // 2 - slate-200
-  '#cbd5e1', // 3 - slate-300
-  '#94a3b8', // 4 - slate-400 (--vfr3d-text-muted)
-  '#64748b', // 5 - slate-500
-  '#475569', // 6 - slate-600
-  '#334155', // 7 - slate-700
-  '#1e293b', // 8 - slate-800 (--vfr3d-surface)
-  '#0f172a', // 9 - slate-900 (--vfr3d-background)
+  '#eeeef5', // 0 - lightest (text on dark backgrounds)
+  '#d4d5e3', // 1 - light text
+  '#b4b6cc', // 2 - secondary text
+  '#9295b4', // 3 - muted text
+  '#6e7199', // 4 - dimmed text / muted foreground
+  '#4d5180', // 5 - mid navy
+  '#353968', // 6 - dark navy
+  '#252A58', // 7 - elevated surface
+  '#141844', // 8 - brand navy (--vfr3d-surface)
+  '#0C0E2A', // 9 - deepest background (--vfr3d-background)
 ];
 
 // =============================================================================
@@ -110,9 +111,9 @@ export const theme = createTheme({
   // Primary color - use VFR3D blue
   primaryColor: 'vfr3dBlue',
 
-  // Font family
+  // Font family - Plus Jakarta Sans (matching PreFlight API brand)
   fontFamily:
-    'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
+    '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
 
   // Custom color palettes
   colors: {

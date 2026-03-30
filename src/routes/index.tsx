@@ -72,7 +72,7 @@ function HomePage() {
             <Badge
               size="lg"
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
               className={classes.heroBadge}
             >
               Plan, Fly, Repeat
@@ -84,7 +84,7 @@ function HomePage() {
               <Text
                 component="span"
                 variant="gradient"
-                gradient={{ from: '#3b82f6', to: '#06b6d4', deg: 45 }}
+                gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
                 inherit
               >
                 in Stunning 3D
@@ -549,7 +549,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
                     loading={isLoading}
                     onClick={() => loginWithRedirect()}
                     rightSection={<FiArrowRight size={20} />}
@@ -561,7 +561,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
                     component={Link}
                     to="/airports"
                     leftSection={<TbMapPin size={20} />}
@@ -573,7 +573,7 @@ function HomePage() {
                     size="xl"
                     radius="md"
                     variant="gradient"
-                    gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                    gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
                     component={Link}
                     to="/map"
                     rightSection={<FiArrowRight size={20} />}

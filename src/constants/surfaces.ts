@@ -19,16 +19,16 @@
  * These are the raw RGB values that define our color palette
  */
 export const COLOR_RGB = {
-  /** Deepest dark blue - slate-900 (#0f172a) */
-  SLATE_900: '15, 23, 42',
-  /** Card/surface dark - slate-800 (#1e293b) */
-  SLATE_800: '30, 41, 59',
-  /** Elevated surface - slate-700 (#334155) */
-  SLATE_700: '51, 65, 85',
-  /** Border/muted - slate-400 (#94a3b8) */
-  SLATE_400: '148, 163, 184',
-  /** Primary blue (#3b82f6) */
-  BLUE_500: '59, 130, 246',
+  /** Deepest dark navy - navy-900 (#0C0E2A) */
+  SLATE_900: '12, 14, 42',
+  /** Card/surface navy - navy-800 (#141844) */
+  SLATE_800: '20, 24, 68',
+  /** Elevated surface - navy-700 (#252A58) */
+  SLATE_700: '37, 42, 88',
+  /** Border/muted - navy-400 (#8387A8) */
+  SLATE_400: '131, 135, 168',
+  /** Primary sky blue (#37A4DC) */
+  BLUE_500: '55, 164, 220',
   /** Error red (#ef4444) */
   RED_500: '239, 68, 68',
   /** Cyan accent (#06b6d4) */
@@ -263,24 +263,24 @@ export const ICON_BG = {
  * Used with CSS custom properties: style={{ '--card-glow-color': GLOW.BLUE }}
  */
 export const GLOW = {
-  /** Blue glow */
+  /** Primary accent glow */
   BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.4)`,
-  /** Violet glow */
-  VIOLET: `rgba(${COLOR_RGB.VIOLET_500}, 0.4)`,
-  /** Cyan glow */
-  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.4)`,
-  /** Orange glow */
-  ORANGE: `rgba(${COLOR_RGB.ORANGE_500}, 0.4)`,
-  /** Green glow */
-  GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.4)`,
-  /** Pink glow */
-  PINK: `rgba(${COLOR_RGB.PINK_500}, 0.4)`,
-  /** Red glow */
+  /** Subtle accent glow */
+  VIOLET: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
+  /** Accent glow - cool variant */
+  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.35)`,
+  /** Accent glow - warm variant */
+  ORANGE: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
+  /** Accent glow - muted variant */
+  GREEN: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
+  /** Accent glow - soft variant */
+  PINK: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
+  /** Status glow - error */
   RED: `rgba(${COLOR_RGB.RED_500}, 0.4)`,
-  /** Grape glow */
-  GRAPE: `rgba(${COLOR_RGB.GRAPE_500}, 0.4)`,
-  /** Teal glow */
-  TEAL: `rgba(${COLOR_RGB.TEAL_500}, 0.4)`,
+  /** Accent glow - deep variant */
+  GRAPE: `rgba(${COLOR_RGB.BLUE_500}, 0.35)`,
+  /** Accent glow - teal variant */
+  TEAL: `rgba(${COLOR_RGB.CYAN_500}, 0.3)`,
 } as const;
 
 // =============================================================================
@@ -335,11 +335,11 @@ export const THEME_COLORS = {
   DARK_4: 'var(--mantine-color-dark-4)',
   DARK_5: 'var(--mantine-color-dark-5)',
 
-  // --- Sidebar Icon Accents ---
-  ICON_PINK: 'var(--mantine-color-pink-5)',
-  ICON_ORANGE: 'var(--mantine-color-orange-5)',
-  ICON_GRAPE: 'var(--mantine-color-grape-5)',
-  ICON_BLUE: 'var(--mantine-color-blue-5)',
+  // --- Sidebar Icon Accents (monochromatic accent blue) ---
+  ICON_PINK: 'var(--mantine-color-vfr3dBlue-5)',
+  ICON_ORANGE: 'var(--mantine-color-vfr3dBlue-5)',
+  ICON_GRAPE: 'var(--mantine-color-vfr3dBlue-5)',
+  ICON_BLUE: 'var(--mantine-color-vfr3dBlue-5)',
 
   /** @deprecated Use ERROR instead */
   IFR_RED: 'var(--mantine-color-ifrRed-5)',
@@ -474,10 +474,10 @@ export const SEGMENTED_CONTROL_STYLES = {
  * Gradient backgrounds
  */
 export const GRADIENT = {
-  /** Blue to cyan tip/info gradient */
-  TIP: `linear-gradient(135deg, ${HIGHLIGHT.LIGHT}, ${CYAN_BG.SUBTLE})`,
-  /** Blue to cyan icon background gradient */
-  ICON: `linear-gradient(135deg, ${HIGHLIGHT.DEFAULT} 0%, ${CYAN_BG.DEFAULT} 100%)`,
+  /** Accent-tinted tip/info gradient */
+  TIP: `linear-gradient(135deg, ${HIGHLIGHT.LIGHT}, ${HIGHLIGHT.SUBTLE})`,
+  /** Accent icon background gradient */
+  ICON: `linear-gradient(135deg, ${HIGHLIGHT.DEFAULT} 0%, ${HIGHLIGHT.STRONG} 100%)`,
 } as const;
 
 /**

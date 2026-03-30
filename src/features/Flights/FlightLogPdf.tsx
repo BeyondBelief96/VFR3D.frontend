@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   airportIdent: {
     fontSize: 10,
-    color: '#3b82f6',
+    color: '#37A4DC',
     fontWeight: 'bold',
   },
   windBox: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   mvfrBadge: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#37A4DC',
     color: '#ffffff',
   },
   ifrBadge: {
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 6,
     borderLeftWidth: 3,
-    borderLeftColor: '#3b82f6',
+    borderLeftColor: '#37A4DC',
   },
   forecastHeader: {
     flexDirection: 'row',
@@ -888,7 +888,7 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
 
           {/* Landing Result */}
           {weightBalance.landing && (
-            <WBResultCard title="LANDING" result={weightBalance.landing} color="#3b82f6" />
+            <WBResultCard title="LANDING" result={weightBalance.landing} color="#37A4DC" />
           )}
 
           {/* Calculation Details */}

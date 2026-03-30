@@ -392,7 +392,7 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
               type="submit"
               disabled={!isValid || isLoading}
               variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
             >
               {isLoading ? (
                 <Loader size="xs" color="white" />
