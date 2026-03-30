@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
-import { Color, ScreenSpaceEventHandler, ScreenSpaceEventType, Cartesian3 } from 'cesium';
+import { Color, ScreenSpaceEventHandler, ScreenSpaceEventType, Cartesian3, Entity } from 'cesium';
 import { useDispatch } from 'react-redux';
 import { useCesium } from 'resium';
 import {
@@ -17,6 +17,7 @@ import { PolygonEntity } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { getGAirmetEntityId } from '@/utility/entityIdUtils';
+import { getEntityFromPick } from '@/components/Cesium/hooks/cesiumHelpers';
 import { GAirmetDto, GAirmetPoint, GAirmetHazardType } from '@/redux/api/vfr3d/dtos';
 import { Center, Loader } from '@mantine/core';
 import type { RootState } from '@/redux/store';
@@ -291,10 +292,23 @@ export const GAirmetComponent: React.FC = () => {
     handler.setInputAction((movement: ScreenSpaceEventHandler.PositionedEvent) => {
       if (!viewer || viewer.isDestroyed()) return;
 
-      const pickedObject = viewer.scene.pick(movement.position);
-      if (pickedObject && pickedObject.id) {
+      let pickedEntity: Entity | null = getEntityFromPick(viewer.scene.pick(movement.position));
+      if (pickedEntity && pickedEntity.name === '__hover_overlay__') {
+        const results = viewer.scene.drillPick(movement.position) as unknown[];
+        pickedEntity = null;
+        for (const r of results) {
+          const ent = getEntityFromPick(r);
+          if (ent && ent.name !== '__hover_overlay__') {
+            pickedEntity = ent;
+            break;
+          }
+        }
+      }
+
+      if (pickedEntity) {
+        const pickedId = String(pickedEntity.id);
         const clickedGAirmet = allGAirmets.find(
-          (g) => getGAirmetEntityId(g) === pickedObject.id.id
+          (g) => getGAirmetEntityId(g) === pickedId
         );
         if (clickedGAirmet) {
           dispatch(setSelectedEntity({ entity: clickedGAirmet, type: 'GAirmet' }));
