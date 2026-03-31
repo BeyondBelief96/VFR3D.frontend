@@ -1,7 +1,7 @@
 import { Group, Button, Stack } from '@mantine/core';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiSave } from 'react-icons/fi';
 import { useIsPhone } from '@/hooks';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { BORDER } from '@/constants/surfaces';
 
 interface WizardNavigationProps {
@@ -50,8 +50,8 @@ export function WizardNavigation({
 
           {isLastStep ? (
             <Button
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               leftSection={<FiCheck size={14} />}
               onClick={onSubmit}
               loading={isSubmitting}
@@ -127,8 +127,8 @@ export function WizardNavigation({
 
         {isLastStep ? (
           <Button
-            variant="gradient"
-            gradient={BUTTON_GRADIENTS.PRIMARY}
+            variant="outline"
+            color={BUTTON_COLORS.PRIMARY}
             leftSection={<FiCheck size={16} />}
             onClick={onSubmit}
             loading={isSubmitting}

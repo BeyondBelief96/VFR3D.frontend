@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaPlane, FaPalette, FaTachometerAlt, FaCog } from 'react-icons/fa';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { INPUT_STYLES, SELECT_STYLES, MODAL_STYLES, SURFACE, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import {
   AircraftDto,
@@ -299,7 +299,6 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
                   style={{
                     width: isPhone ? 24 : 28,
                     height: isPhone ? 24 : 28,
-                    borderRadius: '50%',
                     backgroundColor: HIGHLIGHT.DEFAULT,
                     display: 'flex',
                     alignItems: 'center',
@@ -361,7 +360,6 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
             {/* Optional Fields in Accordion */}
             <Accordion
               variant="separated"
-              radius="md"
               styles={{
                 item: {
                   backgroundColor: SURFACE.CARD_HOVER,
@@ -647,8 +645,8 @@ export const AircraftForm: React.FC<AircraftFormProps> = ({
               <Button
                 type="submit"
                 disabled={!isValid || isLoading}
-                variant="gradient"
-                gradient={BUTTON_GRADIENTS.PRIMARY}
+                variant="outline"
+                color={BUTTON_COLORS.PRIMARY}
                 size={isPhone ? 'sm' : 'md'}
               >
                 {isLoading ? (

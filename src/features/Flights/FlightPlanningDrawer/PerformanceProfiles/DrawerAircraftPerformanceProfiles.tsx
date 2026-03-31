@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertCircle } from 'react-icons/fi';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -230,8 +230,8 @@ export const DrawerAircraftPerformanceProfiles: React.FC<DrawerAircraftPerforman
         <Button
           component={Link}
           to="/aircraft"
-          variant="gradient"
-          gradient={BUTTON_GRADIENTS.PRIMARY}
+          variant="outline"
+          color={BUTTON_COLORS.PRIMARY}
         >
           Go to Aircraft Page
         </Button>

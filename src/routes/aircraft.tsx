@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { notifyError, notifySuccess } from '@/utility/notifications';
 import { FiPlus, FiAlertTriangle } from 'react-icons/fi';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -134,8 +134,8 @@ function AircraftContent() {
           </Title>
           <Button
             leftSection={<FiPlus />}
-            variant="gradient"
-            gradient={BUTTON_GRADIENTS.PRIMARY}
+            variant="outline"
+            color={BUTTON_COLORS.PRIMARY}
             onClick={handleCreateClick}
             size={isPhone ? 'sm' : 'md'}
             fullWidth={isPhone}
@@ -163,7 +163,6 @@ function AircraftContent() {
         {aircraft && aircraft.length === 0 && (
           <Card
             padding={isPhone ? 'md' : 'xl'}
-            radius="md"
             style={{
               backgroundColor: SURFACE.CARD,
               border: `1px solid ${BORDER.SUBTLE}`,
@@ -174,7 +173,6 @@ function AircraftContent() {
                 style={{
                   width: isPhone ? 64 : 80,
                   height: isPhone ? 64 : 80,
-                  borderRadius: '50%',
                   backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
@@ -191,8 +189,8 @@ function AircraftContent() {
                 logs for your flights.
               </Text>
               <Button
-                variant="gradient"
-                gradient={BUTTON_GRADIENTS.PRIMARY}
+                variant="outline"
+                color={BUTTON_COLORS.PRIMARY}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
                 size={isPhone ? 'sm' : 'md'}
@@ -260,12 +258,11 @@ function AircraftContent() {
               p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: SURFACE_INNER.DEFAULT,
-                borderRadius: 'var(--mantine-radius-md)',
                 border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="sm" wrap="nowrap">
-                <ThemeIcon size={isPhone ? 'md' : 'lg'} radius="xl" color="blue" variant="light">
+                <ThemeIcon size={isPhone ? 'md' : 'lg'} color="blue" variant="light">
                   <FaPlane size={isPhone ? 14 : 16} />
                 </ThemeIcon>
                 <Box style={{ minWidth: 0, flex: 1 }}>

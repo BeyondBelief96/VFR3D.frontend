@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { Card, Stack, Text, Button, Group, Box, ThemeIcon } from '@mantine/core';
 import { FiAlertCircle, FiRefreshCw, FiArrowLeft, FiHome } from 'react-icons/fi';
 import classes from './PageErrorState.module.css';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 export interface PageErrorStateProps {
   /** The main title shown in the error state */
@@ -42,7 +42,7 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
   fullPage = true,
 }) => {
   const content = (
-    <Card padding="xl" radius="md" className={classes.card}>
+    <Card padding="xl" className={classes.card}>
       <Stack align="center" gap="lg" py="md">
         <Box className={classes.iconBox}>
           {icon || (
@@ -64,8 +64,8 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
         <Group gap="sm">
           {onRetry && (
             <Button
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               leftSection={!isRetrying ? <FiRefreshCw size={16} /> : undefined}
               onClick={onRetry}
               loading={isRetrying}

@@ -14,7 +14,7 @@ import {
   Divider,
 } from '@mantine/core';
 import { FiSave, FiFile } from 'react-icons/fi';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { MODAL_STYLES, SURFACE_INNER, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import { DocumentCategory, AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import {
@@ -191,7 +191,6 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
             p={isPhone ? 'sm' : 'md'}
             style={{
               backgroundColor: SURFACE_INNER.DEFAULT,
-              borderRadius: 'var(--mantine-radius-md)',
               border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
@@ -201,7 +200,6 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
                   width: 36,
                   height: 36,
                   minWidth: 36,
-                  borderRadius: 'var(--mantine-radius-sm)',
                   backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
@@ -349,8 +347,8 @@ export const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
             Cancel
           </Button>
           <Button
-            variant="gradient"
-            gradient={BUTTON_GRADIENTS.PRIMARY}
+            variant="outline"
+            color={BUTTON_COLORS.PRIMARY}
             onClick={handleSubmit}
             loading={isLoading}
             leftSection={<FiSave size={isPhone ? 16 : 14} />}

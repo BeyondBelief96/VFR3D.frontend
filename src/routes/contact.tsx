@@ -14,7 +14,7 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { notifyError, notifySuccess } from '@/utility/notifications';
-import { BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, BORDER } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/contact')({
@@ -80,7 +80,6 @@ function ContactPage() {
 
           <Card
             padding="xl"
-            radius="md"
             style={{
               backgroundColor: SURFACE.CARD,
               border: `1px solid ${BORDER.SUBTLE}`,
@@ -119,8 +118,8 @@ function ContactPage() {
                 <Button
                   type="submit"
                   loading={isSubmitting}
-                  variant="gradient"
-                  gradient={BUTTON_GRADIENTS.PRIMARY}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   fullWidth
                   size="md"
                 >

@@ -12,7 +12,7 @@ import {
   Alert,
 } from '@mantine/core';
 import { FiUpload, FiFile, FiAlertCircle } from 'react-icons/fi';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { MODAL_STYLES, SURFACE_INNER, BORDER, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 import { DocumentCategory } from '@/redux/api/vfr3d/dtos';
 import { useUploadAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDocuments.api';
@@ -260,8 +260,8 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             Cancel
           </Button>
           <Button
-            variant="gradient"
-            gradient={BUTTON_GRADIENTS.PRIMARY}
+            variant="outline"
+            color={BUTTON_COLORS.PRIMARY}
             onClick={handleSubmit}
             loading={isLoading}
             leftSection={<FiUpload size={isPhone ? 16 : 14} />}

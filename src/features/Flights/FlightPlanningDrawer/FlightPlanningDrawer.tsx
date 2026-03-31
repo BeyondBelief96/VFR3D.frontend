@@ -80,7 +80,7 @@ import { QuickLayerSettings } from './QuickLayerSettings';
 import { FiAlertTriangle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
 import classes from './FlightPlanningDrawer.module.css';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { BORDER } from '@/constants/surfaces';
 
 // Step enum for clarity
@@ -541,8 +541,8 @@ export const FlightPlanningDrawer: React.FC = () => {
                       size="md"
                       leftSection={<FiMap size={18} />}
                       onClick={handleViewSavedFlight}
-                      variant="gradient"
-                      gradient={BUTTON_GRADIENTS.PRIMARY}
+                      variant="outline"
+                      color={BUTTON_COLORS.PRIMARY}
                     >
                       View on Map
                     </Button>

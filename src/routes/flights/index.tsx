@@ -18,7 +18,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
-import { BUTTON_COLORS, BUTTON_GRADIENTS, ACTION_ICON_COLORS } from '@/constants/colors';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
@@ -81,11 +81,10 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
   return (
     <Card
       padding="lg"
-      radius="md"
       style={{
         backgroundColor: SURFACE.CARD,
         border: `1px solid ${BORDER.CARD}`,
-        transition: 'all 0.2s ease',
+        transition: 'border-color 0.2s ease-out',
       }}
     >
       <Stack gap="md">
@@ -99,16 +98,15 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
             <Group gap="sm" wrap="nowrap">
               <Box
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
+                  width: 36,
+                  height: 36,
                   backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={18} color={THEME_COLORS.PRIMARY} />
+                <FaPlane size={16} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box>
                 <Text c="white" fw={600} size="lg" lineClamp={1}>
@@ -139,7 +137,6 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         <Box
           style={{
             backgroundColor: SURFACE_INNER.DEFAULT,
-            borderRadius: 'var(--mantine-radius-md)',
             padding: 'var(--mantine-spacing-sm)',
           }}
         >
@@ -270,8 +267,8 @@ function FlightsContent() {
           {isPhone ? (
             <Button
               leftSection={<TbMapPin size={18} />}
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               component={Link}
               to="/airports"
             >
@@ -280,8 +277,8 @@ function FlightsContent() {
           ) : (
             <Button
               leftSection={<FiPlus />}
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               component={Link}
               to="/map"
             >
@@ -309,7 +306,6 @@ function FlightsContent() {
         {flights && flights.length === 0 && (
           <Card
             padding="xl"
-            radius="md"
             style={{
               backgroundColor: SURFACE.CARD,
               border: `1px solid ${BORDER.SUBTLE}`,
@@ -318,9 +314,8 @@ function FlightsContent() {
             <Stack align="center" gap="lg" py="xl">
               <Box
                 style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: '50%',
+                  width: 64,
+                  height: 64,
                   backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
@@ -338,8 +333,8 @@ function FlightsContent() {
               </Text>
               {isPhone ? (
                 <Button
-                  variant="gradient"
-                  gradient={BUTTON_GRADIENTS.PRIMARY}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   component={Link}
                   to="/airports"
                   leftSection={<TbMapPin size={18} />}
@@ -348,8 +343,8 @@ function FlightsContent() {
                 </Button>
               ) : (
                 <Button
-                  variant="gradient"
-                  gradient={BUTTON_GRADIENTS.PRIMARY}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   component={Link}
                   to="/map"
                   leftSection={<FiPlus />}

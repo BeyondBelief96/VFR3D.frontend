@@ -33,7 +33,9 @@
       "Bash(curl -s https://preflightapi.io/assets/styles-BN7W_KvA.css)",
       "Bash(grep -oP '#[0-9a-fA-F]{3,8}')",
       "Bash(node:*)",
-      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")"
+      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")",
+      "Bash(grep -r variant=['']gradient[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)",
+      "Bash(grep -r variant=['']filled[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)"
     ]
   }
 }

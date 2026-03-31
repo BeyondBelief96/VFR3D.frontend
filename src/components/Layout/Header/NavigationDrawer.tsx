@@ -12,7 +12,7 @@ import { NavLinkItem } from './NavLinkItem';
 import { DrawerUserSection } from './DrawerUserSection';
 import classes from './Header.module.css';
 import { BORDER, THEME_COLORS } from '@/constants/surfaces';
-import { BUTTON_GRADIENTS, BUTTON_COLORS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 interface NavigationDrawerProps {
   opened: boolean;
@@ -135,8 +135,8 @@ export function NavigationDrawer({
         <Box className={classes.navSection}>
           {!isAuthenticated ? (
             <Button
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               fullWidth
               onClick={handleLogin}
             >

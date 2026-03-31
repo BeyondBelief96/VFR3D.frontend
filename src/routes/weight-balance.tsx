@@ -37,7 +37,7 @@ import {
   WeightBalanceCalculator,
 } from '@/features/WeightBalance';
 import { WeightBalanceWizard } from '@/features/WeightBalance/components/wizard/WeightBalanceWizard';
-import { BUTTON_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/weight-balance')({
@@ -250,7 +250,6 @@ function WeightBalanceContent() {
 
           <Card
             padding={isPhone ? 'sm' : 'xl'}
-            radius="md"
             style={{
               backgroundColor: SURFACE.CARD,
               border: `1px solid ${BORDER.SUBTLE}`,
@@ -281,7 +280,7 @@ function WeightBalanceContent() {
         <Group justify="space-between" align="flex-start" wrap="wrap" gap={isPhone ? 'xs' : 'md'}>
           <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
             {!isPhone && (
-              <ThemeIcon size="xl" radius="md" variant="gradient" gradient={BUTTON_GRADIENTS.PRIMARY}>
+              <ThemeIcon size="xl" variant="light" color="vfr3dBlue">
                 <FaBalanceScale size={24} />
               </ThemeIcon>
             )}
@@ -298,8 +297,8 @@ function WeightBalanceContent() {
           </Group>
           <Group gap={isPhone ? 'xs' : 'sm'} wrap="wrap" grow={isPhone} style={isPhone ? { width: '100%' } : undefined}>
             <Button
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               size={isPhone ? 'sm' : 'md'}
               leftSection={<FaBalanceScale size={isPhone ? 12 : 14} />}
               onClick={() => {
@@ -313,8 +312,8 @@ function WeightBalanceContent() {
             <Button
               leftSection={<FiPlus size={isPhone ? 14 : 16} />}
               size={isPhone ? 'sm' : 'md'}
-              variant="gradient"
-              gradient={BUTTON_GRADIENTS.PRIMARY}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               onClick={handleCreateClick}
             >
               New Profile
@@ -341,7 +340,6 @@ function WeightBalanceContent() {
         {!isLoading && !isError && profiles.length === 0 && (
           <Card
             padding={isPhone ? 'md' : 'xl'}
-            radius="md"
             style={{
               backgroundColor: SURFACE.CARD,
               border: `1px solid ${BORDER.SUBTLE}`,
@@ -352,7 +350,6 @@ function WeightBalanceContent() {
                 style={{
                   width: isPhone ? 64 : 80,
                   height: isPhone ? 64 : 80,
-                  borderRadius: '50%',
                   backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
@@ -369,8 +366,8 @@ function WeightBalanceContent() {
                 landing weights, and verify CG is within limits.
               </Text>
               <Button
-                variant="gradient"
-                gradient={BUTTON_GRADIENTS.PRIMARY}
+                variant="outline"
+                color={BUTTON_COLORS.PRIMARY}
                 onClick={handleCreateClick}
                 leftSection={<FiPlus />}
                 size={isPhone ? 'sm' : 'md'}
@@ -392,7 +389,6 @@ function WeightBalanceContent() {
               item: {
                 backgroundColor: SURFACE.CARD,
                 border: `1px solid ${BORDER.SUBTLE}`,
-                borderRadius: 'var(--mantine-radius-md)',
                 '&[data-active]': {
                   backgroundColor: SURFACE.INSET,
                 },
@@ -491,12 +487,11 @@ function WeightBalanceContent() {
               p={isPhone ? 'sm' : 'md'}
               style={{
                 backgroundColor: SURFACE_INNER.DEFAULT,
-                borderRadius: 'var(--mantine-radius-md)',
                 border: `1px solid ${BORDER.SUBTLE}`,
               }}
             >
               <Group gap="sm" wrap="nowrap">
-                <ThemeIcon size={isPhone ? 'md' : 'lg'} radius="xl" color="blue" variant="light">
+                <ThemeIcon size={isPhone ? 'md' : 'lg'} color="blue" variant="light">
                   <FaBalanceScale size={isPhone ? 14 : 16} />
                 </ThemeIcon>
                 <Box style={{ minWidth: 0, flex: 1 }}>

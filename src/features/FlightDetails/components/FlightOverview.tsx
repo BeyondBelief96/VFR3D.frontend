@@ -8,7 +8,7 @@ import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { setDisplayMode, viewFlightInMap } from '@/redux/slices/flightPlanningSlice';
 import { FlightDisplayMode } from '@/utility/enums';
 import { AppDispatch } from '@/redux/store';
-import { METRIC_COLORS, FLIGHT_POINT_COLORS, BUTTON_GRADIENTS } from '@/constants/colors';
+import { METRIC_COLORS, FLIGHT_POINT_COLORS, BUTTON_COLORS } from '@/constants/colors';
 import { SURFACE, BORDER } from '@/constants/surfaces';
 import { StatCard } from './StatCard';
 import { formatDuration, formatWindComponent } from '../utils/formatters';
@@ -146,8 +146,8 @@ export function FlightOverview({ flight }: FlightOverviewProps) {
 
       {/* View on Map Button */}
       <Button
-        variant="gradient"
-        gradient={BUTTON_GRADIENTS.PRIMARY}
+        variant="outline"
+        color={BUTTON_COLORS.PRIMARY}
         size={isPhone ? 'md' : 'lg'}
         leftSection={<FiMap size={isPhone ? 18 : 20} />}
         onClick={handleViewOnMap}
