@@ -3,6 +3,7 @@ import { Box, Button, Collapse, Stack, Text, SimpleGrid, Loader, Center } from '
 import { FiChevronDown, FiChevronUp, FiPlus, FiFileText } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import { SURFACE_INNER } from '@/constants/surfaces';
+import { BUTTON_COLORS } from '@/constants/colors';
 import {
   useGetAircraftDocumentsQuery,
   useLazyGetAircraftDocumentUrlQuery,
@@ -147,8 +148,8 @@ export const AircraftDocumentsSection: React.FC<AircraftDocumentsSectionProps> =
             )}
 
             <Button
-              variant="gradient"
-              gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
+              variant="filled"
+              color={BUTTON_COLORS.PRIMARY}
               size="xs"
               leftSection={<FiPlus size={isPhone ? 12 : 14} />}
               onClick={() => setUploadModalOpen(true)}

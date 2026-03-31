@@ -7,14 +7,14 @@
 @import 'cesium/Build/Cesium/Widgets/widgets.css';
 
 /*
- * Custom CSS variables are now defined in the Mantine theme (src/theme/index.ts)
- * Use Mantine color references instead:
- *   - var(--mantine-color-vfr3dBlue-5) for primary sky blue
- *   - var(--mantine-color-vfrGreen-5) for VFR green
- *   - var(--mantine-color-ifrRed-5) for IFR red
- *   - var(--mantine-color-lifrPurple-5) for LIFR purple
- *   - var(--mantine-color-vfr3dSurface-8) for surface
- *   - var(--mantine-color-vfr3dSurface-9) for background
+ * Defense / C2 dark theme — near-black backgrounds, electric blue accent
+ * Mantine color vars:
+ *   - var(--mantine-color-vfr3dBlue-5) — electric blue accent (#4A9EFF)
+ *   - var(--mantine-color-vfrGreen-5) — operational green (#2EA043)
+ *   - var(--mantine-color-ifrRed-5) — critical red (#C94040)
+ *   - var(--mantine-color-warningYellow-5) — amber (#D4A04A)
+ *   - var(--mantine-color-vfr3dSurface-8) — main surface (#0D1117)
+ *   - var(--mantine-color-vfr3dSurface-9) — deepest black (#0A0C10)
  */
 
 /* Base styles */
@@ -26,26 +26,23 @@
 
 html {
   font-family:
-    'Plus Jakarta Sans',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
+    'JetBrains Mono',
+    'IBM Plex Mono',
+    'Fira Code',
+    ui-monospace,
+    SFMono-Regular,
+    monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'tnum' 1; /* tabular numbers */
 }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  background-color: #0A0C10;
+  color: #D1D5DB;
 }
 
 #root {
@@ -75,27 +72,25 @@ body {
   display: none !important;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — minimal, dark */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--mantine-color-vfr3dSurface-8);
-  border-radius: 4px;
+  background: #0A0C10;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--mantine-color-vfr3dSurface-4);
-  border-radius: 4px;
+  background: #1E2633;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--mantine-color-vfr3dSurface-1);
+  background: #2A3140;
 }
 
-/* Animation utilities */
+/* Animation utilities — 200ms ease-out, never bouncy */
 @keyframes slide-in-right {
   from {
     transform: translateX(100%);
@@ -127,28 +122,14 @@ body {
   }
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 .animate-slide-in-right {
-  animation: slide-in-right 0.3s ease-out;
+  animation: slide-in-right 0.2s ease-out;
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 0.3s ease-out;
+  animation: slide-in-left 0.2s ease-out;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.3s ease-out;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: fade-in 0.2s ease-out;
 }

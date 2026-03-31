@@ -1,296 +1,212 @@
 /**
- * Surface and Background Color Constants for VFR3D
+ * Surface and Background Color Constants — Defense / C2 Aesthetic
  *
- * This file centralizes all surface colors, backgrounds, borders, and overlays.
- * Use these constants instead of inline rgba() or CSS variable strings.
+ * Near-black backgrounds, thin 1px borders, no shadows, no gradients.
+ * Flat and clinical. Every pixel earns its place.
  *
- * COLOR PHILOSOPHY:
- * - Dark blue-slate theme (#0f172a base)
- * - Layered surfaces with increasing lightness for elevation
- * - Consistent opacity patterns for borders and overlays
+ * COLOR PALETTE:
+ * - Backgrounds: #0A0C10, #0D1117
+ * - Panels: #141922, #1B2130
+ * - Borders: #1E2633
+ * - Accent: #4A9EFF (electric blue)
+ * - Text: #D1D5DB (primary), #8892A0 (secondary)
  */
 
 // =============================================================================
-// BASE COLOR VALUES (RGB only - use with opacity patterns below)
+// BASE COLOR VALUES (RGB only — use with opacity patterns below)
 // =============================================================================
 
-/**
- * Core color RGB values - use these with OPACITY patterns
- * These are the raw RGB values that define our color palette
- */
 export const COLOR_RGB = {
-  /** Deepest dark navy - navy-900 (#0C0E2A) */
-  SLATE_900: '12, 14, 42',
-  /** Card/surface navy - navy-800 (#141844) */
-  SLATE_800: '20, 24, 68',
-  /** Elevated surface - navy-700 (#252A58) */
-  SLATE_700: '37, 42, 88',
-  /** Border/muted - navy-400 (#8387A8) */
-  SLATE_400: '131, 135, 168',
-  /** Primary sky blue (#37A4DC) */
-  BLUE_500: '55, 164, 220',
-  /** Error red (#ef4444) */
-  RED_500: '239, 68, 68',
-  /** Cyan accent (#06b6d4) */
+  /** Deepest black — #0A0C10 */
+  SLATE_900: '10, 12, 16',
+  /** Main surface — #0D1117 */
+  SLATE_800: '13, 17, 23',
+  /** Elevated panel — #141922 */
+  SLATE_700: '20, 25, 34',
+  /** Muted text — #8892A0 */
+  SLATE_400: '136, 146, 160',
+  /** Electric blue accent — #4A9EFF */
+  BLUE_500: '74, 158, 255',
+  /** Critical red — #C94040 */
+  RED_500: '201, 64, 64',
+  /** Cyan accent — #06b6d4 */
   CYAN_500: '6, 182, 212',
-  /** Warning amber (#fbbf24) */
-  AMBER_500: '251, 191, 36',
-  /** Success green (#22c55e) */
-  GREEN_500: '34, 197, 94',
-  /** Violet accent (#8b5cf6) */
-  VIOLET_500: '139, 92, 246',
-  /** Orange accent (#f97316) */
-  ORANGE_500: '249, 115, 22',
-  /** Pink accent (#ec4899) */
-  PINK_500: '236, 72, 153',
-  /** Grape accent (#be4bdb) */
-  GRAPE_500: '190, 75, 219',
-  /** Teal accent (#14b8a6) */
+  /** Warning amber — #D4A04A */
+  AMBER_500: '212, 160, 74',
+  /** Operational green — #2EA043 */
+  GREEN_500: '46, 160, 67',
+  /** Violet accent — #9066D6 */
+  VIOLET_500: '144, 102, 214',
+  /** Orange accent — #D4862E */
+  ORANGE_500: '212, 134, 46',
+  /** Pink accent — #C8508C */
+  PINK_500: '200, 80, 140',
+  /** Grape accent — #9066D6 */
+  GRAPE_500: '144, 102, 214',
+  /** Teal accent — #14b8a6 */
   TEAL_500: '20, 184, 166',
-  /** Warning yellow (#eab308) */
-  YELLOW_500: '234, 179, 8',
-  /** White for light borders */
+  /** Yellow/amber — #D4A04A */
+  YELLOW_500: '212, 160, 74',
+  /** White */
   WHITE: '255, 255, 255',
-  /** Black for shadows */
+  /** Black */
   BLACK: '0, 0, 0',
 } as const;
 
 // =============================================================================
-// SURFACE COLORS - Card and Panel Backgrounds
+// SURFACE COLORS — Panel and Container Backgrounds
 // =============================================================================
 
-/**
- * Surface background colors for cards, panels, and containers
- * Use for: Card, Paper, Box backgrounds
- */
 export const SURFACE = {
-  /** Deepest background - page/app background (slate-900 @ 95%) */
-  BASE: `rgba(${COLOR_RGB.SLATE_900}, 0.95)`,
-  /** Primary card background (slate-800 @ 80%) */
-  CARD: `rgba(${COLOR_RGB.SLATE_800}, 0.8)`,
-  /** Elevated card/hover state (slate-800 @ 60%) */
-  CARD_HOVER: `rgba(${COLOR_RGB.SLATE_800}, 0.6)`,
-  /** Very subtle card background (slate-800 @ 30%) */
-  CARD_SUBTLE: `rgba(${COLOR_RGB.SLATE_800}, 0.3)`,
-  /** Nested content areas (slate-900 @ 80%) */
-  INSET: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
-  /** Input field backgrounds (slate-900 @ 80%) */
-  INPUT: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
-  /** Dropdown/popover backgrounds (slate-900 @ 95%) */
-  POPOVER: `rgba(${COLOR_RGB.SLATE_900}, 0.95)`,
-  /** Glass/frosted panel effect (slate-900 @ 85%) */
-  GLASS: `rgba(${COLOR_RGB.SLATE_900}, 0.85)`,
+  /** Deepest background — page/app level */
+  BASE: '#0A0C10',
+  /** Primary panel background */
+  CARD: `rgba(${COLOR_RGB.SLATE_800}, 0.95)`,
+  /** Panel hover — barely perceptible shift */
+  CARD_HOVER: `rgba(${COLOR_RGB.SLATE_700}, 0.8)`,
+  /** Subtle panel */
+  CARD_SUBTLE: `rgba(${COLOR_RGB.SLATE_800}, 0.5)`,
+  /** Inset/nested content area */
+  INSET: `rgba(${COLOR_RGB.SLATE_900}, 0.9)`,
+  /** Input backgrounds — transparent for bottom-border style */
+  INPUT: 'transparent',
+  /** Dropdown/popover — near-opaque dark */
+  POPOVER: `rgba(${COLOR_RGB.SLATE_900}, 0.98)`,
+  /** Header/nav panel — solid dark */
+  GLASS: '#0D1117',
 } as const;
 
-/**
- * Nested/inner surface colors - for content within cards
- */
 export const SURFACE_INNER = {
-  /** Content area within card (slate-900 @ 50%) */
-  DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.5)`,
-  /** Lighter inner surface (slate-900 @ 40%) */
+  /** Content area within panel */
+  DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.6)`,
+  /** Lighter inner surface */
   LIGHT: `rgba(${COLOR_RGB.SLATE_900}, 0.4)`,
-  /** Section dividers within cards (slate-900 @ 60%) */
-  SECTION: `rgba(${COLOR_RGB.SLATE_900}, 0.6)`,
-  /** Darker inner surface for hover states (slate-900 @ 80%) */
-  DARK: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
+  /** Section divider */
+  SECTION: `rgba(${COLOR_RGB.SLATE_900}, 0.7)`,
+  /** Darker inner surface */
+  DARK: `rgba(${COLOR_RGB.SLATE_900}, 0.85)`,
 } as const;
 
 // =============================================================================
-// BORDER COLORS - Dividers and Outlines
+// BORDER COLORS — Thin 1px separators (#1E2633)
 // =============================================================================
 
-/**
- * Border colors for cards, inputs, and dividers
- * Slate-400 based with varying opacity
- */
 export const BORDER = {
-  /** Standard border (most common) */
-  DEFAULT: `rgba(${COLOR_RGB.SLATE_400}, 0.2)`,
-  /** Subtle/light border */
-  SUBTLE: `rgba(${COLOR_RGB.SLATE_400}, 0.1)`,
-  /** Strong/emphasized border */
-  STRONG: `rgba(${COLOR_RGB.SLATE_400}, 0.3)`,
-  /** Card outline */
-  CARD: `rgba(${COLOR_RGB.SLATE_400}, 0.15)`,
-  /** Input field border */
-  INPUT: `rgba(${COLOR_RGB.SLATE_400}, 0.2)`,
-  /** Focused input border - use theme color instead */
-  INPUT_FOCUS: 'var(--mantine-color-vfr3dBlue-5)',
-  /** White-based separator (for very dark backgrounds) */
-  LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.1)`,
+  /** Standard border — #1E2633 */
+  DEFAULT: '#1E2633',
+  /** Subtle border */
+  SUBTLE: `rgba(${COLOR_RGB.SLATE_400}, 0.08)`,
+  /** Emphasized border */
+  STRONG: `rgba(${COLOR_RGB.SLATE_400}, 0.2)`,
+  /** Panel outline */
+  CARD: '#1E2633',
+  /** Input bottom-border */
+  INPUT: '#1E2633',
+  /** Focused input — electric blue accent */
+  INPUT_FOCUS: '#4A9EFF',
+  /** Light separator (very dark backgrounds) */
+  LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.06)`,
   /** Minimal separator */
-  MINIMAL: `rgba(${COLOR_RGB.WHITE}, 0.05)`,
+  MINIMAL: `rgba(${COLOR_RGB.WHITE}, 0.03)`,
 } as const;
 
 // =============================================================================
-// HIGHLIGHT COLORS - Interactive & Selection States
+// HIGHLIGHT COLORS — Barely-perceptible selection states
 // =============================================================================
 
-/**
- * Blue highlight colors for selected/active states
- */
 export const HIGHLIGHT = {
-  /** Strong selection highlight */
-  STRONG: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
-  /** Standard selection (hover states) */
-  DEFAULT: `rgba(${COLOR_RGB.BLUE_500}, 0.2)`,
-  /** Subtle selection (backgrounds) */
-  SUBTLE: `rgba(${COLOR_RGB.BLUE_500}, 0.15)`,
-  /** Very light highlight */
-  LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.1)`,
+  /** Strong selection */
+  STRONG: `rgba(${COLOR_RGB.BLUE_500}, 0.15)`,
+  /** Standard hover */
+  DEFAULT: `rgba(${COLOR_RGB.BLUE_500}, 0.08)`,
+  /** Subtle background */
+  SUBTLE: `rgba(${COLOR_RGB.BLUE_500}, 0.05)`,
+  /** Barely visible */
+  LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.03)`,
 } as const;
 
 // =============================================================================
-// STATUS BACKGROUND COLORS - Error, Warning, Success States
+// STATUS BACKGROUNDS — Restrained, functional
 // =============================================================================
 
-/**
- * Error/danger background colors
- */
 export const ERROR_BG = {
-  /** Strong error background */
-  STRONG: `rgba(${COLOR_RGB.RED_500}, 0.3)`,
-  /** Standard error row/highlight */
-  DEFAULT: `rgba(${COLOR_RGB.RED_500}, 0.25)`,
-  /** Subtle error background */
-  SUBTLE: `rgba(${COLOR_RGB.RED_500}, 0.2)`,
-  /** Very light error tint */
-  LIGHT: `rgba(${COLOR_RGB.RED_500}, 0.1)`,
+  STRONG: `rgba(${COLOR_RGB.RED_500}, 0.2)`,
+  DEFAULT: `rgba(${COLOR_RGB.RED_500}, 0.12)`,
+  SUBTLE: `rgba(${COLOR_RGB.RED_500}, 0.08)`,
+  LIGHT: `rgba(${COLOR_RGB.RED_500}, 0.04)`,
 } as const;
 
-/**
- * Warning/caution background colors
- */
 export const WARNING_BG = {
-  /** Standard warning highlight */
-  DEFAULT: `rgba(${COLOR_RGB.AMBER_500}, 0.15)`,
+  DEFAULT: `rgba(${COLOR_RGB.AMBER_500}, 0.1)`,
 } as const;
 
-/**
- * Success/positive background colors
- */
 export const SUCCESS_BG = {
-  /** Standard success background */
-  DEFAULT: `rgba(${COLOR_RGB.GREEN_500}, 0.15)`,
+  DEFAULT: `rgba(${COLOR_RGB.GREEN_500}, 0.1)`,
 } as const;
 
-/**
- * Cyan/info accent backgrounds
- */
 export const CYAN_BG = {
-  /** Strong cyan background */
-  STRONG: `rgba(${COLOR_RGB.CYAN_500}, 0.3)`,
-  /** Standard cyan background */
-  DEFAULT: `rgba(${COLOR_RGB.CYAN_500}, 0.2)`,
-  /** Subtle cyan tint */
-  SUBTLE: `rgba(${COLOR_RGB.CYAN_500}, 0.1)`,
+  STRONG: `rgba(${COLOR_RGB.CYAN_500}, 0.15)`,
+  DEFAULT: `rgba(${COLOR_RGB.CYAN_500}, 0.1)`,
+  SUBTLE: `rgba(${COLOR_RGB.CYAN_500}, 0.05)`,
 } as const;
 
-/**
- * Yellow accent backgrounds (for oil/warning accents)
- */
 export const YELLOW_BG = {
-  /** Strong yellow background */
-  STRONG: `rgba(${COLOR_RGB.YELLOW_500}, 0.3)`,
+  STRONG: `rgba(${COLOR_RGB.YELLOW_500}, 0.15)`,
 } as const;
 
 // =============================================================================
-// SHADOW & OVERLAY COLORS
+// SHADOW & OVERLAY — No decorative shadows. Flat and clinical.
 // =============================================================================
 
-/**
- * Shadow and dark overlay colors
- */
 export const SHADOW = {
-  /** Light shadow */
-  LIGHT: `rgba(${COLOR_RGB.BLACK}, 0.3)`,
-  /** Subtle shadow */
-  SUBTLE: `rgba(${COLOR_RGB.BLACK}, 0.2)`,
-  /** Box shadow for elevated cards */
-  BOX: `0 25px 50px -12px rgba(${COLOR_RGB.BLACK}, 0.5)`,
-  /** Smaller box shadow for hover states */
-  BOX_HOVER: `0 8px 25px rgba(${COLOR_RGB.BLACK}, 0.4)`,
+  LIGHT: 'none',
+  SUBTLE: 'none',
+  BOX: 'none',
+  BOX_HOVER: 'none',
 } as const;
 
-/**
- * Loading overlay backgrounds
- */
 export const OVERLAY = {
-  /** Standard loading overlay */
-  DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.7)`,
+  DEFAULT: `rgba(${COLOR_RGB.SLATE_900}, 0.8)`,
 } as const;
 
-/**
- * White-based backgrounds (for dark theme contrasts)
- */
 export const WHITE_BG = {
-  /** Barely visible white overlay */
   MINIMAL: `rgba(${COLOR_RGB.WHITE}, 0.02)`,
-  /** Very faint white overlay */
   FAINT: `rgba(${COLOR_RGB.WHITE}, 0.03)`,
-  /** Light white overlay */
-  LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.2)`,
+  LIGHT: `rgba(${COLOR_RGB.WHITE}, 0.08)`,
 } as const;
 
 // =============================================================================
-// ICON BACKGROUNDS - Circular icon containers
+// ICON BACKGROUNDS — Restrained circular containers
 // =============================================================================
 
-/**
- * Icon background colors for circular icon containers
- * Use for ThemeIcon-like circular backgrounds
- */
 export const ICON_BG = {
-  /** Blue icon background */
-  BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.15)`,
-  /** Red icon background */
-  RED: `rgba(${COLOR_RGB.RED_500}, 0.15)`,
-  /** Green icon background */
-  GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.15)`,
-  /** Neutral/gray icon background */
-  NEUTRAL: `rgba(${COLOR_RGB.SLATE_400}, 0.1)`,
-  /** Icon background at 10% opacity (for larger containers) */
-  BLUE_LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.1)`,
+  BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.1)`,
+  RED: `rgba(${COLOR_RGB.RED_500}, 0.1)`,
+  GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.1)`,
+  NEUTRAL: `rgba(${COLOR_RGB.SLATE_400}, 0.06)`,
+  BLUE_LIGHT: `rgba(${COLOR_RGB.BLUE_500}, 0.06)`,
 } as const;
 
 // =============================================================================
-// GLOW COLORS - Card hover/accent glow effects
+// GLOW — Minimal accent glow for data visualization only
 // =============================================================================
 
-/**
- * Glow effect colors for card hover states and accent highlights
- * Used with CSS custom properties: style={{ '--card-glow-color': GLOW.BLUE }}
- */
 export const GLOW = {
-  /** Primary accent glow */
-  BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.4)`,
-  /** Subtle accent glow */
-  VIOLET: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
-  /** Accent glow - cool variant */
-  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.35)`,
-  /** Accent glow - warm variant */
-  ORANGE: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
-  /** Accent glow - muted variant */
-  GREEN: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
-  /** Accent glow - soft variant */
-  PINK: `rgba(${COLOR_RGB.BLUE_500}, 0.3)`,
-  /** Status glow - error */
-  RED: `rgba(${COLOR_RGB.RED_500}, 0.4)`,
-  /** Accent glow - deep variant */
-  GRAPE: `rgba(${COLOR_RGB.BLUE_500}, 0.35)`,
-  /** Accent glow - teal variant */
-  TEAL: `rgba(${COLOR_RGB.CYAN_500}, 0.3)`,
+  BLUE: `rgba(${COLOR_RGB.BLUE_500}, 0.25)`,
+  VIOLET: `rgba(${COLOR_RGB.VIOLET_500}, 0.2)`,
+  CYAN: `rgba(${COLOR_RGB.CYAN_500}, 0.2)`,
+  ORANGE: `rgba(${COLOR_RGB.ORANGE_500}, 0.2)`,
+  GREEN: `rgba(${COLOR_RGB.GREEN_500}, 0.2)`,
+  PINK: `rgba(${COLOR_RGB.PINK_500}, 0.2)`,
+  RED: `rgba(${COLOR_RGB.RED_500}, 0.25)`,
+  GRAPE: `rgba(${COLOR_RGB.GRAPE_500}, 0.2)`,
+  TEAL: `rgba(${COLOR_RGB.TEAL_500}, 0.2)`,
 } as const;
 
 // =============================================================================
-// CSS VARIABLE REFERENCES - For use in Mantine style props
+// CSS VARIABLE REFERENCES
 // =============================================================================
 
-/**
- * Theme color CSS variable references
- * Use these when you need a CSS variable string (not rgba)
- */
 export const THEME_COLORS = {
   // --- Primary ---
   PRIMARY: 'var(--mantine-color-vfr3dBlue-5)',
@@ -310,11 +226,11 @@ export const THEME_COLORS = {
   SURFACE_9: 'var(--mantine-color-vfr3dSurface-9)',
 
   // --- Text ---
-  TEXT: 'var(--mantine-color-gray-3)',
-  TEXT_LIGHT: 'var(--mantine-color-gray-4)',
-  TEXT_MUTED: 'var(--mantine-color-gray-5)',
-  TEXT_DIMMED: 'var(--mantine-color-dimmed)',
-  TEXT_ERROR: 'var(--mantine-color-red-5)',
+  TEXT: '#D1D5DB',
+  TEXT_LIGHT: '#B0B8C4',
+  TEXT_MUTED: '#8892A0',
+  TEXT_DIMMED: '#636E7E',
+  TEXT_ERROR: 'var(--mantine-color-ifrRed-5)',
 
   // --- Accent Shades ---
   BLUE_3: 'var(--mantine-color-blue-3)',
@@ -335,7 +251,7 @@ export const THEME_COLORS = {
   DARK_4: 'var(--mantine-color-dark-4)',
   DARK_5: 'var(--mantine-color-dark-5)',
 
-  // --- Sidebar Icon Accents (monochromatic accent blue) ---
+  // --- Sidebar Icon Accents (monochromatic — single accent blue) ---
   ICON_PINK: 'var(--mantine-color-vfr3dBlue-5)',
   ICON_ORANGE: 'var(--mantine-color-vfr3dBlue-5)',
   ICON_GRAPE: 'var(--mantine-color-vfr3dBlue-5)',
@@ -346,61 +262,69 @@ export const THEME_COLORS = {
 } as const;
 
 // =============================================================================
-// COMPONENT-SPECIFIC STYLES - Common style patterns
+// COMPONENT STYLES — Bottom-border inputs, frameless modals, flat panels
 // =============================================================================
 
 /**
- * Common input field styles
+ * Input styles — bottom-border-only, transparent background
+ * All-caps micro labels at 11px
  */
 export const INPUT_STYLES = {
   input: {
-    backgroundColor: SURFACE.INPUT,
-    borderColor: BORDER.INPUT,
-    color: 'white',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderBottom: `1px solid ${BORDER.INPUT}`,
+    borderRadius: 0,
+    color: '#D1D5DB',
     '&:focus': {
-      borderColor: BORDER.INPUT_FOCUS,
+      borderBottom: `1px solid ${BORDER.INPUT_FOCUS}`,
     },
   },
   label: {
-    color: THEME_COLORS.TEXT_LIGHT,
+    color: '#8892A0',
+    fontSize: '11px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
   },
 } as const;
 
 /**
- * Common modal styles
+ * Modal styles — frameless floating panel with faint border
  */
 export const MODAL_STYLES = {
   header: {
-    backgroundColor: THEME_COLORS.SURFACE_8,
-    borderBottom: `1px solid ${BORDER.SUBTLE}`,
+    backgroundColor: '#0D1117',
+    borderBottom: `1px solid ${BORDER.DEFAULT}`,
   },
   body: {
-    backgroundColor: THEME_COLORS.SURFACE_8,
+    backgroundColor: '#0D1117',
   },
   content: {
-    backgroundColor: THEME_COLORS.SURFACE_8,
+    backgroundColor: '#0D1117',
+    border: `1px solid ${BORDER.DEFAULT}`,
   },
   close: {
-    color: THEME_COLORS.TEXT_LIGHT,
+    color: '#8892A0',
     '&:hover': {
-      backgroundColor: HIGHLIGHT.LIGHT,
+      backgroundColor: HIGHLIGHT.DEFAULT,
     },
   },
 } as const;
 
 /**
- * Common select/dropdown styles
+ * Select/dropdown styles — frameless dark panel
  */
 export const SELECT_STYLES = {
   ...INPUT_STYLES,
   dropdown: {
-    backgroundColor: THEME_COLORS.SURFACE_8,
-    borderColor: BORDER.DEFAULT,
+    backgroundColor: '#0A0C10',
+    border: `1px solid ${BORDER.DEFAULT}`,
   },
   option: {
-    color: 'white',
+    color: '#D1D5DB',
     '&[data-selected]': {
-      backgroundColor: THEME_COLORS.PRIMARY,
+      backgroundColor: HIGHLIGHT.STRONG,
+      color: '#4A9EFF',
     },
     '&[data-hovered]': {
       backgroundColor: HIGHLIGHT.DEFAULT,
@@ -409,44 +333,50 @@ export const SELECT_STYLES = {
 } as const;
 
 /**
- * Common tab component styles
+ * Tab styles — minimal underline indicator
  */
 export const TAB_STYLES = {
   list: {
     borderBottomColor: BORDER.DEFAULT,
   },
   tab: {
-    color: THEME_COLORS.SURFACE_4,
+    color: '#636E7E',
     fontWeight: 500,
+    fontSize: '12px',
+    letterSpacing: '0.03em',
     '&:hover': {
       backgroundColor: HIGHLIGHT.LIGHT,
-      color: THEME_COLORS.SURFACE_3,
+      color: '#B0B8C4',
     },
     '&[data-active]': {
-      color: 'white',
+      color: '#4A9EFF',
     },
   },
 } as const;
 
 /**
- * Extended input styles with description and error states
- * For wizard forms and complex input components
+ * Wizard/form input styles — extended with description and error
  */
 export const WIZARD_INPUT_STYLES = {
   input: {
-    backgroundColor: SURFACE.INPUT,
-    borderColor: BORDER.DEFAULT,
-    color: 'white',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderBottom: `1px solid ${BORDER.DEFAULT}`,
+    borderRadius: 0,
+    color: '#D1D5DB',
     '&:focus': {
-      borderColor: BORDER.INPUT_FOCUS,
+      borderBottom: `1px solid ${BORDER.INPUT_FOCUS}`,
     },
   },
   label: {
-    color: THEME_COLORS.TEXT,
+    color: '#8892A0',
+    fontSize: '11px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
     marginBottom: 4,
   },
   description: {
-    color: THEME_COLORS.TEXT_MUTED,
+    color: '#636E7E',
     fontSize: '11px',
   },
   error: {
@@ -455,46 +385,59 @@ export const WIZARD_INPUT_STYLES = {
 } as const;
 
 /**
- * SegmentedControl component styles
+ * SegmentedControl — flat, bordered
  */
 export const SEGMENTED_CONTROL_STYLES = {
   root: {
-    backgroundColor: SURFACE.INPUT,
+    backgroundColor: 'transparent',
     border: `1px solid ${BORDER.DEFAULT}`,
   },
   label: {
-    color: THEME_COLORS.TEXT_LIGHT,
+    color: '#636E7E',
     '&[data-active]': {
-      color: 'white',
+      color: '#D1D5DB',
     },
   },
 } as const;
 
 /**
- * Gradient backgrounds
+ * No decorative gradients — flat backgrounds only
  */
 export const GRADIENT = {
-  /** Accent-tinted tip/info gradient */
   TIP: `linear-gradient(135deg, ${HIGHLIGHT.LIGHT}, ${HIGHLIGHT.SUBTLE})`,
-  /** Accent icon background gradient */
   ICON: `linear-gradient(135deg, ${HIGHLIGHT.DEFAULT} 0%, ${HIGHLIGHT.STRONG} 100%)`,
 } as const;
 
 /**
- * Compact input styles for loading station inputs
+ * Station input styles — compact, bottom-border
  */
 export const STATION_INPUT_STYLES = {
   input: {
-    backgroundColor: SURFACE.INPUT,
-    borderColor: BORDER.DEFAULT,
-    color: 'white',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderBottom: `1px solid ${BORDER.DEFAULT}`,
+    borderRadius: 0,
+    color: '#D1D5DB',
     '&:focus': {
-      borderColor: BORDER.INPUT_FOCUS,
+      borderBottom: `1px solid ${BORDER.INPUT_FOCUS}`,
     },
   },
   label: {
-    color: THEME_COLORS.TEXT_LIGHT,
+    color: '#8892A0',
     marginBottom: 4,
-    fontSize: '12px',
+    fontSize: '11px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.05em',
+  },
+} as const;
+
+/**
+ * Card styles — flat panel with thin border, no shadow
+ */
+export const CARD_STYLES = {
+  root: {
+    backgroundColor: SURFACE.CARD,
+    border: `1px solid ${BORDER.DEFAULT}`,
+    borderRadius: 0,
   },
 } as const;

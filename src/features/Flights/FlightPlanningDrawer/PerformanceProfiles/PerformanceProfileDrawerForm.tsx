@@ -28,6 +28,7 @@ import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
 import { notifyError } from '@/utility/notifications';
 import classes from './PerformanceProfileDrawerForm.module.css';
 import { THEME_COLORS } from '@/constants/surfaces';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 interface PerformanceProfileDrawerFormProps {
   mode: 'create' | 'edit';
@@ -391,8 +392,8 @@ export const PerformanceProfileDrawerForm: React.FC<PerformanceProfileDrawerForm
             <Button
               type="submit"
               disabled={!isValid || isLoading}
-              variant="gradient"
-              gradient={{ from: '#2c8bc5', to: '#37A4DC', deg: 45 }}
+              variant="filled"
+              color={BUTTON_COLORS.PRIMARY}
             >
               {isLoading ? (
                 <Loader size="xs" color="white" />

@@ -147,19 +147,19 @@ export const BUTTON_COLORS = {
   CONFIRM: 'vfrGreen',
 
   /** Refresh/update - "Refresh", "Reload", "Update", "Sync" */
-  REFRESH: 'cyan',
+  REFRESH: 'vfr3dBlue',
 } as const;
 
 /**
- * Button gradients for hero/CTA buttons
- * Use with variant="gradient" and gradient prop
+ * Button gradients — flattened. No gradients in defense aesthetic.
+ * Kept as flat single-color for backwards compat with variant="gradient" usage.
  */
 export const BUTTON_GRADIENTS = {
-  /** Primary CTA gradient - hero buttons, main CTAs */
-  PRIMARY: { from: '#2c8bc5', to: '#37A4DC', deg: 90 },
+  /** Primary CTA — flat electric blue */
+  PRIMARY: { from: '#4A9EFF', to: '#4A9EFF', deg: 90 },
 
-  /** Success/go gradient - for major confirmations */
-  SUCCESS: { from: 'teal', to: 'green', deg: 90 },
+  /** Success — flat operational green */
+  SUCCESS: { from: '#2EA043', to: '#2EA043', deg: 90 },
 } as const;
 
 /**

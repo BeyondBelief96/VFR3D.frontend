@@ -1,22 +1,18 @@
 /**
- * Shared CSS Module for styles that Mantine props cannot express.
- * Use Mantine props (c, p, m, fw, etc.) for everything else.
+ * Shared CSS Module — Defense / C2 aesthetic
+ * No glassmorphism. No blur. Solid dark panels with thin borders.
  *
  * Only use these classes for:
  * - Positioning (fixed, absolute)
- * - Backdrop effects (blur, filters)
+ * - Panel backgrounds that can't be set via Mantine props
  * - Z-index layering
- * - Animations and transitions
- * - Pseudo-selectors
+ * - Transitions
  */
 
 /* =============================================================================
    POSITIONING UTILITIES
    ============================================================================= */
 
-/**
- * Fixed overlay at top center (e.g., camera controls)
- */
 .fixedTopCenter {
   position: absolute;
   top: 12px;
@@ -25,9 +21,6 @@
   z-index: 100;
 }
 
-/**
- * Fixed sidebar positioning
- */
 .fixedSidebar {
   position: fixed;
   top: 64px;
@@ -36,17 +29,11 @@
   z-index: 100;
 }
 
-/**
- * Fixed popup overlay
- */
 .fixedPopup {
   position: fixed;
   z-index: 200;
 }
 
-/**
- * Fixed bottom drawer
- */
 .fixedBottomDrawer {
   position: fixed;
   bottom: 0;
@@ -55,9 +42,6 @@
   z-index: 150;
 }
 
-/**
- * Centered absolute positioning
- */
 .absoluteCenter {
   position: absolute;
   top: 50%;
@@ -66,64 +50,53 @@
 }
 
 /* =============================================================================
-   GLASSMORPHISM / BACKDROP EFFECTS
+   DARK PANEL EFFECTS — Solid backgrounds, thin borders. No blur.
    ============================================================================= */
 
 /**
- * Glass panel effect with blur
+ * Standard dark panel
  */
 .glassPanel {
-  background-color: rgba(12, 14, 42, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(131, 135, 168, 0.2);
+  background-color: #0D1117;
+  border: 1px solid #1E2633;
 }
 
 /**
- * Glass panel - lighter variant
+ * Slightly elevated panel
  */
 .glassPanelLight {
-  background-color: rgba(20, 24, 68, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(131, 135, 168, 0.15);
+  background-color: #141922;
+  border: 1px solid #1E2633;
 }
 
 /**
- * Subtle glass effect for buttons/controls
+ * Interactive panel element (buttons/controls)
  */
 .glassButton {
-  background-color: rgba(20, 24, 68, 0.9);
-  backdrop-filter: blur(4px);
+  background-color: transparent;
+  border: 1px solid #1E2633;
 }
 
 .glassButton:hover {
-  background-color: rgba(55, 164, 220, 0.3);
+  background-color: rgba(74, 158, 255, 0.08);
 }
 
 /* =============================================================================
-   TRANSITIONS & ANIMATIONS
+   TRANSITIONS — 200ms ease-out, never bouncy
    ============================================================================= */
 
-/**
- * Smooth transition for interactive elements
- */
 .transitionSmooth {
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-out;
 }
 
-/**
- * Fast transition for hover states
- */
 .transitionFast {
-  transition: all 0.15s ease;
+  transition: all 0.15s ease-out;
 }
 
 /* =============================================================================
    SCROLLABLE CONTAINERS
    ============================================================================= */
 
-/**
- * Scrollable container with hidden scrollbar
- */
 .scrollableHidden {
   overflow-y: auto;
   scrollbar-width: none;
@@ -134,9 +107,6 @@
   display: none;
 }
 
-/**
- * Scrollable container with custom scrollbar
- */
 .scrollableStyled {
   overflow-y: auto;
   scrollbar-width: thin;
