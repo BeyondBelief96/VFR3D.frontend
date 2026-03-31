@@ -2,7 +2,6 @@ import {
   AirportDto,
   FlightDto,
   WaypointDto,
-  WaypointType,
   NavlogResponseDto,
 } from '@/redux/api/vfr3d/dtos';
 import { Color } from 'cesium';
@@ -23,7 +22,7 @@ export const mapAirportDTOToWaypoint = (airport: AirportDto): WaypointDto => {
     latitude: airport.latDecimal ?? 0,
     longitude: airport.longDecimal ?? 0,
     altitude: airport.elev ?? 0,
-    waypointType: WaypointType.Airport,
+    waypointType: 'Airport',
   };
 
   return routePoint;

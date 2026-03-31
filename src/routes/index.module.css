@@ -1,15 +1,16 @@
 /**
- * Landing page (index) styles
- * Only styles that Mantine props cannot express
+ * Landing page — Defense / C2 aesthetic
+ * Flat, clinical, near-black. No gradients, no shadows, no glow.
+ * Thin 1px borders. Sharp corners. Every pixel earns its place.
  */
 
 /* =============================================================================
-   PAGE BACKGROUND
+   PAGE BACKGROUND — Flat near-black
    ============================================================================= */
 
 .pageWrapper {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0a0f1a 0%, #0f172a 30%, #1e293b 70%, #0f172a 100%);
+  background: #0A0C10;
 }
 
 /* =============================================================================
@@ -19,8 +20,9 @@
 .heroSection {
   position: relative;
   overflow: hidden;
-  padding-top: 40px;
+  padding-top: 60px;
   padding-bottom: 80px;
+  border-bottom: 1px solid #1E2633;
 }
 
 .heroBackgroundPattern {
@@ -29,9 +31,11 @@
   left: 0;
   right: 0;
   bottom: 0;
+  /* Subtle grid pattern — barely visible */
   background-image:
-    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+    linear-gradient(rgba(74, 158, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 158, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
   pointer-events: none;
 }
 
@@ -41,48 +45,56 @@
 }
 
 .heroLogo {
-  filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+  /* No glow — flat and clean */
+  opacity: 0.95;
 }
 
 .heroBadge {
-  text-transform: none;
-  font-size: 14px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.1em;
 }
 
 .heroTitle {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 800;
-  color: white;
-  line-height: 1.1;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: #D1D5DB;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
 }
 
 .heroSubtitle {
   line-height: 1.7;
-  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: #8892A0;
 }
 
 .heroCtaButton {
   font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .heroExploreButton {
-  border-color: rgba(148, 163, 184, 0.3);
+  border-color: #1E2633;
+}
+
+.heroExploreButton:hover {
+  border-color: #4A9EFF;
+  background-color: rgba(74, 158, 255, 0.05);
 }
 
 /* =============================================================================
-   SCREENSHOTS & PAPERS
+   SCREENSHOTS — Flat panels with thin borders
    ============================================================================= */
 
 .screenshotPaper {
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.6);
+  border: 1px solid #1E2633;
 }
 
 .screenshotPaperSmall {
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  border: 1px solid #1E2633;
 }
 
 .screenshotImage {
@@ -95,77 +107,74 @@
    ============================================================================= */
 
 .sectionAlt {
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: #0D1117;
+  border-top: 1px solid #1E2633;
+  border-bottom: 1px solid #1E2633;
 }
 
 .sectionTitle {
-  font-size: 36px;
+  font-size: 32px;
+  letter-spacing: 0.04em;
 }
 
 .sectionTitleSmall {
-  font-size: 32px;
+  font-size: 28px;
+  letter-spacing: 0.04em;
 }
 
 .sectionText {
-  line-height: 1.8;
+  line-height: 1.7;
+  color: #8892A0;
 }
 
 /* =============================================================================
-   CARDS
+   CARDS — Flat panels, thin borders, no glow, no hover lift
    ============================================================================= */
 
 .featureCard {
-  background-color: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  transition: all 0.3s ease;
+  background-color: rgba(13, 17, 23, 0.9);
+  border: 1px solid #1E2633;
+  transition: border-color 0.2s ease-out;
   height: 100%;
-  /* Subtle glow based on the card's accent color */
-  box-shadow:
-    0 0 20px -5px var(--card-glow-color, transparent),
-    0 0 40px -10px var(--card-glow-color, transparent);
 }
 
 .featureCard:hover {
-  transform: translateY(-4px);
-  /* Intensify glow on hover */
-  box-shadow:
-    0 0 30px -5px var(--card-glow-color, transparent),
-    0 0 60px -10px var(--card-glow-color, transparent);
+  border-color: rgba(74, 158, 255, 0.3);
 }
 
 .featureCardDescription {
   line-height: 1.6;
+  color: #8892A0;
 }
 
 .stepCard {
-  background-color: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background-color: rgba(13, 17, 23, 0.8);
+  border: 1px solid #1E2633;
   position: relative;
   overflow: visible;
 }
 
 .stepNumber {
   position: absolute;
-  top: -16px;
-  left: 24px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  top: -14px;
+  left: 20px;
+  width: 28px;
+  height: 28px;
+  background: #4A9EFF;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  font-variant-numeric: tabular-nums;
 }
 
 /* =============================================================================
-   CTA SECTION
+   CTA SECTION — Flat dark panel with accent border
    ============================================================================= */
 
 .ctaPaper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: #0D1117;
+  border: 1px solid rgba(74, 158, 255, 0.2);
   text-align: center;
 }
 
@@ -174,20 +183,19 @@
    ============================================================================= */
 
 .footerSection {
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  border-top: 1px solid #1E2633;
 }
 
 /* =============================================================================
-   STAT ITEM
+   STAT ITEM — Electric blue, no gradient text
    ============================================================================= */
 
 .statValue {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #4A9EFF;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* =============================================================================
@@ -203,5 +211,5 @@
    ============================================================================= */
 
 .featureDivider {
-  border-color: rgba(148, 163, 184, 0.1);
+  border-color: #1E2633;
 }

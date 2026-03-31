@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 import {
   useGetAirportsByIcaoCodesOrIdentsQuery,
   useGetAirportsByStatesQuery,
-} from '@/redux/api/vfr3d/airports.api';
-import { useGetMetarsByStatesQuery } from '@/redux/api/vfr3d/weather.api';
+} from '@/redux/api/preflight/airports.api';
+import { useGetMetarsByStatesQuery } from '@/redux/api/preflight/weather.api';
 import { useSelector } from 'react-redux';
 import AirportEntities from './AirportEntities';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FlightDisplayMode } from '@/utility/enums';
-import { AirportDto, WaypointType } from '@/redux/api/vfr3d/dtos';
+import { AirportDto } from '@/redux/api/vfr3d/dtos';
 import type { RootState } from '@/redux/store';
 
 const Airports: React.FC = () => {
@@ -122,7 +122,7 @@ const Airports: React.FC = () => {
     // Get identifiers of airports that are waypoints on the route
     return new Set(
       flightPlanRoute
-        .filter((wp) => wp.waypointType === WaypointType.Airport)
+        .filter((wp) => wp.waypointType === 'Airport')
         .map((wp) => wp.name?.toUpperCase())
         .filter((name): name is string => !!name)
     );

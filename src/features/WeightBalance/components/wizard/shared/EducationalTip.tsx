@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Paper, Text, Group, Collapse, UnstyledButton, ThemeIcon } from '@mantine/core';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { FaLightbulb } from 'react-icons/fa';
+import { GRADIENT, HIGHLIGHT, THEME_COLORS } from '@/constants/surfaces';
 
 interface EducationalTipProps {
   title: string;
@@ -17,8 +18,8 @@ export function EducationalTip({ title, content, defaultExpanded = true }: Educa
       p="md"
       radius="md"
       style={{
-        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1))',
-        border: '1px solid rgba(59, 130, 246, 0.3)',
+        background: GRADIENT.TIP,
+        border: `1px solid ${HIGHLIGHT.STRONG}`,
       }}
     >
       <UnstyledButton onClick={() => setIsExpanded(!isExpanded)} style={{ width: '100%' }}>
@@ -29,7 +30,7 @@ export function EducationalTip({ title, content, defaultExpanded = true }: Educa
               radius="xl"
               variant="light"
               color="blue"
-              style={{ background: 'rgba(59, 130, 246, 0.2)' }}
+              style={{ background: HIGHLIGHT.DEFAULT }}
             >
               <FaLightbulb size={14} />
             </ThemeIcon>
@@ -38,9 +39,9 @@ export function EducationalTip({ title, content, defaultExpanded = true }: Educa
             </Text>
           </Group>
           {isExpanded ? (
-            <FiChevronUp size={16} style={{ color: 'var(--mantine-color-blue-4)' }} />
+            <FiChevronUp size={16} style={{ color: THEME_COLORS.BLUE_4 }} />
           ) : (
-            <FiChevronDown size={16} style={{ color: 'var(--mantine-color-blue-4)' }} />
+            <FiChevronDown size={16} style={{ color: THEME_COLORS.BLUE_4 }} />
           )}
         </Group>
       </UnstyledButton>

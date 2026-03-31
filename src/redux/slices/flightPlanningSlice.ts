@@ -3,7 +3,7 @@ import { REHYDRATE, RehydrateAction } from 'redux-persist';
 import { FlightDisplayMode } from '@/utility/enums';
 import { mapAirportDTOToWaypoint } from '@/utility/utils';
 import { fetchAirportByCode } from '@/redux/thunks/airports';
-import { NavlogResponseDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
+import { NavlogResponseDto, WaypointDto } from '@/redux/api/vfr3d/dtos';
 
 // Types
 interface FlightPlan {
@@ -244,7 +244,7 @@ const flightPlanningSlice = createSlice({
         const idx = arr.findIndex((w) => w.id === waypointId);
         if (idx >= 0) {
           const current = arr[idx];
-          const isAirportType = current.waypointType === WaypointType.Airport;
+          const isAirportType = current.waypointType === 'Airport';
           if (!isAirportType) return;
           const updated: WaypointDto = {
             ...current,

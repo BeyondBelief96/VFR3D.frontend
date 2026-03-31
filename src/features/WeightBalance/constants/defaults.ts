@@ -61,8 +61,7 @@ const createOilStation = (name: string = 'Oil', capacityQuarts: number = 8): Loa
 
 // Default stations for single engine aircraft (most common: 4-seat like C172)
 export const SINGLE_ENGINE_STATIONS: LoadingStationDto[] = [
-  createStation('Pilot', { maxWeight: 300 }),
-  createStation('Co-Pilot/Front Passenger', { maxWeight: 300 }),
+  createStation('Front Seats', { maxWeight: 400 }),
   createStation('Rear Passengers', { maxWeight: 400 }),
   createStation('Baggage Area 1', { maxWeight: 120 }),
   createStation('Baggage Area 2', { maxWeight: 50 }),
@@ -72,8 +71,7 @@ export const SINGLE_ENGINE_STATIONS: LoadingStationDto[] = [
 
 // Default stations for multi-engine aircraft (6-seat like PA-34 Seneca)
 export const MULTI_ENGINE_STATIONS: LoadingStationDto[] = [
-  createStation('Pilot', { maxWeight: 300 }),
-  createStation('Co-Pilot', { maxWeight: 300 }),
+  createStation('Front Seats', { maxWeight: 400 }),
   createStation('Middle Row Left', { maxWeight: 200 }),
   createStation('Middle Row Right', { maxWeight: 200 }),
   createStation('Rear Row Left', { maxWeight: 200 }),
@@ -88,8 +86,7 @@ export const MULTI_ENGINE_STATIONS: LoadingStationDto[] = [
 
 // Default stations for helicopter
 export const HELICOPTER_STATIONS: LoadingStationDto[] = [
-  createStation('Pilot', { maxWeight: 300 }),
-  createStation('Co-Pilot/Front Passenger', { maxWeight: 300 }),
+  createStation('Front Seats', { maxWeight: 400 }),
   createStation('Rear Passengers', { maxWeight: 400 }),
   createStation('Baggage', { maxWeight: 100 }),
   createFuelStation('Main Fuel Tank', 42),

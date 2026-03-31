@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   airportIdent: {
     fontSize: 10,
-    color: '#3b82f6',
+    color: '#4A9EFF',
     fontWeight: 'bold',
   },
   windBox: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   mvfrBadge: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#4A9EFF',
     color: '#ffffff',
   },
   ifrBadge: {
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 6,
     borderLeftWidth: 3,
-    borderLeftColor: '#3b82f6',
+    borderLeftColor: '#4A9EFF',
   },
   forecastHeader: {
     flexDirection: 'row',
@@ -521,7 +521,7 @@ const formatWindComponent = (component?: number): string => {
   return `${isHeadwind ? '+' : ''}${Math.round(component)} kt ${isHeadwind ? 'HW' : 'TW'}`;
 };
 
-const formatSurfaceType = (surfaceType?: string): string => {
+const formatSurfaceType = (surfaceType?: string | null): string => {
   if (!surfaceType || surfaceType === 'Unknown') return 'Unknown';
   return surfaceType.replace(/([A-Z])/g, ' $1').trim();
 };
@@ -542,25 +542,25 @@ const getFlightCategoryStyle = (category?: string) => {
   }
 };
 
-const formatWindDirection = (dir?: string | number): string => {
+const formatWindDirection = (dir?: string | number | null): string => {
   if (dir === undefined || dir === null) return '--';
   if (dir === 'VRB' || dir === 'Variable') return 'VRB';
   return `${dir}°`;
 };
 
-const formatVisibility = (vis?: string | number): string => {
+const formatVisibility = (vis?: string | number | null): string => {
   if (vis === undefined || vis === null) return '--';
   return `${vis} SM`;
 };
 
-const formatTemperature = (tempC?: number, dewC?: number): string => {
+const formatTemperature = (tempC?: number | null, dewC?: number | null): string => {
   if (tempC === undefined && dewC === undefined) return '--';
   const temp = tempC !== undefined ? `${tempC}°C` : '--';
   const dew = dewC !== undefined ? `${dewC}°C` : '--';
   return `${temp} / ${dew}`;
 };
 
-const formatAltimeter = (altim?: number): string => {
+const formatAltimeter = (altim?: number | null): string => {
   if (altim === undefined || altim === null) return '--';
   return `${altim.toFixed(2)}" Hg`;
 };
@@ -576,7 +576,7 @@ const formatSkyConditions = (conditions?: MetarSkyConditionDto[] | TafSkyConditi
     .join(', ');
 };
 
-const formatForecastTime = (from?: string, to?: string): string => {
+const formatForecastTime = (from?: string | null, to?: string | null): string => {
   if (!from) return '';
   const fromTime = new Date(from).toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -592,7 +592,7 @@ const formatForecastTime = (from?: string, to?: string): string => {
   return `${fromTime} - ${toTime}`;
 };
 
-const getChangeIndicatorText = (indicator?: string): string => {
+const getChangeIndicatorText = (indicator?: string | null): string => {
   switch (indicator) {
     case 'FM':
       return 'From';
@@ -888,7 +888,7 @@ export const FlightLogPdf: React.FC<FlightLogPdfProps> = ({
 
           {/* Landing Result */}
           {weightBalance.landing && (
-            <WBResultCard title="LANDING" result={weightBalance.landing} color="#3b82f6" />
+            <WBResultCard title="LANDING" result={weightBalance.landing} color="#4A9EFF" />
           )}
 
           {/* Calculation Details */}

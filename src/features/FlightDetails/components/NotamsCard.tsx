@@ -18,6 +18,7 @@ import {
   getNotamSeverityColor,
   categorizeNotam,
 } from '../utils/notamAbbreviations';
+import { SURFACE, BORDER, HIGHLIGHT, SHADOW, THEME_COLORS } from '@/constants/surfaces';
 
 export interface FlightTimeWindow {
   start: Date;
@@ -49,7 +50,7 @@ interface ParsedNotam {
  * Parse a NOTAM date string into a Date object
  * Handles formats like "2401151200" (YYMMDDHHMM) and ISO strings
  */
-function parseNotamDateString(dateStr?: string): Date | undefined {
+function parseNotamDateString(dateStr?: string | null): Date | undefined {
   if (!dateStr) return undefined;
 
   try {
@@ -121,11 +122,11 @@ function parseNotam(notam: NotamDto): ParsedNotam | null {
     id: detail?.id || notam.id || `notam-${Math.random()}`,
     rawText: rawText,
     translatedText: translatedText,
-    effectiveStart: detail?.effectiveStart,
-    effectiveEnd: detail?.effectiveEnd,
+    effectiveStart: detail?.effectiveStart ?? undefined,
+    effectiveEnd: detail?.effectiveEnd ?? undefined,
     effectiveStartDate,
     effectiveEndDate,
-    location: detail?.location || detail?.icaoLocation,
+    location: detail?.location ?? detail?.icaoLocation ?? undefined,
     category: categorizeNotam(rawText),
     severityColor: getNotamSeverityColor(rawText),
   };
@@ -182,10 +183,10 @@ function NotamItem({
     <Paper
       p="sm"
       style={{
-        backgroundColor: appliesToFlight ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 23, 42, 0.6)',
+        backgroundColor: appliesToFlight ? HIGHLIGHT.LIGHT : SURFACE.INSET,
         border: appliesToFlight
-          ? '1px solid rgba(59, 130, 246, 0.3)'
-          : '1px solid rgba(148, 163, 184, 0.15)',
+          ? `1px solid ${HIGHLIGHT.STRONG}`
+          : `1px solid ${BORDER.CARD}`,
         borderLeft: `3px solid var(--mantine-color-${notam.severityColor}-6)`,
       }}
     >
@@ -230,7 +231,7 @@ function NotamItem({
             c="gray.3"
             style={{
               fontFamily: viewMode === 'raw' ? 'monospace' : 'inherit',
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              backgroundColor: SHADOW.SUBTLE,
               padding: '10px',
               borderRadius: '4px',
               whiteSpace: 'pre-wrap',
@@ -406,7 +407,7 @@ export function NotamsList({ notamsData, viewMode, flightTimeWindow }: NotamsLis
         <Tooltip
           multiline
           w={280}
-          bg={'var(--mantine-color-vfr3dSurface-9)'}
+          bg={THEME_COLORS.SURFACE_9}
           label={
             <Stack gap={4}>
               <Text size="xs" fw={600}>
@@ -445,7 +446,7 @@ export function NotamsList({ notamsData, viewMode, flightTimeWindow }: NotamsLis
               mb="sm"
               pb={6}
               style={{
-                borderBottom: '2px solid rgba(148, 163, 184, 0.2)',
+                borderBottom: `2px solid ${BORDER.DEFAULT}`,
               }}
             >
               <Text size="md" fw={700} c="gray.3" tt="uppercase" style={{ letterSpacing: '0.5px' }}>

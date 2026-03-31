@@ -1,16 +1,16 @@
-import {
+import type {
   BearingAndDistanceRequestDto,
   BearingAndDistanceResponseDto,
   NavlogRequestDto,
   NavlogResponseDto,
-} from './dtos';
-import { baseApi } from './vfr3dSlice';
+} from './types';
+import { preflightApi } from './preflightApiSlice';
 
-export const navlogApi = baseApi.injectEndpoints({
+export const navlogApi = preflightApi.injectEndpoints({
   endpoints: (builder) => ({
     calculateNavLog: builder.mutation<NavlogResponseDto, NavlogRequestDto>({
       query: (navLogRequest) => ({
-        url: `/Navlog/CalculateNavlog`,
+        url: `/navlog/calculate`,
         method: 'POST',
         body: navLogRequest,
       }),
@@ -20,7 +20,7 @@ export const navlogApi = baseApi.injectEndpoints({
       BearingAndDistanceRequestDto
     >({
       query: (bearingAndDistanceRequest) => ({
-        url: `/Navlog/CalculateBearingAndDistance`,
+        url: `/navlog/bearing-and-distance`,
         method: 'POST',
         body: bearingAndDistanceRequest,
       }),

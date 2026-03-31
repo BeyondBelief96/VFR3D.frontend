@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { Card, Stack, Text, Button, Group, Box, ThemeIcon } from '@mantine/core';
 import { FiAlertCircle, FiRefreshCw, FiArrowLeft, FiHome } from 'react-icons/fi';
 import classes from './PageErrorState.module.css';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 export interface PageErrorStateProps {
   /** The main title shown in the error state */
@@ -41,7 +42,7 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
   fullPage = true,
 }) => {
   const content = (
-    <Card padding="xl" radius="md" className={classes.card}>
+    <Card padding="xl" className={classes.card}>
       <Stack align="center" gap="lg" py="md">
         <Box className={classes.iconBox}>
           {icon || (
@@ -63,8 +64,8 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
         <Group gap="sm">
           {onRetry && (
             <Button
-              variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               leftSection={!isRetrying ? <FiRefreshCw size={16} /> : undefined}
               onClick={onRetry}
               loading={isRetrying}
@@ -74,8 +75,8 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
           )}
           {showGoBack && (
             <Button
-              variant="light"
-              color="gray"
+              variant="subtle"
+              color={BUTTON_COLORS.BACK}
               leftSection={<FiArrowLeft size={16} />}
               onClick={() => window.history.back()}
             >
@@ -84,8 +85,8 @@ export const PageErrorState: React.FC<PageErrorStateProps> = ({
           )}
           {showGoHome && (
             <Button
-              variant="light"
-              color="gray"
+              variant="subtle"
+              color={BUTTON_COLORS.SECONDARY}
               leftSection={<FiHome size={16} />}
               component={Link}
               to="/"

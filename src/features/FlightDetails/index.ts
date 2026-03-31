@@ -9,6 +9,7 @@ export {
   AirportDetailCard,
   NotamsList,
   NotamsPanel,
+  DocsPanel,
 } from './components';
 
 export type { StatCardProps } from './components';

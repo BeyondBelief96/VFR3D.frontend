@@ -14,6 +14,7 @@ import { FiMap, FiCloud } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
 import logo from '@/assets/images/logo_2.png';
+import { HIGHLIGHT } from '@/constants/surfaces';
 
 /**
  * Component shown to phone users who navigate to /map.
@@ -61,9 +62,9 @@ export function MapUnavailableMobile() {
         <Box
           p="md"
           style={{
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            backgroundColor: HIGHLIGHT.LIGHT,
             borderRadius: 'var(--mantine-radius-md)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            border: `1px solid ${HIGHLIGHT.DEFAULT}`,
           }}
         >
           <Text size="sm" ta="center" c="blue.3">

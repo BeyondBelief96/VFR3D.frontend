@@ -1,7 +1,7 @@
-import { ObstacleDto } from './dtos';
-import { baseApi } from './vfr3dSlice';
+import type { ObstacleDto, PaginatedResponse } from './types';
+import { preflightApi } from './preflightApiSlice';
 
-export const obstaclesApi = baseApi.injectEndpoints({
+export const obstaclesApi = preflightApi.injectEndpoints({
   endpoints: (builder) => ({
     searchObstaclesNearby: builder.query<
       ObstacleDto[],
@@ -17,25 +17,27 @@ export const obstaclesApi = baseApi.injectEndpoints({
         if (minHeightAgl !== undefined) {
           params.append('minHeightAgl', minHeightAgl.toString());
         }
-        return `/Obstacle/search?${params.toString()}`;
+        return `/obstacles/search?${params.toString()}`;
       },
+      transformResponse: (response: PaginatedResponse<ObstacleDto>) => response.data ?? [],
     }),
     getObstaclesByState: builder.query<
       ObstacleDto[],
       { stateCode: string; minHeightAgl?: number; limit?: number }
     >({
-      query: ({ stateCode, minHeightAgl, limit = 1000 }) => {
+      query: ({ stateCode, minHeightAgl, limit = 500 }) => {
         const params = new URLSearchParams({
           limit: limit.toString(),
         });
         if (minHeightAgl !== undefined) {
           params.append('minHeightAgl', minHeightAgl.toString());
         }
-        return `/Obstacle/state/${stateCode}?${params.toString()}`;
+        return `/obstacles/state/${stateCode}?${params.toString()}`;
       },
+      transformResponse: (response: PaginatedResponse<ObstacleDto>) => response.data ?? [],
     }),
     getObstacleByOasNumber: builder.query<ObstacleDto, string>({
-      query: (oasNumber) => `/Obstacle/${oasNumber}`,
+      query: (oasNumber) => `/obstacles/${oasNumber}`,
     }),
     getObstaclesByBoundingBox: builder.query<
       ObstacleDto[],
@@ -48,7 +50,7 @@ export const obstaclesApi = baseApi.injectEndpoints({
         limit?: number;
       }
     >({
-      query: ({ minLat, maxLat, minLon, maxLon, minHeightAgl, limit = 1000 }) => {
+      query: ({ minLat, maxLat, minLon, maxLon, minHeightAgl, limit = 500 }) => {
         const params = new URLSearchParams({
           minLat: minLat.toString(),
           maxLat: maxLat.toString(),
@@ -59,12 +61,13 @@ export const obstaclesApi = baseApi.injectEndpoints({
         if (minHeightAgl !== undefined) {
           params.append('minHeightAgl', minHeightAgl.toString());
         }
-        return `/Obstacle/bbox?${params.toString()}`;
+        return `/obstacles/bbox?${params.toString()}`;
       },
+      transformResponse: (response: PaginatedResponse<ObstacleDto>) => response.data ?? [],
     }),
     getObstaclesByOasNumbers: builder.query<ObstacleDto[], string[]>({
       query: (oasNumbers) => ({
-        url: `/Obstacle/by-oas-numbers`,
+        url: `/obstacles/by-oas-numbers`,
         method: 'POST',
         body: oasNumbers,
       }),

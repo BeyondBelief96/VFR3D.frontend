@@ -167,8 +167,8 @@ export function Header({ isMapPage, sidebarOpened, toggleSidebar }: HeaderProps)
     if (!isAuthenticated) {
       return (
         <Button
-          variant="gradient"
-          gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+          variant="filled"
+          color="vfr3dBlue"
           size="sm"
           loading={isLoading}
           onClick={handleLogin}

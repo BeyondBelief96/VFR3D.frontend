@@ -1,6 +1,7 @@
 import { Paper, Group, Box, Text } from '@mantine/core';
 import { useIsPhone } from '@/hooks';
 import { getIconBgColor } from '@/constants/colors';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 
 export interface StatCardProps {
   icon: React.ReactNode;
@@ -18,8 +19,8 @@ export function StatCard({ icon, label, value, subtext, bgColor = 'blue' }: Stat
     <Paper
       p={isPhone ? 'sm' : 'md'}
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        backgroundColor: SURFACE.CARD,
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       <Group gap={isPhone ? 'sm' : 'md'} wrap="nowrap">

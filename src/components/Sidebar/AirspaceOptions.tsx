@@ -12,6 +12,7 @@ import {
 import { AirportSearch } from '@/components/Search';
 import { AirportContextList } from './AirportContextList';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { BORDER } from '@/constants/surfaces';
 
 interface AirspaceClassInfo {
   class: AirspaceClass;
@@ -110,7 +111,7 @@ export function AirspaceOptions() {
         />
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* Route Airspaces Toggle */}
       <Box>
@@ -130,7 +131,7 @@ export function AirspaceOptions() {
         </Text>
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* Airspace Classes */}
       <Box>
@@ -152,7 +153,7 @@ export function AirspaceOptions() {
         </Group>
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* Special Use Airspaces */}
       <Box>
@@ -174,7 +175,7 @@ export function AirspaceOptions() {
         </Group>
       </Box>
 
-      <Divider color="rgba(148, 163, 184, 0.2)" />
+      <Divider color={BORDER.DEFAULT} />
 
       {/* Legend */}
       <Box>

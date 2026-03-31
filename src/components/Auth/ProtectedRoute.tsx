@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate, useLocation } from '@tanstack/react-router';
 import { Center, Loader, Stack, Text } from '@mantine/core';
-import { useTokenRefresh } from '@/hooks/useTokenRefresh';
 import classes from './ProtectedRoute.module.css';
 
 interface ProtectedRouteProps {
@@ -16,8 +15,8 @@ interface ProtectedRouteProps {
 }
 
 /**
- * A wrapper component that protects routes requiring authentication.
- * Automatically handles token refresh and redirects unauthenticated users.
+ * Protects routes that require authentication.
+ * Shows loading while Auth0 initializes, redirects to login if not authenticated.
  */
 export function ProtectedRoute({
   children,
@@ -28,10 +27,7 @@ export function ProtectedRoute({
   const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
   const location = useLocation();
 
-  // Initialize token refresh for authenticated users
-  useTokenRefresh();
-
-  // Show loading state while Auth0 is initializing
+  // Show loading while Auth0 initializes
   if (isLoading) {
     return (
       loadingComponent || (
@@ -72,11 +68,9 @@ export function ProtectedRoute({
       );
     }
 
-    // Redirect to home if not using login redirect
     return <Navigate to="/" />;
   }
 
-  // User is authenticated, render children
   return <>{children}</>;
 }
 

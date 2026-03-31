@@ -16,8 +16,8 @@ export function Footer() {
               <Text
                 size="lg"
                 fw={700}
-                variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                c="#4A9EFF"
+                style={{ letterSpacing: '0.08em' }}
               >
                 VFR3D
               </Text>

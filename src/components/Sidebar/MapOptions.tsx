@@ -7,6 +7,7 @@ import {
   setGlobeMaximumScreenSpaceError,
 } from '@/redux/slices/viewerSlice';
 import { IMAGERY_LAYER_OPTIONS } from '@/utility/constants';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function MapOptions() {
   const dispatch = useAppDispatch();
@@ -30,13 +31,13 @@ export function MapOptions() {
           onChange={(value) => value && dispatch(setSelectedLayer(value))}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE.INPUT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
             },
             dropdown: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: THEME_COLORS.SURFACE_8,
+              borderColor: BORDER.DEFAULT,
             },
           }}
         />
@@ -59,7 +60,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
       </Box>
@@ -81,7 +82,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
       </Box>
@@ -103,7 +104,7 @@ export function MapOptions() {
           ]}
           styles={{
             mark: { display: 'none' },
-            markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: 'var(--mantine-color-gray-6)' },
+            markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: THEME_COLORS.GRAY_6 },
           }}
         />
         <Text size="xs" c="white" mt={10}>

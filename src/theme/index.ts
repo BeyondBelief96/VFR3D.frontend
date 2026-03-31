@@ -1,105 +1,111 @@
 import { createTheme, MantineColorsTuple, CSSVariablesResolver } from '@mantine/core';
 
 // =============================================================================
-// CUSTOM COLOR PALETTES
-// Each palette has 10 shades (0=lightest, 9=darkest), shade 5 is the base
+// DEFENSE / C2 COLOR PALETTES
+// Near-black backgrounds, electric blue accent, muted functional colors
 // =============================================================================
 
 /**
- * VFR3D Primary Blue - #3b82f6 at shade 5
+ * Electric Blue accent — #4A9EFF at shade 5
+ * Single primary accent for active/selected/interactive states
  */
 const vfr3dBlue: MantineColorsTuple = [
-  '#e7f1ff', // 0 - lightest
-  '#c9ddff', // 1
-  '#a8c7ff', // 2
-  '#84aeff', // 3
-  '#5f94fc', // 4
-  '#3b82f6', // 5 - base (--vfr3d-primary)
-  '#2563eb', // 6 (--vfr3d-primary-dark)
-  '#1d4ed8', // 7
-  '#1e40af', // 8
-  '#1e3a8a', // 9 - darkest
+  '#E8F2FF', // 0
+  '#C4DEFF', // 1
+  '#9CC8FF', // 2
+  '#74B2FF', // 3
+  '#5CA8FF', // 4
+  '#4A9EFF', // 5 - electric blue accent
+  '#3B87E0', // 6
+  '#2D6FC0', // 7
+  '#1F57A0', // 8
+  '#134080', // 9
 ];
 
 /**
- * VFR Green - #22c55e at shade 5 (VFR flight category)
+ * Operational Green — #2EA043 at shade 5
+ * VFR flight category / success / confirmation
  */
 const vfrGreen: MantineColorsTuple = [
-  '#e8faf0', // 0
-  '#c6f2d8', // 1
-  '#9fe9be', // 2
-  '#73dea1', // 3
-  '#4ad283', // 4
-  '#22c55e', // 5 - base (--vfr-color)
-  '#16a34a', // 6
-  '#15803d', // 7
-  '#166534', // 8
-  '#14532d', // 9
+  '#E6F9ED', // 0
+  '#C1F0D2', // 1
+  '#96E5B3', // 2
+  '#6BD993', // 3
+  '#45CF77', // 4
+  '#2EA043', // 5 - operational green
+  '#268E3A', // 6
+  '#1E7A31', // 7
+  '#176628', // 8
+  '#11521F', // 9
 ];
 
 /**
- * IFR Red - #ef4444 at shade 5 (IFR flight category)
+ * Critical Red — #C94040 at shade 5
+ * IFR flight category / error / destructive actions
  */
 const ifrRed: MantineColorsTuple = [
-  '#fef2f2', // 0
-  '#fee2e2', // 1
-  '#fecaca', // 2
-  '#fca5a5', // 3
-  '#f87171', // 4
-  '#ef4444', // 5 - base (--ifr-color)
-  '#dc2626', // 6
-  '#b91c1c', // 7
-  '#991b1b', // 8
-  '#7f1d1d', // 9
+  '#FCEAEA', // 0
+  '#F5C9C9', // 1
+  '#EDA3A3', // 2
+  '#E47C7C', // 3
+  '#D95A5A', // 4
+  '#C94040', // 5 - muted critical red
+  '#AB3333', // 6
+  '#8D2828', // 7
+  '#701E1E', // 8
+  '#541616', // 9
 ];
 
 /**
- * LIFR Purple/Grape - #a855f7 at shade 5 (LIFR flight category)
+ * LIFR Purple — #9066D6 at shade 5
+ * LIFR flight category
  */
 const lifrPurple: MantineColorsTuple = [
-  '#faf5ff', // 0
-  '#f3e8ff', // 1
-  '#e9d5ff', // 2
-  '#d8b4fe', // 3
-  '#c084fc', // 4
-  '#a855f7', // 5 - base (--lifr-color)
-  '#9333ea', // 6
-  '#7e22ce', // 7
-  '#6b21a8', // 8
-  '#581c87', // 9
+  '#F5F0FF', // 0
+  '#E8DAFF', // 1
+  '#D4BFFF', // 2
+  '#BEA1F7', // 3
+  '#A882ED', // 4
+  '#9066D6', // 5 - muted purple
+  '#7A51BF', // 6
+  '#6540A3', // 7
+  '#513288', // 8
+  '#3E256E', // 9
 ];
 
 /**
- * Warning Yellow/Amber - #fbbf24 at shade 5
+ * Warning Amber — #D4A04A at shade 5
+ * Warnings, caution states
  */
 const warningYellow: MantineColorsTuple = [
-  '#fefce8', // 0
-  '#fef9c3', // 1
-  '#fef08a', // 2
-  '#fde047', // 3
-  '#facc15', // 4
-  '#fbbf24', // 5 - base
-  '#eab308', // 6
-  '#ca8a04', // 7
-  '#a16207', // 8
-  '#854d0e', // 9
+  '#FBF3E4', // 0
+  '#F5E2BD', // 1
+  '#EECE91', // 2
+  '#E5B96A', // 3
+  '#DCA954', // 4
+  '#D4A04A', // 5 - amber warning
+  '#B8873A', // 6
+  '#9A6F2D', // 7
+  '#7C5821', // 8
+  '#5E4218', // 9
 ];
 
 /**
- * VFR3D Surface colors - dark slate theme
- * Used for backgrounds and surfaces in dark mode
+ * Command Surface — near-black defense palette
+ * 0-2: text colors (light on dark), 3-4: muted/dimmed,
+ * 5-6: mid panels, 7-9: backgrounds (darkest)
  */
 const vfr3dSurface: MantineColorsTuple = [
-  '#f8fafc', // 0 - slate-50
-  '#f1f5f9', // 1 - slate-100 (--vfr3d-text)
-  '#e2e8f0', // 2 - slate-200
-  '#cbd5e1', // 3 - slate-300
-  '#94a3b8', // 4 - slate-400 (--vfr3d-text-muted)
-  '#64748b', // 5 - slate-500
-  '#475569', // 6 - slate-600
-  '#334155', // 7 - slate-700
-  '#1e293b', // 8 - slate-800 (--vfr3d-surface)
-  '#0f172a', // 9 - slate-900 (--vfr3d-background)
+  '#D1D5DB', // 0 - primary text (off-white)
+  '#B0B8C4', // 1 - light text
+  '#8892A0', // 2 - secondary text (cool gray)
+  '#636E7E', // 3 - muted text
+  '#3D4758', // 4 - dimmed
+  '#2A3140', // 5 - mid panel
+  '#1B2130', // 6 - muted blue-gray panel
+  '#141922', // 7 - elevated surface
+  '#0D1117', // 8 - main surface
+  '#0A0C10', // 9 - deepest black
 ];
 
 // =============================================================================
@@ -107,12 +113,19 @@ const vfr3dSurface: MantineColorsTuple = [
 // =============================================================================
 
 export const theme = createTheme({
-  // Primary color - use VFR3D blue
   primaryColor: 'vfr3dBlue',
 
-  // Font family
+  // Monospace-first typography — SCIF terminal aesthetic
   fontFamily:
-    'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
+    '"JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace',
+  fontFamilyMonospace:
+    '"JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace',
+
+  headings: {
+    fontFamily:
+      '"JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace',
+    fontWeight: '600',
+  },
 
   // Custom color palettes
   colors: {
@@ -124,102 +137,163 @@ export const theme = createTheme({
     vfr3dSurface,
   },
 
-  // Component default props
+  // No rounded corners — flat and clinical
+  defaultRadius: 0,
+
+  // Component defaults — defense minimal
   components: {
-    // Buttons
     Button: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
       },
     },
 
-    // Cards
     Card: {
       defaultProps: {
-        radius: 'md',
-        shadow: 'sm',
+        radius: 0,
+        shadow: 'none',
       },
     },
 
-    // Modals
     Modal: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
         centered: true,
       },
     },
 
-    // Paper
     Paper: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
+        shadow: 'none',
       },
     },
 
-    // Text - default color for dark theme
     Text: {
       defaultProps: {
-        c: 'gray.3',
+        c: '#D1D5DB',
       },
     },
 
-    // Title - white by default for dark theme
     Title: {
       defaultProps: {
-        c: 'white',
+        c: '#D1D5DB',
+      },
+      styles: {
+        root: {
+          letterSpacing: '0.06em',
+        },
       },
     },
 
-    // ActionIcon
     ActionIcon: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
+        variant: 'subtle',
       },
     },
 
-    // Badge
     Badge: {
       defaultProps: {
-        radius: 'sm',
+        radius: 0,
       },
     },
 
-    // Input components
     TextInput: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
       },
     },
 
     NumberInput: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
       },
     },
 
     Select: {
       defaultProps: {
-        radius: 'md',
+        radius: 0,
       },
     },
 
-    // Tooltip
+    MultiSelect: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
     Tooltip: {
       defaultProps: {
-        radius: 'sm',
+        radius: 0,
+      },
+    },
+
+    Popover: {
+      defaultProps: {
+        radius: 0,
+        shadow: 'none',
+      },
+    },
+
+    Menu: {
+      defaultProps: {
+        radius: 0,
+        shadow: 'none',
+      },
+    },
+
+    Notification: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    Accordion: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    Tabs: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    SegmentedControl: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    Switch: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    Checkbox: {
+      defaultProps: {
+        radius: 0,
+      },
+    },
+
+    Drawer: {
+      defaultProps: {
+        radius: 0,
       },
     },
   },
 });
 
-// CSS Variables Resolver for custom overrides
-// This ensures dimmed text has better contrast against dark backgrounds
+// CSS Variables Resolver — defense dark overrides
 export const cssVariablesResolver: CSSVariablesResolver = (_theme) => ({
   variables: {},
   light: {},
   dark: {
-    // Override dimmed color for better readability (slate-400)
-    '--mantine-color-dimmed': '#ADADAD',
+    '--mantine-color-dimmed': '#8892A0',
+    '--mantine-color-body': '#0A0C10',
   },
 });
 

@@ -18,10 +18,12 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiPlus, FiTrash2, FiClock, FiNavigation, FiDroplet, FiWind } from 'react-icons/fi';
+import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE, SURFACE_INNER, BORDER, ICON_BG, MODAL_STYLES, THEME_COLORS } from '@/constants/surfaces';
 import { FaPlane } from 'react-icons/fa';
 import { TbMapPin } from 'react-icons/tb';
+import { useAuth0 } from '@auth0/auth0-react';
 import { ProtectedRoute } from '@/components/Auth';
-import { useAuth } from '@/components/Auth';
 import { PageErrorState } from '@/components/Common';
 import { useIsPhone } from '@/hooks';
 import { useGetFlightsQuery, useDeleteFlightMutation } from '@/redux/api/vfr3d/flights.api';
@@ -79,11 +81,10 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
   return (
     <Card
       padding="lg"
-      radius="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
-        border: '1px solid rgba(148, 163, 184, 0.15)',
-        transition: 'all 0.2s ease',
+        backgroundColor: SURFACE.CARD,
+        border: `1px solid ${BORDER.CARD}`,
+        transition: 'border-color 0.2s ease-out',
       }}
     >
       <Stack gap="md">
@@ -97,16 +98,15 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
             <Group gap="sm" wrap="nowrap">
               <Box
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  width: 36,
+                  height: 36,
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={18} color="var(--mantine-color-vfr3dBlue-5)" />
+                <FaPlane size={16} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box>
                 <Text c="white" fw={600} size="lg" lineClamp={1}>
@@ -119,8 +119,8 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
             </Group>
           </Link>
           <ActionIcon
-            variant="subtle"
-            color="red"
+            variant="light"
+            color={ACTION_ICON_COLORS.DELETE}
             size="lg"
             onClick={(e) => {
               e.preventDefault();
@@ -136,8 +136,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         {/* Route Display */}
         <Box
           style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
-            borderRadius: 'var(--mantine-radius-md)',
+            backgroundColor: SURFACE_INNER.DEFAULT,
             padding: 'var(--mantine-spacing-sm)',
           }}
         >
@@ -150,7 +149,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
         <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiNavigation size={14} color="var(--mantine-color-blue-4)" />
+              <FiNavigation size={14} color={THEME_COLORS.BLUE_4} />
               <Text size="xs" c="dimmed">
                 Distance
               </Text>
@@ -161,7 +160,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiClock size={14} color="var(--mantine-color-cyan-4)" />
+              <FiClock size={14} color={THEME_COLORS.CYAN_4} />
               <Text size="xs" c="dimmed">
                 Time
               </Text>
@@ -172,7 +171,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiDroplet size={14} color="var(--mantine-color-teal-4)" />
+              <FiDroplet size={14} color={THEME_COLORS.TEAL_4} />
               <Text size="xs" c="dimmed">
                 Fuel
               </Text>
@@ -183,7 +182,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
           </Box>
           <Box ta="center">
             <Group gap={4} justify="center" mb={2}>
-              <FiWind size={14} color="var(--mantine-color-grape-4)" />
+              <FiWind size={14} color={THEME_COLORS.GRAPE_4} />
               <Text size="xs" c="dimmed">
                 Wind
               </Text>
@@ -214,7 +213,7 @@ function FlightCard({ flight, onDelete, isDeleting }: FlightCardProps) {
 }
 
 function FlightsContent() {
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
 
@@ -258,7 +257,7 @@ function FlightsContent() {
     <Container
       size="lg"
       py="xl"
-      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--mantine-color-vfr3dSurface-9)' }}
+      style={{ minHeight: 'calc(100vh - 60px)', backgroundColor: THEME_COLORS.SURFACE_9 }}
     >
       <Stack gap="lg">
         <Group justify="space-between" align="center">
@@ -268,8 +267,8 @@ function FlightsContent() {
           {isPhone ? (
             <Button
               leftSection={<TbMapPin size={18} />}
-              variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               component={Link}
               to="/airports"
             >
@@ -278,8 +277,8 @@ function FlightsContent() {
           ) : (
             <Button
               leftSection={<FiPlus />}
-              variant="gradient"
-              gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+              variant="outline"
+              color={BUTTON_COLORS.PRIMARY}
               component={Link}
               to="/map"
             >
@@ -307,25 +306,23 @@ function FlightsContent() {
         {flights && flights.length === 0 && (
           <Card
             padding="xl"
-            radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Stack align="center" gap="lg" py="xl">
               <Box
                 style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  width: 64,
+                  height: 64,
+                  backgroundColor: ICON_BG.BLUE_LIGHT,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+                <FaPlane size={32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
               </Box>
               <Text c="white" size="lg" fw={500}>
                 No Flights Yet
@@ -336,8 +333,8 @@ function FlightsContent() {
               </Text>
               {isPhone ? (
                 <Button
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   component={Link}
                   to="/airports"
                   leftSection={<TbMapPin size={18} />}
@@ -346,8 +343,8 @@ function FlightsContent() {
                 </Button>
               ) : (
                 <Button
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   component={Link}
                   to="/map"
                   leftSection={<FiPlus />}
@@ -380,8 +377,9 @@ function FlightsContent() {
         title="Delete Flight"
         centered
         styles={{
-          header: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
-          body: { backgroundColor: 'var(--mantine-color-vfr3dSurface-8)' },
+          header: MODAL_STYLES.header,
+          body: MODAL_STYLES.body,
+          content: MODAL_STYLES.content,
         }}
       >
         <Stack gap="md">
@@ -389,10 +387,10 @@ function FlightsContent() {
             Are you sure you want to delete this flight? This action cannot be undone.
           </Text>
           <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+            <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={() => setDeleteModalOpen(false)}>
               Cancel
             </Button>
-            <Button color="red" onClick={handleDeleteConfirm} loading={isDeleting}>
+            <Button variant="light" color={BUTTON_COLORS.DESTRUCTIVE} onClick={handleDeleteConfirm} loading={isDeleting}>
               Delete Flight
             </Button>
           </Group>

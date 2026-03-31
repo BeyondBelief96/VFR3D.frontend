@@ -1,5 +1,6 @@
 import { ActionIcon, Group, Paper, Text, Tooltip } from '@mantine/core';
 import { FiX } from 'react-icons/fi';
+import { SURFACE } from '@/constants/surfaces';
 
 interface AirportContextChipProps {
   icaoOrIdent: string;
@@ -19,7 +20,7 @@ export function AirportContextChip({
       p="xs"
       radius="sm"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.6)',
+        backgroundColor: SURFACE.CARD_HOVER,
         border: `1px solid var(--mantine-color-${color}-6)`,
       }}
     >

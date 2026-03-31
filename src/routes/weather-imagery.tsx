@@ -20,6 +20,7 @@ import { FiCloud } from 'react-icons/fi';
 import { IMAGERY_PRODUCTS } from '@/utility/constants';
 import { ImageryProduct } from '@/utility/types';
 import classes from './weather-imagery.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/weather-imagery')({
   component: WeatherSupportImageryPage,
@@ -270,7 +271,7 @@ function WeatherSupportImageryPage() {
           {!selectedProduct && (
             <Paper p="xl" radius="md" ta="center" className={classes.emptyStatePaper}>
               <Stack align="center" gap="md">
-                <FiCloud size={48} color="var(--mantine-color-dimmed)" />
+                <FiCloud size={48} color={THEME_COLORS.TEXT_DIMMED} />
                 <Text c="dimmed" size="sm">
                   Select a weather product above to view imagery
                 </Text>
@@ -282,7 +283,7 @@ function WeatherSupportImageryPage() {
           {selectedProduct && !imageUrl && (
             <Paper p="xl" radius="md" ta="center" className={classes.emptyStatePaper}>
               <Stack align="center" gap="md">
-                <FiCloud size={48} color="var(--mantine-color-dimmed)" />
+                <FiCloud size={48} color={THEME_COLORS.TEXT_DIMMED} />
                 <Text c="dimmed" size="sm">
                   Configure all filters above to load the imagery
                 </Text>

@@ -2,59 +2,61 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, ScrollArea, Divider } from 
 import { FiX, FiInfo } from 'react-icons/fi';
 import { GAirmetDto, GAirmetHazardType } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper to get G-AIRMET hazard description
-const getGAirmetHazardDescription = (hazard?: GAirmetHazardType): { name: string; description: string; category: string } => {
+const getGAirmetHazardDescription = (hazard?: GAirmetHazardType | null): { name: string; description: string; category: string } => {
   switch (hazard) {
-    case GAirmetHazardType.MT_OBSC:
+    case 'MT_OBSC':
       return {
         name: 'Mountain Obscuration',
         description: 'Mountains hidden by clouds, precipitation, or widespread haze.',
         category: 'SIERRA',
       };
-    case GAirmetHazardType.IFR:
+    case 'IFR':
       return {
         name: 'IFR Conditions',
         description: 'Ceilings below 1000 ft AGL and/or visibility below 3 statute miles.',
         category: 'SIERRA',
       };
-    case GAirmetHazardType.TURB_LO:
+    case 'TURB_LO':
       return {
         name: 'Low-Level Turbulence',
         description: 'Moderate turbulence below FL180 (18,000 ft).',
         category: 'TANGO',
       };
-    case GAirmetHazardType.TURB_HI:
+    case 'TURB_HI':
       return {
         name: 'High-Level Turbulence',
         description: 'Moderate turbulence at or above FL180 (18,000 ft).',
         category: 'TANGO',
       };
-    case GAirmetHazardType.LLWS:
+    case 'LLWS':
       return {
         name: 'Low-Level Wind Shear',
         description: 'Non-convective low-level wind shear below 2000 ft AGL.',
         category: 'TANGO',
       };
-    case GAirmetHazardType.SFC_WIND:
+    case 'SFC_WIND':
       return {
         name: 'Strong Surface Winds',
         description: 'Sustained surface winds of 30 knots or greater.',
         category: 'TANGO',
       };
-    case GAirmetHazardType.ICE:
+    case 'ICE':
       return {
         name: 'Icing',
         description: 'Moderate icing conditions in clouds or precipitation.',
         category: 'ZULU',
       };
-    case GAirmetHazardType.FZLVL:
+    case 'FZLVL':
       return {
         name: 'Freezing Level',
         description: 'Height of the 0C isotherm (freezing level).',
         category: 'ZULU',
       };
-    case GAirmetHazardType.M_FZLVL:
+    case 'M_FZLVL':
       return {
         name: 'Multiple Freezing Levels',
         description: 'Multiple freezing levels due to temperature inversions.',
@@ -70,25 +72,25 @@ const getGAirmetHazardDescription = (hazard?: GAirmetHazardType): { name: string
 };
 
 // Get color for G-AIRMET hazard badge
-const getGAirmetHazardColor = (hazard?: GAirmetHazardType): string => {
+const getGAirmetHazardColor = (hazard?: GAirmetHazardType | null): string => {
   switch (hazard) {
-    case GAirmetHazardType.MT_OBSC:
+    case 'MT_OBSC':
       return 'gray';
-    case GAirmetHazardType.IFR:
+    case 'IFR':
       return 'green';
-    case GAirmetHazardType.TURB_LO:
+    case 'TURB_LO':
       return 'orange';
-    case GAirmetHazardType.TURB_HI:
+    case 'TURB_HI':
       return 'red';
-    case GAirmetHazardType.LLWS:
+    case 'LLWS':
       return 'yellow';
-    case GAirmetHazardType.SFC_WIND:
+    case 'SFC_WIND':
       return 'violet';
-    case GAirmetHazardType.ICE:
+    case 'ICE':
       return 'cyan';
-    case GAirmetHazardType.FZLVL:
+    case 'FZLVL':
       return 'blue';
-    case GAirmetHazardType.M_FZLVL:
+    case 'M_FZLVL':
       return 'indigo';
     default:
       return 'blue';
@@ -105,7 +107,7 @@ const GAirmetAsideContent: React.FC<GAirmetAsideContentProps> = ({ gairmet, onCl
   const hazardColor = getGAirmetHazardColor(gairmet.hazard);
 
   // Helper to format altitude value for display
-  const formatAltitude = (value: string | undefined, isFzl: boolean = false): string => {
+  const formatAltitude = (value: string | null | undefined, isFzl: boolean = false): string => {
     if (!value) return isFzl ? 'Unknown' : 'SFC';
     const upper = value.toUpperCase();
     if (upper.startsWith('SFC')) return 'Surface';
@@ -130,7 +132,7 @@ const GAirmetAsideContent: React.FC<GAirmetAsideContentProps> = ({ gairmet, onCl
               </Badge>
             )}
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>
@@ -245,7 +247,7 @@ const GAirmetAsideContent: React.FC<GAirmetAsideContentProps> = ({ gairmet, onCl
           {/* Educational Section */}
           <Box p="xs" className={classes.infoBox}>
             <Group gap={4} mb={4}>
-              <FiInfo size={12} color="var(--mantine-color-blue-5)" />
+              <FiInfo size={12} color={THEME_COLORS.ICON_BLUE} />
               <Text size="xs" fw={500} c="blue.4">
                 What is this?
               </Text>

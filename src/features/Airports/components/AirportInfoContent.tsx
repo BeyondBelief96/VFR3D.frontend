@@ -1,6 +1,7 @@
 import { Stack, Paper, Group, ThemeIcon, Text, SimpleGrid } from '@mantine/core';
 import { FiInfo, FiMapPin, FiRadio } from 'react-icons/fi';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE_INNER } from '@/constants/surfaces';
 
 interface InfoRowProps {
   label: string;
@@ -28,7 +29,7 @@ export function AirportInfoContent({ airport }: AirportInfoContentProps) {
   return (
     <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
       {/* General Info */}
-      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
         <Group gap="sm" mb="md">
           <ThemeIcon size="md" variant="light" color="blue">
             <FiInfo size={16} />
@@ -40,14 +41,14 @@ export function AirportInfoContent({ airport }: AirportInfoContentProps) {
         <Stack gap="sm">
           {airport.icaoId && <InfoRow label="ICAO Code" value={airport.icaoId} />}
           {airport.arptId && <InfoRow label="FAA ID" value={airport.arptId} />}
-          {airport.siteTypeCode && <InfoRow label="Type" value={airport.siteTypeCode} />}
+          {airport.siteType && <InfoRow label="Type" value={airport.siteType} />}
           {airport.fuelTypes && <InfoRow label="Fuel Available" value={airport.fuelTypes} />}
           {airport.arptStatus && <InfoRow label="Status" value={airport.arptStatus} />}
         </Stack>
       </Paper>
 
       {/* Location */}
-      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
         <Group gap="sm" mb="md">
           <ThemeIcon size="md" variant="light" color="green">
             <FiMapPin size={16} />
@@ -69,7 +70,7 @@ export function AirportInfoContent({ airport }: AirportInfoContentProps) {
 
       {/* Contact Info (if available) */}
       {(airport.contactName || airport.contactPhoneNumber) && (
-        <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+        <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
           <Group gap="sm" mb="md">
             <ThemeIcon size="md" variant="light" color="grape">
               <FiRadio size={16} />

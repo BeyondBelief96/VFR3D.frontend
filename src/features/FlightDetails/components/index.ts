@@ -10,3 +10,4 @@ export { AirportDetailCard } from './AirportDetailCard';
 export { NotamsList } from './NotamsCard';
 export type { FlightTimeWindow } from './NotamsCard';
 export { NotamsPanel } from './NotamsPanel';
+export { DocsPanel } from './DocsPanel';

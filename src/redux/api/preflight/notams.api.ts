@@ -1,21 +1,18 @@
-import { NotamQueryByRouteRequest, NotamResponseDto } from './dtos';
-import { baseApi } from './vfr3dSlice';
+import type { NotamQueryByRouteRequest, NotamResponseDto } from './types';
+import { preflightApi } from './preflightApiSlice';
 
-export const notamsApi = baseApi.injectEndpoints({
+export const notamsApi = preflightApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get NOTAMs by route (airports and waypoints)
     getNotamsByRoute: builder.query<NotamResponseDto, NotamQueryByRouteRequest>({
       query: (request) => ({
-        url: `/notam/route`,
+        url: `/notams/route`,
         method: 'POST',
         body: request,
       }),
       providesTags: ['notams'],
     }),
-
-    // Get NOTAMs for a single airport
     getNotamsForAirport: builder.query<NotamResponseDto, string>({
-      query: (icaoCode) => `/notam/${icaoCode}`,
+      query: (icaoCode) => `/notams/${icaoCode}`,
       providesTags: (_result, _error, icaoCode) => [
         { type: 'notams', id: icaoCode },
         { type: 'notams', id: 'LIST' },
@@ -24,7 +21,4 @@ export const notamsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetNotamsByRouteQuery,
-  useGetNotamsForAirportQuery,
-} = notamsApi;
+export const { useGetNotamsByRouteQuery, useGetNotamsForAirportQuery } = notamsApi;

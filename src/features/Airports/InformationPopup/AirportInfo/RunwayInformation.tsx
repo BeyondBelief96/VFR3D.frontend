@@ -16,6 +16,7 @@ import {
   RunwayDto,
   RunwayEndDto,
 } from '@/redux/api/vfr3d/dtos';
+import { WHITE_BG, BORDER, HIGHLIGHT } from '@/constants/surfaces';
 
 interface RunwayInformationProps {
   runwayInformation: RunwayDto[] | undefined;
@@ -87,7 +88,7 @@ const RunwayEndDetails: React.FC<{
       isFirst
         ? undefined
         : {
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: `1px solid ${BORDER.LIGHT}`,
           }
     }
   >
@@ -131,7 +132,6 @@ const RunwayEndDetails: React.FC<{
         runwayEnd.hasCenterlineLights ||
         runwayEnd.hasTouchdownZoneLights ||
         (runwayEnd.visualGlideSlopeIndicator &&
-          runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
           runwayEnd.visualGlideSlopeIndicator !== 'None')) && (
         <Group gap={4}>
           {runwayEnd.hasRunwayEndLights && (
@@ -150,7 +150,6 @@ const RunwayEndDetails: React.FC<{
             </Badge>
           )}
           {runwayEnd.visualGlideSlopeIndicator &&
-            runwayEnd.visualGlideSlopeIndicator !== 'Unknown' &&
             runwayEnd.visualGlideSlopeIndicator !== 'None' && (
               <Badge size="xs" color="blue">
                 {runwayEnd.visualGlideSlopeIndicator}
@@ -177,8 +176,8 @@ const RunwayCard: React.FC<{
     <Paper
       radius="md"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        backgroundColor: WHITE_BG.MINIMAL,
+        border: `1px solid ${BORDER.LIGHT}`,
         overflow: 'hidden',
       }}
     >
@@ -213,7 +212,7 @@ const RunwayCard: React.FC<{
             <Text span c="dimmed">
               Surface:{' '}
             </Text>
-            {formatSurfaceType(runway.surfaceType)}
+            {formatSurfaceType(runway.surfaceType ?? undefined)}
           </Text>
           {runway.edgeLightIntensity && runway.edgeLightIntensity !== 'None' && (
             <Text size="xs">
@@ -290,8 +289,8 @@ export const RunwayInformation: React.FC<RunwayInformationProps> = ({
           p="sm"
           radius="md"
           style={{
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            backgroundColor: HIGHLIGHT.LIGHT,
+            border: `1px solid ${HIGHLIGHT.STRONG}`,
           }}
         >
           <Group justify="space-between" wrap="wrap">

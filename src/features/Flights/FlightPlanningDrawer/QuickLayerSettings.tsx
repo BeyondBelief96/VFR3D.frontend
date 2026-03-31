@@ -4,6 +4,7 @@ import { GiRadioTower } from 'react-icons/gi';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { useIsPhone } from '@/hooks';
+import { SURFACE, BORDER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   toggleShowRouteObstacles,
   toggleShowObstacleLabels,
@@ -71,13 +72,13 @@ export function QuickLayerSettings() {
       p="sm"
       mb="md"
       style={{
-        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+        backgroundColor: SURFACE.CARD_HOVER,
         borderRadius: 'var(--mantine-radius-md)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: `1px solid ${BORDER.SUBTLE}`,
       }}
     >
       <Group gap={4} mb="xs">
-        <FiLayers size={14} color="var(--mantine-color-blue-5)" />
+        <FiLayers size={14} color={THEME_COLORS.ICON_BLUE} />
         <Text size="xs" fw={600} c="white">
           Quick Layer Settings
         </Text>
@@ -105,7 +106,7 @@ export function QuickLayerSettings() {
             padding: '8px 0 16px 0',
           },
           chevron: {
-            color: 'var(--mantine-color-gray-5)',
+            color: THEME_COLORS.TEXT_MUTED,
           },
         }}
       >
@@ -113,7 +114,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="advisories">
           <Accordion.Control>
             <Group gap="xs">
-              <TbAlertTriangle size={14} color="var(--mantine-color-warningYellow-5)" />
+              <TbAlertTriangle size={14} color={THEME_COLORS.WARNING} />
               <Text size="sm" c="white">
                 Weather Advisories
               </Text>
@@ -136,10 +137,10 @@ export function QuickLayerSettings() {
                         cursor: 'pointer',
                         backgroundColor: sigmetHazards[type]
                           ? color
-                          : 'rgba(148, 163, 184, 0.2)',
+                          : ICON_BG.NEUTRAL,
                         border: sigmetHazards[type]
                           ? 'none'
-                          : '1px solid rgba(148, 163, 184, 0.3)',
+                          : `1px solid ${BORDER.STRONG}`,
                         minHeight: isPhone ? 36 : undefined,
                         display: 'flex',
                         alignItems: 'center',
@@ -168,10 +169,10 @@ export function QuickLayerSettings() {
                         cursor: 'pointer',
                         backgroundColor: gairmetHazards[hazard]
                           ? color
-                          : 'rgba(148, 163, 184, 0.2)',
+                          : ICON_BG.NEUTRAL,
                         border: gairmetHazards[hazard]
                           ? 'none'
-                          : '1px solid rgba(148, 163, 184, 0.3)',
+                          : `1px solid ${BORDER.STRONG}`,
                         minHeight: isPhone ? 36 : undefined,
                         display: 'flex',
                         alignItems: 'center',
@@ -192,7 +193,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="obstacles">
           <Accordion.Control>
             <Group gap="xs">
-              <GiRadioTower size={14} color="var(--mantine-color-ifrRed-5)" />
+              <GiRadioTower size={14} color={THEME_COLORS.ERROR} />
               <Text size="sm" c="white">
                 Obstacles
               </Text>
@@ -244,7 +245,7 @@ export function QuickLayerSettings() {
                   { value: 10, label: '10x' },
                 ]}
                 styles={{
-                  markLabel: { fontSize: 10, color: 'var(--mantine-color-dimmed)' },
+                  markLabel: { fontSize: 10, color: THEME_COLORS.TEXT_DIMMED },
                 }}
               />
             </Box>
@@ -255,7 +256,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="airspaces">
           <Accordion.Control>
             <Group gap="xs">
-              <FiAlertTriangle size={14} color="var(--mantine-color-pink-5)" />
+              <FiAlertTriangle size={14} color={THEME_COLORS.ICON_PINK} />
               <Text size="sm" c="white">
                 Airspaces
               </Text>
@@ -288,11 +289,11 @@ export function QuickLayerSettings() {
                       borderRadius: 4,
                       cursor: 'pointer',
                       backgroundColor: visibleClasses[airspaceClass]
-                        ? 'var(--mantine-color-blue-6)'
-                        : 'rgba(148, 163, 184, 0.2)',
+                        ? THEME_COLORS.PRIMARY_DARK
+                        : ICON_BG.NEUTRAL,
                       border: visibleClasses[airspaceClass]
                         ? 'none'
-                        : '1px solid rgba(148, 163, 184, 0.3)',
+                        : `1px solid ${BORDER.STRONG}`,
                       minHeight: isPhone ? 36 : undefined,
                       display: 'flex',
                       alignItems: 'center',
@@ -312,7 +313,7 @@ export function QuickLayerSettings() {
         <Accordion.Item value="weather">
           <Accordion.Control>
             <Group gap="xs">
-              <FiCloud size={14} color="var(--mantine-color-vfr3dBlue-5)" />
+              <FiCloud size={14} color={THEME_COLORS.PRIMARY} />
               <Text size="sm" c="white">
                 Weather
               </Text>

@@ -52,6 +52,7 @@ import { CgEnvelopeChart } from '../visualization/CgEnvelopeChart';
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 interface FlightWeightBalancePanelProps {
   flight: FlightDto;
@@ -250,7 +251,7 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
     return (
       <Paper p="xl" className={classes.emptyStatePaper}>
         <Stack align="center" gap="lg">
-          <ThemeIcon size={60} radius="xl" variant="light" color="yellow">
+          <ThemeIcon size={60} variant="light" color="yellow">
             <FaBalanceScale size={28} />
           </ThemeIcon>
           <Box ta="center">
@@ -267,8 +268,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
             component={Link}
             to="/weight-balance"
             leftSection={<FiPlus size={16} />}
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            variant="outline"
+            color={BUTTON_COLORS.PRIMARY}
           >
             Create W&B Profile
           </Button>
@@ -284,9 +285,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
         <Group gap="sm">
           <ThemeIcon
             size="lg"
-            radius="md"
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+            variant="light"
+            color="vfr3dBlue"
           >
             <FiActivity size={18} />
           </ThemeIcon>
@@ -661,8 +661,8 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
               </SimpleGrid>
 
               <Button
-                variant="gradient"
-                gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                variant="outline"
+                color={BUTTON_COLORS.PRIMARY}
                 size="md"
                 leftSection={<FiSave size={18} />}
                 onClick={handleCalculateAndSave}

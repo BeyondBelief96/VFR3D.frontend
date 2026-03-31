@@ -15,7 +15,7 @@ import {
   Badge,
   Divider,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { useIsPhone, useIsTablet } from '@/hooks';
 import {
   FiMapPin,
@@ -57,18 +57,20 @@ import { FlightDisplayMode } from '@/utility/enums';
 import {
   WaypointDto,
   NavlogRequestDto,
+  NavlogPerformanceDataDto,
   CreateFlightRequestDto,
   CreateRoundTripFlightRequestDto,
   UpdateFlightRequestDto,
 } from '@/redux/api/vfr3d/dtos';
-import { useAuth } from '@/components/Auth';
-import { useCalculateNavLogMutation } from '@/redux/api/vfr3d/navlog.api';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useCalculateNavLogMutation } from '@/redux/api/preflight/navlog.api';
 import {
   useCreateFlightMutation,
   useCreateRoundTripFlightMutation,
   useGetFlightQuery,
   useUpdateFlightMutation,
 } from '@/redux/api/vfr3d/flights.api';
+import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { DrawerAircraftPerformanceProfiles } from './PerformanceProfiles';
 import { AltitudeAndDepartureControls } from './AltitudeAndDepartureControls';
 import { NavLogTable, analyzeFuelStatus } from './NavLogTable';
@@ -78,6 +80,8 @@ import { QuickLayerSettings } from './QuickLayerSettings';
 import { FiAlertTriangle } from 'react-icons/fi';
 import logo from '@/assets/images/logo_2.png';
 import classes from './FlightPlanningDrawer.module.css';
+import { BUTTON_COLORS } from '@/constants/colors';
+import { BORDER } from '@/constants/surfaces';
 
 // Step enum for clarity
 enum FlightPlannerStep {
@@ -90,7 +94,7 @@ enum FlightPlannerStep {
 export const FlightPlanningDrawer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
   const isPhone = useIsPhone();
   const isTablet = useIsTablet();
@@ -151,6 +155,32 @@ export const FlightPlanningDrawer: React.FC = () => {
     returnDepartureTimeUtc,
     name: flightName,
   } = draftFlightPlan;
+
+  // Fetch aircraft list to resolve selected performance profile data
+  const { data: aircraftList } = useGetAircraftQuery(userId, { skip: !userId });
+
+  // Resolve the selected performance profile into NavlogPerformanceDataDto
+  const selectedPerformanceData: NavlogPerformanceDataDto | undefined = React.useMemo(() => {
+    if (!selectedPerformanceProfileId || !aircraftList) return undefined;
+    for (const aircraft of aircraftList) {
+      const profile = aircraft.performanceProfiles?.find((p) => p.id === selectedPerformanceProfileId);
+      if (profile) {
+        return {
+          climbTrueAirspeed: profile.climbTrueAirspeed,
+          cruiseTrueAirspeed: profile.cruiseTrueAirspeed,
+          descentTrueAirspeed: profile.descentTrueAirspeed,
+          climbFpm: profile.climbFpm,
+          descentFpm: profile.descentFpm,
+          climbFuelBurn: profile.climbFuelBurn,
+          cruiseFuelBurn: profile.cruiseFuelBurn,
+          descentFuelBurn: profile.descentFuelBurn,
+          sttFuelGals: profile.sttFuelGals,
+          fuelOnBoardGals: profile.fuelOnBoardGals,
+        };
+      }
+    }
+    return undefined;
+  }, [selectedPerformanceProfileId, aircraftList]);
 
   // API Mutations
   const [calculateNavLog, { isLoading: isCalculating }] = useCalculateNavLogMutation();
@@ -234,10 +264,9 @@ export const FlightPlanningDrawer: React.FC = () => {
   // Calculate Route Handler
   const handleCalculateRoute = async () => {
     if (!selectedPerformanceProfileId) {
-      notifications.show({
+      notifyError({
+        error: { status: 400, data: { message: 'Please select an aircraft performance profile first.' } },
         title: 'Missing Profile',
-        message: 'Please select an aircraft performance profile first.',
-        color: 'red',
       });
       return;
     }
@@ -246,9 +275,9 @@ export const FlightPlanningDrawer: React.FC = () => {
       // Calculate outbound navlog
       const outboundRequest: NavlogRequestDto = {
         waypoints: flightPlanRoute,
-        aircraftPerformanceProfileId: selectedPerformanceProfileId,
+        performanceData: selectedPerformanceData,
         plannedCruisingAltitude,
-        timeOfDeparture: new Date(departureTimeUtc),
+        timeOfDeparture: new Date(departureTimeUtc).toISOString(),
       };
 
       const outboundResult = await calculateNavLog(outboundRequest).unwrap();
@@ -259,9 +288,9 @@ export const FlightPlanningDrawer: React.FC = () => {
         const returnWaypoints = [...flightPlanRoute].reverse();
         const returnRequest: NavlogRequestDto = {
           waypoints: returnWaypoints,
-          aircraftPerformanceProfileId: selectedPerformanceProfileId,
+          performanceData: selectedPerformanceData,
           plannedCruisingAltitude: returnPlannedCruisingAltitude,
-          timeOfDeparture: new Date(returnDepartureTimeUtc),
+          timeOfDeparture: new Date(returnDepartureTimeUtc).toISOString(),
         };
 
         const returnResult = await calculateNavLog(returnRequest).unwrap();
@@ -272,27 +301,18 @@ export const FlightPlanningDrawer: React.FC = () => {
       dispatch(updateDraftPlanSettings({ currentStep: FlightPlannerStep.NAVLOG_PREVIEW }));
       dispatch(setDisplayMode(FlightDisplayMode.PREVIEW));
 
-      notifications.show({
-        title: 'Route Calculated',
-        message: 'Your navigation log has been calculated successfully.',
-        color: 'green',
-      });
+      notifySuccess('Route Calculated', 'Your navigation log has been calculated successfully.');
     } catch (error) {
-      notifications.show({
-        title: 'Calculation Failed',
-        message: 'Unable to calculate navigation log. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'calculate navigation log' });
     }
   };
 
   // Save Flight Handler
   const handleSaveFlight = async () => {
     if (!userId) {
-      notifications.show({
+      notifyError({
+        error: { status: 401, data: { message: 'Please log in to save your flight.' } },
         title: 'Not Authenticated',
-        message: 'Please log in to save your flight.',
-        color: 'red',
       });
       return;
     }
@@ -312,11 +332,7 @@ export const FlightPlanningDrawer: React.FC = () => {
 
         const result = await createRoundTripFlight({ userId, request }).unwrap();
 
-        notifications.show({
-          title: 'Round Trip Saved',
-          message: 'Your outbound and return flights have been saved.',
-          color: 'green',
-        });
+        notifySuccess('Round Trip Saved', 'Your outbound and return flights have been saved.');
 
         // Store saved flight info for post-save options
         if (result.outbound?.id) {
@@ -338,11 +354,7 @@ export const FlightPlanningDrawer: React.FC = () => {
 
         const result = await createFlight({ userId, flight: request }).unwrap();
 
-        notifications.show({
-          title: 'Flight Saved',
-          message: 'Your flight has been saved successfully.',
-          color: 'green',
-        });
+        notifySuccess('Flight Saved', 'Your flight has been saved successfully.');
 
         // Store saved flight info for post-save options
         if (result.id) {
@@ -354,11 +366,7 @@ export const FlightPlanningDrawer: React.FC = () => {
         }
       }
     } catch (error) {
-      notifications.show({
-        title: 'Save Failed',
-        message: 'Unable to save flight. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'save flight' });
     }
   };
 
@@ -393,19 +401,10 @@ export const FlightPlanningDrawer: React.FC = () => {
 
       await updateFlight({ userId, flightId: activeFlightId, flight: request }).unwrap();
 
-      notifications.show({
-        title: 'Flight Updated',
-        message: 'Your flight has been updated successfully.',
-        color: 'green',
-      });
-
+      notifySuccess('Flight Updated', 'Your flight has been updated successfully.');
       dispatch(finishEditingFlight());
     } catch (error) {
-      notifications.show({
-        title: 'Update Failed',
-        message: 'Unable to update flight. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'update flight' });
     }
   };
 
@@ -526,7 +525,7 @@ export const FlightPlanningDrawer: React.FC = () => {
 
                   <Divider
                     w="100%"
-                    color="rgba(148, 163, 184, 0.15)"
+                    color={BORDER.CARD}
                     label={
                       <Text size="xs" c="dimmed">
                         Continue with
@@ -542,8 +541,8 @@ export const FlightPlanningDrawer: React.FC = () => {
                       size="md"
                       leftSection={<FiMap size={18} />}
                       onClick={handleViewSavedFlight}
-                      variant="gradient"
-                      gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                      variant="outline"
+                      color={BUTTON_COLORS.PRIMARY}
                     >
                       View on Map
                     </Button>
@@ -553,7 +552,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                       leftSection={<FiExternalLink size={18} />}
                       onClick={handleGoToFlightsPage}
                       variant="light"
-                      color="gray"
+                      color={BUTTON_COLORS.SECONDARY}
                     >
                       Flight Details Page
                     </Button>
@@ -625,7 +624,7 @@ export const FlightPlanningDrawer: React.FC = () => {
       <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
         <Button
           variant="light"
-          color="gray"
+          color={BUTTON_COLORS.SECONDARY}
           leftSection={<FiPlus size={16} />}
           onClick={handleStartNewFlight}
         >
@@ -752,7 +751,7 @@ export const FlightPlanningDrawer: React.FC = () => {
       {!savedFlightInfo && (
         <Group justify="space-between" px="md" py="sm" className={classes.borderTop}>
           <Button
-            color="red"
+            color={BUTTON_COLORS.BACK}
             variant="subtle"
             leftSection={<FiChevronLeft size={16} />}
             onClick={handlePreviousStep}
@@ -776,7 +775,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                 )}
                 <Button
                   variant="light"
-                  color="gray"
+                  color={BUTTON_COLORS.SECONDARY}
                   leftSection={<FiRefreshCw size={16} />}
                   onClick={handleResetPlanning}
                   disabled={isSaving}
@@ -787,7 +786,7 @@ export const FlightPlanningDrawer: React.FC = () => {
                   leftSection={isSaving ? <Loader size="xs" color="white" /> : <FiSave size={16} />}
                   onClick={handleSaveFlight}
                   disabled={!navlogPreview || isSaving || !userId}
-                  color={hasCriticalFuelIssue ? 'red' : 'blue'}
+                  color={hasCriticalFuelIssue ? BUTTON_COLORS.DESTRUCTIVE : BUTTON_COLORS.PRIMARY}
                   variant={hasCriticalFuelIssue ? 'outline' : 'filled'}
                 >
                   {isSaving ? 'Saving...' : hasCriticalFuelIssue ? 'Save Anyway' : 'Save Flight'}
@@ -795,7 +794,7 @@ export const FlightPlanningDrawer: React.FC = () => {
               </>
             ) : currentStep === FlightPlannerStep.DATE_AND_ALTITUDE ? (
               <Button
-                color="blue"
+                color={BUTTON_COLORS.PRIMARY}
                 onClick={handleCalculateRoute}
                 disabled={!canCalculate || isCalculating}
                 leftSection={isCalculating ? <Loader size="xs" color="white" /> : undefined}
@@ -806,7 +805,7 @@ export const FlightPlanningDrawer: React.FC = () => {
               <Button
                 rightSection={<FiChevronRight size={16} />}
                 onClick={handleNextStep}
-                color="blue"
+                color={BUTTON_COLORS.NEXT}
                 variant="subtle"
                 disabled={
                   isEditingProfile ||

@@ -4,24 +4,24 @@
 
 .pageWrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #0C0E2A 0%, #141844 50%, #0C0E2A 100%);
 }
 
 .sectionPaper {
-  background-color: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background-color: rgba(20, 24, 68, 0.8);
+  border: 1px solid rgba(131, 135, 168, 0.1);
 }
 
 .emptyStatePaper {
-  background-color: rgba(30, 41, 59, 0.5);
-  border: 1px dashed rgba(148, 163, 184, 0.2);
+  background-color: rgba(20, 24, 68, 0.5);
+  border: 1px dashed rgba(131, 135, 168, 0.2);
 }
 
 .imageLoaderOverlay {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(15, 23, 42, 0.9);
+  background-color: rgba(12, 14, 42, 0.9);
   z-index: 10;
 }
 
@@ -30,5 +30,5 @@
 }
 
 .imageFooter {
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  border-top: 1px solid rgba(131, 135, 168, 0.1);
 }

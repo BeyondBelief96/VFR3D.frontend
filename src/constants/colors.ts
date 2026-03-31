@@ -3,7 +3,7 @@
  * These constants use Mantine theme color references for consistency.
  *
  * Color Reference (use with Mantine props like `c="vfrGreen.5"`):
- * - vfr3dBlue: Primary blue (#3b82f6 at shade 5)
+ * - vfr3dBlue: Primary sky blue (#37A4DC at shade 5)
  * - vfrGreen: VFR green (#22c55e at shade 5)
  * - ifrRed: IFR red (#ef4444 at shade 5)
  * - lifrPurple: LIFR purple (#a855f7 at shade 5)
@@ -22,36 +22,21 @@
  */
 export const METRIC_COLORS = {
   /** Distance, navigation, route-related metrics */
-  DISTANCE: 'blue.4',
+  DISTANCE: 'vfr3dBlue.4',
   /** Time, duration, ETA-related metrics */
-  TIME: 'cyan.4',
+  TIME: 'vfr3dBlue.5',
   /** Fuel consumption, fuel levels */
-  FUEL: 'teal.4',
+  FUEL: 'vfr3dBlue.3',
   /** Wind speed, wind component */
-  WIND: 'grape.4',
+  WIND: 'vfr3dBlue.6',
   /** Temperature */
-  TEMPERATURE: 'orange.4',
+  TEMPERATURE: 'vfr3dBlue.4',
   /** Altitude, elevation */
-  ALTITUDE: 'indigo.4',
+  ALTITUDE: 'vfr3dBlue.5',
   /** Heading, course, bearing */
-  HEADING: 'violet.4',
+  HEADING: 'vfr3dBlue.3',
   /** Speed, velocity */
-  SPEED: 'pink.4',
-} as const;
-
-/**
- * Colors for status indicators
- * Use with Mantine props: <Badge color={STATUS_COLORS.SUCCESS}>
- */
-export const STATUS_COLORS = {
-  /** Success, within limits, favorable conditions */
-  SUCCESS: 'vfrGreen.5',
-  /** Warning, caution, approaching limits */
-  WARNING: 'warningYellow.5',
-  /** Error, critical, outside limits */
-  ERROR: 'ifrRed.5',
-  /** Informational, neutral */
-  INFO: 'vfr3dBlue.5',
+  SPEED: 'vfr3dBlue.6',
 } as const;
 
 /**
@@ -71,7 +56,7 @@ export const FLIGHT_POINT_COLORS = {
 /**
  * Colors for wind conditions (contextual - based on favorability)
  */
-export const WIND_CONDITION_COLORS = {
+const WIND_CONDITION_COLORS = {
   /** Favorable wind (headwind for landing, tailwind for cruise efficiency awareness) */
   FAVORABLE: 'vfrGreen.5',
   /** Unfavorable wind */
@@ -84,7 +69,7 @@ export const WIND_CONDITION_COLORS = {
  * Colors for crosswind severity
  * These are Mantine color names for use with color prop
  */
-export const CROSSWIND_COLORS = {
+const CROSSWIND_COLORS = {
   /** Safe crosswind (≤10 knots) */
   SAFE: 'green',
   /** Caution crosswind (10-15 knots) */
@@ -96,7 +81,7 @@ export const CROSSWIND_COLORS = {
 /**
  * Colors for fuel status
  */
-export const FUEL_STATUS_COLORS = {
+const FUEL_STATUS_COLORS = {
   /** Normal fuel levels */
   NORMAL: 'white',
   /** Low fuel warning */
@@ -109,7 +94,7 @@ export const FUEL_STATUS_COLORS = {
  * Colors for flight categories (VFR, MVFR, IFR, LIFR)
  * These use custom theme colors for proper Mantine integration
  */
-export const FLIGHT_CATEGORY_COLORS = {
+const FLIGHT_CATEGORY_COLORS = {
   VFR: 'vfrGreen',
   MVFR: 'blue',
   IFR: 'ifrRed',
@@ -119,42 +104,115 @@ export const FLIGHT_CATEGORY_COLORS = {
 /**
  * Flight category colors with shade (for more specific usage)
  */
-export const FLIGHT_CATEGORY_COLORS_SHADED = {
+const FLIGHT_CATEGORY_COLORS_SHADED = {
   VFR: 'vfrGreen.5',
   MVFR: 'blue.5',
   IFR: 'ifrRed.5',
   LIFR: 'lifrPurple.5',
 } as const;
 
+// =============================================================================
+// INTERACTIVE ELEMENTS - Buttons, ActionIcons, clickable elements
+// =============================================================================
+
 /**
- * Colors for Weight & Balance status
+ * Button colors by intent
+ * Use with Button color prop. Combine with appropriate variant for full styling.
+ *
+ * Usage patterns:
+ * - Primary CTA: variant="gradient" gradient={BUTTON_GRADIENTS.PRIMARY}
+ * - Standard primary: variant="filled" color={BUTTON_COLORS.PRIMARY}
+ * - Secondary: variant="subtle" color={BUTTON_COLORS.SECONDARY}
+ * - Back: variant="subtle" color={BUTTON_COLORS.BACK}
+ * - Next: variant="filled" color={BUTTON_COLORS.NEXT}
+ * - Destructive: variant="light" color={BUTTON_COLORS.DESTRUCTIVE}
  */
-export const WEIGHT_BALANCE_COLORS = {
-  /** Within CG envelope */
-  WITHIN_ENVELOPE: 'vfrGreen.5',
-  /** Outside CG envelope */
-  OUTSIDE_ENVELOPE: 'ifrRed.5',
-  /** Takeoff condition indicator */
-  TAKEOFF: 'vfrGreen.5',
-  /** Landing condition indicator */
-  LANDING: 'vfr3dBlue.5',
+export const BUTTON_COLORS = {
+  /** Primary actions - "Save", "Create", "Submit", "Apply" */
+  PRIMARY: 'vfr3dBlue',
+
+  /** Secondary/dismiss - "Cancel", "Close", "Dismiss", "Skip" */
+  SECONDARY: 'gray',
+
+  /** Forward navigation - "Next", "Continue", "Proceed" */
+  NEXT: 'vfr3dBlue',
+
+  /** Back navigation - "Back", "Previous", "Return" */
+  BACK: 'gray',
+
+  /** Destructive actions - "Delete", "Remove", "Clear", "Reset" */
+  DESTRUCTIVE: 'ifrRed',
+
+  /** Confirmation - "Confirm", "Accept", "Yes", "Approve" */
+  CONFIRM: 'vfrGreen',
+
+  /** Refresh/update - "Refresh", "Reload", "Update", "Sync" */
+  REFRESH: 'vfr3dBlue',
 } as const;
 
-// =============================================================================
-// CATEGORY COLORS - Use for categorizing/grouping items
-// =============================================================================
+/**
+ * Button gradients — flattened. No gradients in defense aesthetic.
+ * Kept as flat single-color for backwards compat with variant="gradient" usage.
+ */
+export const BUTTON_GRADIENTS = {
+  /** Primary CTA — flat electric blue */
+  PRIMARY: { from: '#4A9EFF', to: '#4A9EFF', deg: 90 },
 
-export const CATEGORY_COLORS = {
-  /** Aircraft-related items */
-  AIRCRAFT: 'blue',
-  /** Performance-related items */
-  PERFORMANCE: 'teal',
-  /** Appearance/visual items */
-  APPEARANCE: 'grape',
-  /** Settings/configuration items */
+  /** Success — flat operational green */
+  SUCCESS: { from: '#2EA043', to: '#2EA043', deg: 90 },
+} as const;
+
+/**
+ * ActionIcon colors by purpose
+ * Use with ActionIcon color prop
+ *
+ * Standard variants:
+ * - Close/dismiss: variant="subtle"
+ * - Actions (edit, delete, etc.): variant="light"
+ * - Toggle states: variant="filled" when active, "light" when inactive
+ */
+export const ACTION_ICON_COLORS = {
+  /** Close/dismiss - X buttons, close modals, collapse panels */
+  CLOSE: 'gray',
+
+  /** Edit/modify - pencil icons, edit mode toggles */
+  EDIT: 'vfr3dBlue',
+
+  /** Delete/remove - trash icons, remove items */
+  DELETE: 'ifrRed',
+
+  /** Refresh/reload - refresh icons, sync buttons */
+  REFRESH: 'vfr3dBlue',
+
+  /** Add/create - plus icons, add new items */
+  ADD: 'vfr3dBlue',
+
+  /** Settings/configure - gear icons, preferences */
   SETTINGS: 'gray',
-  /** Weather-related items */
-  WEATHER: 'cyan',
+
+  /** Info/help - info icons, help buttons, tooltips trigger */
+  INFO: 'vfr3dBlue',
+
+  /** Expand/collapse - chevrons, expand icons */
+  EXPAND: 'gray',
+
+  /** Navigation arrows - left/right, up/down navigation */
+  NAVIGATE: 'gray',
+
+  /** Copy/clipboard - copy to clipboard actions */
+  COPY: 'vfr3dBlue',
+
+  /** Download/export - download, export actions */
+  DOWNLOAD: 'vfr3dBlue',
+
+  /** Favorite/bookmark - star, heart, bookmark icons */
+  FAVORITE: 'vfr3dBlue',
+
+  /** Map/location - map pins, location actions */
+  LOCATION: 'vfr3dBlue',
+
+  /** Zoom controls - zoom in/out */
+  ZOOM: 'gray',
 } as const;
 
 // =============================================================================
@@ -164,7 +222,7 @@ export const CATEGORY_COLORS = {
 /**
  * Standard opacity for icon backgrounds
  */
-export const ICON_BG_OPACITY = 0.15;
+const ICON_BG_OPACITY = 0.15;
 
 /**
  * Get a Mantine CSS variable for icon background with alpha

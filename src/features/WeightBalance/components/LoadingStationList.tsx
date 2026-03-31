@@ -26,6 +26,7 @@ import { PayloadStationInput } from './PayloadStationInput';
 import { FuelStationInput } from './FuelStationInput';
 import { OilStationInput } from './OilStationInput';
 import { ADDITIONAL_STATION_TEMPLATES, DEFAULT_FUEL_WEIGHT, DEFAULT_OIL_WEIGHT_PER_QUART } from '../constants/defaults';
+import { SURFACE, BORDER, HIGHLIGHT, CYAN_BG, THEME_COLORS } from '@/constants/surfaces';
 
 interface LoadingStationListProps {
   stations: LoadingStationDto[];
@@ -222,15 +223,15 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
       <Paper
         p="md"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.3)',
-          border: '1px solid rgba(59, 130, 246, 0.2)',
+          backgroundColor: SURFACE.CARD_SUBTLE,
+          border: `1px solid ${HIGHLIGHT.DEFAULT}`,
           borderRadius: 'var(--mantine-radius-md)',
         }}
       >
         <Stack gap="sm">
           <Group justify="space-between">
             <Group gap="xs">
-              <FiUser size={16} color="var(--mantine-color-blue-6)" />
+              <FiUser size={16} color={THEME_COLORS.BLUE_6} />
               <Text size="sm" c="white" fw={500}>
                 Payload Stations
               </Text>
@@ -296,8 +297,8 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
             <Menu.Dropdown
               styles={{
                 dropdown: {
-                  backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  backgroundColor: THEME_COLORS.SURFACE_8,
+                  border: `1px solid ${BORDER.DEFAULT}`,
                 },
               }}
             >
@@ -337,15 +338,15 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
       <Paper
         p="md"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.3)',
-          border: '1px solid rgba(6, 182, 212, 0.2)',
+          backgroundColor: SURFACE.CARD_SUBTLE,
+          border: `1px solid ${CYAN_BG.DEFAULT}`,
           borderRadius: 'var(--mantine-radius-md)',
         }}
       >
         <Stack gap="sm">
           <Group justify="space-between">
             <Group gap="xs">
-              <FaGasPump size={14} color="var(--mantine-color-cyan-6)" />
+              <FaGasPump size={14} color={THEME_COLORS.CYAN_6} />
               <Text size="sm" c="white" fw={500}>
                 Fuel & Oil
               </Text>
@@ -450,8 +451,8 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
               <Menu.Dropdown
                 styles={{
                   dropdown: {
-                    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    backgroundColor: THEME_COLORS.SURFACE_8,
+                    border: `1px solid ${BORDER.DEFAULT}`,
                   },
                 }}
               >
@@ -498,8 +499,8 @@ export const LoadingStationList: React.FC<LoadingStationListProps> = ({
               <Menu.Dropdown
                 styles={{
                   dropdown: {
-                    backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    backgroundColor: THEME_COLORS.SURFACE_8,
+                    border: `1px solid ${BORDER.DEFAULT}`,
                   },
                 }}
               >

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Stack, Paper, Group, ThemeIcon, Text, Badge, Table, ScrollArea, Box } from '@mantine/core';
 import { FiRadio } from 'react-icons/fi';
 import { CommunicationFrequencyDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
 import { sortFrequencyGroups, groupFrequenciesByUse } from '@/utility/frequencyUtils';
 
 type DisplayVariant = 'full' | 'compact' | 'minimal';
@@ -82,7 +83,7 @@ export function FrequencyTable({
               styles={{
                 table: { minWidth: variant === 'minimal' ? 280 : 400, tableLayout: 'fixed' },
                 th: {
-                  color: 'var(--mantine-color-gray-4)',
+                  color: THEME_COLORS.TEXT_LIGHT,
                   fontSize: variant === 'minimal' ? '0.7rem' : '0.75rem',
                   padding: variant === 'minimal' ? '6px' : '8px',
                 },
@@ -132,7 +133,7 @@ export function FrequencyTable({
 
         if (showGroupPaper) {
           return (
-            <Paper key={group} p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+            <Paper key={group} p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
               {showGroupHeader && (
                 <Group gap="sm" mb="md">
                   <ThemeIcon size="sm" variant="light" color="cyan">

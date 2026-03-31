@@ -14,6 +14,8 @@ import { FaGasPump } from 'react-icons/fa';
 import { LoadingStationDto, LoadingGraphPointDto, ArmUnits, WeightUnits, LoadingGraphFormat } from '@/redux/api/vfr3d/dtos';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS } from '../constants/defaults';
 import type { DragHandleProps } from './PayloadStationInput';
+import { STATION_INPUT_STYLES, SURFACE_INNER, THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface FuelStationInputProps {
   station: LoadingStationDto;
@@ -26,21 +28,6 @@ interface FuelStationInputProps {
   dragHandleProps?: DragHandleProps;
 }
 
-const inputStyles = {
-  input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
-  },
-  label: {
-    color: 'var(--mantine-color-gray-4)',
-    marginBottom: 4,
-    fontSize: '12px',
-  },
-};
 
 export const FuelStationInput: React.FC<FuelStationInputProps> = ({
   station,
@@ -72,9 +59,9 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
     <Paper
       p="sm"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
-        borderLeft: '3px solid var(--mantine-color-cyan-6)',
+        borderLeft: `3px solid ${THEME_COLORS.CYAN_6}`,
       }}
     >
       <Stack gap="xs">
@@ -92,13 +79,13 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
                 <FiMove size={12} />
               </ActionIcon>
             )}
-            <FaGasPump size={14} color="var(--mantine-color-cyan-6)" />
+            <FaGasPump size={14} color={THEME_COLORS.CYAN_6} />
             <Text size="xs" c="cyan" fw={500}>Fuel Tank</Text>
           </Group>
           <ActionIcon
             size="sm"
             variant="subtle"
-            color="red"
+            color={ACTION_ICON_COLORS.DELETE}
             onClick={() => onRemove(index)}
           >
             <FiTrash2 size={14} />
@@ -111,7 +98,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             placeholder="e.g., Left Main"
             value={station.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -121,7 +108,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             onChange={(value) => handleChange('fuelCapacityGallons', value)}
             min={0}
             decimalScale={1}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -132,7 +119,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             min={0}
             decimalScale={2}
             step={0.1}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <div /> {/* Spacer for grid alignment */}
@@ -146,7 +133,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             value={station.point1?.weight ?? ''}
             onChange={(value) => handlePointChange('point1', 'weight', value === '' ? '' : Number(value))}
             min={0}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -155,7 +142,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             value={station.point1?.value ?? ''}
             onChange={(value) => handlePointChange('point1', 'value', value === '' ? '' : Number(value))}
             decimalScale={2}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -164,7 +151,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             value={station.point2?.weight ?? ''}
             onChange={(value) => handlePointChange('point2', 'weight', value === '' ? '' : Number(value))}
             min={0}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
           <NumberInput
@@ -173,7 +160,7 @@ export const FuelStationInput: React.FC<FuelStationInputProps> = ({
             value={station.point2?.value ?? ''}
             onChange={(value) => handlePointChange('point2', 'value', value === '' ? '' : Number(value))}
             decimalScale={2}
-            styles={inputStyles}
+            styles={STATION_INPUT_STYLES}
             size="xs"
           />
         </SimpleGrid>

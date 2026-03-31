@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_AUTH0_LOGOUT_URI: string;
   readonly VITE_AUTH0_VFR3D_API_AUDIENCE: string;
   readonly VITE_VFR3D_BASE_URL: string;
+  readonly VITE_PREFLIGHT_API_BASE_URL: string;
+  readonly VITE_PREFLIGHT_API_KEY: string;
   readonly VITE_CESIUM_API_KEY: string;
   readonly VITE_ARCGIS_API_KEY: string;
   readonly VITE_FAA_ARCGIS_BASE_URL: string;

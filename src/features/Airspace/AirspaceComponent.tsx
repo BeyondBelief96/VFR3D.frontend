@@ -8,7 +8,7 @@ import {
   useGetAirspacesByGlobalIdsQuery,
   useGetSpecialUseAirspacesByGlobalIdsQuery,
   useGetAirspacesByIcaoOrIdentQuery,
-} from '@/redux/api/vfr3d/airspaces.api';
+} from '@/redux/api/preflight/airspaces.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
 import { getAirspacePolygonHeights, simplifyPolygon } from '@/utility/cesiumUtils';

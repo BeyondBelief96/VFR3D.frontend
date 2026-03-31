@@ -19,6 +19,8 @@ import { FaRoute } from 'react-icons/fa';
 import { MetarDto, TafDto } from '@/redux/api/vfr3d/dtos';
 import { getWeatherErrorMessage } from '@/features/Weather';
 import { WeatherFlightCategories } from '@/utility/enums';
+import { SURFACE_INNER } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 const getFlightCategoryColor = (category?: string): string => {
   switch (category) {
@@ -88,7 +90,7 @@ export function WeatherContent({
   return (
     <Stack gap="lg">
       {/* METAR Section */}
-      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
         <Group justify="space-between" mb="md">
           <Group gap="sm">
             <ThemeIcon size="md" variant="light" color="blue">
@@ -105,7 +107,7 @@ export function WeatherContent({
               </Badge>
             )}
             <Tooltip label="Refresh METAR">
-              <ActionIcon variant="light" color="orange" onClick={onRefreshMetar} loading={isMetarRefreshing}>
+              <ActionIcon variant="light" color={ACTION_ICON_COLORS.REFRESH} onClick={onRefreshMetar} loading={isMetarRefreshing}>
                 <FiRefreshCw size={14} />
               </ActionIcon>
             </Tooltip>
@@ -195,7 +197,7 @@ export function WeatherContent({
       </Paper>
 
       {/* TAF Section */}
-      <Paper p="md" style={{ backgroundColor: 'rgba(15, 23, 42, 0.5)' }}>
+      <Paper p="md" style={{ backgroundColor: SURFACE_INNER.DEFAULT }}>
         <Group justify="space-between" mb="md">
           <Group gap="sm">
             <ThemeIcon size="md" variant="light" color="cyan">
@@ -206,7 +208,7 @@ export function WeatherContent({
             </Text>
           </Group>
           <Tooltip label="Refresh TAF">
-            <ActionIcon variant="light" color="orange" onClick={onRefreshTaf} loading={isTafRefreshing}>
+            <ActionIcon variant="light" color={ACTION_ICON_COLORS.REFRESH} onClick={onRefreshTaf} loading={isTafRefreshing}>
               <FiRefreshCw size={14} />
             </ActionIcon>
           </Tooltip>

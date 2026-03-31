@@ -6,6 +6,7 @@ import {
   setShowCloudBases,
 } from '@/redux/slices/airportsSlice';
 import { states } from '@/utility/states';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function AirportOptions() {
   const dispatch = useAppDispatch();
@@ -36,13 +37,13 @@ export function AirportOptions() {
           placeholder="Select a state..."
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE.INPUT,
+              borderColor: BORDER.INPUT,
               color: 'white',
             },
             dropdown: {
-              backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: THEME_COLORS.SURFACE_8,
+              borderColor: BORDER.DEFAULT,
             },
           }}
         />

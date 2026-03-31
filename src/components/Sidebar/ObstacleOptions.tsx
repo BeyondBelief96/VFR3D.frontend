@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Stack, Switch, Text, Group, NumberInput, Slider, Divider, Badge, Box } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   setMinHeightFilter,
@@ -12,6 +14,9 @@ import {
 import { AirportSearch } from '@/components/Search';
 import { AirportContextList } from './AirportContextList';
 import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
+
+const DEBOUNCE_MS = 300;
 
 export function ObstacleOptions() {
   const dispatch = useAppDispatch();
@@ -23,6 +28,35 @@ export function ObstacleOptions() {
     airportObstacleRadiusNm,
     obstacleAirports,
   } = useAppSelector((state) => state.obstacles);
+
+  // Local state for debounced inputs
+  const [localRadius, setLocalRadius] = useState(airportObstacleRadiusNm);
+  const [localMinHeight, setLocalMinHeight] = useState(minHeightFilter);
+
+  const [debouncedRadius] = useDebouncedValue(localRadius, DEBOUNCE_MS);
+  const [debouncedMinHeight] = useDebouncedValue(localMinHeight, DEBOUNCE_MS);
+
+  // Sync debounced values to Redux
+  useEffect(() => {
+    if (debouncedRadius !== airportObstacleRadiusNm) {
+      dispatch(setAirportObstacleRadius(debouncedRadius));
+    }
+  }, [debouncedRadius, airportObstacleRadiusNm, dispatch]);
+
+  useEffect(() => {
+    if (debouncedMinHeight !== minHeightFilter) {
+      dispatch(setMinHeightFilter(debouncedMinHeight));
+    }
+  }, [debouncedMinHeight, minHeightFilter, dispatch]);
+
+  // Sync Redux values to local state when they change externally
+  useEffect(() => {
+    setLocalRadius(airportObstacleRadiusNm);
+  }, [airportObstacleRadiusNm]);
+
+  useEffect(() => {
+    setLocalMinHeight(minHeightFilter);
+  }, [minHeightFilter]);
 
   const handleAirportSelect = (airport: AirportDto) => {
     const icaoOrIdent = airport.icaoId || airport.arptId || '';
@@ -104,7 +138,7 @@ export function ObstacleOptions() {
           ]}
           color="cyan"
           styles={{
-            markLabel: { color: 'var(--mantine-color-dimmed)' },
+            markLabel: { color: THEME_COLORS.TEXT_DIMMED },
           }}
         />
       </div>
@@ -143,11 +177,11 @@ export function ObstacleOptions() {
         <Text size="sm" fw={500} mb={8}>Airport Obstacle Settings</Text>
 
         <Text size="sm" c="dimmed" mb={4}>
-          Search Radius ({airportObstacleRadiusNm} NM)
+          Search Radius ({localRadius} NM)
         </Text>
         <Slider
-          value={airportObstacleRadiusNm}
-          onChange={(val) => dispatch(setAirportObstacleRadius(val))}
+          value={localRadius}
+          onChange={setLocalRadius}
           min={1}
           max={20}
           step={1}
@@ -159,7 +193,7 @@ export function ObstacleOptions() {
           ]}
           color="cyan"
           styles={{
-            markLabel: { color: 'var(--mantine-color-dimmed)' },
+            markLabel: { color: THEME_COLORS.TEXT_DIMMED },
           }}
         />
 
@@ -167,15 +201,15 @@ export function ObstacleOptions() {
           Minimum Height (ft AGL)
         </Text>
         <NumberInput
-          value={minHeightFilter}
-          onChange={(val) => dispatch(setMinHeightFilter(typeof val === 'number' ? val : 200))}
+          value={localMinHeight}
+          onChange={(val) => setLocalMinHeight(typeof val === 'number' ? val : 200)}
           min={0}
           max={2000}
           step={50}
           styles={{
             input: {
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              backgroundColor: SURFACE.INPUT,
+              borderColor: BORDER.DEFAULT,
               color: 'white',
             },
           }}

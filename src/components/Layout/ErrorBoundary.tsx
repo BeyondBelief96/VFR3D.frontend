@@ -2,6 +2,7 @@ import { Component, ReactNode } from 'react';
 import { Container, Title, Text, Button, Stack, Card, Code } from '@mantine/core';
 import { FiHome, FiRefreshCw } from 'react-icons/fi';
 import classes from './ErrorBoundary.module.css';
+import { BUTTON_COLORS } from '@/constants/colors';
 
 interface Props {
   children: ReactNode;
@@ -41,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <Container size="sm" className={classes.container}>
-          <Card padding="xl" radius="md" className={classes.card}>
+          <Card padding="xl" className={classes.card}>
             <Stack align="center" gap="lg">
               <Title order={1} c="red" ta="center">
                 Oops! Something went wrong.
@@ -67,8 +68,8 @@ export class ErrorBoundary extends Component<Props, State> {
               <Stack gap="sm" w="100%">
                 <Button
                   fullWidth
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   leftSection={<FiHome size={16} />}
                   onClick={this.handleGoHome}
                 >
@@ -76,8 +77,8 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Button>
                 <Button
                   fullWidth
-                  variant="outline"
-                  color="gray"
+                  variant="light"
+                  color={BUTTON_COLORS.REFRESH}
                   leftSection={<FiRefreshCw size={16} />}
                   onClick={this.handleRefresh}
                 >

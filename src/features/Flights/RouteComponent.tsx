@@ -22,14 +22,14 @@ import { mapWaypointsFlat } from '@/utility/utils';
 import { PointEntity } from '@/components/Cesium/PointEntity';
 import { FlightDisplayMode } from '@/utility/enums';
 import { updateWaypointPosition } from '@/redux/slices/flightPlanningSlice';
-import { NavigationLegDto, WaypointDto, WaypointType } from '@/redux/api/vfr3d/dtos';
+import { NavigationLegDto, WaypointDto } from '@/redux/api/vfr3d/dtos';
 import { useDebounce } from '@uidotdev/usehooks';
 import {
   setSelectedEntity,
   updateSelectedWaypointPosition,
 } from '@/redux/slices/selectedEntitySlice';
 import { useGetFlightQuery } from '@/redux/api/vfr3d/flights.api';
-import { useAuth } from '@/components/Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 import AirportWaypointEntity from '@/features/Airports/AirportWaypointEntity';
 
 // Fuel warning threshold (gallons)
@@ -39,7 +39,7 @@ const FUEL_CRITICAL_THRESHOLD = 0;
 const isTocTodPoint = (waypoint: WaypointDto): boolean => {
   const name = waypoint.name?.toLowerCase() || '';
   return (
-    waypoint.waypointType === WaypointType.CalculatedPoint &&
+    waypoint.waypointType === 'CalculatedPoint' &&
     (name.includes('toc') ||
       name.includes('tod') ||
       name.includes('top of climb') ||
@@ -77,7 +77,7 @@ const getWaypointColor = (
     return Color.fromCssColorString('#ef4444');
   }
   // Calculated points - cyan
-  if (waypoint.waypointType === WaypointType.CalculatedPoint) {
+  if (waypoint.waypointType === 'CalculatedPoint') {
     return Color.fromCssColorString('#06b6d4');
   }
   // Default color
@@ -87,7 +87,7 @@ const getWaypointColor = (
 const RouteComponent: React.FC = () => {
   const dispatch = useDispatch();
   const { viewer, camera, scene } = useCesium();
-  const { user } = useAuth();
+  const { user } = useAuth0();
   const userId = user?.sub || '';
 
   const { lineColor, pointColor: endPointColor } = useSelector(
@@ -197,7 +197,7 @@ const RouteComponent: React.FC = () => {
           name: '',
           latitude,
           longitude,
-          waypointType: WaypointType.Custom,
+          waypointType: 'Custom',
         },
         type: 'Waypoint',
         context: { insertIndex: startPointIndex + 1 },
@@ -228,7 +228,7 @@ const RouteComponent: React.FC = () => {
             name: '',
             latitude,
             longitude,
-            waypointType: WaypointType.Custom,
+            waypointType: 'Custom',
           },
           type: 'Waypoint',
           context: undefined,
@@ -302,8 +302,8 @@ const RouteComponent: React.FC = () => {
     // In planning/editing mode, only show custom waypoints and calculated points
     // Airports are rendered by the Airports component
     return (
-      point.waypointType === WaypointType.Custom ||
-      point.waypointType === WaypointType.CalculatedPoint
+      point.waypointType === 'Custom' ||
+      point.waypointType === 'CalculatedPoint'
     );
   };
 
@@ -337,7 +337,7 @@ const RouteComponent: React.FC = () => {
         // For airport waypoints in PREVIEW or VIEWING mode, use AirportWaypointEntity
         // which fetches weather data, colors based on flight category, and shows cloud bases
         if (
-          point.waypointType === WaypointType.Airport &&
+          point.waypointType === 'Airport' &&
           (displayMode === FlightDisplayMode.PREVIEW || displayMode === FlightDisplayMode.VIEWING)
         ) {
           return (
@@ -355,7 +355,7 @@ const RouteComponent: React.FC = () => {
         const pointColor = getWaypointColor(point, index, renderPoints.length, endPointColor);
 
         // Determine if this point is a calculated TOC/TOD point
-        const isCalculatedPoint = point.waypointType === WaypointType.CalculatedPoint;
+        const isCalculatedPoint = point.waypointType === 'CalculatedPoint';
         const isTocTod = isTocTodPoint(point);
 
         // In PREVIEW mode, disable editing for calculated points

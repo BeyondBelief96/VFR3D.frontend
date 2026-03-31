@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Box, ActionIcon, Text, Group, Paper } from '@mantine/core';
 import { FiX } from 'react-icons/fi';
 import classes from './BottomDrawer.module.css';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 interface BottomDrawerProps {
   isOpen: boolean;
@@ -60,7 +61,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
               {isOpen && (
                 <ActionIcon
                   variant="subtle"
-                  color="gray"
+                  color={ACTION_ICON_COLORS.CLOSE}
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleOpen();

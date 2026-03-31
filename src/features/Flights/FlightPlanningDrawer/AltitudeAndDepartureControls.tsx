@@ -9,21 +9,17 @@ import { FiInfo, FiClock, FiArrowUp } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { RootState, AppDispatch } from '@/redux/store';
 import { updateDraftPlanSettings } from '@/redux/slices/flightPlanningSlice';
+import { SURFACE, BORDER, ICON_BG, HIGHLIGHT, INPUT_STYLES, THEME_COLORS } from '@/constants/surfaces';
 // Enable dayjs plugins
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const inputStyles = {
   input: {
-    backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    borderColor: 'rgba(148, 163, 184, 0.2)',
-    color: 'white',
-    '&:focus': {
-      borderColor: 'var(--mantine-color-vfr3dBlue-5)',
-    },
+    ...INPUT_STYLES.input,
   },
   label: {
-    color: 'var(--mantine-color-gray-4)',
+    ...INPUT_STYLES.label,
     marginBottom: 4,
   },
 };
@@ -107,8 +103,8 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
       <Paper
         p="md"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
+          backgroundColor: SURFACE.CARD,
+          border: `1px solid ${BORDER.SUBTLE}`,
         }}
       >
         <Group gap="xs" mb="md">
@@ -117,13 +113,13 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
               width: 32,
               height: 32,
               borderRadius: '50%',
-              backgroundColor: 'rgba(34, 197, 94, 0.2)',
+              backgroundColor: ICON_BG.GREEN,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <FaPlane size={14} color="var(--mantine-color-vfrGreen-5)" />
+            <FaPlane size={14} color={THEME_COLORS.SUCCESS} />
           </Box>
           <Text fw={600} c="white">
             Outbound Flight
@@ -174,8 +170,8 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
         variant="light"
         styles={{
           root: {
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            backgroundColor: HIGHLIGHT.LIGHT,
+            border: `1px solid ${HIGHLIGHT.DEFAULT}`,
           },
         }}
       >
@@ -194,8 +190,8 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
       <Paper
         p="md"
         style={{
-          backgroundColor: 'rgba(30, 41, 59, 0.6)',
-          border: '1px solid rgba(148, 163, 184, 0.1)',
+          backgroundColor: SURFACE.CARD_HOVER,
+          border: `1px solid ${BORDER.SUBTLE}`,
         }}
       >
         <Switch
@@ -206,7 +202,7 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
           disabled={disabled}
           styles={{
             label: { color: 'white' },
-            description: { color: 'var(--mantine-color-gray-5)' },
+            description: { color: THEME_COLORS.TEXT_MUTED },
           }}
         />
       </Paper>
@@ -216,8 +212,8 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
         <Paper
           p="md"
           style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.8)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
+            backgroundColor: SURFACE.CARD,
+            border: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Group gap="xs" mb="md">
@@ -226,13 +222,13 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
                 width: 32,
                 height: 32,
                 borderRadius: '50%',
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                backgroundColor: ICON_BG.RED,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FaPlane size={14} color="var(--mantine-color-ifrRed-5)" style={{ transform: 'scaleX(-1)' }} />
+              <FaPlane size={14} color={THEME_COLORS.ERROR} style={{ transform: 'scaleX(-1)' }} />
             </Box>
             <Text fw={600} c="white">
               Return Flight
@@ -282,8 +278,8 @@ export const AltitudeAndDepartureControls: React.FC<AltitudeAndDepartureControls
         <Paper
           p="sm"
           style={{
-            backgroundColor: 'rgba(30, 41, 59, 0.6)',
-            border: '1px solid rgba(148, 163, 184, 0.1)',
+            backgroundColor: SURFACE.CARD_HOVER,
+            border: `1px solid ${BORDER.SUBTLE}`,
           }}
         >
           <Group justify="space-between">

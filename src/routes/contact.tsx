@@ -13,7 +13,9 @@ import {
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
+import { BUTTON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER } from '@/constants/surfaces';
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,
@@ -49,20 +51,10 @@ function ContactPage() {
         import.meta.env.VITE_EMAILJS_USER_ID
       );
 
-      notifications.show({
-        title: 'Message Sent',
-        message: 'Thank you for your message! We will get back to you soon.',
-        color: 'green',
-      });
-
+      notifySuccess('Message Sent', 'Thank you for your message! We will get back to you soon.');
       form.reset();
     } catch (error) {
-      console.error('Error sending email:', error);
-      notifications.show({
-        title: 'Error',
-        message: 'Failed to send message. Please try again.',
-        color: 'red',
-      });
+      notifyError({ error, operation: 'send message' });
     } finally {
       setIsSubmitting(false);
     }
@@ -88,10 +80,9 @@ function ContactPage() {
 
           <Card
             padding="xl"
-            radius="md"
             style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              backgroundColor: SURFACE.CARD,
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -127,8 +118,8 @@ function ContactPage() {
                 <Button
                   type="submit"
                   loading={isSubmitting}
-                  variant="gradient"
-                  gradient={{ from: 'blue', to: 'cyan', deg: 45 }}
+                  variant="outline"
+                  color={BUTTON_COLORS.PRIMARY}
                   fullWidth
                   size="md"
                 >

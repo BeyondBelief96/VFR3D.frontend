@@ -1,8 +1,10 @@
 import React from 'react';
 import { Paper, Group, Box, Text, Badge, ActionIcon, Stack, Tooltip } from '@mantine/core';
-import { FiEdit2, FiTrash2, FiExternalLink } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiDownloadCloud } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import { useIsPhone } from '@/hooks';
+import { SURFACE_INNER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 import {
   formatFileSize,
   formatDate,
@@ -35,7 +37,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
       <Paper
         p="sm"
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
+          backgroundColor: SURFACE_INNER.DEFAULT,
           borderRadius: 'var(--mantine-radius-md)',
         }}
       >
@@ -48,13 +50,13 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
                 height: 40,
                 minWidth: 40,
                 borderRadius: 'var(--mantine-radius-sm)',
-                backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                backgroundColor: ICON_BG.BLUE,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <FileIcon size={20} color="var(--mantine-color-blue-5)" />
+              <FileIcon size={20} color={THEME_COLORS.PRIMARY} />
             </Box>
             <Box style={{ flex: 1, minWidth: 0 }}>
               <Text size="sm" fw={500} c="white" lineClamp={2}>
@@ -79,18 +81,18 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
               <ActionIcon
                 size="xl"
                 variant="light"
-                color="blue"
+                color={ACTION_ICON_COLORS.DOWNLOAD}
                 onClick={() => onView(document)}
                 loading={isLoading}
               >
-                <FiExternalLink size={20} />
+                <FiDownloadCloud size={20} />
               </ActionIcon>
             </Tooltip>
             <Tooltip label="Edit" position="top" withArrow>
               <ActionIcon
                 size="xl"
                 variant="light"
-                color="gray"
+                color={ACTION_ICON_COLORS.EDIT}
                 onClick={() => onEdit(document)}
               >
                 <FiEdit2 size={20} />
@@ -100,7 +102,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
               <ActionIcon
                 size="xl"
                 variant="light"
-                color="red"
+                color={ACTION_ICON_COLORS.DELETE}
                 onClick={() => onDelete(document)}
               >
                 <FiTrash2 size={20} />
@@ -117,7 +119,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
     <Paper
       p="md"
       style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backgroundColor: SURFACE_INNER.DEFAULT,
         borderRadius: 'var(--mantine-radius-md)',
       }}
     >
@@ -130,13 +132,13 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
               height: 44,
               minWidth: 44,
               borderRadius: 'var(--mantine-radius-sm)',
-              backgroundColor: 'rgba(59, 130, 246, 0.15)',
+              backgroundColor: ICON_BG.BLUE,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <FileIcon size={22} color="var(--mantine-color-blue-5)" />
+            <FileIcon size={22} color={THEME_COLORS.PRIMARY} />
           </Box>
           <Box style={{ minWidth: 0, flex: 1 }}>
             <Text size="sm" fw={500} c="white">
@@ -162,18 +164,18 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
             <ActionIcon
               size="lg"
               variant="light"
-              color="blue"
+              color={ACTION_ICON_COLORS.DOWNLOAD}
               onClick={() => onView(document)}
               loading={isLoading}
             >
-              <FiExternalLink size={18} />
+              <FiDownloadCloud size={18} />
             </ActionIcon>
           </Tooltip>
           <Tooltip label="Edit" position="top" withArrow>
             <ActionIcon
               size="lg"
               variant="light"
-              color="gray"
+              color={ACTION_ICON_COLORS.EDIT}
               onClick={() => onEdit(document)}
             >
               <FiEdit2 size={18} />
@@ -183,7 +185,7 @@ export const DocumentListItem: React.FC<DocumentListItemProps> = ({
             <ActionIcon
               size="lg"
               variant="light"
-              color="red"
+              color={ACTION_ICON_COLORS.DELETE}
               onClick={() => onDelete(document)}
             >
               <FiTrash2 size={18} />

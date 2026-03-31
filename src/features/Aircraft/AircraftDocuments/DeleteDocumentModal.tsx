@@ -4,8 +4,10 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import { AircraftDocumentListDto } from '@/redux/api/vfr3d/dtos';
 import { useDeleteAircraftDocumentMutation } from '@/redux/api/vfr3d/aircraftDocuments.api';
 import { useIsPhone, useIsTablet } from '@/hooks';
-import { notifications } from '@mantine/notifications';
+import { notifyError, notifySuccess } from '@/utility/notifications';
 import { formatFileSize, getFileIcon, getCategoryColor, getCategoryLabel, formatDate } from './utils';
+import { BUTTON_COLORS } from '@/constants/colors';
+import { MODAL_STYLES, SURFACE_INNER, BORDER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 
 interface DeleteDocumentModalProps {
   opened: boolean;
@@ -37,21 +39,10 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
         documentId: document.id,
       }).unwrap();
 
-      notifications.show({
-        title: 'Document Deleted',
-        message: 'The document has been deleted.',
-        color: 'green',
-      });
-
+      notifySuccess('Document Deleted', 'The document has been deleted.');
       onClose();
-    } catch (error: unknown) {
-      const err = error as { data?: { title?: string; detail?: string } };
-      const errorMessage = err?.data?.title || err?.data?.detail || 'Delete failed';
-      notifications.show({
-        title: 'Delete Failed',
-        message: errorMessage,
-        color: 'red',
-      });
+    } catch (error) {
+      notifyError({ error, operation: 'delete document' });
     }
   };
 
@@ -68,8 +59,7 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
       fullScreen={isPhone}
       styles={{
         header: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          ...MODAL_STYLES.header,
           padding: isPhone ? '12px 16px' : '16px 20px',
         },
         title: {
@@ -78,18 +68,11 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
           fontSize: isPhone ? '1rem' : undefined,
         },
         body: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
+          ...MODAL_STYLES.body,
           padding: isPhone ? '16px' : '20px',
         },
-        content: {
-          backgroundColor: 'var(--mantine-color-vfr3dSurface-8)',
-        },
-        close: {
-          color: 'var(--mantine-color-gray-4)',
-          '&:hover': {
-            backgroundColor: 'rgba(148, 163, 184, 0.1)',
-          },
-        },
+        content: MODAL_STYLES.content,
+        close: MODAL_STYLES.close,
       }}
     >
       <Stack gap={isPhone ? 'sm' : 'md'}>
@@ -98,9 +81,9 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
           <Box
             p={isPhone ? 'sm' : 'md'}
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
+              backgroundColor: SURFACE_INNER.DEFAULT,
               borderRadius: 'var(--mantine-radius-md)',
-              border: '1px solid rgba(148, 163, 184, 0.1)',
+              border: `1px solid ${BORDER.SUBTLE}`,
             }}
           >
             <Group gap="sm" wrap="nowrap">
@@ -110,13 +93,13 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
                   height: 36,
                   minWidth: 36,
                   borderRadius: 'var(--mantine-radius-sm)',
-                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                  backgroundColor: ICON_BG.BLUE,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <FileIcon size={18} color="var(--mantine-color-blue-5)" />
+                <FileIcon size={18} color={THEME_COLORS.PRIMARY} />
               </Box>
               <Box style={{ minWidth: 0, flex: 1 }}>
                 <Text c="white" fw={600} size={isPhone ? 'sm' : 'md'} lineClamp={1}>
@@ -149,10 +132,10 @@ export const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({
         </Text>
 
         <Group justify={isPhone ? 'center' : 'flex-end'} gap="sm" grow={isPhone} mt="sm">
-          <Button variant="subtle" color="gray" onClick={onClose} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="subtle" color={BUTTON_COLORS.SECONDARY} onClick={onClose} size={isPhone ? 'md' : 'sm'}>
             Cancel
           </Button>
-          <Button color="red" onClick={handleDelete} loading={isLoading} size={isPhone ? 'md' : 'sm'}>
+          <Button variant="light" color={BUTTON_COLORS.DESTRUCTIVE} onClick={handleDelete} loading={isLoading} size={isPhone ? 'md' : 'sm'}>
             Delete Document
           </Button>
         </Group>

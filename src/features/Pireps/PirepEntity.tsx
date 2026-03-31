@@ -17,6 +17,7 @@ export const PirepEntity: React.FC<PirepEntityProps> = ({ pirep }) => {
       id={pirep.id?.toString() ?? ''}
       position={position}
       scaleByDistance={new NearFarScalar(1000000, 0.07, 5000000, 0.05)}
+      disableDepthTestDistance={0}
     />
   ) : null;
 };

@@ -2,50 +2,51 @@ import { Box, Stack, Text, Badge, Group, ActionIcon, ScrollArea, Divider } from 
 import { FiX } from 'react-icons/fi';
 import { ObstacleDto, ObstacleLighting, ObstacleMarking } from '@/redux/api/vfr3d/dtos';
 import classes from '@/components/Popup/EntityInfoAside.module.css';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
 
 // Helper functions for obstacle display
-const formatLighting = (lighting?: ObstacleLighting): string => {
-  if (!lighting || lighting === ObstacleLighting.Unknown) return 'Unknown';
+const formatLighting = (lighting?: ObstacleLighting | null): string => {
+  if (!lighting || lighting === 'Unknown') return 'Unknown';
   switch (lighting) {
-    case ObstacleLighting.Red:
+    case 'Red':
       return 'Red';
-    case ObstacleLighting.DualMediumWhiteStrobeRed:
+    case 'DualMediumWhiteStrobeRed':
       return 'Dual Medium White/Red Strobe';
-    case ObstacleLighting.HighIntensityWhiteStrobeRed:
+    case 'HighIntensityWhiteStrobeRed':
       return 'High Intensity White/Red Strobe';
-    case ObstacleLighting.MediumIntensityWhiteStrobe:
+    case 'MediumIntensityWhiteStrobe':
       return 'Medium Intensity White Strobe';
-    case ObstacleLighting.HighIntensityWhiteStrobe:
+    case 'HighIntensityWhiteStrobe':
       return 'High Intensity White Strobe';
-    case ObstacleLighting.Flood:
+    case 'Flood':
       return 'Flood';
-    case ObstacleLighting.DualMediumCatenary:
+    case 'DualMediumCatenary':
       return 'Dual Medium Catenary';
-    case ObstacleLighting.SynchronizedRedLighting:
+    case 'SynchronizedRedLighting':
       return 'Synchronized Red';
-    case ObstacleLighting.Lighted:
+    case 'Lighted':
       return 'Lighted';
-    case ObstacleLighting.None:
+    case 'None':
       return 'None';
     default:
       return String(lighting);
   }
 };
 
-const formatMarking = (marking?: ObstacleMarking): string => {
-  if (!marking || marking === ObstacleMarking.Unknown) return 'Unknown';
+const formatMarking = (marking?: ObstacleMarking | null): string => {
+  if (!marking || marking === 'Unknown') return 'Unknown';
   switch (marking) {
-    case ObstacleMarking.OrangeOrOrangeWhitePaint:
+    case 'OrangeOrOrangeWhitePaint':
       return 'Orange/White Paint';
-    case ObstacleMarking.WhitePaintOnly:
+    case 'WhitePaintOnly':
       return 'White Paint';
-    case ObstacleMarking.Marked:
+    case 'Marked':
       return 'Marked';
-    case ObstacleMarking.FlagMarker:
+    case 'FlagMarker':
       return 'Flag Marker';
-    case ObstacleMarking.SphericalMarker:
+    case 'SphericalMarker':
       return 'Spherical Marker';
-    case ObstacleMarking.None:
+    case 'None':
       return 'None';
     default:
       return String(marking);
@@ -60,8 +61,9 @@ interface ObstacleAsideContentProps {
 const ObstacleAsideContent: React.FC<ObstacleAsideContentProps> = ({ obstacle, onClose }) => {
   const isLit =
     obstacle.lighting !== undefined &&
-    obstacle.lighting !== ObstacleLighting.None &&
-    obstacle.lighting !== ObstacleLighting.Unknown;
+    obstacle.lighting !== null &&
+    obstacle.lighting !== 'None' &&
+    obstacle.lighting !== 'Unknown';
 
   return (
     <Stack gap={0} h="100%">
@@ -76,7 +78,7 @@ const ObstacleAsideContent: React.FC<ObstacleAsideContentProps> = ({ obstacle, o
               </Badge>
             )}
           </Group>
-          <ActionIcon variant="subtle" color="gray" onClick={onClose} className={classes.closeButton}>
+          <ActionIcon variant="subtle" color={ACTION_ICON_COLORS.CLOSE} onClick={onClose} className={classes.closeButton}>
             <FiX size={18} />
           </ActionIcon>
         </Group>
@@ -105,14 +107,14 @@ const ObstacleAsideContent: React.FC<ObstacleAsideContentProps> = ({ obstacle, o
           {/* Height Information */}
           <Text size="sm" fw={500} c="white">Height</Text>
 
-          {obstacle.heightAgl !== undefined && (
+          {obstacle.heightAgl != null && (
             <Text size="sm">
               <Text span c="dimmed">AGL: </Text>
               <Text span fw={500} c="orange">{obstacle.heightAgl.toLocaleString()} ft</Text>
             </Text>
           )}
 
-          {obstacle.heightAmsl !== undefined && (
+          {obstacle.heightAmsl != null && (
             <Text size="sm">
               <Text span c="dimmed">MSL: </Text>
               {obstacle.heightAmsl.toLocaleString()} ft
@@ -146,7 +148,7 @@ const ObstacleAsideContent: React.FC<ObstacleAsideContentProps> = ({ obstacle, o
           {/* Coordinates */}
           <Text size="sm" fw={500} c="white">Position</Text>
 
-          {obstacle.latitude !== undefined && obstacle.longitude !== undefined && (
+          {obstacle.latitude != null && obstacle.longitude != null && (
             <Text size="sm">
               <Text span c="dimmed">Coordinates: </Text>
               {obstacle.latitude.toFixed(5)}, {obstacle.longitude.toFixed(5)}

@@ -13,6 +13,8 @@ import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { FaPlane } from 'react-icons/fa';
 import { AircraftPerformanceProfileDto, AirspeedUnits } from '@/redux/api/vfr3d/dtos';
 import { getAirspeedUnitLabel } from '@/utility/unitConversionUtils';
+import { ACTION_ICON_COLORS } from '@/constants/colors';
+import { SURFACE, BORDER, HIGHLIGHT, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 
 interface AircraftPerformanceProfileSelectionProps {
   profiles: AircraftPerformanceProfileDto[];
@@ -37,13 +39,13 @@ export const AircraftPerformanceProfileSelection: React.FC<
             width: 80,
             height: 80,
             borderRadius: '50%',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            backgroundColor: ICON_BG.BLUE_LIGHT,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <FaPlane size={32} style={{ opacity: 0.5, color: 'var(--mantine-color-vfr3dBlue-5)' }} />
+          <FaPlane size={32} style={{ opacity: 0.5, color: THEME_COLORS.PRIMARY }} />
         </Box>
         <Text size="lg" fw={500} c="white">
           No Aircraft Profiles
@@ -87,11 +89,11 @@ export const AircraftPerformanceProfileSelection: React.FC<
               onClick={() => !disabled && profile.id && onSelect(profile.id)}
               style={{
                 backgroundColor: isSelected
-                  ? 'rgba(59, 130, 246, 0.15)'
-                  : 'rgba(30, 41, 59, 0.8)',
+                  ? HIGHLIGHT.SUBTLE
+                  : SURFACE.CARD,
                 border: isSelected
-                  ? '2px solid var(--mantine-color-vfr3dBlue-5)'
-                  : '1px solid rgba(148, 163, 184, 0.1)',
+                  ? `2px solid ${THEME_COLORS.PRIMARY}`
+                  : `1px solid ${BORDER.SUBTLE}`,
                 borderRadius: 'var(--mantine-radius-md)',
                 padding: 'var(--mantine-spacing-md)',
                 cursor: disabled ? 'not-allowed' : 'pointer',
@@ -107,8 +109,8 @@ export const AircraftPerformanceProfileSelection: React.FC<
                       height: 32,
                       borderRadius: '50%',
                       backgroundColor: isSelected
-                        ? 'rgba(59, 130, 246, 0.3)'
-                        : 'rgba(148, 163, 184, 0.1)',
+                        ? HIGHLIGHT.STRONG
+                        : ICON_BG.NEUTRAL,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -116,7 +118,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
                   >
                     <FaPlane
                       size={14}
-                      color={isSelected ? 'var(--mantine-color-vfr3dBlue-5)' : 'var(--mantine-color-gray-5)'}
+                      color={isSelected ? THEME_COLORS.PRIMARY : THEME_COLORS.TEXT_MUTED}
                     />
                   </Box>
                   <Text size="sm" fw={600} c="white" lineClamp={1}>
@@ -129,7 +131,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
                     <ActionIcon
                       size="sm"
                       variant="subtle"
-                      color="blue"
+                      color={ACTION_ICON_COLORS.EDIT}
                       onClick={(e) => {
                         e.stopPropagation();
                         profile.id && onEdit(profile.id);
@@ -141,7 +143,7 @@ export const AircraftPerformanceProfileSelection: React.FC<
                     <ActionIcon
                       size="sm"
                       variant="subtle"
-                      color="red"
+                      color={ACTION_ICON_COLORS.DELETE}
                       onClick={(e) => {
                         e.stopPropagation();
                         profile.id && onDelete(profile.id);

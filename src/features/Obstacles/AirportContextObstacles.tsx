@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect } from 'react';
-import { useSearchObstaclesNearbyQuery } from '@/redux/api/vfr3d/obstacles.api';
+import { useSearchObstaclesNearbyQuery } from '@/redux/api/preflight/obstacles.api';
 import { ObstacleAirportEntry } from '@/redux/slices/obstaclesSlice';
 import { ObstacleDto } from '@/redux/api/vfr3d/dtos';
 import ObstacleEntity from './ObstacleEntity';
