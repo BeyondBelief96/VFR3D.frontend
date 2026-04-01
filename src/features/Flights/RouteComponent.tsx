@@ -5,6 +5,7 @@ import {
   Cartesian3,
   Cartographic,
   Color,
+  HeightReference,
   Math as CesiumMath,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
@@ -287,9 +288,11 @@ const RouteComponent: React.FC = () => {
     setDraggedPosition(null);
   };
 
+  // Small height offset (meters) to lift planning-mode points above terrain
+  const GROUND_OFFSET = 3;
   const mapWaypointToPosition =
     displayMode === FlightDisplayMode.PLANNING
-      ? mapWaypointToCartesian3Flat
+      ? (wp: WaypointDto) => mapWaypointToCartesian3Flat(wp, GROUND_OFFSET)
       : mapWaypointToCartesian3;
 
   // In PREVIEW or VIEWING mode, show all waypoints
@@ -367,6 +370,7 @@ const RouteComponent: React.FC = () => {
             pixelSize={isTocTod ? 12 : 15}
             position={displayPosition}
             color={pointColor}
+            heightReference={isEditable ? HeightReference.RELATIVE_TO_GROUND : HeightReference.NONE}
             id={pointId ?? ''}
             onLeftClick={() => {
               // Open popup for existing waypoint (edit/delete)
@@ -489,6 +493,7 @@ const RouteComponent: React.FC = () => {
             color={segmentColor}
             id={polylineId}
             width={segmentWidth}
+            clampToGround={isEditable}
             onLeftClick={isEditable ? handleRouteLeftClick : undefined}
           />
         );

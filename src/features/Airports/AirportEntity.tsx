@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Cartesian2, NearFarScalar } from 'cesium';
+import { Cartesian2, HeightReference, NearFarScalar } from 'cesium';
 import { PointEntity } from '@/components/Cesium';
 import { mapAirportDataToCartesian3Flat } from '@/utility/cesiumUtils';
 import { getAirportEntityIdFromAirport } from '@/utility/entityIdUtils';
@@ -14,7 +14,9 @@ interface AirportEntityProps {
 
 const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) => {
   const showCloudBases = useAppSelector((state) => state.airport.showCloudBases);
-  const position = mapAirportDataToCartesian3Flat(airport);
+  // Small height offset (meters) to lift points above terrain and avoid z-fighting
+  const GROUND_OFFSET = 10;
+  const position = mapAirportDataToCartesian3Flat(airport, GROUND_OFFSET);
 
   if (!position) return null;
 
@@ -34,12 +36,13 @@ const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) =>
     <PointEntity
       position={position}
       color={pointColor}
+      heightReference={HeightReference.RELATIVE_TO_GROUND}
       id={getAirportEntityIdFromAirport(airport)}
       scaleByDistance={new NearFarScalar(1000000, 1.5, 5000000, 1)}
       labelText={labelText}
       labelColor={textColor}
       labelBackgroundColor={labelBgColor}
-      labelPixelOffset={new Cartesian2(0, -20)}
+      labelPixelOffset={new Cartesian2(0, -40)}
       labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
     />
   );
