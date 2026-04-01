@@ -10,6 +10,7 @@ import {
   Cartesian3,
   Property,
   LabelGraphics,
+  LabelStyle,
   Cartesian2,
 } from 'cesium';
 import React, { useEffect, useRef } from 'react';
@@ -36,6 +37,11 @@ interface PointEntityProps {
   labelBackgroundColor?: Color | Property;
   labelPixelOffset?: Cartesian2 | Property;
   labelScaleByDistance?: NearFarScalar | Property;
+  labelFont?: string;
+  labelBackgroundPadding?: Cartesian2;
+  labelOutlineColor?: Color;
+  labelOutlineWidth?: number;
+  labelStyle?: LabelStyle;
   onRightClick?: (positionEvent: ScreenSpaceEventHandler.PositionedEvent, pointId: string) => void;
   onLeftClick?: (positionEvent: ScreenSpaceEventHandler.PositionedEvent, pointId: string) => void;
   onDragStart?: (pointId: string) => void;
@@ -49,8 +55,8 @@ export const PointEntity: React.FC<PointEntityProps> = ({
   pixelSize = 10,
   heightReference = HeightReference.NONE,
   color = Color.WHITE,
-  outlineColor = Color.BLACK,
-  outlineWidth = 0,
+  outlineColor = Color.fromCssColorString('#0A0C10'),
+  outlineWidth = 1,
   scaleByDistance,
   translucencyByDistance,
   distanceDisplayCondition,
@@ -62,6 +68,11 @@ export const PointEntity: React.FC<PointEntityProps> = ({
   labelBackgroundColor,
   labelPixelOffset = new Cartesian2(0, -20),
   labelScaleByDistance = new NearFarScalar(1000000, 0.5, 5000000, 0.3),
+  labelFont = 'bold 36px "JetBrains Mono", monospace',
+  labelBackgroundPadding = new Cartesian2(10, 6),
+  labelOutlineColor = Color.BLACK,
+  labelOutlineWidth = 2,
+  labelStyle = LabelStyle.FILL_AND_OUTLINE,
   onRightClick,
   onLeftClick,
   onDragStart,
@@ -99,11 +110,16 @@ export const PointEntity: React.FC<PointEntityProps> = ({
     const labelGraphics = labelText
       ? new LabelGraphics({
           text: labelText,
+          font: labelFont,
+          style: labelStyle,
           scaleByDistance: labelScaleByDistance,
           fillColor: labelColor,
+          outlineColor: labelOutlineColor,
+          outlineWidth: labelOutlineWidth,
           pixelOffset: labelPixelOffset,
           backgroundColor: labelBackgroundColor || color,
           showBackground: !!labelBackgroundColor,
+          backgroundPadding: labelBackgroundPadding,
         })
       : undefined;
 
@@ -164,11 +180,16 @@ export const PointEntity: React.FC<PointEntityProps> = ({
     }
     if (entityRef.current.label) {
       entityRef.current.label.text = new ConstantProperty(labelText);
+      entityRef.current.label.font = new ConstantProperty(labelFont);
+      entityRef.current.label.style = new ConstantProperty(labelStyle);
       entityRef.current.label.fillColor = new ConstantProperty(labelColor as Color);
+      entityRef.current.label.outlineColor = new ConstantProperty(labelOutlineColor);
+      entityRef.current.label.outlineWidth = new ConstantProperty(labelOutlineWidth);
       entityRef.current.label.pixelOffset = new ConstantProperty(labelPixelOffset);
       entityRef.current.label.backgroundColor = new ConstantProperty(
         (labelBackgroundColor || (color as Color)) as Color
       );
+      entityRef.current.label.backgroundPadding = new ConstantProperty(labelBackgroundPadding);
       entityRef.current.label.scaleByDistance = new ConstantProperty(labelScaleByDistance);
       (entityRef.current.label as unknown as { showBackground?: boolean }).showBackground = !!labelBackgroundColor;
     }
@@ -190,6 +211,11 @@ export const PointEntity: React.FC<PointEntityProps> = ({
     labelBackgroundColor,
     labelPixelOffset,
     labelScaleByDistance,
+    labelFont,
+    labelBackgroundPadding,
+    labelOutlineColor,
+    labelOutlineWidth,
+    labelStyle,
   ]);
 
   return null;

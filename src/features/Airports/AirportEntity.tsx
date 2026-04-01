@@ -22,9 +22,9 @@ const AirportEntity: React.FC<AirportEntityProps> = memo(({ airport, metar }) =>
 
   // Point color (white when no METAR, otherwise flight category color)
   const pointColor = getColorForMetar(metar);
-  // Label background (dark slate when no METAR, otherwise flight category color)
-  const labelBgColor = getLabelBackgroundColor(metar);
-  const textColor = getLabelTextColor();
+  // C2-style: dark background with flight-category-colored text
+  const labelBgColor = getLabelBackgroundColor();
+  const textColor = getLabelTextColor(metar);
   
   // Get the airport identifier (prefer ICAO, fall back to FAA ID)
   const airportIdent = airport.icaoId || airport.arptId || '';

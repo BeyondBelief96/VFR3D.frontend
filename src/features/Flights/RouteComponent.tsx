@@ -17,6 +17,7 @@ import {
   mapWaypointToCartesian3,
   mapWaypointToCartesian3Flat,
 } from '@/utility/cesiumUtils';
+import { MAP_LABEL_BG } from '@/utility/weatherColors';
 import { useCesium } from 'resium';
 import { PolylineEntity } from '@/components/Cesium/PolylineEntity';
 import { mapWaypointsFlat } from '@/utility/utils';
@@ -395,7 +396,8 @@ const RouteComponent: React.FC = () => {
             onDrag={canEdit ? handleWaypointDrag : undefined}
             onDragEnd={canEdit ? handleWaypointDragEnd : undefined}
             labelText={getWaypointLabel(point)}
-            labelBackgroundColor={pointColor}
+            labelColor={pointColor}
+            labelBackgroundColor={MAP_LABEL_BG}
             labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
             labelPixelOffset={new Cartesian2(0, -35)}
           />
@@ -431,7 +433,8 @@ const RouteComponent: React.FC = () => {
                 dispatch(updateSelectedWaypointPosition({ latitude: lat, longitude: lon }));
               }}
               labelText={tempWp.name || 'New waypoint'}
-              labelBackgroundColor={Color.MAGENTA}
+              labelColor={Color.MAGENTA}
+              labelBackgroundColor={MAP_LABEL_BG}
               labelScaleByDistance={new NearFarScalar(100000, 0.5, 500000, 0.3)}
               labelPixelOffset={new Cartesian2(0, -20)}
             />
