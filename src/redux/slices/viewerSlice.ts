@@ -5,6 +5,7 @@ interface ViewerState {
   currentImageryBrightness: number;
   selectedImageryLayer: string;
   globeMaximumScreenSpaceError: number;
+  terrainEnabled: boolean;
 }
 
 const initialState: ViewerState = {
@@ -12,6 +13,7 @@ const initialState: ViewerState = {
   currentImageryBrightness: 1,
   selectedImageryLayer: 'vfrImagery',
   globeMaximumScreenSpaceError: 1.3,
+  terrainEnabled: false,
 };
 
 const viewerSlice = createSlice({
@@ -30,6 +32,9 @@ const viewerSlice = createSlice({
     setGlobeMaximumScreenSpaceError: (state, action: PayloadAction<number>) => {
       state.globeMaximumScreenSpaceError = action.payload;
     },
+    setTerrainEnabled: (state, action: PayloadAction<boolean>) => {
+      state.terrainEnabled = action.payload;
+    },
   },
 });
 
@@ -38,6 +43,7 @@ export const {
   setImageryBrightness,
   setSelectedLayer,
   setGlobeMaximumScreenSpaceError,
+  setTerrainEnabled,
 } = viewerSlice.actions;
 
 export default viewerSlice.reducer;

@@ -1,17 +1,18 @@
-import { Stack, Select, Text, Slider, Box } from '@mantine/core';
+import { Stack, Select, Text, Slider, Box, Switch, Group } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   setImageryAlpha,
   setImageryBrightness,
   setSelectedLayer,
   setGlobeMaximumScreenSpaceError,
+  setTerrainEnabled,
 } from '@/redux/slices/viewerSlice';
 import { IMAGERY_LAYER_OPTIONS } from '@/utility/constants';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function MapOptions() {
   const dispatch = useAppDispatch();
-  const { selectedImageryLayer, currentImageryAlpha, currentImageryBrightness, globeMaximumScreenSpaceError } =
+  const { selectedImageryLayer, currentImageryAlpha, currentImageryBrightness, globeMaximumScreenSpaceError, terrainEnabled } =
     useAppSelector((state) => state.viewer);
 
   const layerOptions = IMAGERY_LAYER_OPTIONS.map((option) => ({
@@ -109,6 +110,23 @@ export function MapOptions() {
         />
         <Text size="xs" c="white" mt={10}>
           Lower values = more detail (uses more memory)
+        </Text>
+      </Box>
+
+      <Box>
+        <Group justify="space-between">
+          <Text size="sm" c="dimmed">
+            3D Terrain
+          </Text>
+          <Switch
+            checked={terrainEnabled}
+            onChange={(event) => dispatch(setTerrainEnabled(event.currentTarget.checked))}
+            size="sm"
+            color="vfr3dBlue"
+          />
+        </Group>
+        <Text size="xs" c="white" mt={4}>
+          Renders real-world elevation data (ArcGIS World Elevation)
         </Text>
       </Box>
     </Stack>

@@ -2,6 +2,7 @@ import { useDisableDoubleClickZoom } from '@/hooks/useDisableDoubleClickZoom';
 import { useAppSelector } from '@/hooks';
 import {
   useGlobeQuality,
+  useTerrainProvider,
   usePolygonHoverHighlight,
   useCylinderHoverHighlight,
   usePointDragInteraction,
@@ -17,13 +18,16 @@ import {
  * This component must be rendered inside a Cesium Viewer context.
  */
 export function CesiumViewerConfig() {
-  const { globeMaximumScreenSpaceError } = useAppSelector((state) => state.viewer);
+  const { globeMaximumScreenSpaceError, terrainEnabled } = useAppSelector((state) => state.viewer);
 
   // Disable double-click zoom behavior
   useDisableDoubleClickZoom();
 
   // Set globe rendering quality based on Redux state
   useGlobeQuality(globeMaximumScreenSpaceError);
+
+  // Toggle 3D terrain elevation
+  useTerrainProvider(terrainEnabled);
 
   // Enable polygon hover highlighting with yellow overlays
   usePolygonHoverHighlight();
