@@ -24,7 +24,7 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
   showLabel = false,
 }) => {
   const position = mapObstacleToCartesian3(obstacle);
-  const heightMeters = getObstacleHeightMeters(obstacle, true);
+  const heightMeters = getObstacleHeightMeters(obstacle, false);
 
   // Apply height exaggeration with a minimum visual height
   const exaggeratedHeight = Math.max(heightMeters * heightExaggeration, 100);
