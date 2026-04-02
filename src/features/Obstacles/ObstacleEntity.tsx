@@ -28,6 +28,8 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
   const position = mapObstacleToCartesian3(obstacle);
   // When terrain is on, use AGL so cylinder extends from terrain surface to correct height.
   // When terrain is off (flat ellipsoid at sea level), use MSL so the top is at the correct absolute altitude.
+  // Cesium's CylinderGeometryUpdater automatically offsets by length/2 when heightReference != NONE,
+  // so CLAMP_TO_GROUND places the cylinder bottom at the ground surface.
   const heightMeters = getObstacleHeightMeters(obstacle, terrainEnabled);
 
   // Apply height exaggeration with a minimum visual height
