@@ -35,7 +35,9 @@
       "Bash(node:*)",
       "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")",
       "Bash(grep -r variant=['']gradient[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)",
-      "Bash(grep -r variant=['']filled[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)"
+      "Bash(grep -r variant=['']filled[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")"
     ]
   }
 }

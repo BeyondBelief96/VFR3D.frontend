@@ -26,10 +26,13 @@ export const airspacesApi = preflightApi.injectEndpoints({
     }),
     getAirspacesByGlobalIds: builder.query<AirspaceDto[], string[]>({
       query: (globalIds) => `/airspaces/by-global-ids?globalIds=${globalIds.join(',')}`,
+      transformResponse: (response: PaginatedResponse<AirspaceDto>) => response.data ?? [],
     }),
     getSpecialUseAirspacesByGlobalIds: builder.query<SpecialUseAirspaceDto[], string[]>({
       query: (globalIds) =>
         `/airspaces/special-use/by-global-ids?globalIds=${globalIds.join(',')}`,
+      transformResponse: (response: PaginatedResponse<SpecialUseAirspaceDto>) =>
+        response.data ?? [],
     }),
   }),
 });

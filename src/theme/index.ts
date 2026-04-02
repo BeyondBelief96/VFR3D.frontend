@@ -271,6 +271,11 @@ export const theme = createTheme({
       defaultProps: {
         radius: 0,
       },
+      styles: {
+        track: {
+          cursor: 'pointer',
+        },
+      },
     },
 
     Checkbox: {

@@ -18,13 +18,15 @@ import {
  * This component must be rendered inside a Cesium Viewer context.
  */
 export function CesiumViewerConfig() {
-  const { globeMaximumScreenSpaceError, terrainEnabled } = useAppSelector((state) => state.viewer);
+  const { globeMaximumScreenSpaceError, terrainFogDensity = 4, terrainEnabled } = useAppSelector(
+    (state) => state.viewer
+  );
 
   // Disable double-click zoom behavior
   useDisableDoubleClickZoom();
 
-  // Set globe rendering quality based on Redux state
-  useGlobeQuality(globeMaximumScreenSpaceError);
+  // Set globe rendering quality and terrain fog settings
+  useGlobeQuality(globeMaximumScreenSpaceError, terrainFogDensity, terrainEnabled);
 
   // Toggle 3D terrain elevation
   useTerrainProvider(terrainEnabled);
