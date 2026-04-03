@@ -121,11 +121,13 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
     });
 
     cylinderEntityRef.current = entity;
+    viewer.scene.requestRender();
 
     return () => {
       if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         cylinderEntityRef.current = null;
+        viewer.scene.requestRender();
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,11 +166,13 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
     });
 
     labelEntityRef.current = labelEntity;
+    viewer.scene.requestRender();
 
     return () => {
       if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && labelEntity) {
         viewer.entities.remove(labelEntity);
         labelEntityRef.current = null;
+        viewer.scene.requestRender();
       }
     };
   }, [viewer, id, labelText, showLabel, labelPosition, labelBackgroundColor, labelFillColor, labelOutlineColor, labelFont]);
@@ -188,6 +192,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
       cylinderEntityRef.current.cylinder.outlineWidth = new ConstantProperty(outlineWidth as number);
       cylinderEntityRef.current.cylinder.fill = new ConstantProperty(fill);
     }
+    viewer.scene.requestRender();
   }, [
     viewer,
     position,
@@ -206,6 +211,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
   useEffect(() => {
     if (!viewer || !labelEntityRef.current) return;
     labelEntityRef.current.position = new ConstantPositionProperty(labelPosition);
+    viewer.scene.requestRender();
   }, [viewer, labelPosition]);
 
   return null;

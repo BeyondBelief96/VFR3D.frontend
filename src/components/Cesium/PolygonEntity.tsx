@@ -53,11 +53,13 @@ export const PolygonEntity: React.FC<PolygonEntityProps> = React.memo(
       });
 
       entityRef.current = entity;
+      viewer.scene.requestRender();
 
       return () => {
         if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entityRef.current) {
           viewer.entities.remove(entityRef.current);
           entityRef.current = null;
+          viewer.scene.requestRender();
         }
       };
     }, [

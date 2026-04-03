@@ -131,6 +131,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
     });
 
     entityRef.current = entity;
+    viewer.scene.requestRender();
 
     // Register callbacks in global registry; handled centrally to avoid per-entity pick cost
     registerPointCallbacks(id, { draggable, onLeftClick, onRightClick, onDragStart, onDrag, onDragEnd });
@@ -139,6 +140,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
       if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
+        viewer.scene.requestRender();
         unregisterPointCallbacks(id);
       }
     };
@@ -193,6 +195,7 @@ export const PointEntity: React.FC<PointEntityProps> = ({
       entityRef.current.label.scaleByDistance = new ConstantProperty(labelScaleByDistance);
       (entityRef.current.label as unknown as { showBackground?: boolean }).showBackground = !!labelBackgroundColor;
     }
+    viewer.scene.requestRender();
   }, [
     viewer,
     position,
