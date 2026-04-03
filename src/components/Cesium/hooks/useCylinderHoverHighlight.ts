@@ -90,6 +90,10 @@ export function useCylinderHoverHighlight() {
       const bottomRadius = (bottomRadiusProp?.getValue(currentTime) as number | undefined) ?? topRadius;
       const radius = Math.max(topRadius, bottomRadius);
 
+      // Match the heightReference of the original cylinder
+      const heightRefProp = cylinder.heightReference as Property | undefined;
+      const heightRef = (heightRefProp?.getValue(currentTime) as HeightReference | undefined) ?? HeightReference.CLAMP_TO_GROUND;
+
       // Create outer ring overlay - a larger cylinder with transparent fill
       const ringOverlay = viewer.entities.add({
         name: HOVER_OVERLAY_NAME,
@@ -102,7 +106,7 @@ export function useCylinderHoverHighlight() {
           outline: true,
           outlineColor: Color.YELLOW,
           outlineWidth: 3,
-          heightReference: HeightReference.CLAMP_TO_GROUND,
+          heightReference: heightRef,
         }),
       });
       state.overlays.push(ringOverlay);
@@ -116,7 +120,7 @@ export function useCylinderHoverHighlight() {
           topRadius: radius * RING_WIDTH_FACTOR,
           bottomRadius: radius * RING_WIDTH_FACTOR,
           material: Color.YELLOW.withAlpha(0.3),
-          heightReference: HeightReference.CLAMP_TO_GROUND,
+          heightReference: heightRef,
         }),
       });
       state.overlays.push(topCapOverlay);

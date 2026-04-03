@@ -74,14 +74,16 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
   const cylinderEntityRef = useRef<Entity | null>(null);
   const labelEntityRef = useRef<Entity | null>(null);
 
-  // Calculate the label position at the top of the cylinder
+  // Calculate the label position at the top of the cylinder.
+  // Cesium offsets the cylinder bottom to ground when heightReference != NONE,
+  // so the top is at ground + length. Using RELATIVE_TO_GROUND on the label
+  // with height = length places it at the cylinder top.
   const labelPosition = useMemo(() => {
     const cartographic = Cartographic.fromCartesian(position, Ellipsoid.WGS84);
-    // Add the cylinder length to the height to position label at top
     return Cartesian3.fromRadians(
       cartographic.longitude,
       cartographic.latitude,
-      cartographic.height + length
+      length
     );
   }, [position, length]);
 
@@ -152,6 +154,7 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
       backgroundPadding: new ConstantProperty(new Cartesian2(8, 6)),
       scaleByDistance: new ConstantProperty(new NearFarScalar(500, 0.7, 30000, 0.8)),
       disableDepthTestDistance: new ConstantProperty(Number.POSITIVE_INFINITY),
+      heightReference: new ConstantProperty(HeightReference.RELATIVE_TO_GROUND),
     });
 
     const labelEntity = viewer.entities.add({

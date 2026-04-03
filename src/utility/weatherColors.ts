@@ -2,8 +2,8 @@ import { Color } from 'cesium';
 import { MetarDto } from '@/redux/api/vfr3d/dtos';
 import { WeatherFlightCategories } from '@/utility/enums';
 
-// Default label background color for airports without weather data - a neutral dark slate
-const NO_WEATHER_LABEL_COLOR = Color.fromCssColorString('#4a5568');
+// C2-style dark label background — matches SURFACE.BASE with alpha
+export const MAP_LABEL_BG = Color.fromCssColorString('rgba(10, 12, 16, 0.85)');
 
 /**
  * Get Cesium Color for a flight category string (for point rendering)
@@ -13,13 +13,13 @@ const NO_WEATHER_LABEL_COLOR = Color.fromCssColorString('#4a5568');
 export function getColorForFlightCategory(flightCategory?: string): Color {
   switch (flightCategory) {
     case WeatherFlightCategories.VFR:
-      return Color.GREEN;
+      return Color.fromCssColorString('#2EA043');
     case WeatherFlightCategories.MVFR:
-      return Color.BLUE;
+      return Color.fromCssColorString('#4A9EFF');
     case WeatherFlightCategories.IFR:
-      return Color.RED;
+      return Color.fromCssColorString('#C94040');
     case WeatherFlightCategories.LIFR:
-      return Color.PURPLE;
+      return Color.fromCssColorString('#9066D6');
     default:
       return Color.WHITE;
   }
@@ -36,22 +36,22 @@ export function getColorForMetar(metar?: MetarDto): Color {
 }
 
 /**
- * Get label background color for a METAR
- * Uses dark slate for no weather data (readable on any map), otherwise matches point color
- * @param metar - The METAR data containing flight category
- * @returns Cesium Color for the label background
+ * Get label background color — C2-style dark translucent background for all labels
+ * @returns Dark C2 surface color
  */
-export function getLabelBackgroundColor(metar?: MetarDto): Color {
-  if (!metar || !metar.flightCategory) return NO_WEATHER_LABEL_COLOR;
-  return getColorForFlightCategory(metar.flightCategory ?? undefined);
+export function getLabelBackgroundColor(): Color {
+  return MAP_LABEL_BG;
 }
 
 /**
- * Get an appropriate label text color (always white - works well on all our background colors)
- * @returns White text color
+ * Get label text color based on flight category
+ * Returns flight-category color on dark background (C2 pattern: colored text on dark surface)
+ * @param metar - Optional METAR data for flight category coloring
+ * @returns Cesium Color — category color if available, muted gray otherwise
  */
-export function getLabelTextColor(): Color {
-  return Color.WHITE;
+export function getLabelTextColor(metar?: MetarDto): Color {
+  if (!metar || !metar.flightCategory) return Color.fromCssColorString('#8892A0');
+  return getColorForFlightCategory(metar.flightCategory ?? undefined);
 }
 
 /**

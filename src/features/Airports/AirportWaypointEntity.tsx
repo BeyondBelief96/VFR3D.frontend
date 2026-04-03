@@ -46,9 +46,9 @@ const AirportWaypointEntity: React.FC<AirportWaypointEntityProps> = memo(({
 
   // Point color (white when no METAR, otherwise flight category color)
   const pointColor = getColorForMetar(metar);
-  // Label background (dark slate when no METAR, otherwise flight category color)
-  const labelBgColor = getLabelBackgroundColor(metar);
-  const textColor = getLabelTextColor();
+  // C2-style: dark background with flight-category-colored text
+  const labelBgColor = getLabelBackgroundColor();
+  const textColor = getLabelTextColor(metar);
   
   // Build combined label with name, altitude, and optionally cloud base
   const labelText = buildAirportLabel(

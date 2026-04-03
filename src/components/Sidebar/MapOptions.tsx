@@ -1,18 +1,26 @@
-import { Stack, Select, Text, Slider, Box } from '@mantine/core';
+import { Stack, Select, Text, Slider, Box, Switch, Group } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   setImageryAlpha,
   setImageryBrightness,
   setSelectedLayer,
   setGlobeMaximumScreenSpaceError,
+  setTerrainFogDensity,
+  setTerrainEnabled,
 } from '@/redux/slices/viewerSlice';
 import { IMAGERY_LAYER_OPTIONS } from '@/utility/constants';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function MapOptions() {
   const dispatch = useAppDispatch();
-  const { selectedImageryLayer, currentImageryAlpha, currentImageryBrightness, globeMaximumScreenSpaceError } =
-    useAppSelector((state) => state.viewer);
+  const {
+    selectedImageryLayer,
+    currentImageryAlpha,
+    currentImageryBrightness,
+    globeMaximumScreenSpaceError,
+    terrainFogDensity = 4,
+    terrainEnabled,
+  } = useAppSelector((state) => state.viewer);
 
   const layerOptions = IMAGERY_LAYER_OPTIONS.map((option) => ({
     value: option.layerName,
@@ -89,7 +97,7 @@ export function MapOptions() {
 
       <Box>
         <Text size="sm" c="dimmed" mb={4}>
-          Globe Detail Level: {globeMaximumScreenSpaceError.toFixed(1)}
+          Chart Detail Level: {globeMaximumScreenSpaceError.toFixed(1)}
         </Text>
         <Slider
           value={globeMaximumScreenSpaceError}
@@ -111,6 +119,50 @@ export function MapOptions() {
           Lower values = more detail (uses more memory)
         </Text>
       </Box>
+
+      <Box>
+        <Group justify="space-between">
+          <Text size="sm" c="dimmed">
+            3D Terrain
+          </Text>
+          <Switch
+            checked={terrainEnabled}
+            onChange={(event) => dispatch(setTerrainEnabled(event.currentTarget.checked))}
+            size="sm"
+            color="vfr3dBlue"
+          />
+        </Group>
+        <Text size="xs" c="white" mt={4}>
+          Renders real-world elevation data (ArcGIS World Elevation)
+        </Text>
+      </Box>
+
+      {terrainEnabled && (
+        <Box>
+          <Text size="sm" c="dimmed" mb={4}>
+            Terrain Fog: {terrainFogDensity.toFixed(1)}
+          </Text>
+          <Slider
+            value={terrainFogDensity}
+            onChange={(value) => dispatch(setTerrainFogDensity(value))}
+            min={1}
+            max={8}
+            step={0.5}
+            marks={[
+              { value: 1, label: 'Light' },
+              { value: 4, label: 'Med' },
+              { value: 8, label: 'Heavy' },
+            ]}
+            styles={{
+              mark: { display: 'none' },
+              markLabel: { fontSize: 10, marginTop: 4, marginBottom: 4, color: THEME_COLORS.GRAY_6 },
+            }}
+          />
+          <Text size="xs" c="white" mt={10}>
+            Heavier fog skips loading distant terrain tiles for better performance
+          </Text>
+        </Box>
+      )}
     </Stack>
   );
 }

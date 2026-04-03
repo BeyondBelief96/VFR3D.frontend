@@ -3,6 +3,7 @@ import { Color, HeightReference } from 'cesium';
 import { CylinderEntity } from '@/components/Cesium';
 import { mapObstacleToCartesian3, getObstacleHeightMeters } from '@/utility/cesiumUtils';
 import { getObstacleEntityId } from '@/utility/entityIdUtils';
+import { useAppSelector } from '@/hooks/reduxHooks';
 import { ObstacleDto } from '@/redux/api/vfr3d/dtos';
 
 interface ObstacleEntityProps {
@@ -23,8 +24,13 @@ const ObstacleEntity: React.FC<ObstacleEntityProps> = memo(({
   heightExaggeration = 1,
   showLabel = false,
 }) => {
+  const terrainEnabled = useAppSelector((state) => state.viewer.terrainEnabled);
   const position = mapObstacleToCartesian3(obstacle);
-  const heightMeters = getObstacleHeightMeters(obstacle, true);
+  // When terrain is on, use AGL so cylinder extends from terrain surface to correct height.
+  // When terrain is off (flat ellipsoid at sea level), use MSL so the top is at the correct absolute altitude.
+  // Cesium's CylinderGeometryUpdater automatically offsets by length/2 when heightReference != NONE,
+  // so CLAMP_TO_GROUND places the cylinder bottom at the ground surface.
+  const heightMeters = getObstacleHeightMeters(obstacle, terrainEnabled);
 
   // Apply height exaggeration with a minimum visual height
   const exaggeratedHeight = Math.max(heightMeters * heightExaggeration, 100);

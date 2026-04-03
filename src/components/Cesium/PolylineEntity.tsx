@@ -15,6 +15,7 @@ interface PolylineEntityProps {
   color?: Color;
   width?: number;
   id: string;
+  clampToGround?: boolean;
   onLeftClick?: (
     position: ScreenSpaceEventHandler.PositionedEvent,
     polylinePoints: Cartesian3[]
@@ -26,6 +27,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
   color = Color.BLUE,
   width = 3,
   id,
+  clampToGround = false,
   onLeftClick,
 }) => {
   const { viewer } = useCesium();
@@ -39,6 +41,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
       positions: new ConstantProperty(positions),
       material: color,
       width: new ConstantProperty(width),
+      clampToGround: new ConstantProperty(clampToGround),
     });
 
     const entity = viewer.entities.add({
@@ -71,7 +74,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
         }
       }
     };
-  }, [viewer, positions, color, width, id, onLeftClick]);
+  }, [viewer, positions, color, width, id, clampToGround, onLeftClick]);
 
   return null;
 };

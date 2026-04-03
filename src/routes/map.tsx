@@ -77,6 +77,8 @@ function MapContent() {
             full
             useBrowserRecommendedResolution={isTablet ? true : false}
             baseLayer={baseImageryLayer}
+            requestRenderMode={true}
+            maximumRenderTimeChange={Infinity}
             timeline={false}
             shouldAnimate={false}
             animation={false}

@@ -64,12 +64,12 @@ export const flyToPoint = (viewer: Viewer | undefined, point: Cartesian3) => {
  * @param airport Airport to map.
  * @returns Cartesian3 or null.
  */
-export const mapAirportDataToCartesian3Flat = (airport: AirportDto): Cartesian3 | null => {
+export const mapAirportDataToCartesian3Flat = (airport: AirportDto, heightOffset = 0): Cartesian3 | null => {
   const longitude = airport.longDecimal;
   const latitude = airport.latDecimal;
 
   if (latitude && longitude) {
-    return Cartesian3.fromDegrees(longitude, latitude);
+    return Cartesian3.fromDegrees(longitude, latitude, heightOffset);
   }
 
   return null;
@@ -107,8 +107,8 @@ export const mapWaypointToCartesian3 = (waypoint: WaypointDto): Cartesian3 | nul
  * @param waypoint Waypoint to map.
  * @returns Cartesian3 or null
  */
-export const mapWaypointToCartesian3Flat = (waypoint: WaypointDto): Cartesian3 | null => {
-  return Cartesian3.fromDegrees(waypoint.longitude ?? 0, waypoint.latitude ?? 0);
+export const mapWaypointToCartesian3Flat = (waypoint: WaypointDto, heightOffset = 0): Cartesian3 | null => {
+  return Cartesian3.fromDegrees(waypoint.longitude ?? 0, waypoint.latitude ?? 0, heightOffset);
 };
 
 export const isSameLocationWaypointCartesian = (
