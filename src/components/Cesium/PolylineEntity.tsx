@@ -50,6 +50,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
     });
 
     entityRef.current = entity;
+    viewer.scene.requestRender();
 
     if (onLeftClick) {
       const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -67,6 +68,7 @@ export const PolylineEntity: React.FC<PolylineEntityProps> = ({
       if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
+        viewer.scene.requestRender();
         if (handlerRef.current) {
           handlerRef.current.removeInputAction(ScreenSpaceEventType.LEFT_CLICK);
           handlerRef.current.destroy();

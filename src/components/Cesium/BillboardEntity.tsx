@@ -87,6 +87,7 @@ export const BillboardEntity: React.FC<BillboardEntityProps> = ({
     });
 
     entityRef.current = entity;
+    viewer.scene.requestRender();
 
     if (onLeftClick) {
       const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -118,6 +119,7 @@ export const BillboardEntity: React.FC<BillboardEntityProps> = ({
       if (viewer && viewer.cesiumWidget && !viewer.isDestroyed() && entity) {
         viewer.entities.remove(entity);
         entityRef.current = null;
+        viewer.scene.requestRender();
         if (onLeftClick && leftClickHandler.current) {
           leftClickHandler.current.removeInputAction(ScreenSpaceEventType.LEFT_CLICK);
           leftClickHandler.current.destroy();
