@@ -35,5 +35,7 @@ export function useGlobeQuality(
     scene.fog.enabled = terrainEnabled;
     scene.fog.density = terrainFogDensity * 0.5e-4;
     scene.fog.screenSpaceErrorFactor = terrainFogDensity;
+
+    scene.requestRender();
   }, [viewer, globeMaximumScreenSpaceError, terrainFogDensity, terrainEnabled]);
 }

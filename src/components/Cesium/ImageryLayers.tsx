@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { ImageryLayer } from 'resium';
+import { useEffect, useMemo } from 'react';
+import { ImageryLayer, useCesium } from 'resium';
 import { Credit, TextureMagnificationFilter, TextureMinificationFilter } from 'cesium';
 import { useArcGisImageryProviders } from '@/hooks/useArcGisImageryProviders';
 import { useAppSelector } from '@/hooks/reduxHooks';
@@ -16,9 +16,17 @@ import {
  * Layer visibility is controlled by Redux state.
  */
 export function ImageryLayers() {
+  const { viewer } = useCesium();
   const { currentImageryAlpha, currentImageryBrightness, selectedImageryLayer } = useAppSelector(
     (state) => state.viewer
   );
+
+  // Request a render when imagery properties change so the scene updates immediately
+  useEffect(() => {
+    if (viewer && !viewer.isDestroyed()) {
+      viewer.scene.requestRender();
+    }
+  }, [viewer, currentImageryAlpha, currentImageryBrightness, selectedImageryLayer]);
 
   const faaCredit = useMemo(
     () => new Credit('Federal Aviation Administration, Aeronautical Information Services', true),
