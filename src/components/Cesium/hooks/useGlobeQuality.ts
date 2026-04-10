@@ -29,11 +29,12 @@ export function useGlobeQuality(
     globe.depthTestAgainstTerrain = true;
     globe.enableLighting = false;
 
-    // Fog fades distant tiles so Cesium can skip loading them.
-    // Only enabled with terrain since it has no visual benefit on a flat ellipsoid.
-    // Density is scaled from the slider value (1-8) into Cesium's fog density range.
-    scene.fog.enabled = terrainEnabled;
-    scene.fog.density = terrainFogDensity * 0.5e-4;
+    // Fog's screenSpaceErrorFactor relaxes tile LOD for distant tiles when
+    // the camera is tilted, so Cesium skips loading high-detail tiles near
+    // the horizon. This is always enabled for imagery performance.
+    // Visual fog density is only applied when terrain is on.
+    scene.fog.enabled = true;
+    scene.fog.density = terrainEnabled ? terrainFogDensity * 0.5e-4 : 1e-6;
     scene.fog.screenSpaceErrorFactor = terrainFogDensity;
 
     scene.requestRender();

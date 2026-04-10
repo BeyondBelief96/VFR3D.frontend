@@ -10,7 +10,6 @@ export interface ObstacleAirportEntry {
 interface ObstaclesState {
   minHeightFilter: number;
   showRouteObstacles: boolean;
-  heightExaggeration: number;
   showObstacleLabels: boolean;
   // Global radius for airport context obstacles
   airportObstacleRadiusNm: number;
@@ -21,7 +20,6 @@ interface ObstaclesState {
 const initialState: ObstaclesState = {
   minHeightFilter: 200, // Default to 200ft AGL minimum
   showRouteObstacles: true,
-  heightExaggeration: 1, // Default 1x (true scale) for safety
   showObstacleLabels: true,
   // Global radius for airport context obstacles
   airportObstacleRadiusNm: 5, // Default 5 NM radius
@@ -38,9 +36,6 @@ const obstaclesSlice = createSlice({
     },
     toggleShowRouteObstacles: (state, action: PayloadAction<boolean>) => {
       state.showRouteObstacles = action.payload;
-    },
-    setHeightExaggeration: (state, action: PayloadAction<number>) => {
-      state.heightExaggeration = action.payload;
     },
     toggleShowObstacleLabels: (state, action: PayloadAction<boolean>) => {
       state.showObstacleLabels = action.payload;
@@ -71,7 +66,6 @@ const obstaclesSlice = createSlice({
 export const {
   setMinHeightFilter,
   toggleShowRouteObstacles,
-  setHeightExaggeration,
   toggleShowObstacleLabels,
   setAirportObstacleRadius,
   addObstacleAirport,

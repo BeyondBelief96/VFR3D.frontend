@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Popover, Slider, Switch, Tabs, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Group, Popover, Switch, Tabs, Text, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FiLayers, FiAlertTriangle } from 'react-icons/fi';
 import { GiRadioTower } from 'react-icons/gi';
@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   toggleShowRouteObstacles,
   toggleShowObstacleLabels,
-  setHeightExaggeration,
 } from '@/redux/slices/obstaclesSlice';
 import {
   toggleShowRouteAirspaces,
@@ -67,7 +66,7 @@ export function LayerTogglePopover() {
   const [opened, { toggle, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
-  const { showRouteObstacles, showObstacleLabels, heightExaggeration } = useAppSelector(
+  const { showRouteObstacles, showObstacleLabels } = useAppSelector(
     (state) => state.obstacles
   );
   const { showRouteAirspaces, visibleClasses } = useAppSelector((state) => state.airspaces);
@@ -236,27 +235,6 @@ export function LayerTogglePopover() {
               />
             </Group>
 
-            <Text size="xs" c="gray.4" mb={2}>
-              Height Exag. ({heightExaggeration}x)
-            </Text>
-            <Slider
-              value={heightExaggeration}
-              onChange={(val) => dispatch(setHeightExaggeration(val))}
-              min={1}
-              max={10}
-              step={1}
-              size="xs"
-              color="orange"
-              marks={[
-                { value: 1, label: '1x' },
-                { value: 5, label: '5x' },
-                { value: 10, label: '10x' },
-              ]}
-              styles={{
-                markLabel: { fontSize: 9, color: THEME_COLORS.TEXT_LIGHT },
-              }}
-              mb={16}
-            />
           </Tabs.Panel>
 
           {/* Airspaces Tab */}

@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
   setMinHeightFilter,
   toggleShowRouteObstacles,
-  setHeightExaggeration,
   toggleShowObstacleLabels,
   setAirportObstacleRadius,
   addObstacleAirport,
@@ -23,7 +22,6 @@ export function ObstacleOptions() {
   const {
     minHeightFilter,
     showRouteObstacles,
-    heightExaggeration,
     showObstacleLabels,
     airportObstacleRadiusNm,
     obstacleAirports,
@@ -118,29 +116,6 @@ export function ObstacleOptions() {
           />
         </Group>
 
-        <Text size="sm" c="dimmed" mb={4}>
-          Height Exaggeration ({heightExaggeration}x)
-        </Text>
-        <Text size="sm" c="yellow.5" mb={8}>
-          1x shows true obstacle heights. Higher values exaggerate for visibility only and do not represent actual clearance.
-        </Text>
-        <Slider
-          value={heightExaggeration}
-          onChange={(val) => dispatch(setHeightExaggeration(val))}
-          min={1}
-          max={10}
-          step={1}
-          mb={10}
-          marks={[
-            { value: 1, label: '1x' },
-            { value: 5, label: '5x' },
-            { value: 10, label: '10x' },
-          ]}
-          color="cyan"
-          styles={{
-            markLabel: { color: THEME_COLORS.TEXT_DIMMED },
-          }}
-        />
       </div>
 
       <Divider />

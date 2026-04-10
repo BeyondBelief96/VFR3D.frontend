@@ -244,6 +244,7 @@ export const mapObstacleToCartesian3 = (obstacle: ObstacleDto): Cartesian3 | nul
  * @returns Height in meters.
  */
 export const getObstacleHeightMeters = (obstacle: ObstacleDto, useAgl: boolean = true): number => {
+  console.log(obstacle);
   const heightFeet = useAgl ? (obstacle.heightAgl ?? 0) : (obstacle.heightAmsl ?? 0);
   return heightFeet * FEET_TO_METERS;
 };

@@ -8,7 +8,6 @@ interface AirportContextObstaclesProps {
   airport: ObstacleAirportEntry;
   radiusNm: number;
   minHeightFilter: number;
-  heightExaggeration: number;
   showLabels: boolean;
   excludeOasNumbers: Set<string>;
   onObstaclesLoaded?: (obstacles: ObstacleDto[]) => void;
@@ -18,7 +17,6 @@ export const AirportContextObstacles: React.FC<AirportContextObstaclesProps> = (
   airport,
   radiusNm,
   minHeightFilter,
-  heightExaggeration,
   showLabels,
   excludeOasNumbers,
   onObstaclesLoaded,
@@ -60,7 +58,6 @@ export const AirportContextObstacles: React.FC<AirportContextObstaclesProps> = (
         <ObstacleEntity
           key={`airport-${airport.icaoOrIdent}-${obstacle.oasNumber}`}
           obstacle={obstacle}
-          heightExaggeration={heightExaggeration}
           showLabel={showLabels}
         />
       ))}
