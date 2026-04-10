@@ -2,17 +2,7 @@ import React, { useEffect, useCallback, useMemo } from 'react';
 import { Color, ScreenSpaceEventHandler, ScreenSpaceEventType, Cartesian3, Entity } from 'cesium';
 import { useDispatch } from 'react-redux';
 import { useCesium } from 'resium';
-import {
-  useGetMtObscGAirmetsQuery,
-  useGetIfrGAirmetsQuery,
-  useGetTurbLoGAirmetsQuery,
-  useGetTurbHiGAirmetsQuery,
-  useGetLlwsGAirmetsQuery,
-  useGetSfcWindGAirmetsQuery,
-  useGetIceGAirmetsQuery,
-  useGetFzlvlGAirmetsQuery,
-  useGetMFzlvlGAirmetsQuery,
-} from '@/redux/api/preflight/weather.api';
+import { useGetAllGAirmetsQuery } from '@/redux/api/preflight/weather.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -34,106 +24,28 @@ export const GAirmetComponent: React.FC = () => {
     return Object.values(gairmetHazards).some((value) => value === true);
   }, [gairmetHazards]);
 
-  // Individual queries per hazard type with skip when not enabled
-  const { data: mtObscGAirmets, isFetching: isFetchingMtObsc, isLoading: isLoadingMtObsc } =
-    useGetMtObscGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.MT_OBSC,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
+  // Single bulk query — filter by hazard type client-side
+  const {
+    data: allFetchedGAirmets,
+    isFetching,
+    isLoading: isLoadingData,
+  } = useGetAllGAirmetsQuery(undefined, {
+    skip: !isAnyHazardSelected,
+    pollingInterval: POLLING_INTERVAL,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const { data: ifrGAirmets, isFetching: isFetchingIfr, isLoading: isLoadingIfr } =
-    useGetIfrGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.IFR,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: turbLoGAirmets, isFetching: isFetchingTurbLo, isLoading: isLoadingTurbLo } =
-    useGetTurbLoGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.TURB_LO,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: turbHiGAirmets, isFetching: isFetchingTurbHi, isLoading: isLoadingTurbHi } =
-    useGetTurbHiGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.TURB_HI,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: llwsGAirmets, isFetching: isFetchingLlws, isLoading: isLoadingLlws } =
-    useGetLlwsGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.LLWS,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: sfcWindGAirmets, isFetching: isFetchingSfcWind, isLoading: isLoadingSfcWind } =
-    useGetSfcWindGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.SFC_WIND,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: iceGAirmets, isFetching: isFetchingIce, isLoading: isLoadingIce } =
-    useGetIceGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.ICE,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: fzlvlGAirmets, isFetching: isFetchingFzlvl, isLoading: isLoadingFzlvl } =
-    useGetFzlvlGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.FZLVL,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  const { data: mFzlvlGAirmets, isFetching: isFetchingMFzlvl, isLoading: isLoadingMFzlvl } =
-    useGetMFzlvlGAirmetsQuery(undefined, {
-      skip: !gairmetHazards.M_FZLVL,
-      pollingInterval: POLLING_INTERVAL,
-      refetchOnMountOrArgChange: true,
-    });
-
-  // Combine all visible G-AIRMETs
+  // Filter to only the enabled hazard types
   const allGAirmets = useMemo(() => {
-    const combined: GAirmetDto[] = [];
-    if (gairmetHazards.MT_OBSC && mtObscGAirmets) combined.push(...mtObscGAirmets);
-    if (gairmetHazards.IFR && ifrGAirmets) combined.push(...ifrGAirmets);
-    if (gairmetHazards.TURB_LO && turbLoGAirmets) combined.push(...turbLoGAirmets);
-    if (gairmetHazards.TURB_HI && turbHiGAirmets) combined.push(...turbHiGAirmets);
-    if (gairmetHazards.LLWS && llwsGAirmets) combined.push(...llwsGAirmets);
-    if (gairmetHazards.SFC_WIND && sfcWindGAirmets) combined.push(...sfcWindGAirmets);
-    if (gairmetHazards.ICE && iceGAirmets) combined.push(...iceGAirmets);
-    if (gairmetHazards.FZLVL && fzlvlGAirmets) combined.push(...fzlvlGAirmets);
-    if (gairmetHazards.M_FZLVL && mFzlvlGAirmets) combined.push(...mFzlvlGAirmets);
-    return combined;
-  }, [
-    gairmetHazards,
-    mtObscGAirmets,
-    ifrGAirmets,
-    turbLoGAirmets,
-    turbHiGAirmets,
-    llwsGAirmets,
-    sfcWindGAirmets,
-    iceGAirmets,
-    fzlvlGAirmets,
-    mFzlvlGAirmets,
-  ]);
+    if (!allFetchedGAirmets) return [];
+    return allFetchedGAirmets.filter((gairmet) => {
+      const hazard = gairmet.hazard;
+      if (!hazard) return false;
+      return gairmetHazards[hazard as keyof typeof gairmetHazards] === true;
+    });
+  }, [allFetchedGAirmets, gairmetHazards]);
 
-  const isLoading =
-    (gairmetHazards.MT_OBSC && (isFetchingMtObsc || isLoadingMtObsc)) ||
-    (gairmetHazards.IFR && (isFetchingIfr || isLoadingIfr)) ||
-    (gairmetHazards.TURB_LO && (isFetchingTurbLo || isLoadingTurbLo)) ||
-    (gairmetHazards.TURB_HI && (isFetchingTurbHi || isLoadingTurbHi)) ||
-    (gairmetHazards.LLWS && (isFetchingLlws || isLoadingLlws)) ||
-    (gairmetHazards.SFC_WIND && (isFetchingSfcWind || isLoadingSfcWind)) ||
-    (gairmetHazards.ICE && (isFetchingIce || isLoadingIce)) ||
-    (gairmetHazards.FZLVL && (isFetchingFzlvl || isLoadingFzlvl)) ||
-    (gairmetHazards.M_FZLVL && (isFetchingMFzlvl || isLoadingMFzlvl));
+  const isLoading = isAnyHazardSelected && (isFetching || isLoadingData);
 
   // Get color based on hazard type
   const getColorForHazard = useCallback((hazard?: GAirmetHazardType | null): Color => {

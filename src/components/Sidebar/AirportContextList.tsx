@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack, Text, Box } from '@mantine/core';
 import { FiMapPin } from 'react-icons/fi';
 import { AirportContextChip } from './AirportContextChip';
@@ -15,7 +16,7 @@ interface AirportContextListProps {
   color?: string;
 }
 
-export function AirportContextList({
+export const AirportContextList = React.memo(function AirportContextList({
   airports,
   onRemove,
   emptyMessage = 'No airports added. Search above to add airports.',
@@ -54,6 +55,6 @@ export function AirportContextList({
       ))}
     </Stack>
   );
-}
+});
 
 export default AirportContextList;

@@ -106,10 +106,14 @@ const Airports: React.FC = () => {
     pollingInterval: 300000,
   });
 
-  const metarMap = new Map(
-    metarData
-      .filter((metar) => metar.stationId !== undefined)
-      .map((metar) => [metar.stationId as string, metar])
+  const metarMap = useMemo(
+    () =>
+      new Map(
+        metarData
+          .filter((metar) => metar.stationId !== undefined)
+          .map((metar) => [metar.stationId as string, metar])
+      ),
+    [metarData]
   );
 
   // Get the set of airport identifiers from route waypoints (to exclude in PREVIEW/VIEWING mode)

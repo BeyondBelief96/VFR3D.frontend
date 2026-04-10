@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack, Switch, Text, Group, NumberInput, Slider, Divider, Badge, Box } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
@@ -17,7 +17,7 @@ import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 const DEBOUNCE_MS = 300;
 
-export function ObstacleOptions() {
+export const ObstacleOptions = React.memo(function ObstacleOptions() {
   const dispatch = useAppDispatch();
   const {
     minHeightFilter,
@@ -199,6 +199,6 @@ export function ObstacleOptions() {
       </Text>
     </Stack>
   );
-}
+});
 
 export default ObstacleOptions;

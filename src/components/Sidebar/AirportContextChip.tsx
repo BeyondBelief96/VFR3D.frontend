@@ -1,3 +1,4 @@
+import React from 'react';
 import { ActionIcon, Group, Paper, Text, Tooltip } from '@mantine/core';
 import { FiX } from 'react-icons/fi';
 import { SURFACE } from '@/constants/surfaces';
@@ -9,7 +10,7 @@ interface AirportContextChipProps {
   color?: string;
 }
 
-export function AirportContextChip({
+export const AirportContextChip = React.memo(function AirportContextChip({
   icaoOrIdent,
   displayName,
   onRemove,
@@ -41,6 +42,6 @@ export function AirportContextChip({
       </Group>
     </Paper>
   );
-}
+});
 
 export default AirportContextChip;

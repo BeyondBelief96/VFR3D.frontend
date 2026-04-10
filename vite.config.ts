@@ -21,13 +21,20 @@ export default defineConfig({
     open: true,
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {
           // Skip cesium - it's handled by vite-plugin-cesium as external
           if (id.includes('cesium')) {
             return undefined;
+          }
+          // react-pdf before mantine to avoid circular chunk dependency
+          if (id.includes('@react-pdf/')) {
+            return 'react-pdf';
+          }
+          if (id.includes('recharts') || id.includes('d3-')) {
+            return 'recharts';
           }
           if (id.includes('@mantine/core') || id.includes('@mantine/hooks') ||
               id.includes('@mantine/form') || id.includes('@mantine/dates') ||

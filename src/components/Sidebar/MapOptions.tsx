@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Stack, Select, Text, Slider, Box, Switch, Group } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -12,7 +13,7 @@ import {
 import { IMAGERY_LAYER_OPTIONS } from '@/utility/constants';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
-export function MapOptions() {
+export const MapOptions = React.memo(function MapOptions() {
   const dispatch = useAppDispatch();
   const terrainTransitioning = useAppSelector((state) => state.viewer.terrainTransitioning);
   const {
@@ -24,10 +25,10 @@ export function MapOptions() {
     terrainEnabled,
   } = useAppSelector((state) => state.viewer);
 
-  const layerOptions = IMAGERY_LAYER_OPTIONS.map((option) => ({
-    value: option.layerName,
-    label: option.displayLabel,
-  }));
+  const layerOptions = useMemo(
+    () => IMAGERY_LAYER_OPTIONS.map((option) => ({ value: option.layerName, label: option.displayLabel })),
+    []
+  );
 
   // Defer the actual terrain toggle so the loading overlay can paint first.
   // Changing terrainEnabled triggers heavy work (obstacle re-renders + Cesium
@@ -180,6 +181,6 @@ export function MapOptions() {
       )}
     </Stack>
   );
-}
+});
 
 export default MapOptions;

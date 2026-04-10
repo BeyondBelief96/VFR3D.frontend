@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { Suspense, useState, useMemo } from 'react';
 import {
   Stack,
   Group,
@@ -18,6 +18,8 @@ import {
   Tooltip,
   ActionIcon,
   Progress,
+  Center,
+  Loader,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { FiAlertTriangle, FiActivity, FiRefreshCw, FiUsers, FiInfo, FiDroplet, FiBox, FiClock, FiSave } from 'react-icons/fi';
@@ -35,7 +37,7 @@ import { useIsPhone } from '@/hooks';
 import { useGetWeightBalanceProfilesQuery } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { useWeightBalanceCalculation } from '../hooks/useWeightBalanceCalculation';
-import { CgEnvelopeChart } from '../visualization/CgEnvelopeChart';
+const CgEnvelopeChart = React.lazy(() => import('../visualization/CgEnvelopeChart'));
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
@@ -728,16 +730,18 @@ export const WeightBalanceCalculator: React.FC<WeightBalanceCalculatorProps> = (
                   </SimpleGrid>
 
                   {/* Chart */}
-                  <CgEnvelopeChart
-                    envelopePoints={result.envelopeLimits || []}
-                    envelopeName={result.envelopeName}
-                    envelopeFormat={envelopeFormat}
-                    takeoffResult={result.takeoff}
-                    landingResult={result.landing}
-                    armUnits={selectedProfile?.armUnits}
-                    weightUnits={selectedProfile?.weightUnits}
-                    height={isCompact ? 250 : 350}
-                  />
+                  <Suspense fallback={<Center py="xl"><Loader size="sm" /></Center>}>
+                    <CgEnvelopeChart
+                      envelopePoints={result.envelopeLimits || []}
+                      envelopeName={result.envelopeName}
+                      envelopeFormat={envelopeFormat}
+                      takeoffResult={result.takeoff}
+                      landingResult={result.landing}
+                      armUnits={selectedProfile?.armUnits}
+                      weightUnits={selectedProfile?.weightUnits}
+                      height={isCompact ? 250 : 350}
+                    />
+                  </Suspense>
                 </Tabs.Panel>
 
                 <Tabs.Panel value="breakdown" pt="md">
