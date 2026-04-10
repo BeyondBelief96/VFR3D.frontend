@@ -7,12 +7,14 @@ import {
   setGlobeMaximumScreenSpaceError,
   setTerrainFogDensity,
   setTerrainEnabled,
+  setTerrainTransitioning,
 } from '@/redux/slices/viewerSlice';
 import { IMAGERY_LAYER_OPTIONS } from '@/utility/constants';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
 export function MapOptions() {
   const dispatch = useAppDispatch();
+  const terrainTransitioning = useAppSelector((state) => state.viewer.terrainTransitioning);
   const {
     selectedImageryLayer,
     currentImageryAlpha,
@@ -26,6 +28,18 @@ export function MapOptions() {
     value: option.layerName,
     label: option.displayLabel,
   }));
+
+  // Defer the actual terrain toggle so the loading overlay can paint first.
+  // Changing terrainEnabled triggers heavy work (obstacle re-renders + Cesium
+  // tile reprocessing) that blocks the main thread for several seconds.
+  const handleTerrainToggle = (checked: boolean) => {
+    dispatch(setTerrainTransitioning(true));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        dispatch(setTerrainEnabled(checked));
+      });
+    });
+  };
 
   return (
     <Stack gap="md">
@@ -127,7 +141,8 @@ export function MapOptions() {
           </Text>
           <Switch
             checked={terrainEnabled}
-            onChange={(event) => dispatch(setTerrainEnabled(event.currentTarget.checked))}
+            onChange={(event) => handleTerrainToggle(event.currentTarget.checked)}
+            disabled={terrainTransitioning}
             size="sm"
             color="vfr3dBlue"
           />
