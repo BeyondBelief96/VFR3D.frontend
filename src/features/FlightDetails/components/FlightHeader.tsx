@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Link } from '@tanstack/react-router';
 import {
   Group,
@@ -11,13 +12,13 @@ import {
   Tooltip,
   Stack,
 } from '@mantine/core';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { FiArrowLeft, FiDownload, FiRefreshCw } from 'react-icons/fi';
+import { FiArrowLeft, FiRefreshCw } from 'react-icons/fi';
 import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
-import { FlightLogPdf } from '@/features/Flights';
 import { FlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { useIsPhone } from '@/hooks';
+
+const PdfDownloadButton = React.lazy(() => import('./PdfDownloadButton'));
 
 interface FlightHeaderProps {
   flight: FlightDto;
@@ -78,46 +79,9 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
             </Button>
           </Tooltip>
         )}
-        {pdfData.isLoading ? (
-          <Button
-            variant="light"
-            color={BUTTON_COLORS.CONFIRM}
-            size={isPhone ? 'sm' : 'md'}
-            leftSection={<Loader size="xs" />}
-            disabled
-          >
-            {isPhone ? 'PDF' : 'Preparing PDF...'}
-          </Button>
-        ) : (
-          <PDFDownloadLink
-            document={
-              <FlightLogPdf
-                flightData={flight}
-                airports={pdfData.airports}
-                metars={pdfData.metars}
-                tafs={pdfData.tafs}
-                runways={pdfData.runways}
-                frequencies={pdfData.frequencies}
-                crosswindData={pdfData.crosswindData}
-                weightBalance={pdfData.weightBalance}
-              />
-            }
-            fileName={`${flight.name || 'flight'}-navlog.pdf`}
-            style={{ textDecoration: 'none' }}
-          >
-            {({ loading }: { loading: boolean }) => (
-              <Button
-                variant="light"
-                color={BUTTON_COLORS.CONFIRM}
-                size={isPhone ? 'sm' : 'md'}
-                leftSection={loading ? <Loader size="xs" /> : <FiDownload size={16} />}
-                disabled={loading}
-              >
-                {loading ? 'Preparing...' : isPhone ? 'PDF' : 'Download PDF'}
-              </Button>
-            )}
-          </PDFDownloadLink>
-        )}
+        <Suspense fallback={<Button variant="light" color={BUTTON_COLORS.CONFIRM} size={isPhone ? 'sm' : 'md'} disabled leftSection={<Loader size="xs" />}>{isPhone ? 'PDF' : 'Loading...'}</Button>}>
+          <PdfDownloadButton flight={flight} pdfData={pdfData} />
+        </Suspense>
       </Group>
     </Stack>
   );

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack, Text, Button, Group, Box, Badge, Divider, Tooltip } from '@mantine/core';
 import { FiInfo } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
@@ -146,7 +147,7 @@ const gairmetHazards: GAirmetHazardInfo[] = [
   },
 ];
 
-export function AirsigmetOptions() {
+export const AirsigmetOptions = React.memo(function AirsigmetOptions() {
   const dispatch = useAppDispatch();
   const { sigmetHazards, gairmetHazards: gairmetVisibility } = useAppSelector(
     (state) => state.airsigmet
@@ -322,6 +323,6 @@ export function AirsigmetOptions() {
       </Box>
     </Stack>
   );
-}
+});
 
 export default AirsigmetOptions;

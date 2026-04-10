@@ -19,7 +19,7 @@ export const RouteObstacles: React.FC = () => {
   const { user } = useAuth0();
   const handlerRef = useRef<ScreenSpaceEventHandler | null>(null);
 
-  const { showRouteObstacles, heightExaggeration, showObstacleLabels } = useSelector(
+  const { showRouteObstacles, showObstacleLabels } = useSelector(
     (state: RootState) => state.obstacles
   );
   const { navlogPreview, displayMode, activeFlightId } = useSelector(
@@ -127,7 +127,6 @@ export const RouteObstacles: React.FC = () => {
         <ObstacleEntity
           key={`route-${obstacle.oasNumber}`}
           obstacle={obstacle}
-          heightExaggeration={heightExaggeration}
           showLabel={showObstacleLabels}
         />
       ))}

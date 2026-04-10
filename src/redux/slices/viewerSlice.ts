@@ -7,6 +7,7 @@ interface ViewerState {
   globeMaximumScreenSpaceError: number;
   terrainFogDensity: number;
   terrainEnabled: boolean;
+  terrainTransitioning: boolean;
 }
 
 const initialState: ViewerState = {
@@ -16,6 +17,7 @@ const initialState: ViewerState = {
   globeMaximumScreenSpaceError: 1.3,
   terrainFogDensity: 4,
   terrainEnabled: false,
+  terrainTransitioning: false,
 };
 
 const viewerSlice = createSlice({
@@ -40,6 +42,9 @@ const viewerSlice = createSlice({
     setTerrainEnabled: (state, action: PayloadAction<boolean>) => {
       state.terrainEnabled = action.payload;
     },
+    setTerrainTransitioning: (state, action: PayloadAction<boolean>) => {
+      state.terrainTransitioning = action.payload;
+    },
   },
 });
 
@@ -50,6 +55,7 @@ export const {
   setGlobeMaximumScreenSpaceError,
   setTerrainFogDensity,
   setTerrainEnabled,
+  setTerrainTransitioning,
 } = viewerSlice.actions;
 
 export default viewerSlice.reducer;

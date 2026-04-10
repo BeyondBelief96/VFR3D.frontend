@@ -39,13 +39,13 @@ export function ImageryLayers() {
   const { imagery: ifrLowImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_LOW_URL, faaCredit);
   const { imagery: ifrHighImagery } = useArcGisImageryProviders(ARCGIS_FAA_IFR_HIGH_URL, faaCredit);
 
-  const commonImageryLayerProps = {
+  const commonImageryLayerProps = useMemo(() => ({
     alpha: currentImageryAlpha ?? 1,
     brightness: currentImageryBrightness ?? 1,
     magnificationFilter: TextureMagnificationFilter.NEAREST,
     minificationFilter: TextureMinificationFilter.NEAREST,
     cutoutRectangle: undefined,
-  };
+  }), [currentImageryAlpha, currentImageryBrightness]);
 
   return (
     <>

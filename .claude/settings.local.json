@@ -38,7 +38,9 @@
       "Bash(grep -r variant=['']filled[''] --include=*.tsx C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlights C:UsersbrandsourcereposVFR3D.frontendsrcfeaturesFlightDetails C:UsersbrandsourcereposVFR3D.frontendsrcroutes)",
       "Bash(xargs grep:*)",
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(xargs head:*)",
+      "Bash(xargs wc:*)"
     ]
   }
 }

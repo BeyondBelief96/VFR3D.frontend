@@ -17,7 +17,6 @@ const HOVER_OVERLAY_NAME = '__hover_overlay__';
 export const Obstacles: React.FC = () => {
   const {
     minHeightFilter,
-    heightExaggeration,
     showObstacleLabels,
     showRouteObstacles,
     airportObstacleRadiusNm,
@@ -138,7 +137,6 @@ export const Obstacles: React.FC = () => {
           airport={airport}
           radiusNm={airportObstacleRadiusNm}
           minHeightFilter={minHeightFilter}
-          heightExaggeration={heightExaggeration}
           showLabels={showObstacleLabels}
           excludeOasNumbers={routeObstacleOasNumbers}
           onObstaclesLoaded={handleObstaclesLoaded}

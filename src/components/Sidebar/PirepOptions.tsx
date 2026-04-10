@@ -1,8 +1,9 @@
+import React from 'react';
 import { Stack, Text, Switch, Group, Box, Badge } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { toggleShowPireps } from '@/redux/slices/pirepsSlice';
 
-export function PirepOptions() {
+export const PirepOptions = React.memo(function PirepOptions() {
   const dispatch = useAppDispatch();
   const { showPireps } = useAppSelector((state) => state.pireps);
 
@@ -50,6 +51,6 @@ export function PirepOptions() {
       </Text>
     </Stack>
   );
-}
+});
 
 export default PirepOptions;

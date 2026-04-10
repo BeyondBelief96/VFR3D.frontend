@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Stack, Select, Switch, Text, Group } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -8,12 +9,12 @@ import {
 import { states } from '@/utility/states';
 import { SURFACE, BORDER, THEME_COLORS } from '@/constants/surfaces';
 
-export function AirportOptions() {
+export const AirportOptions = React.memo(function AirportOptions() {
   const dispatch = useAppDispatch();
   const { showAirportsForSelectedState, showCloudBases, selectedStateToShowAirports } =
     useAppSelector((state) => state.airport);
 
-  const stateOptions = states.map((state) => ({ value: state, label: state }));
+  const stateOptions = useMemo(() => states.map((state) => ({ value: state, label: state })), []);
 
   const handleStateChange = (value: string | null) => {
     const selectedValue = value || '';
@@ -81,6 +82,6 @@ export function AirportOptions() {
       </Text>
     </Stack>
   );
-}
+});
 
 export default AirportOptions;

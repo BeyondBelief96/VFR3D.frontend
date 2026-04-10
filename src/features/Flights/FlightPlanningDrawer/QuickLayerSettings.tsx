@@ -1,4 +1,4 @@
-import { Box, Group, Text, Switch, Accordion, Slider, Tooltip } from '@mantine/core';
+import { Box, Group, Text, Switch, Accordion, Tooltip } from '@mantine/core';
 import { FiLayers, FiAlertTriangle, FiCloud } from 'react-icons/fi';
 import { GiRadioTower } from 'react-icons/gi';
 import { TbAlertTriangle } from 'react-icons/tb';
@@ -8,7 +8,6 @@ import { SURFACE, BORDER, ICON_BG, THEME_COLORS } from '@/constants/surfaces';
 import {
   toggleShowRouteObstacles,
   toggleShowObstacleLabels,
-  setHeightExaggeration,
 } from '@/redux/slices/obstaclesSlice';
 import {
   toggleShowRouteAirspaces,
@@ -57,7 +56,7 @@ export function QuickLayerSettings() {
   const dispatch = useAppDispatch();
   const isPhone = useIsPhone();
 
-  const { showRouteObstacles, showObstacleLabels, heightExaggeration } = useAppSelector(
+  const { showRouteObstacles, showObstacleLabels } = useAppSelector(
     (state) => state.obstacles
   );
 
@@ -225,29 +224,6 @@ export function QuickLayerSettings() {
                 />
               </Group>
 
-              <Text size="xs" c="dimmed" mb={2}>
-                Height Exaggeration ({heightExaggeration}x)
-              </Text>
-              <Text size="xs" c="yellow.5" mb={6}>
-                1x shows true heights. Higher values exaggerate for visibility only.
-              </Text>
-              <Slider
-                value={heightExaggeration}
-                onChange={(val) => dispatch(setHeightExaggeration(val))}
-                min={1}
-                max={10}
-                step={1}
-                size="xs"
-                color="orange"
-                marks={[
-                  { value: 1, label: '1x' },
-                  { value: 5, label: '5x' },
-                  { value: 10, label: '10x' },
-                ]}
-                styles={{
-                  markLabel: { fontSize: 10, color: THEME_COLORS.TEXT_DIMMED },
-                }}
-              />
             </Box>
           </Accordion.Panel>
         </Accordion.Item>

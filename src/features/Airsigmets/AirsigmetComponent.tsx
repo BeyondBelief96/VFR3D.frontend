@@ -2,13 +2,7 @@ import React, { useEffect, useCallback, useMemo } from 'react';
 import { Color, ScreenSpaceEventHandler, ScreenSpaceEventType, Cartesian3, Entity } from 'cesium';
 import { useDispatch } from 'react-redux';
 import { useCesium } from 'resium';
-import {
-  useGetConvectiveAirsigmetsQuery,
-  useGetIceAirsigmetsQuery,
-  useGetTurbAirsigmetsQuery,
-  useGetIfrAirsigmetsQuery,
-  useGetMtnObscnAirsigmetsQuery,
-} from '@/redux/api/preflight/weather.api';
+import { useGetAllAirsigmetsQuery } from '@/redux/api/preflight/weather.api';
 import { PolygonEntity } from '@/components/Cesium';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { setSelectedEntity } from '@/redux/slices/selectedEntitySlice';
@@ -30,91 +24,32 @@ export const AirsigmetComponent: React.FC = () => {
     return Object.values(sigmetHazards).some((value) => value === true);
   }, [sigmetHazards]);
 
-  // Individual queries per hazard type with skip when not enabled
+  // Single bulk query — filter by hazard type client-side
   const {
-    data: convectiveAirsigmets,
-    isFetching: isFetchingConvective,
-    isLoading: isLoadingConvective,
-  } = useGetConvectiveAirsigmetsQuery(undefined, {
-    skip: !sigmetHazards.CONVECTIVE,
+    data: allFetchedAirsigmets,
+    isFetching,
+    isLoading: isLoadingData,
+  } = useGetAllAirsigmetsQuery(undefined, {
+    skip: !isAnyHazardSelected,
     pollingInterval: POLLING_INTERVAL,
     refetchOnMountOrArgChange: true,
   });
 
-  const {
-    data: iceAirsigmets,
-    isFetching: isFetchingIce,
-    isLoading: isLoadingIce,
-  } = useGetIceAirsigmetsQuery(undefined, {
-    skip: !sigmetHazards.ICE,
-    pollingInterval: POLLING_INTERVAL,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const {
-    data: turbAirsigmets,
-    isFetching: isFetchingTurb,
-    isLoading: isLoadingTurb,
-  } = useGetTurbAirsigmetsQuery(undefined, {
-    skip: !sigmetHazards.TURB,
-    pollingInterval: POLLING_INTERVAL,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const {
-    data: ifrAirsigmets,
-    isFetching: isFetchingIfr,
-    isLoading: isLoadingIfr,
-  } = useGetIfrAirsigmetsQuery(undefined, {
-    skip: !sigmetHazards.IFR,
-    pollingInterval: POLLING_INTERVAL,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const {
-    data: mtnObscnAirsigmets,
-    isFetching: isFetchingMtnObscn,
-    isLoading: isLoadingMtnObscn,
-  } = useGetMtnObscnAirsigmetsQuery(undefined, {
-    skip: !sigmetHazards.MTN_OBSCN,
-    pollingInterval: POLLING_INTERVAL,
-    refetchOnMountOrArgChange: true,
-  });
-
-  // Combine all visible AIRSIGMETs
+  // Filter to only the enabled hazard types
   const allAirsigmets = useMemo(() => {
-    const combined: AirsigmetDto[] = [];
-    if (sigmetHazards.CONVECTIVE && convectiveAirsigmets) {
-      combined.push(...convectiveAirsigmets);
-    }
-    if (sigmetHazards.ICE && iceAirsigmets) {
-      combined.push(...iceAirsigmets);
-    }
-    if (sigmetHazards.TURB && turbAirsigmets) {
-      combined.push(...turbAirsigmets);
-    }
-    if (sigmetHazards.IFR && ifrAirsigmets) {
-      combined.push(...ifrAirsigmets);
-    }
-    if (sigmetHazards.MTN_OBSCN && mtnObscnAirsigmets) {
-      combined.push(...mtnObscnAirsigmets);
-    }
-    return combined;
-  }, [
-    sigmetHazards,
-    convectiveAirsigmets,
-    iceAirsigmets,
-    turbAirsigmets,
-    ifrAirsigmets,
-    mtnObscnAirsigmets,
-  ]);
+    if (!allFetchedAirsigmets) return [];
+    return allFetchedAirsigmets.filter((airsigmet) => {
+      const hazardType = airsigmet.hazard?.type !== undefined
+        ? String(airsigmet.hazard.type)
+        : undefined;
+      if (!hazardType) return false;
+      // Normalize hazard type key (API may return "MTN OBSCN" or "MTN_OBSCN")
+      const normalizedKey = hazardType.replace(/\s+/g, '_');
+      return sigmetHazards[normalizedKey as keyof typeof sigmetHazards] === true;
+    });
+  }, [allFetchedAirsigmets, sigmetHazards]);
 
-  const isLoading =
-    (sigmetHazards.CONVECTIVE && (isFetchingConvective || isLoadingConvective)) ||
-    (sigmetHazards.ICE && (isFetchingIce || isLoadingIce)) ||
-    (sigmetHazards.TURB && (isFetchingTurb || isLoadingTurb)) ||
-    (sigmetHazards.IFR && (isFetchingIfr || isLoadingIfr)) ||
-    (sigmetHazards.MTN_OBSCN && (isFetchingMtnObscn || isLoadingMtnObscn));
+  const isLoading = isAnyHazardSelected && (isFetching || isLoadingData);
 
   const getColorForHazard = useCallback((hazardType: string | undefined, severity: string): Color => {
     switch (hazardType) {

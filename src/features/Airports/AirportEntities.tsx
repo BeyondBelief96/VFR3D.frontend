@@ -13,7 +13,7 @@ interface AirportEntitiesProps {
   metarMap: Map<string, MetarDto>;
 }
 
-const AirportEntities: React.FC<AirportEntitiesProps> = ({ airports, metarMap }) => {
+const AirportEntities: React.FC<AirportEntitiesProps> = React.memo(({ airports, metarMap }) => {
   const { viewer } = useCesium();
   const dispatch = useAppDispatch();
 
@@ -95,6 +95,6 @@ const AirportEntities: React.FC<AirportEntitiesProps> = ({ airports, metarMap })
       ))}
     </>
   );
-};
+});
 
 export default AirportEntities;

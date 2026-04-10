@@ -9,6 +9,7 @@ import {
   CylinderGraphics,
   Cartesian2,
   Cartesian3,
+  Cartographic,
   HeightReference,
 } from 'cesium';
 import { getEntityFromPick, isViewerUsable } from './cesiumHelpers';
@@ -99,7 +100,7 @@ export function useCylinderHoverHighlight() {
         name: HOVER_OVERLAY_NAME,
         position: position,
         cylinder: new CylinderGraphics({
-          length: length + 2, // Slightly taller to be visible
+          length: length,
           topRadius: radius * RING_WIDTH_FACTOR,
           bottomRadius: radius * RING_WIDTH_FACTOR,
           material: Color.YELLOW.withAlpha(HIGHLIGHT_ALPHA),
@@ -111,21 +112,30 @@ export function useCylinderHoverHighlight() {
       });
       state.overlays.push(ringOverlay);
 
-      // Create a glowing top cap
+      // Create a glowing top cap disc at the top of the cylinder.
+      // Cesium offsets cylinder bottom to entity position when heightReference != NONE,
+      // so the visible top is at (entity height + length). Place cap bottom 5m below that.
+      const carto = Cartographic.fromCartesian(position);
+      const topPosition = Cartesian3.fromRadians(
+        carto.longitude,
+        carto.latitude,
+        carto.height + length - 5
+      );
       const topCapOverlay = viewer.entities.add({
         name: HOVER_OVERLAY_NAME,
-        position: position,
+        position: topPosition,
         cylinder: new CylinderGraphics({
-          length: 5, // Thin disc at top
+          length: 5,
           topRadius: radius * RING_WIDTH_FACTOR,
           bottomRadius: radius * RING_WIDTH_FACTOR,
           material: Color.YELLOW.withAlpha(0.3),
-          heightReference: heightRef,
+          heightReference: HeightReference.RELATIVE_TO_GROUND,
         }),
       });
       state.overlays.push(topCapOverlay);
 
       state.lastHighlighted = entity;
+      viewer.scene.requestRender();
     };
 
     // Mouse move handler for hover detection

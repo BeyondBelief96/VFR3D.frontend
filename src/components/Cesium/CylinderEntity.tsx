@@ -76,14 +76,16 @@ export const CylinderEntity: React.FC<CylinderEntityProps> = ({
 
   // Calculate the label position at the top of the cylinder.
   // Cesium offsets the cylinder bottom to ground when heightReference != NONE,
-  // so the top is at ground + length. Using RELATIVE_TO_GROUND on the label
-  // with height = length places it at the cylinder top.
+  // so the visible top is at (position height + length) above terrain.
+  // Using RELATIVE_TO_GROUND on the label with that combined height places it
+  // at the cylinder top, correctly handling any negative position offsets
+  // (e.g. when the cylinder extends below terrain for visual intersection).
   const labelPosition = useMemo(() => {
     const cartographic = Cartographic.fromCartesian(position, Ellipsoid.WGS84);
     return Cartesian3.fromRadians(
       cartographic.longitude,
       cartographic.latitude,
-      length
+      cartographic.height + length
     );
   }, [position, length]);
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack, Text, Button, Group, Box, Switch, Badge, Divider } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import {
@@ -58,7 +59,7 @@ const specialUseAirspaceInfo: SpecialUseInfo[] = [
   { code: 'D', label: 'Danger', color: 'pink', description: 'Danger to aircraft - use caution' },
 ];
 
-export function AirspaceOptions() {
+export const AirspaceOptions = React.memo(function AirspaceOptions() {
   const dispatch = useAppDispatch();
   const { visibleClasses, visibleTypeCodes, showRouteAirspaces, airspaceAirports } = useAppSelector(
     (state) => state.airspaces
@@ -224,6 +225,6 @@ export function AirspaceOptions() {
       </Box>
     </Stack>
   );
-}
+});
 
 export default AirspaceOptions;
