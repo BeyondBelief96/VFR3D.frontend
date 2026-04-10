@@ -2,14 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useCesium } from 'resium';
 import { Cartesian3 } from 'cesium';
-import { flyToPoint, mapAirportDataToCartesian3Flat, mapWaypointToCartesian3 } from '@/utility/cesiumUtils';
-import { AirportDto } from '@/redux/api/vfr3d/dtos';
+import { flyToPoint, mapWaypointToCartesian3 } from '@/utility/cesiumUtils';
 import type { RootState } from '@/redux/store';
 
 const FlyTo = () => {
   const { viewer } = useCesium();
-  const selectedEntity = useSelector((state: RootState) => state.selectedEntity.entity);
-  const selectedEntityType = useSelector((state: RootState) => state.selectedEntity.type);
   const flightPlanRoute = useSelector(
     (state: RootState) => state.flightPlanning.draftFlightPlan.waypoints
   );
@@ -37,15 +34,6 @@ const FlyTo = () => {
       }
     }
   }, [flightPlanRoute, flyToInitialRoutePoint, viewer]);
-
-  // Fly to the currently selected airport when selection changes
-  useEffect(() => {
-    if (selectedEntityType === 'Airport' && selectedEntity) {
-      const airport = selectedEntity as AirportDto;
-      const position = mapAirportDataToCartesian3Flat(airport);
-      if (position) flyToPoint(viewer, position);
-    }
-  }, [selectedEntityType, selectedEntity, viewer]);
 
   // Fly to newly added airspace airports
   useEffect(() => {
