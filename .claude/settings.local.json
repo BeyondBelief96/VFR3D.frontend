@@ -40,7 +40,10 @@
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
       "Bash(grep:*)",
       "Bash(xargs head:*)",
-      "Bash(xargs wc:*)"
+      "Bash(xargs wc:*)",
+      "Bash(ls -1 /c/Users/brand/source/repos/VFR3D.frontend/dist/assets/*.js)",
+      "Bash(cat)",
+      "Read(//tmp/**)"
     ]
   }
 }

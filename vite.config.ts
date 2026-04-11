@@ -29,10 +29,6 @@ export default defineConfig({
           if (id.includes('cesium')) {
             return undefined;
           }
-          // react-pdf before mantine to avoid circular chunk dependency
-          if (id.includes('@react-pdf/')) {
-            return 'react-pdf';
-          }
           if (id.includes('recharts') || id.includes('d3-')) {
             return 'recharts';
           }
