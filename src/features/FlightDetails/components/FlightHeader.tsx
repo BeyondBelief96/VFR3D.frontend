@@ -1,4 +1,3 @@
-import React, { Suspense } from 'react';
 import { Link } from '@tanstack/react-router';
 import {
   Group,
@@ -17,8 +16,7 @@ import { BUTTON_COLORS, ACTION_ICON_COLORS } from '@/constants/colors';
 import { FlightDto } from '@/redux/api/vfr3d/dtos';
 import { FlightPdfData } from '@/features/Flights/hooks/useFlightPdfData';
 import { useIsPhone } from '@/hooks';
-
-const PdfDownloadButton = React.lazy(() => import('./PdfDownloadButton'));
+import { PdfDownloadButton } from './PdfDownloadButton';
 
 interface FlightHeaderProps {
   flight: FlightDto;
@@ -79,9 +77,7 @@ export function FlightHeader({ flight, pdfData, onRefreshAll, isRefreshing }: Fl
             </Button>
           </Tooltip>
         )}
-        <Suspense fallback={<Button variant="light" color={BUTTON_COLORS.CONFIRM} size={isPhone ? 'sm' : 'md'} disabled leftSection={<Loader size="xs" />}>{isPhone ? 'PDF' : 'Loading...'}</Button>}>
-          <PdfDownloadButton flight={flight} pdfData={pdfData} />
-        </Suspense>
+        <PdfDownloadButton flight={flight} pdfData={pdfData} />
       </Group>
     </Stack>
   );

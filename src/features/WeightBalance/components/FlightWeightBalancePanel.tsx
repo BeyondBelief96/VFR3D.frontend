@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Stack,
   Group,
@@ -48,7 +48,7 @@ import {
 } from '@/redux/api/vfr3d/weightBalance.api';
 import { useGetAircraftQuery } from '@/redux/api/vfr3d/aircraft.api';
 import { useWeightBalanceCalculation } from '../hooks/useWeightBalanceCalculation';
-const CgEnvelopeChart = React.lazy(() => import('../visualization/CgEnvelopeChart'));
+import CgEnvelopeChart from '../visualization/CgEnvelopeChart';
 import { WeightBreakdownTable } from '../visualization/WeightBreakdownTable';
 import { ARM_UNIT_LABELS, WEIGHT_UNIT_LABELS, DEFAULT_FUEL_WEIGHT } from '../constants/defaults';
 import classes from '../WeightBalance.module.css';
@@ -776,18 +776,16 @@ export const FlightWeightBalancePanel: React.FC<FlightWeightBalancePanelProps> =
                   </SimpleGrid>
 
                   {/* Chart */}
-                  <Suspense fallback={<Center py="xl"><Loader size="sm" /></Center>}>
-                    <CgEnvelopeChart
-                      envelopePoints={result.envelopeLimits || []}
-                      envelopeName={result.envelopeName}
-                      envelopeFormat={envelopeFormat}
-                      takeoffResult={result.takeoff}
-                      landingResult={result.landing}
-                      armUnits={selectedProfile?.armUnits}
-                      weightUnits={selectedProfile?.weightUnits}
-                      height={350}
-                    />
-                  </Suspense>
+                  <CgEnvelopeChart
+                    envelopePoints={result.envelopeLimits || []}
+                    envelopeName={result.envelopeName}
+                    envelopeFormat={envelopeFormat}
+                    takeoffResult={result.takeoff}
+                    landingResult={result.landing}
+                    armUnits={selectedProfile?.armUnits}
+                    weightUnits={selectedProfile?.weightUnits}
+                    height={350}
+                  />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="breakdown" pt="md">
